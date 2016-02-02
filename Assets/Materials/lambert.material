@@ -1,0 +1,28 @@
+--[[
+	This is the material class
+]]
+
+return
+{
+	materialData = 
+	{
+		sourcePath = "data/Effects/",
+		effectSource = "standard.effect",
+		uniformData = 
+		{
+			{
+				name = "g_RGBColor",
+				value = { 1, 1, 1, },
+				shaderType = "fragment",
+			},
+		},
+		textureData = 
+		{
+			{
+				name = "g_sampler2D",
+				path = "data/Textures/grey.dds",
+				shaderType = "fragment",
+			},
+		},
+	},
+}

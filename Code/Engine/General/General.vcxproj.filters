@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{9978df88-815c-4be1-af04-183261655c15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{14adbef2-5bf6-4c91-86a5-2aacb237ef78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RTTI">
+      <UniqueIdentifier>{2e056ef3-bab4-48d5-8b4b-4cc3755004d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HashString">
+      <UniqueIdentifier>{ce503dc8-a1a3-438c-ba1e-366920a26244}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="HashString\HashedString.cpp">
+      <Filter>HashString</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryOp.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Implements.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer\EngineTime.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Target.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Target.Win32.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="RTTI.h">
+      <Filter>RTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="HashString\HashedString.h">
+      <Filter>HashString</Filter>
+    </ClInclude>
+    <ClInclude Include="BitOperate.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryOp.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineObj.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="NamedBitSet.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.hpp">
+      <Filter>Source</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HashString\HashedString.inl">
+      <Filter>HashString</Filter>
+    </None>
+    <None Include="NamedBitSet.inl">
+      <Filter>Source</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Common\MeshLoader.cpp">
+      <Filter>Common\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MeshManager.cpp">
+      <Filter>Common\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D9\AOSMesh.d3d9.cpp">
+      <Filter>Direct3D9\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D9\AOSMeshOp.d3d9.cpp">
+      <Filter>Direct3D9\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\AOSMesh.gl.cpp">
+      <Filter>OpenGL\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D9\Effect.D3D9.cpp">
+      <Filter>Direct3D9\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D9\UniformVariable.d3d.cpp">
+      <Filter>Direct3D9\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\UniformVariable.gl.cpp">
+      <Filter>OpenGL\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\Effect.gl.cpp">
+      <Filter>OpenGL\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Effect.cpp">
+      <Filter>Common\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UniformVariable.cpp">
+      <Filter>Common\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\EffectLoader.cpp">
+      <Filter>Common\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ShaderLoader.cpp">
+      <Filter>Common\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ShaderContent.cpp">
+      <Filter>Common\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="OpenGL\Graphics.gl.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D9\Graphics.d3d9.cpp">
+      <Filter>Direct3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\Device.gl.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D9\Device.d3d9.cpp">
+      <Filter>Direct3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\SOAMesh.cpp">
+      <Filter>Common\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Camera.cpp">
+      <Filter>Common\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MeshRender.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MaterialLoader.cpp">
+      <Filter>Common\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Material.cpp">
+      <Filter>Common\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Texture.cpp">
+      <Filter>Common\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D9\Texture.D3D9.cpp">
+      <Filter>Direct3D9\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\Texture.gl.cpp">
+      <Filter>OpenGL\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Screen.cpp">
+      <Filter>Common\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\RenderObj.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\AOSMeshOp.gl.cpp">
+      <Filter>OpenGL\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\DebugMesh.cpp">
+      <Filter>Common\DebugMeshes</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\BasicMeshes.cpp">
+      <Filter>Common\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D9\Sprite.d3d9.cpp">
+      <Filter>Direct3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\Sprite.gl.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Common\Color.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MeshManager.h">
+      <Filter>Common\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AOSMeshOp.h">
+      <Filter>Common\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AOSMesh.h">
+      <Filter>Common\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Effect.h">
+      <Filter>Common\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UniformVariable.h">
+      <Filter>Common\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsInclude.h" />
+    <ClInclude Include="Common\BinaryFileLoader.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ShaderContent.h">
+      <Filter>Common\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GraphicsInternal.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Device.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\SOAMesh.h">
+      <Filter>Common\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Camera.h">
+      <Filter>Common\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MeshRender.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Material.h">
+      <Filter>Common\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Texture.h">
+      <Filter>Common\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UniformDesc.h">
+      <Filter>Common\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Screen.h">
+      <Filter>Common\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\RenderObj.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DebugMesh.h">
+      <Filter>Common\DebugMeshes</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\BasicMeshes.h">
+      <Filter>Common\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Sprite.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="OpenGL">
+      <UniqueIdentifier>{92c3a4d2-ec51-4967-96aa-b6613f6e943e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{13e55ee5-5815-487c-8e78-1e6860941e19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Direct3D9">
+      <UniqueIdentifier>{953fad87-ed73-48bf-9fec-95ff8216e8b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Mesh">
+      <UniqueIdentifier>{b0b63d8a-04e5-4268-b5f0-387b44faeffb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Direct3D9\Mesh">
+      <UniqueIdentifier>{9617a8f1-17bf-4773-974d-3c7a1e2262b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenGL\Mesh">
+      <UniqueIdentifier>{8ae4818f-79e5-4014-9b06-8e50d7bbf3a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Direct3D9\Effect">
+      <UniqueIdentifier>{b71ebd4f-13a1-4242-bf37-b000cbc1fea9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenGL\Effect">
+      <UniqueIdentifier>{50d8d8c3-c13b-48ab-97cd-0a8b362e6e41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Effect">
+      <UniqueIdentifier>{de05f985-1a32-4599-9257-76b62bbff239}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Camera">
+      <UniqueIdentifier>{8e201ed2-f2b4-46e2-afce-4622c0b2bc67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Material">
+      <UniqueIdentifier>{b6c348eb-eced-4cb2-989a-b4c53cc502be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Texture">
+      <UniqueIdentifier>{2714de7f-7e49-4aea-96c1-cfb10b1e72f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Direct3D9\Texture">
+      <UniqueIdentifier>{0b84329c-c72f-4a8e-b79e-1400452fb7ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenGL\Texture">
+      <UniqueIdentifier>{7d71ae7d-4e71-4e5e-815f-2953aaff9bbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\DebugMeshes">
+      <UniqueIdentifier>{3b0e16a8-0fa5-464f-82e4-4e51783f42c7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Common\UniformVariable.inl">
+      <Filter>Common\Effect</Filter>
+    </None>
+  </ItemGroup>
+</Project>

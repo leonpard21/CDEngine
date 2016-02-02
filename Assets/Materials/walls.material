@@ -1,0 +1,34 @@
+--[[
+	This is the material class
+]]
+
+return
+{
+	materialData = 
+	{
+		sourcePath = "data/Effects/",
+		effectSource = "transparent.effect",
+		materialCost = 0x00011111,
+		uniformData = 
+		{
+			{
+				name = "g_RGBColor",
+				value = { 1, 1, 1, },
+				shaderType = "fragment",
+			},
+			{
+				name = "g_alpha",
+				value = { 0.5, },
+				shaderType = "fragment",
+			},
+		},
+		textureData = 
+		{
+			{
+				name = "g_sampler2D",
+				path = "data/Textures/wall_D.dds",
+				shaderType = "fragment",
+			},
+		},
+	},
+}

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{cbfddfa1-64f5-43bb-838e-07c03f83f8ad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\AutoMemoryPool.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Bitfield.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MemoryAllocator.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MemoryHeapManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MemoryNew.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\AutoMemoryPool.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Bitfield.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MemoryAllocator.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MemoryHeapManager.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MemoryNew.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\New.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

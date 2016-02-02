@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="LoadLua\LuaMaterialLoader.cpp">
+      <Filter>LoadLua</Filter>
+    </ClCompile>
+    <ClCompile Include="cMaterialBuilder.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="LoadLua">
+      <UniqueIdentifier>{f177082e-2bc1-4488-94a5-6fe2f16dec37}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LoadLua\LuaMaterialLoader.h">
+      <Filter>LoadLua</Filter>
+    </ClInclude>
+    <ClInclude Include="cMaterialBuilder.h" />
+  </ItemGroup>
+</Project>

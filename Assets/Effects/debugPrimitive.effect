@@ -1,0 +1,23 @@
+--[[
+	This is the effects class
+]]
+
+return
+{
+	materialInfo = 
+	{
+
+
+	},
+	sourcePath = "data/Shaders/",
+	vsSource = "debugPrimitive.vshd",
+	fsSource = "debugPrimitive.fshd",
+	renderState =
+	{
+		Alpha = true,
+	 	DepthTesting = true,
+		DepthWriting = true,
+		FaceCulling = true,
+	},
+}
+

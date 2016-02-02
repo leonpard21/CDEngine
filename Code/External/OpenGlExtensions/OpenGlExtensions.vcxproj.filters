@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="OpenGlExtensions.h" />
+    <ClInclude Include="31597\glext.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="31597\wglext.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="32155\glcorearb.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGlExtensions.core.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OpenGlExtensions.cpp" />
+    <ClCompile Include="OpenGlExtensions.core.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{66b0b0c9-ca39-4204-8d9d-daa9f7676de5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{cb546bb0-6562-4f07-9f67-5002d1ac1528}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(McppVersion)\src\main.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(McppVersion)\src\directive.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(McppVersion)\src\eval.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(McppVersion)\src\expand.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(McppVersion)\src\mbchar.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(McppVersion)\src\support.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(McppVersion)\src\system.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(McppVersion)\src\main_libmcpp.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(McppVersion)\src\internal.H">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="$(McppVersion)\src\system.H">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="$(McppVersion)\src\noconfig.H">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="$(McppVersion)\src\mcpp_lib.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="$(McppVersion)\src\configed.H">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes.h" />
+    <ClInclude Include="$(McppVersion)\src\mcpp_out.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

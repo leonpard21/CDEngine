@@ -1,0 +1,137 @@
+/* #include statement (platform - independent) */
+#include "shaders.common"
+
+uniform vec3 g_RGBColor;
+uniform sampler2D g_sampler2D;
+
+// Lambert Diffuse Lighting
+void CalculateDiffuseLighting(const in float3 i_normal_world,
+	const in float3 i_light_direction, const in float3 i_light_color,
+	out float3 o_lighting_diffuse)
+{
+	// Calculate how parallel the light and the normal are
+	float lambertTerm;
+	{
+		float dotProduct;
+		{
+			// Reverse the light direction so that it represents the unit vector from the fragment to the light
+			float3 lightVector = -i_light_direction;
+			dotProduct = dot(i_normal_world, lightVector);
+		}
+		// The dot product will be negative if the normal is facing away from the light
+		// (i.e. in shadow)
+		// and so it should be clamped to 0
+		// (i.e. the light won't affect it)
+		lambertTerm = max(0.0, dotProduct);
+	}
+	// The diffuse lighting is a combination of the lambert term and the light's color
+	o_lighting_diffuse = lambertTerm * i_light_color;
+}
+
+void CalculateSpecularLighting(const in float3 i_position_world, const in float3 i_normal_world, const in float3 i_camera_position,
+	const in float3 i_light_direction, const in float3 i_light_color,
+	const in float i_shininess,
+	out float3 o_lighting_specular)
+{
+	float specularAmount;
+	{
+		// Calculate how parallel the reflected light and the camera are
+		float dotProduct;
+		{
+			// Direction of the reflected light
+			float3 reflectedDirection = reflect(i_light_direction, i_normal_world);
+			// Direction of the view ray
+			float3 viewDirection = normalize(i_camera_position - i_position_world);
+			// How close (parallel) the view ray is to the reflected light
+			dotProduct = dot(reflectedDirection, viewDirection);
+			// See the diffuse function for why this is clamped (the reasoning is similar)
+			dotProduct = max(0.0, dotProduct);
+		}
+		// A pow() function is used as a hack to approximate how big or small the specular highlight is
+		// (which makes an object seem more "shiny", or smooth as opposed to rough)
+		specularAmount = pow(dotProduct, i_shininess);
+	}
+	// The specular lighting is a combination of the specular amount and the light's color
+	o_lighting_specular = i_light_color * specularAmount;
+}
+
+/* Input/Output variables (platform-specific) */
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+	// Entry Point
+	//============
+	void main(
+		// Input
+		//======
+		// Whatever arbitrary data (i.e. everything excluding position) was output from the vertex shader
+		// will be interpolated across the triangle and given as input to the fragment shader
+		in float3 i_normalWorld : NORMAL,
+		in float2 i_texcoords : TEXCOORD0,
+		in float4 i_color : COLOR0,
+
+		// Output
+		//=======
+		// Whatever color value is output from the fragment shader
+		// will determine the color of the corresponding pixel on the screen
+		out float4 o_color : COLOR0
+		)
+#elif defined( EAEENGINE_PLATFORM_GL )
+	// Input
+	//======
+	// Whatever arbitrary data (i.e. everything excluding position) was output from the vertex shader
+	// will be interpolated across the triangle and given as input to the fragment shader
+	layout(location = 0) in vec3 i_normalWorld;
+	layout(location = 1) in vec2 i_texcoords;
+	layout(location = 2) in vec4 i_color;
+
+	// Output
+	//=======
+	// Whatever color value is output from the fragment shader
+	// will determine the color of the corresponding pixel on the screen
+	out vec4 o_color;
+
+	// Entry Point
+	//============
+	void main()
+#endif
+
+/* main() function definition (platform-independent) */
+	{
+		{
+			vec4 textureColor = texture2D(g_sampler2D, i_texcoords);
+			o_color = i_color * textureColor;
+		}
+		// Calculate the lighting
+		{
+			vec3 g_light_direction = vec3(0.0f, -1.0f, 0.0f);
+			vec3 g_light_color = vec3(0.8f, 0.8f, 0.8f);
+			//The normal will have to be re-normalized in the fragment shader, 
+			//because the interpolation won't preserve its unit length for every fragment
+			vec3 normal_world = normalize(i_normalWorld);
+			// Normalize the light direction
+			// (This should be done once in C code; if you do that you can leave this expensive per-fragment operation out of the shader)
+			float3 light_direction = normalize(g_light_direction);
+			vec3 o_lightDiffuse = vec3(0.0f, 0.0f, 0.0f);;
+			{
+				CalculateDiffuseLighting(normal_world,
+					light_direction, g_light_color,
+					o_lightDiffuse);
+			}
+			float g_shininess = 1.0f;
+			/*
+			float3 o_lighting_specular;
+			{
+				CalculateSpecularLighting(i_position_world, normal_world, g_camera_position,
+					light_direction, g_light_color,
+					g_shininess,
+					o_lighting_specular);
+			}
+			*/
+			// Modify the diffuse color by the view-independent lighting
+			vec3 ambient = vec3(0.1f, 0.1f, 0.1f);
+			o_color.rgb = o_color.rgb *(o_lightDiffuse + ambient);
+			// Add the view-dependent lighting
+			//o_color.rgb += o_lighting_specular;
+		}
+		o_color.rgb *= g_RGBColor;
+	}
+

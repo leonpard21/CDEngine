@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Collider">
+      <UniqueIdentifier>{991ce88a-05c2-4ee5-8ed8-9c9f956ace3e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ICollisionCallback.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="OBBCollider.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderBase.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OBBCollider.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderBase.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ColliderBase.inl">
+      <Filter>Collider</Filter>
+    </None>
+  </ItemGroup>
+</Project>

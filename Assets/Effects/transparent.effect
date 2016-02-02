@@ -1,0 +1,17 @@
+--[[
+	This is the effects class
+]]
+
+return
+{
+	sourcePath = "data/Shaders/",
+	vsSource = "standard.vshd",
+	fsSource = "transparent.fshd",
+	renderState= 
+	{
+		Alpha = true,
+		DepthTesting = true,
+		DepthWriting = false,
+	}
+}
+

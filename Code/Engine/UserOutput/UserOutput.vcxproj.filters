@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="UserOutput.h" />
+    <ClInclude Include="Source\Assert.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ConsolePrint.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EngineDebuger.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="UserOutput.cpp" />
+    <ClCompile Include="Source\Assert.Win32.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ConsolePrint.Win32.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EngineDebuger.Win32.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{32fee4e8-6874-4c06-b80f-4ec90b62b634}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

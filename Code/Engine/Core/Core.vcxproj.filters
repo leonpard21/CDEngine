@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Individual">
+      <UniqueIdentifier>{d30a12e2-2460-4842-90ac-9840dd100a21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entirety">
+      <UniqueIdentifier>{c903c660-59e3-40eb-a8a1-4c52fb2ee95b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{a72f8efe-eb2b-4b49-b0f3-fe94849b96c7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Entirety\World.cpp">
+      <Filter>Entirety</Filter>
+    </ClCompile>
+    <ClCompile Include="Individual\GameObj.cpp">
+      <Filter>Individual</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Transform.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Entirety\World.h">
+      <Filter>Entirety</Filter>
+    </ClInclude>
+    <ClInclude Include="Individual\GameObj.h">
+      <Filter>Individual</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Transform.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

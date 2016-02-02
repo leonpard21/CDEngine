@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="cMeshBuilder.cpp" />
+    <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="LoadLua\LuaMeshLoader.cpp">
+      <Filter>LoadLuaMesh</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cMeshBuilder.h" />
+    <ClInclude Include="LoadLua\LuaMeshLoader.h">
+      <Filter>LoadLuaMesh</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="LoadLuaMesh">
+      <UniqueIdentifier>{5271d743-518a-470f-b442-ff747eec6d8a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

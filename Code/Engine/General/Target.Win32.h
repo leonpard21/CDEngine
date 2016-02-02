@@ -1,0 +1,9 @@
+#ifndef TARGET_WIN32_H
+#define TARGET_WIN32_H
+
+#define CACHE_LINE_ALIGNMENT_BYTES	64
+
+#define DEBUGGER_BREAK __debugbreak()
+
+
+#endif TARGET_WIN32_H

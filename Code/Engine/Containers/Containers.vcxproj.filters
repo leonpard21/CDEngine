@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{ed912fa4-4a10-4550-ae83-8299079c5ab4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AutoPtr.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ShardPtr.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="RingBuffer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedList.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleVector.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AutoPtr.inl">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="ShardPtr.inl">
+      <Filter>Source</Filter>
+    </None>
+  </ItemGroup>
+</Project>

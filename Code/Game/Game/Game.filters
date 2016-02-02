@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{e0328041-b8dd-4cef-ba85-273b31debd92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{a1c2b0df-688a-4a9b-9e8c-c1d92821701e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\Game.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\big.ico">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\small.ico">
+      <Filter>Resources</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Resources\Resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\targetver.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\WindowsFunctions.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\WindowsIncludes.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="Windows\WindowsFunctions.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="WinGame.cpp" />
+  </ItemGroup>
+</Project>
