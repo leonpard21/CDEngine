@@ -43,7 +43,8 @@ bool EAE_Engine::Graphics::Initialize( const HWND i_renderingWindow )
 #ifdef DRAW_DEBUG_SHAPES
 	DebugMeshes::GetInstance().Init();
 #endif
-	SpriteManager::GetInstance()->Init();
+	//SpriteManager::GetInstance()->Init();
+	SpriteRenderManager::GetInstance()->Init();
 	return true;
 OnError:
 	ShutDown();
@@ -109,12 +110,13 @@ void EAE_Engine::Graphics::PostRender()
 bool EAE_Engine::Graphics::ShutDown()
 {
 	bool wereThereErrors = false;
-	MeshRenderManager::CleanInstance();
-	SpriteManager::Destroy();
-	UniformVariableManager::CleanInstance();
 #ifdef DRAW_DEBUG_SHAPES
 	DebugMeshes::CleanInstance();
 #endif
+	MeshRenderManager::CleanInstance();
+	SpriteRenderManager::Destroy();
+	SpriteManager::Destroy();
+	UniformVariableManager::CleanInstance();
 	MeshManager::CleanMeshManager();
 	RenderObjManager::CleanInstance();
 	CameraManager::CleanInstance();
@@ -130,6 +132,7 @@ void EAE_Engine::Graphics::CleanBeforeRestart()
 	CameraManager::CleanInstance();
 	MeshRenderManager::CleanInstance();
 	RenderObjManager::CleanInstance();
+	SpriteRenderManager::Destroy();
 }
 
 void EAE_Engine::Graphics::RemoveMeshRender(Common::ITransform* pTrans)

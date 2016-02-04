@@ -5,6 +5,7 @@
 #include "Engine/CollisionDetection/ColliderBase.h"
 #include "Engine/Graphics/Graphics.h"
 #include "Engine/Graphics/Common/MeshRender.h"
+#include "Engine/Graphics/Common/SpriteRender.h"
 #include "Engine/Graphics/Common/Camera.h"
 #include "Engine/Graphics/Common/BinaryFileLoader.h"
 #include "Engine/Common/Interfaces.h"
@@ -26,6 +27,7 @@ namespace
 
 	void CreatePlayer();
 	void CreateCamera();
+	void CreateSprite();
 }
 
 
@@ -152,6 +154,7 @@ namespace
 
 		CreatePlayer();
 		CreateCamera();
+		CreateSprite();
 		return true;
 	}
 
@@ -201,6 +204,13 @@ namespace
 		pCamController = new CameraController(pCamera);
 		pCamController->SetTarget(pPlayerObj->GetTransform());
 		EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pCamController);
+	}
+
+	void CreateSprite() 
+	{
+		EAE_Engine::Math::Vector3 zero = EAE_Engine::Math::Vector3::Zero;
+		EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj", zero);
+		EAE_Engine::Graphics::SpriteRenderManager::GetInstance()->AddSpriteRender("data/Textures/numbers.dds", pSpriteObj->GetTransform());
 	}
 
 }

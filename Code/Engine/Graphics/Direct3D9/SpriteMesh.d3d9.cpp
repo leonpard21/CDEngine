@@ -11,12 +11,12 @@ namespace EAE_Engine
 		{
 			D3DVERTEXELEMENT9 vertexElements[] = 
 			{
-				// Stream: 0, POSITION: 2 floats == 8 bytes, Offset = 0
-				{ 0, 0, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
+				// Stream: 0, POSITION: 3 floats == 12 bytes, Offset = 0
+				{ 0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
 				// Stream: 0, TextureCoordinate0: 2 float == 8 bytes, Offset = 8
-				{ 0, 8, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
+				{ 0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
 				// Stream: 0, COLOR0: D3DCOLOR == 4 bytes, Offset = 16
-				{ 0, 16, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
+				{ 0, 20, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
 				// The following marker signals the end of the vertex declaration
 				D3DDECL_END()
 			};
@@ -39,7 +39,7 @@ namespace EAE_Engine
 			return result;
 		}
 
-		void SpriteMesh::ReleaseSprite()
+		void SpriteMesh::Release()
 		{
 			IDirect3DDevice9* pDevice = GetD3DDevice();
 			if (_pVertexBuffer)

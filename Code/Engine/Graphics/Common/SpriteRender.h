@@ -7,8 +7,8 @@
 #include "Engine/Common/Interfaces.h"
 #include "BasicShapes.h"
 
-#include "CommonDeclare.h"
 #include "SpriteMesh.h"
+#include "Sprite.h"
 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 #include <d3d9.h>
@@ -22,41 +22,32 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		struct Sprite 
-		{
-			Sprite(tTexture texture) : _texture(texture) {}
-			tTexture _texture;
-			SpriteMesh* _pSpriteMesh;
-			uint32_t _index;
-			float _width, _height;
-			bool SetData(Rectangle* i_position = nullptr, Rectangle* i_texcoords = nullptr);
-		};
-
 		struct MaterialDesc;
 		class SpriteRender 
 		{
 			SpriteRender();
 		public:
-			SpriteRender(Sprite& sprite, Common::ITransform* _pTransform);
+			SpriteRender(Sprite* pSprite, Common::ITransform* _pTransform);
 			~SpriteRender();
 
-
 		private:
-			MaterialDesc* _pMaterial;
-			Sprite _sprite;
+			Sprite* _pSprite;
 			Common::ITransform* _pTransform;
 		};
 
-		class SpriteManager : public Singleton<SpriteManager>
+		class SpriteRenderManager : public Singleton<SpriteRenderManager>
 		{
 		public:
-			~SpriteManager() {}
+			SpriteRenderManager();
+			~SpriteRenderManager();
 			void Init();
 			void Clean();
 
-			SpriteRender* AddSprite(const char* pName, Common::ITransform* pTransform);
+			SpriteRender* AddSpriteRender(const char* pName, Common::ITransform* pTransform);
 			void UpdateRenderDataList();
 		private:
+			MaterialDesc* _pMaterial;
+			SpriteMesh* _pSpriteMesh;
 			std::vector<SpriteRender*> _spriteRenders;
 		};
 

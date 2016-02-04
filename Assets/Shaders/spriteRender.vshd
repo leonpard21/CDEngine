@@ -15,7 +15,7 @@ void main(
 	// but must match the C call to CreateVertexDeclaration()
 
 	// These values come from one of the sVertex that we filled the vertex buffer with in C code
-	in const float2 i_position_local : POSITION,
+	in const float3 i_position_local : POSITION,
 	in const float2 i_texcoords : TEXCOORD0,
 	in const float4 i_color : COLOR,
 
@@ -35,7 +35,7 @@ void main(
 // but must match the C calls to glVertexAttribPointer()
 
 // These values come from one of the sVertex that we filled the vertex buffer with in C code
-layout(location = 0) in vec2 i_position_local;
+layout(location = 0) in vec3 i_position_local;
 layout(location = 1) in vec2 i_texcoords;
 layout(location = 2) in vec4 i_color;
 
@@ -60,7 +60,7 @@ void main()
 		// Any matrix transformations that include translation
 		// will operate on a float4 position,
 		// which _must_ have 1 for the w value
-		o_position = Transform(vec4(i_position_local, 0.0f, 1.0f), g_local_world_matrix);
+		o_position = Transform(vec4(i_position_local, 1.0f), g_local_world_matrix);
 	}
 	// Pass the input uv to the fragment shader unchanged:
 	{

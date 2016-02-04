@@ -16,7 +16,7 @@ namespace EAE_Engine
 {
 	struct SpriteVertex
 	{
-		float x, y;
+		float x, y, z;
 		float u, v;
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 		uint8_t b, g, r, a;	// 8 bits [0,255] per RGBA channel (the alpha channel is unused but is present so that color uses a full 4 bytes)
@@ -38,7 +38,7 @@ namespace EAE_Engine
 			~SpriteMesh() {}
 
 			bool InitSprite( IDirect3DDevice9* pDevice, void* pVertices);
-			void ReleaseSprite();
+			void Release();
 		private:
 			IDirect3DVertexBuffer9* _pVertexBuffer;
 			IDirect3DVertexDeclaration9* _pVertexDeclaration;
