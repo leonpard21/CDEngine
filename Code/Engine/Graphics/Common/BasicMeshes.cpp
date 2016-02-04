@@ -7,7 +7,7 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		Rectangle::Rectangle()
+		RectangleMesh::RectangleMesh()
 		{
 			//We need 4 vertices
 			_vertices.push_back(Math::Vector3(-0.5f, -0.5f, 0.0f));
@@ -16,7 +16,16 @@ namespace EAE_Engine
 			_vertices.push_back(Math::Vector3(0.5f, -0.5f, 0.0f));
 		}
 
-		Box::Box()
+		RectangleMesh::RectangleMesh(float i_left, float i_right, float i_bottom, float i_top)
+		{
+			//We need 4 vertices
+			_vertices.push_back(Math::Vector3(i_left, i_bottom, 0.0f));
+			_vertices.push_back(Math::Vector3(i_right, i_bottom, 0.0f));
+			_vertices.push_back(Math::Vector3(i_right, i_top, 0.0f));
+			_vertices.push_back(Math::Vector3(i_left, i_top, 0.0f));
+		}
+
+		BoxMesh::BoxMesh()
 		{
 			// Vertices Data, there are 24 vertices for a box
 			{
@@ -67,7 +76,7 @@ namespace EAE_Engine
 		 * The code came from: http://richardssoftware.net/Home/Post/7
 		 * stack is the rows, slice is the columns
 		 */
-		Sphere::Sphere(uint32_t sliceCount, uint32_t stackCount, float radius)
+		SphereMesh::SphereMesh(uint32_t sliceCount, uint32_t stackCount, float radius)
 		{
 			const float phiStep = Math::Pi / stackCount;
 			const float thetaStep = 2.0f * Math::Pi / sliceCount;

@@ -4,7 +4,8 @@
 #include "../Common/MeshManager.h"
 #include "../Common/Camera.h"
 #include "../Common/Material.h"
-#include "../Common/RenderObj.h"
+#include "RenderObj.h"
+#include "RenderDatas.h"
 
 namespace EAE_Engine
 {

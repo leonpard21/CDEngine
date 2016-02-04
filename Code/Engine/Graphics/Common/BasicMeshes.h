@@ -8,22 +8,23 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		struct Rectangle
+		struct RectangleMesh
 		{
-			Rectangle();
+			RectangleMesh();
+			RectangleMesh(float i_left, float i_right, float i_bottom, float i_top);
 			std::vector<Math::Vector3> _vertices;
 		};
 
-		struct Box
+		struct BoxMesh
 		{
-			Box();
+			BoxMesh();
 			std::vector<Math::Vector3> _vertices;
 			std::vector<uint32_t> _indices;
 		};
 
-		struct Sphere 
+		struct SphereMesh 
 		{
-			Sphere(uint32_t sliceCount, uint32_t stackCount, float raduis = 1.0f);
+			SphereMesh(uint32_t sliceCount, uint32_t stackCount, float raduis = 1.0f);
 			std::vector<Math::Vector3> _vertices;
 			std::vector<uint32_t> _indices;
 		};

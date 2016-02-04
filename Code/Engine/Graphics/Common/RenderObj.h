@@ -4,6 +4,7 @@
 #include "Engine/Math/Vector.h"
 #include "Engine/Math/ColMatrix.h"
 #include "Engine/Common/Interfaces.h"
+#include "CommonDeclare.h"
 
 namespace EAE_Engine
 {
@@ -13,6 +14,7 @@ namespace EAE_Engine
 		class Effect;
 		struct MaterialDesc;
 		class MeshRender;
+		class SpriteRender;
 
 		// The design of this structure based on the idea of:
 		// Christer Ericson, http://realtimecollisiondetection.net/blog/?p=86
@@ -52,8 +54,8 @@ namespace EAE_Engine
 
 		enum RenderDataLayer 
 		{
-			Sprite = 0,
-			Scene = 2,
+			Object3D = 0,
+			Object2D = 2, 
 		};
 
 		/*
@@ -78,6 +80,7 @@ namespace EAE_Engine
 		 * At last, we just need to sort the RenderObjList by the RenderWeight.
 		 */
 		struct RenderData3D;
+		struct RenderData2D;
 		struct RenderObj
 		{
 			RenderObj() = default;
@@ -85,26 +88,6 @@ namespace EAE_Engine
 
 			RenderWeight _renderWeight;    // weight helps us to sort in Rendering
 			RenderData3D* _pRenderData;
-		};
-
-		struct RenderData3D
-		{
-			MeshRender* _pMeshRender;// which MeshRender we will render.
-			uint32_t _subMeshIndex;  // which subMesh of the MeshRender we will render.
-			Math::ColMatrix44 _localToWorld;
-
-			RenderData3D() = default;
-			MaterialDesc* GetMaterial();
-			void ChangeEffectVariables();
-			void Render();
-
-			// we will save the current Mesh, Effect and Material and compare it with the new one.
-			// if the new one is still the same,
-			// then we don't need to switch the context when rendering.
-			static MaterialDesc* s_pCurrentMaterial;
-			static Effect* s_pCurrentEffect;
-			static AOSMesh* s_pCurrentAOSMesh;
-			//static MeshRender* s_pCurrentMeshRender;
 		};
 
 		class RenderObjManager 
@@ -123,6 +106,7 @@ namespace EAE_Engine
 			void UpdateRenderObjList();
 		private:
 			std::vector<RenderData3D> _renderData3Ds;
+			std::vector<RenderData2D> _renderData2Ds;
 			std::vector<RenderObj> _renderObjs;
 
 		/////////////////////static_members////////////////////////////

@@ -1,0 +1,26 @@
+--[[
+	This is the material class
+]]
+
+return
+{
+	materialInfo = 
+	{
+
+
+	},
+	materialData = 
+	{
+		sourcePath = "data/Effects/",
+		effectSource = "spriteRender.effect",
+		materialCost = 0x11111,
+		textureData = 
+		{
+			{
+				name = "g_sampler2D",
+				path = "data/Textures/numbers.dds",
+				shaderType = "fragment",
+			},
+		},
+	},
+}

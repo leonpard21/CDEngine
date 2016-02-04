@@ -3,12 +3,13 @@
 #include "Math/MathTool.h"
 #include "Math/ColMatrix.h"
 #include <vector>
-#include "../Common/BinaryFileLoader.h"
-#include "../Common/AOSMeshOp.h"
-#include "../Common/RenderObj.h"
-#include "../Common/MeshRender.h"
-#include "../Common/BasicMeshes.h"
-#include "../Common/Material.h"
+#include "BinaryFileLoader.h"
+#include "AOSMeshOp.h"
+#include "RenderObj.h"
+#include "RenderDatas.h"
+#include "MeshRender.h"
+#include "BasicMeshes.h"
+#include "Material.h"
 
 namespace 
 {
@@ -180,7 +181,7 @@ namespace EAE_Engine
 			std::vector<DebugShape::DebugBox>& debugboxes = DebugShape::DebugShapes::GetInstance().GetBoxes();
 			//  Make sure that the debugSegments has primitives to draw
 			if (debugboxes.size() == 0) return;
-			Box standardBox;
+			BoxMesh standardBox;
 			uint32_t verticesPerBox = (uint32_t)standardBox._vertices.size();
 			uint32_t indicesPerBox = (uint32_t)standardBox._indices.size();
 			// alloc memory for vertices and indices buffers
@@ -294,7 +295,7 @@ namespace EAE_Engine
 			uint32_t indexCount = 0;
 			for (uint32_t sphereIndex = 0; sphereIndex < debugSpheres.size(); ++sphereIndex)
 			{
-				Sphere standardSphere(6, 6);
+				SphereMesh standardSphere(6, 6);
 				vertexCount += (uint32_t)standardSphere._vertices.size();
 				indexCount += (uint32_t)standardSphere._indices.size();
 			}
@@ -308,7 +309,7 @@ namespace EAE_Engine
 			for (uint32_t sphereIndex = 0; sphereIndex < debugSpheres.size(); ++sphereIndex)
 			{
 				DebugShape::DebugSphere debugSphere = debugSpheres[sphereIndex];
-				Sphere standardSphere(6, 6);
+				SphereMesh standardSphere(6, 6);
 				uint32_t verticesOfThisBox = (uint32_t)standardSphere._vertices.size();
 				uint32_t indicesOfThisBox = (uint32_t)standardSphere._indices.size();
 				Math::Quaternion identityRotation = Math::Quaternion::Identity;

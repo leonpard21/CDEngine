@@ -106,6 +106,25 @@ namespace EAE_Engine
 			return SUCCEEDED(result);
 		}
 
+		HRESULT GetVertexProcessingUsage(IDirect3DDevice9* pDevice, DWORD& o_usage)
+		{
+			D3DDEVICE_CREATION_PARAMETERS deviceCreationParameters;
+			const HRESULT result = pDevice->GetCreationParameters(&deviceCreationParameters);
+			if (SUCCEEDED(result))
+			{
+				DWORD vertexProcessingType = deviceCreationParameters.BehaviorFlags &
+					(D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_SOFTWARE_VERTEXPROCESSING);
+				o_usage = (vertexProcessingType != D3DCREATE_SOFTWARE_VERTEXPROCESSING) ? 0 : D3DUSAGE_SOFTWAREPROCESSING;
+			}
+			else
+			{
+				EAE_Engine::UserOutput::Print("Direct3D failed to get the device's creation parameters");
+			}
+			return result;
+		}
+
+
+
 		bool CreateVertexDeclaration(IDirect3DDevice9* pDevice, D3DVERTEXELEMENT9* pVertexElements, IDirect3DVertexDeclaration9*& o_pVertexDeclaration)
 		{
 			// Initialize the vertex format

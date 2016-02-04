@@ -9,7 +9,7 @@ namespace EAE_Engine
 	{
 	public:
 		static T* GetInstance();
-		static void destroy();
+		static void Destroy();
 
 	private:
 
@@ -38,10 +38,13 @@ namespace EAE_Engine
 	}
 
 	template<typename T>
-	void Singleton<T>::destroy()
+	void Singleton<T>::Destroy()
 	{
-		delete Singleton<T>::_instance;
-		Singleton<T>::_instance = 0;
+		if (_instance)
+		{
+			delete Singleton<T>::_instance;
+			Singleton<T>::_instance = 0;
+		}
 	}
 }
 

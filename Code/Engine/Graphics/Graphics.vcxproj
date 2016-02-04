@@ -26,6 +26,7 @@
     <ClCompile Include="Common\EffectLoader.cpp" />
     <ClCompile Include="Common\Material.cpp" />
     <ClCompile Include="Common\MaterialLoader.cpp" />
+    <ClCompile Include="Common\RenderDatas.cpp" />
     <ClCompile Include="Common\RenderObj.cpp" />
     <ClCompile Include="Common\Screen.cpp" />
     <ClCompile Include="Common\SOAMesh.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="Common\MeshRender.cpp" />
     <ClCompile Include="Common\ShaderContent.cpp" />
     <ClCompile Include="Common\ShaderLoader.cpp" />
+    <ClCompile Include="Common\SpriteRender.cpp" />
     <ClCompile Include="Common\Texture.cpp" />
     <ClCompile Include="Common\UniformVariable.cpp" />
     <ClCompile Include="Direct3D9\AOSMesh.d3d9.cpp">
@@ -66,7 +68,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Direct3D9\Sprite.d3d9.cpp">
+    <ClCompile Include="Direct3D9\SpriteMesh.d3d9.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -137,8 +139,10 @@
   <ItemGroup>
     <ClInclude Include="Common\AOSMeshOp.h" />
     <ClInclude Include="Common\BasicMeshes.h" />
+    <ClInclude Include="Common\BasicShapes.h" />
     <ClInclude Include="Common\Camera.h" />
     <ClInclude Include="Common\Color.h" />
+    <ClInclude Include="Common\CommonDeclare.h" />
     <ClInclude Include="Common\DebugMesh.h" />
     <ClInclude Include="Common\Device.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -150,6 +154,7 @@
     <ClInclude Include="Common\GraphicsInternal.h" />
     <ClInclude Include="Common\BinaryFileLoader.h" />
     <ClInclude Include="Common\Material.h" />
+    <ClInclude Include="Common\RenderDatas.h" />
     <ClInclude Include="Common\RenderObj.h" />
     <ClInclude Include="Common\Screen.h" />
     <ClInclude Include="Common\SOAMesh.h" />
@@ -157,7 +162,8 @@
     <ClInclude Include="Common\MeshManager.h" />
     <ClInclude Include="Common\MeshRender.h" />
     <ClInclude Include="Common\ShaderContent.h" />
-    <ClInclude Include="Common\Sprite.h" />
+    <ClInclude Include="Common\SpriteMesh.h" />
+    <ClInclude Include="Common\SpriteRender.h" />
     <ClInclude Include="Common\Texture.h" />
     <ClInclude Include="Common\UniformDesc.h" />
     <ClInclude Include="Common\UniformVariable.h" />

@@ -100,7 +100,7 @@ void main()
 		// Any matrix transformations that include translation
 		// will operate on a float4 position,
 		// which _must_ have 1 for the w value
-		float4 position_world = Transform(float4(i_position_local, 1.0), g_local_world_matrix);
+		float4 position_world = Transform(float4(i_position_local, 1.0f), g_local_world_matrix);
 		//float4 position_view = Transform(position_world, g_world_view_mtarix);
 		//o_position = Transform(position_view, g_view_project_matrix);
 		float4 position_view = Transform(position_world, g_CameraMatrices._world_view_mtarix);

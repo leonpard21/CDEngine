@@ -7,12 +7,14 @@
 #include "Common/AOSMeshOP.h"
 #include "Common/MeshManager.h"
 #include "Common/RenderObj.h"
+#include "Common/RenderDatas.h"
 #include "Common/Effect.h"
 #include "Common/Material.h"
 #include "Common/Texture.h"
 #include "Common/MeshRender.h"
 #include "Common/Camera.h"
 #include "Common/DebugMesh.h"
+#include "Common/SpriteRender.h"
 #include "Engine/Math/ColMatrix.h"
 
 
@@ -41,6 +43,7 @@ bool EAE_Engine::Graphics::Initialize( const HWND i_renderingWindow )
 #ifdef DRAW_DEBUG_SHAPES
 	DebugMeshes::GetInstance().Init();
 #endif
+	SpriteManager::GetInstance()->Init();
 	return true;
 OnError:
 	ShutDown();
@@ -107,6 +110,7 @@ bool EAE_Engine::Graphics::ShutDown()
 {
 	bool wereThereErrors = false;
 	MeshRenderManager::CleanInstance();
+	SpriteManager::Destroy();
 	UniformVariableManager::CleanInstance();
 #ifdef DRAW_DEBUG_SHAPES
 	DebugMeshes::CleanInstance();

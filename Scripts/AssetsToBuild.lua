@@ -39,6 +39,10 @@ return
                 source = "debugPrimitive.effect",
                 target = "debugPrimitive.effect",
             },
+			{
+                source = "spriteRender.effect",
+                target = "spriteRender.effect",
+            },
          },
     },
     {
@@ -70,6 +74,17 @@ return
 			{
                 source = "debugPrimitive.fshd",
                 target = "debugPrimitive.fshd",
+				extraInfo = { dependencies = { "shaders.common" }, optionalArguments = {"fragment"}, }
+            },
+			--SpriteRender
+			{
+                source = "spriteRender.vshd",
+                target = "spriteRender.vshd",
+				extraInfo = { dependencies = { "shaders.common" }, optionalArguments = {"vertex"}, }
+            },
+			{
+                source = "spriteRender.fshd",
+                target = "spriteRender.fshd",
 				extraInfo = { dependencies = { "shaders.common" }, optionalArguments = {"fragment"}, }
             },
          },
@@ -106,6 +121,10 @@ return
 			{
                 source = "wall_D.png",
                 target = "wall_D.dds",
+            },
+			{
+                source = "numbers.png",
+                target = "numbers.dds",
             },
 		 },
 	},
@@ -149,6 +168,10 @@ return
 			{
                 source = "debugPrimitives.material",
                 target = "debugPrimitives.material",
+            },
+			{
+                source = "spriteRender.material",
+                target = "spriteRender.material",
             },
 		 },
 	},

@@ -95,11 +95,17 @@
     <ClCompile Include="Common\BasicMeshes.cpp">
       <Filter>Common\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Direct3D9\Sprite.d3d9.cpp">
-      <Filter>Direct3D9</Filter>
-    </ClCompile>
     <ClCompile Include="OpenGL\Sprite.gl.cpp">
       <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\RenderDatas.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\SpriteRender.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D9\SpriteMesh.d3d9.cpp">
+      <Filter>Direct3D9</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -165,8 +171,20 @@
     <ClInclude Include="Common\BasicMeshes.h">
       <Filter>Common\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Common\Sprite.h">
+    <ClInclude Include="Common\BasicShapes.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CommonDeclare.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\RenderDatas.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\SpriteRender.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\SpriteMesh.h">
+      <Filter>Common\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +232,9 @@
     </Filter>
     <Filter Include="Common\DebugMeshes">
       <UniqueIdentifier>{3b0e16a8-0fa5-464f-82e4-4e51783f42c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Sprite">
+      <UniqueIdentifier>{6d3207a2-f5be-4c8d-93d2-22f88eeb3ffb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
