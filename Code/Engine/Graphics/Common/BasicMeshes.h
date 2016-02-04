@@ -10,11 +10,8 @@ namespace EAE_Engine
 	{
 		struct Rectangle
 		{
-			Rectangle() = default;
-			float _left;
-			float _right;
-			float _bottom;
-			float _top;
+			Rectangle();
+			std::vector<Math::Vector3> _vertices;
 		};
 
 		struct Box

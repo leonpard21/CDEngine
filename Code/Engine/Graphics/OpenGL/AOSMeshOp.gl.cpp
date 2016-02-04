@@ -10,6 +10,9 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
+		bool RenderElements(AOSMesh* pAOSMesh, uint32_t subMeshIndex);
+		bool RenderArrays(AOSMesh* pAOSMesh);
+
 		AOSMesh* CreateAOSMeshInternal(MeshGLVertexElements elements,
 			void* pVertices, uint32_t vertexCount,
 			uint32_t* pIndices, uint32_t indexCount,
@@ -24,6 +27,22 @@ namespace EAE_Engine
 		}
 
 		bool RenderAOSMeshInternal(AOSMesh* pAOSMesh, uint32_t subMeshIndex)
+		{
+			bool result = true;
+			if (pAOSMesh->GetIndexCount() > 0)
+			{
+				// The mesh uses indices
+				result = RenderElements(pAOSMesh, subMeshIndex);
+			}
+			else 
+			{
+				// The mesh doesn't uses indices
+				result = RenderArrays(pAOSMesh);
+			}
+			return result;
+		}
+
+		bool RenderElements(AOSMesh* pAOSMesh, uint32_t subMeshIndex)
 		{
 			// Render objects from the current streams
 			{
@@ -43,6 +62,22 @@ namespace EAE_Engine
 					// Draw the AOSMesh
 					const GLsizei vertexCountToRender = pAOSMesh->GetSubMesh(subMeshIndex)->GetIndicesCount();//count of vertices we want to render.
 					glDrawElements(mode, vertexCountToRender, indexType, offset);
+					assert(glGetError() == GL_NO_ERROR);
+				}
+			}
+			return glGetError() == GL_NO_ERROR;
+		}
+
+		bool RenderArrays(AOSMesh* pAOSMesh)
+		{
+			// Render objects from the current streams
+			{
+				const GLenum mode = pAOSMesh->GetPrimitiveMode();
+				const GLsizei vertexCountToRender = pAOSMesh->GetVertexCount();
+				const GLint firstofTheVertices = 0;
+				{
+					// Draw the AOSMesh
+					glDrawArrays(mode, firstofTheVertices, vertexCountToRender);
 					assert(glGetError() == GL_NO_ERROR);
 				}
 			}
@@ -128,6 +163,7 @@ namespace EAE_Engine
 			}
 			return true;
 		}
+
 		bool DeleteBufferObj(GLuint& io_BufferID, GLsizei bufferCount)
 		{
 			// if we dpn't delete the vertex buffer object, it will cause the memory leaks.

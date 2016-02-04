@@ -88,7 +88,7 @@ namespace EAE_Engine
 #elif defined( EAEENGINE_PLATFORM_GL )
 				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr , 2 , sizeof(DebugVertex), GL_LINES };
 #endif
-				_pSegmentsMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, &indices, 1, &subMesh, 1);
+				_pSegmentsMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, nullptr, 0, nullptr, 0);
 				_pSegmentsMeshRender->SetMesh(_pSegmentsMesh);
 			}
 
@@ -163,23 +163,11 @@ namespace EAE_Engine
 					pVertices[vertexCount++] = vertex1;
 				}
 			}
-			uint32_t indexCount = vertexCount;
-			// Setup the Indices Information
-			uint32_t* pIndices = new uint32_t[indexCount];
-			for (uint32_t vertexIndex = 0; vertexIndex < indexCount; ++vertexIndex)
-			{
-				pIndices[vertexIndex] = vertexIndex;
-			}
-			sSubMesh subMesh(0, indexCount - 1);
 			if (_pSegmentsMesh)
 			{
-				_pSegmentsMesh->ChangeWholeBuffers(pVertices, vertexCount, pIndices, indexCount, &subMesh, 1);
-				std::vector<sSubMesh> subMeshList;
-				subMeshList.push_back(subMesh);
-				_pSegmentsMesh->SetSubMeshes(subMeshList);
+				_pSegmentsMesh->ChangeWholeBuffers(pVertices, vertexCount, nullptr, 0, nullptr, 0);
 			}
 			SAFE_DELETE_ARRAY(pVertices);
-			SAFE_DELETE_ARRAY(pIndices);
 
 			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
 			// Get the TransformMatrix

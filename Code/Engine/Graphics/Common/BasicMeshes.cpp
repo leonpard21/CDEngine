@@ -7,6 +7,15 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
+		Rectangle::Rectangle()
+		{
+			//We need 4 vertices
+			_vertices.push_back(Math::Vector3(-0.5f, -0.5f, 0.0f));
+			_vertices.push_back(Math::Vector3(-0.5f, 0.5f, 0.0f));
+			_vertices.push_back(Math::Vector3(0.5f, 0.5f, 0.0f));
+			_vertices.push_back(Math::Vector3(0.5f, -0.5f, 0.0f));
+		}
+
 		Box::Box()
 		{
 			// Vertices Data, there are 24 vertices for a box

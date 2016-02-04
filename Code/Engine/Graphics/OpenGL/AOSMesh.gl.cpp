@@ -153,15 +153,28 @@ namespace EAE_Engine
 			glBindVertexArray(_vertexArrayId);
 			//Update VOA
 			glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferId);
-			bool result = FillGLBuffer(GL_ARRAY_BUFFER, pVertices, vertexCount * _stride, GL_STATIC_DRAW);
+			_vertexCount = vertexCount;
+			bool result = FillGLBuffer(GL_ARRAY_BUFFER, pVertices, _vertexCount * _stride, GL_STATIC_DRAW);
 			//Update IOA
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
-			result = FillGLBuffer(GL_ELEMENT_ARRAY_BUFFER, pIndexData, indexCount * sizeof(uint32_t), GL_STATIC_DRAW);
-			// Set the SubMeshes Information
-			for (uint32_t subMeshIndex = 0; subMeshIndex < subMeshCount; ++subMeshIndex)
+			if (pIndexData != nullptr) 
 			{
-				sSubMesh pMesh(pSubMeshes[subMeshIndex]._firstIndex, pSubMeshes[subMeshIndex]._lastIndex);
-				_subMeshes.push_back(pMesh);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
+				_indexCount = indexCount;
+				result = FillGLBuffer(GL_ELEMENT_ARRAY_BUFFER, pIndexData, indexCount * sizeof(uint32_t), GL_STATIC_DRAW);
+				// Set the SubMeshes Information
+				for (uint32_t subMeshIndex = 0; subMeshIndex < subMeshCount; ++subMeshIndex)
+				{
+					sSubMesh pMesh(pSubMeshes[subMeshIndex]._firstIndex, pSubMeshes[subMeshIndex]._lastIndex);
+					_subMeshes.push_back(pMesh);
+				}
+			}
+			else 
+			{
+				if (_indexBufferId != 0)
+				{
+					DeleteBufferObj(_indexBufferId, 1);
+				}
+				_indexCount = 0;
 			}
 			glBindVertexArray(0);
 			// Check the errors so far.
