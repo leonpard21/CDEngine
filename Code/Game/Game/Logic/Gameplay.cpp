@@ -18,8 +18,8 @@
 namespace 
 {
 	// variables.
-	float _windowWidth = 800.0f;
-	float _windowHeight = 600.0f;
+	float _windowWidth = 1200.0f;
+	float _windowHeight = 800.0f;
 	float _resetCDRemain = 0.0f;
 	// function declears
 	bool InitLevel();

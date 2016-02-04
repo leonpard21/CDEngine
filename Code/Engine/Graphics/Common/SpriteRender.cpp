@@ -80,16 +80,16 @@ namespace EAE_Engine
 			_pMaterial = MaterialManager::GetInstance()->GetMaterial("spriteRender");
 
 			std::vector<SpriteVertex> _vertices;
-			SpriteVertex vertex0 = {-0.5f, -0.5f, 0.0f, 0.0f, 
+			SpriteVertex vertex0 = {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 
 				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
 			_vertices.push_back(vertex0);
-			SpriteVertex vertex1 = { 0.5f, -0.5f, 1.0f, 0.0f,
+			SpriteVertex vertex1 = { 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
 				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
 			_vertices.push_back(vertex1);
-			SpriteVertex vertex2 = { 0.5f, 0.5f, 1.0f, 1.0f,
+			SpriteVertex vertex2 = { 0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
 				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
 			_vertices.push_back(vertex2);
-			SpriteVertex vertex3 = { -0.5f, 0.5f, 0.0f, 1.0f,
+			SpriteVertex vertex3 = { -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
 				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
 			_vertices.push_back(vertex3);
 
