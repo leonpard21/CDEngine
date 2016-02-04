@@ -52,7 +52,6 @@ namespace EAE_Engine
 				uint32_t* pIndeices, uint32_t indexCount, 
 				sSubMesh* pSubMeshes, uint32_t subMeshCount);
 			void Release();
-			bool CreateVertexDeclaration(IDirect3DDevice9* pDevice, MeshD3DVertexElements vertexElement);
 			void ChangeWholeBuffers(void* pVertices, uint32_t vertexDataCount, uint32_t* pIndeices, uint32_t indexCount, sSubMesh* pSubMeshes, uint32_t subMeshCount);
 
 			inline IDirect3DVertexBuffer9* GetVertexBuffer() const { return _pVertexBuffer; };
@@ -67,7 +66,7 @@ namespace EAE_Engine
 			void SetSubMeshes(std::vector<sSubMesh>& subMeshes);
 
 		private:
-			HRESULT GetVertexProcessingUsage(IDirect3DDevice9* pDevice, DWORD& o_usage);
+			bool InitVertexElements(IDirect3DDevice9* pDevice, MeshD3DVertexElements vertexElement);
 			bool CreateVertexBuffer(IDirect3DDevice9* pDevice, void* pVertices, uint32_t vertexCount);
 			bool CreateIndexBuffer(IDirect3DDevice9* pDevice, uint32_t* pIndeices, uint32_t indexCount,
 				sSubMesh* pSubMeshes, uint32_t SubMeshCount);

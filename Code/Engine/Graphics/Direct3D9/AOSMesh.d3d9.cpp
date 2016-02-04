@@ -1,5 +1,6 @@
 #include "../Common/AOSMesh.h"
 #include "../Common/Device.h"
+#include "../Common/AOSMeshOp.h"
 #include "UserOutput/UserOutput.h"
 #include <d3d9.h>
 #include <cassert>
@@ -11,23 +12,6 @@ namespace EAE_Engine
 	{
 		AOSMesh::~AOSMesh() 
 		{
-		}
-
-		HRESULT AOSMesh::GetVertexProcessingUsage(IDirect3DDevice9* pDevice, DWORD& o_usage)
-		{
-			D3DDEVICE_CREATION_PARAMETERS deviceCreationParameters;
-			const HRESULT result = pDevice->GetCreationParameters(&deviceCreationParameters);
-			if (SUCCEEDED(result))
-			{
-				DWORD vertexProcessingType = deviceCreationParameters.BehaviorFlags &
-					(D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_SOFTWARE_VERTEXPROCESSING);
-				o_usage = (vertexProcessingType != D3DCREATE_SOFTWARE_VERTEXPROCESSING) ? 0 : D3DUSAGE_SOFTWAREPROCESSING;
-			}
-			else
-			{
-				EAE_Engine::UserOutput::Print("Direct3D failed to get the device's creation parameters");
-			}
-			return result;
 		}
 
 		sSubMesh* AOSMesh::GetSubMesh(uint32_t subMeshIndex)
@@ -66,7 +50,7 @@ namespace EAE_Engine
 			uint32_t* pIndeices, uint32_t indexCount,
 			sSubMesh* pSubMeshes, uint32_t subMeshCount)
 		{
-			if (!CreateVertexDeclaration(pDevice, vertexElement))
+			if (!InitVertexElements(pDevice, vertexElement))
 			{
 				goto OnError;
 			}
@@ -84,7 +68,7 @@ namespace EAE_Engine
 			return false;
 		}
 
-		bool AOSMesh::CreateVertexDeclaration(IDirect3DDevice9* pDevice, MeshD3DVertexElements vertexElement)
+		bool AOSMesh::InitVertexElements(IDirect3DDevice9* pDevice, MeshD3DVertexElements vertexElement)
 		{
 			const uint32_t elementCount = vertexElement._elementCount + 1;
 			D3DVERTEXELEMENT9* pElements = new D3DVERTEXELEMENT9[elementCount];
@@ -98,22 +82,7 @@ namespace EAE_Engine
 			_stride = vertexElement._stride;  //the byte offset between consecutive generic vertex attributes
 			// Set Mesh PrimitiveType
 			_primitiveType = vertexElement._primitiveType;
-			// Initialize the vertex format
-			HRESULT result = pDevice->CreateVertexDeclaration(pElements, &_pVertexDeclaration);
-			if (SUCCEEDED(result))
-			{
-				result = pDevice->SetVertexDeclaration(_pVertexDeclaration);
-				if (FAILED(result))
-				{
-					EAE_Engine::UserOutput::Print("Direct3D failed to set the vertex declaration");
-					return false;
-				}
-			}
-			else
-			{
-				EAE_Engine::UserOutput::Print("Direct3D failed to create a Direct3D9 vertex declaration");
-				return false;
-			}
+			bool result = CreateVertexDeclaration(pDevice, pElements, _pVertexDeclaration);
 			SAFE_DELETE(pElements);
 			return true;
 		}
