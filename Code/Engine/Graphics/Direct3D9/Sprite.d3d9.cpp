@@ -11,7 +11,6 @@ namespace
 	{
 		SpriteVertex() = default;
 		float x, y;
-		float u, v;
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 		uint8_t b, g, r, a;	// 8 bits [0,255] per RGBA channel (the alpha channel is unused but is present so that color uses a full 4 bytes)
 #elif defined( EAEENGINE_PLATFORM_GL )

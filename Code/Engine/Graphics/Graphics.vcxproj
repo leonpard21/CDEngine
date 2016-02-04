@@ -159,7 +159,6 @@
     <ClInclude Include="Common\ShaderContent.h" />
     <ClInclude Include="Common\Sprite.h" />
     <ClInclude Include="Common\Texture.h" />
-    <ClInclude Include="Common\CommonTypes.h" />
     <ClInclude Include="Common\UniformDesc.h" />
     <ClInclude Include="Common\UniformVariable.h" />
     <ClInclude Include="Graphics.h" />

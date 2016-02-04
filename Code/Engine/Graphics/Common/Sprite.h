@@ -2,12 +2,17 @@
 #define EAE_ENGINE_GRAPHICS_SPRITE_H
 
 #include <vector>
-#include <map>
 #include "Engine/General/Singleton.hpp"
 #include "Engine/Math/Vector.h"
 #include "BasicMeshes.h"
 
-#include "CommonTypes.h"
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+#include <d3d9.h>
+#elif defined( EAEENGINE_PLATFORM_GL )
+//#include <gl/GL.h>
+//#include <gl/GLU.h>
+//#include "../../../External/OpenGlExtensions/OpenGlExtensions.h"
+#endif
 
 namespace EAE_Engine
 {
@@ -25,11 +30,9 @@ namespace EAE_Engine
 			const char* _pName;
 		};
 
-		class SpriteManager : public Singleton<SpriteManager>
+
+		class SpriateManager : public Singleton<SpriateManager>
 		{
-		public:
-			tTexture LoadSprite(const char* spritePath);
-		private:
 			std::vector<SpriteRender*> _spriteRenders;
 		};
 

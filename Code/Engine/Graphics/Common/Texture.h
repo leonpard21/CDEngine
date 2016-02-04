@@ -2,7 +2,27 @@
 #define EAE_ENGINE_TEXTURE_H
 
 #include <map>
-#include "CommonTypes.h"
+#include "Engine/Windows/WindowsIncludes.h"
+#if defined( EAEENGINE_PLATFORM_GL )
+#include <gl/GL.h>
+#endif
+#include "../GraphicsInclude.h"
+
+typedef
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+const char*
+#elif defined( EAEENGINE_PLATFORM_GL )
+GLuint
+#endif
+tTexture;
+
+typedef
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+DWORD
+#elif defined( EAEENGINE_PLATFORM_GL )
+GLint
+#endif
+tSamplerID;
 
 namespace EAE_Engine
 {

@@ -168,9 +168,6 @@
     <ClInclude Include="Common\Sprite.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\CommonTypes.h">
-      <Filter>Common</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="OpenGL">

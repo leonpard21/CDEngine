@@ -5,26 +5,6 @@
 #include <d3d9.h>
 #include <cassert>
 
-namespace 
-{
-	HRESULT GetVertexProcessingUsage(IDirect3DDevice9* pDevice, DWORD& o_usage)
-	{
-		D3DDEVICE_CREATION_PARAMETERS deviceCreationParameters;
-		const HRESULT result = pDevice->GetCreationParameters(&deviceCreationParameters);
-		if (SUCCEEDED(result))
-		{
-			DWORD vertexProcessingType = deviceCreationParameters.BehaviorFlags &
-				(D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_SOFTWARE_VERTEXPROCESSING);
-			o_usage = (vertexProcessingType != D3DCREATE_SOFTWARE_VERTEXPROCESSING) ? 0 : D3DUSAGE_SOFTWAREPROCESSING;
-		}
-		else
-		{
-			EAE_Engine::UserOutput::Print("Direct3D failed to get the device's creation parameters");
-		}
-		return result;
-	}
-
-}
 
 namespace EAE_Engine 
 {
@@ -74,11 +54,11 @@ namespace EAE_Engine
 			{
 				goto OnError;
 			}
-			if (!InitVertexBuffer(pDevice, pVertices, vertexDataCount))
+			if (!CreateVertexBuffer(pDevice, pVertices, vertexDataCount))
 			{
 				goto OnError;
 			}
-			if (!InitIndexBuffer(pDevice, pIndeices, indexCount, pSubMeshes, subMeshCount))
+			if (!CreateIndexBuffer(pDevice, pIndeices, indexCount, pSubMeshes, subMeshCount)) 
 			{
 				goto OnError;
 			}
@@ -107,7 +87,7 @@ namespace EAE_Engine
 			return true;
 		}
 
-		bool AOSMesh::InitVertexBuffer(IDirect3DDevice9* pDevice, void* pVertices, uint32_t vertexCount)
+		bool AOSMesh::CreateVertexBuffer(IDirect3DDevice9* pDevice, void* pVertices, uint32_t vertexCount)
 		{
 			// The usage tells Direct3D how this vertex buffer will be used
 			DWORD usage = 0;
@@ -121,20 +101,60 @@ namespace EAE_Engine
 				// Our code will only ever write to the buffer
 				usage |= D3DUSAGE_WRITEONLY;
 			}
-			_vertexCount = vertexCount;//record vertexCount of this AOSMesh.
-			assert(_stride > 0);//we assert that the _stride has been set.
-			const uint32_t bufferSize = _vertexCount * _stride;
-			bool result = CreateVertexBuffer(_pVertexBuffer, pDevice, usage, bufferSize);
-			result = FillVertexBuffer(_pVertexBuffer, pDevice, pVertices, bufferSize);
-			return result;
+			// Create a vertex buffer
+			{
+				// We will define our own vertex format
+				const DWORD useSeparateVertexDeclaration = 0;
+				// Place the vertex buffer into memory that Direct3D thinks is the most appropriate
+				const D3DPOOL useDefaultPool = D3DPOOL_DEFAULT;
+				HANDLE* const notUsed = NULL;
+				_vertexCount = vertexCount;//record vertexCount of this AOSMesh.
+				assert(_stride > 0);//we assert that the _stride has been set.
+				const uint32_t bufferSize = _vertexCount * _stride;
+				const HRESULT result = pDevice->CreateVertexBuffer(bufferSize, usage, useSeparateVertexDeclaration, useDefaultPool,
+					&_pVertexBuffer, notUsed);
+				if (FAILED(result))
+				{
+					EAE_Engine::UserOutput::Print("Direct3D failed to create a vertex buffer");
+					return false;
+				}
+			}
+			// Fill the vertex buffer with the triangle's vertices
+			{
+				// Before the vertex buffer can be changed it must be "locked"
+				void* pTargetVertexData;
+				{
+					const unsigned int lockEntireBuffer = 0;
+					const DWORD useDefaultLockingBehavior = 0;
+					const HRESULT result = _pVertexBuffer->Lock(lockEntireBuffer, lockEntireBuffer,
+						reinterpret_cast<void**>(&pTargetVertexData), useDefaultLockingBehavior);
+					if (FAILED(result))
+					{
+						EAE_Engine::UserOutput::Print("Direct3D failed to lock the vertex buffer");
+						return false;
+					}
+				}
+				// Fill the buffer
+				{
+					CopyMem(reinterpret_cast<const uint8_t*>(pVertices), reinterpret_cast<uint8_t*>(pTargetVertexData), vertexCount * _stride);
+				}
+				// The buffer must be "unlocked" before it can be used
+				{
+					const HRESULT result = _pVertexBuffer->Unlock();
+					if (FAILED(result))
+					{
+						EAE_Engine::UserOutput::Print("Direct3D failed to unlock the vertex buffer");
+						return false;
+					}
+				}
+			}
+			return true;
 		}
 
-		bool AOSMesh::InitIndexBuffer(IDirect3DDevice9* pDevice,
-			uint32_t* pIndices, uint32_t indexCount, 
+		bool AOSMesh::CreateIndexBuffer(IDirect3DDevice9* pDevice, 
+			uint32_t* pIndeices, uint32_t indexCount, 
 			sSubMesh* pSubMeshes, uint32_t subMeshCount)
 		{
-			if (pIndices == nullptr)
-				return true;
 			// The usage tells Direct3D how this vertex buffer will be used
 			DWORD usage = 0;
 			{
@@ -148,13 +168,52 @@ namespace EAE_Engine
 				usage |= D3DUSAGE_WRITEONLY;
 			}
 			// Create an index buffer
-			_indexCount = indexCount;
-			assert(_stride > 0);//we assert that the _stride has been set.
-			const unsigned int bufferSize = indexCount * sizeof(uint32_t);
-			bool result = CreateIndexBuffer(_pIndexBuffer, pDevice, usage, bufferSize);
-			result = FillIndexBuffer(_pIndexBuffer, pDevice, pIndices, bufferSize);
-			if (pSubMeshes == nullptr)
-				return result;
+			{
+				// We'll use 32-bit indices in this class to keep things simple
+				// (i.e. every index will be a 32 bit unsigned integer)
+				const D3DFORMAT format = D3DFMT_INDEX32;
+				// Place the index buffer into memory that Direct3D thinks is the most appropriate
+				const D3DPOOL useDefaultPool = D3DPOOL_DEFAULT;
+				HANDLE* notUsed = NULL;
+				_indexCount = indexCount;
+				const unsigned int bufferSize = indexCount * sizeof(uint32_t);
+				const HRESULT result = pDevice->CreateIndexBuffer(bufferSize, usage, format, useDefaultPool,
+					&_pIndexBuffer, notUsed);
+				if (FAILED(result))
+				{
+					EAE_Engine::UserOutput::Print("Direct3D failed to create an index buffer");
+					return false;
+				}
+			}
+			// Fill the index buffer with the triangles' connectivity data
+			{
+				// Before the index buffer can be changed it must be "locked"
+				uint32_t* pTargetIndexData;
+				{
+					const unsigned int lockEntireBuffer = 0;
+					const DWORD useDefaultLockingBehavior = 0;
+					const HRESULT result = _pIndexBuffer->Lock(lockEntireBuffer, lockEntireBuffer,
+						reinterpret_cast<void**>(&pTargetIndexData), useDefaultLockingBehavior);
+					if (FAILED(result))
+					{
+						EAE_Engine::UserOutput::Print("Direct3D failed to lock the index buffer");
+						return false;
+					}
+				}
+				// Fill the buffer
+				{
+					CopyMem(reinterpret_cast<const uint8_t*>(pIndeices), reinterpret_cast<uint8_t*>(pTargetIndexData), indexCount * sizeof(uint32_t));
+				}
+				// The buffer must be "unlocked" before it can be used
+				{
+					const HRESULT result = _pIndexBuffer->Unlock();
+					if (FAILED(result))
+					{
+						EAE_Engine::UserOutput::Print("Direct3D failed to unlock the index buffer");
+						return false;
+					}
+				}
+			}
 			// Set the SubMeshes Information
 			for (uint32_t subMeshIndex = 0; subMeshIndex < subMeshCount; ++subMeshIndex)
 			{
@@ -163,7 +222,7 @@ namespace EAE_Engine
 				subMesh._lastIndex = pSubMeshes[subMeshIndex]._lastIndex;
 				_subMeshes.push_back(subMesh);
 			}
-			return result;
+			return true;
 		}
 
 		void AOSMesh::Release()
@@ -202,8 +261,8 @@ namespace EAE_Engine
 			}
 			//clean all of the submeshes.
 			_subMeshes.clear();
-			InitVertexBuffer(pDevice, pVertices, vertexDataCount);
-			InitIndexBuffer(pDevice, pIndeices, indexCount, pSubMeshes, subMeshCount);
+			CreateVertexBuffer(pDevice, pVertices, vertexDataCount);
+			CreateIndexBuffer(pDevice, pIndeices, indexCount, pSubMeshes, subMeshCount);
 		}
 
 	}
