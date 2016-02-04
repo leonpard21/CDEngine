@@ -67,8 +67,8 @@ namespace EAE_Engine
 
 		private:
 			bool InitVertexElements(IDirect3DDevice9* pDevice, MeshD3DVertexElements vertexElement);
-			bool CreateVertexBuffer(IDirect3DDevice9* pDevice, void* pVertices, uint32_t vertexCount);
-			bool CreateIndexBuffer(IDirect3DDevice9* pDevice, uint32_t* pIndeices, uint32_t indexCount,
+			bool InitVertexBuffer(IDirect3DDevice9* pDevice, void* pVertices, uint32_t vertexCount);
+			bool InitIndexBuffer(IDirect3DDevice9* pDevice, uint32_t* pIndeices, uint32_t indexCount,
 				sSubMesh* pSubMeshes, uint32_t SubMeshCount);
 
 		private:
@@ -125,14 +125,8 @@ namespace EAE_Engine
 			void SetSubMeshes(std::vector<sSubMesh>& subMeshes);
 
 		private:
-			bool CreateVertexArrayObj();
-			bool CreateVertexBufferObj(GLuint& io_vertexBufferID);
-			bool InitVertexFormat(const MeshGLVertexElements& elements) const;
-			bool FillVertexBuffer(void* pVertices, uint32_t vertexCount);
-			bool CreateIndexBufferObj(GLuint& io_indexBufferId);
-			bool FillIndexBuffer(uint32_t* pIndexData, uint32_t indexCount, sSubMesh* pSubMeshes, uint32_t subMeshCount);
-			bool DeleteVertexBufferObj(GLuint& io_vertexBufferID);
-			bool DeleteIndexBufferObj(GLuint& io_indexBufferID);
+			bool CreateVertexBufferElements(MeshGLVertexElements elements, void* pVertices, uint32_t vertexCount);
+			bool CreateIndexBuffer(uint32_t* pIndexData, uint32_t indexCount, sSubMesh* pSubMeshes, uint32_t subMeshCount);
 			////////////////////////////////////Member Variables/////////////////////////
 		private:
 			// A vertex array encapsulates both the vertex and index data as well as the vertex format
