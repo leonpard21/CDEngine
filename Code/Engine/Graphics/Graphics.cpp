@@ -85,6 +85,7 @@ void EAE_Engine::Graphics::Render()
 		RenderObjManager::GetInstance().Clean();
 		// Add the MeshRender to the RenderData3D list.
 		MeshRenderManager::GetInstance().UpdateRenderDataList();
+		SpriteRenderManager::GetInstance()->UpdateRenderDataList();
 #ifdef DRAW_DEBUG_SHAPES
 		// Add the DebugMesh to the RenderData3D list.
 		DebugMeshes::GetInstance().Update();

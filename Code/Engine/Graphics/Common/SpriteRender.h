@@ -27,12 +27,16 @@ namespace EAE_Engine
 		{
 			SpriteRender();
 		public:
-			SpriteRender(Sprite* pSprite, Common::ITransform* _pTransform);
+			SpriteRender(MaterialDesc* pMaterial, Sprite* pSprite, Common::ITransform* _pTransform);
 			~SpriteRender();
-
+			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
+			Common::ITransform* GetTransform() { return _pTrans; }
+			Sprite* GetSprite() { return _pSprite; }
+			MaterialDesc* GetMaterial() { return _pMaterial; }
 		private:
+			MaterialDesc* _pMaterial;
 			Sprite* _pSprite;
-			Common::ITransform* _pTransform;
+			Common::ITransform* _pTrans;
 		};
 
 		class SpriteRenderManager : public Singleton<SpriteRenderManager>
@@ -45,6 +49,9 @@ namespace EAE_Engine
 
 			SpriteRender* AddSpriteRender(const char* pName, Common::ITransform* pTransform);
 			void UpdateRenderDataList();
+
+			MaterialDesc* GetMaterial() { return _pMaterial; }
+			SpriteMesh* GetSpriteMesh() { return _pSpriteMesh; }
 		private:
 			MaterialDesc* _pMaterial;
 			SpriteMesh* _pSpriteMesh;

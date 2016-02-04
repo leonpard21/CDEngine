@@ -4,6 +4,7 @@
 #include "Effect.h"
 #include "MeshRender.h"
 #include "AOSMesh.h"
+#include "SpriteRender.h"
 
 #include <algorithm>
 
@@ -24,6 +25,11 @@ namespace EAE_Engine
 			if(_renderWeight._layer == RenderDataLayer::Object3D)
 			{
 				RenderData3D* pRenderData = reinterpret_cast<RenderData3D*>(_pRenderData);
+				pRenderData->Render();
+			}
+			if (_renderWeight._layer == RenderDataLayer::Object2D)
+			{
+				RenderData2D* pRenderData = reinterpret_cast<RenderData2D*>(_pRenderData);
 				pRenderData->Render();
 			}
 		}
@@ -47,6 +53,18 @@ namespace EAE_Engine
 				RenderObj obj = { weight, &(*it) };
 				_renderObjs.push_back(obj);
 			}
+
+			for (std::vector<RenderData2D>::iterator it = _renderData2Ds.begin(); it != _renderData2Ds.end(); ++it)
+			{
+				SpriteRender* pSpriteRender = (it)->_pSpriteRender;
+				MaterialDesc* pMaterial = pSpriteRender->GetMaterial();
+				RenderWeight weight;
+				weight._layer = RenderDataLayer::Object2D;
+				weight._material = pMaterial ? pMaterial->_materialCost._cost : 0;
+				RenderObj obj = { weight, &(*it) };
+				_renderObjs.push_back(obj);
+			}
+
 			std::sort(_renderObjs.begin(), _renderObjs.end(), sortFunc);
 		}
 

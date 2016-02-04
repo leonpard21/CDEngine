@@ -87,7 +87,7 @@ namespace EAE_Engine
 			void Render();
 
 			RenderWeight _renderWeight;    // weight helps us to sort in Rendering
-			RenderData3D* _pRenderData;
+			void* _pRenderData;
 		};
 
 		class RenderObjManager 
@@ -102,6 +102,7 @@ namespace EAE_Engine
 			};
 			std::vector<RenderObj>& GetRenderObjList() { return _renderObjs; }
 			std::vector<RenderData3D>& GetRenderData3DList() { return _renderData3Ds; }
+			std::vector<RenderData2D>& GetRenderData2DList() { return _renderData2Ds; }
 			void Clean();
 			void UpdateRenderObjList();
 		private:

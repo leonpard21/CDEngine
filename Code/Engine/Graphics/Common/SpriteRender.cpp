@@ -6,6 +6,9 @@
 #include "BinaryFileLoader.h"
 #include "Material.h"
 #include "Texture.h"
+#include "RenderObj.h"
+#include "RenderDatas.h"
+
 
 #include "Math/ColMatrix.h"
 #include "General/MemoryOp.h"
@@ -48,8 +51,8 @@ namespace EAE_Engine
 
 		//////////////////////////////////////SpriteRender///////////////////////////////////////////////
 
-		SpriteRender::SpriteRender(Sprite* pSprite, Common::ITransform* pTransform):
-			_pSprite(pSprite), _pTransform(pTransform)
+		SpriteRender::SpriteRender(MaterialDesc* pMaterial, Sprite* pSprite, Common::ITransform* pTransform):
+			_pMaterial(pMaterial), _pSprite(pSprite), _pTrans(pTransform)
 		{
 		}
 
@@ -137,9 +140,21 @@ namespace EAE_Engine
 		SpriteRender* SpriteRenderManager::AddSpriteRender(const char* pName, Common::ITransform* pTransform)
 		{
 			Sprite* pSprite = SpriteManager::GetInstance()->LoadSprite(pName, 0, 100.0f, 100.0f);
-			SpriteRender* pSpriteRender = new SpriteRender(pSprite, pTransform);
+			SpriteRender* pSpriteRender = new SpriteRender(_pMaterial, pSprite, pTransform);
 			_spriteRenders.push_back(pSpriteRender);
 			return pSpriteRender;
+		}
+
+		void SpriteRenderManager::UpdateRenderDataList()
+		{
+			std::vector<RenderData2D>& renderDataList = RenderObjManager::GetInstance().GetRenderData2DList();
+			for (std::vector<SpriteRender*>::iterator it = _spriteRenders.begin(); it != _spriteRenders.end(); ++it)
+			{
+				Common::ITransform* pTrans = (*it)->GetTransform();
+				Math::ColMatrix44 colMat = pTrans ? pTrans->GetLocalToWorldMatrix() : Math::ColMatrix44::Identity;
+				RenderData2D renderData = { (*it), colMat };
+				renderDataList.push_back(renderData);
+			}
 		}
 
 	}

@@ -210,6 +210,8 @@ namespace
 	{
 		EAE_Engine::Math::Vector3 zero = EAE_Engine::Math::Vector3::Zero;
 		EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj", zero);
+		//EAE_Engine::Math::Vector3 groundScale(5.0f, 5.0f, 1.0f);
+		//pActorGround->GetTransform()->SetLocalScale(groundScale);
 		EAE_Engine::Graphics::SpriteRenderManager::GetInstance()->AddSpriteRender("data/Textures/numbers.dds", pSpriteObj->GetTransform());
 	}
 

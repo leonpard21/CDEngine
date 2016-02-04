@@ -39,6 +39,10 @@ namespace EAE_Engine
 
 			bool InitSprite( IDirect3DDevice9* pDevice, void* pVertices);
 			void Release();
+
+			inline IDirect3DVertexBuffer9* GetVertexBuffer() const { return _pVertexBuffer; };
+			inline IDirect3DVertexDeclaration9* GetVertexDeclaration() const { return _pVertexDeclaration; }
+
 		private:
 			IDirect3DVertexBuffer9* _pVertexBuffer;
 			IDirect3DVertexDeclaration9* _pVertexDeclaration;
