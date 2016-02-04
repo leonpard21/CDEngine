@@ -97,7 +97,6 @@ namespace EAE_Engine
 			MaterialDesc* GetMaterial();
 			void ChangeEffectVariables();
 			void Render();
-
 			// we will save the current Mesh, Effect and Material and compare it with the new one.
 			// if the new one is still the same,
 			// then we don't need to switch the context when rendering.
