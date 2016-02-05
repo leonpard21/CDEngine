@@ -44,7 +44,8 @@ namespace EAE_Engine
 			Math::Vector2 _anchorMinScreen(_anchorPoint._left * screenWidth,  _anchorPoint._bottom * screenHeight);
 			Math::Vector2 _anchorMaxScreen(_anchorPoint._right * screenWidth, _anchorPoint._top * screenHeight);
 			Rectangle imageScreenRectangle; 
-			// if the anchorPositionX is the same, then based on pivot
+			// if the anchorPositionX is the same, then based on pivot, 
+			// we call it position-mode
 			if (_anchorPoint._right - _anchorPoint._left == 0.0f)
 			{
 				ScreenRect imageScreenRect = { values._u[0], values._u[1], values._u[2], values._u[3] };
@@ -58,7 +59,8 @@ namespace EAE_Engine
 				imageScreenRectangle._left = _anchorMinScreen._x + imageStretchRect._left;
 				imageScreenRectangle._right = _anchorMaxScreen._x - imageStretchRect._right;
 			}
-			// if the anchorPositionY is the same, then based on pivot
+			// if the anchorPositionY is the same, then based on pivot,
+			// we call it position-mode
 			if (_anchorPoint._top - _anchorPoint._bottom == 0.0f)
 			{	
 				ScreenRect imageScreenRect = { values._u[0], values._u[1], values._u[2], values._u[3] };

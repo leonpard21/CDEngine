@@ -35,10 +35,11 @@ namespace EAE_Engine
 			~ImageRender();
 			// If the min and max anchor point is the same,
 			// then we should use offsetMode, 
-			// in that case the @values describe the position of the pivot point, 
+			// we call it position-mode.
+			// in this case the @values describe the position of the pivot point, 
 			// and the width and height of the Image.
 			// Else if the min or max anchor point is not the same,
-			// then we should use the stretch mode.
+			// then we should use the stretch-mode.
 			// the image will be scaled based on the window size.
 			void SetImagePos(Math::Vector4 values, uint32_t index = 0);
 
