@@ -83,11 +83,6 @@ namespace EAE_Engine
 
 		void RenderDataUI::ChangeEffectVariables()
 		{
-			// Leo: I think for the transform matrix, I should set the uniform variable through the Effect directly.
-			// Set the Transform
-			UniformVariableManager::GetInstance().ChangeValue<Math::ColMatrix44>("g_local_world_matrix", &_localToWorld, 1);
-			UniformVariableManager::GetInstance().NotifyOwners("g_local_world_matrix");
-
 			// Update all of the uniform variables changed so far for the effect.
 			if (s_pCurrentEffect)
 				s_pCurrentEffect->Update();
@@ -104,8 +99,6 @@ namespace EAE_Engine
 			s_pCurrentMaterial->SetUniformForEffect();
 			s_pCurrentMaterial->ChangeTexture(0, _pImageRender->GetImage()->_texture);
 			s_pCurrentMaterial->SetTexturesForEffect();
-			Math::ColMatrix44 scaleMat = _pImageRender->GetImageMatrix();
-			_localToWorld = scaleMat * _localToWorld;
 			// updated the parameters for the material
 			
 			ChangeEffectVariables();

@@ -24,7 +24,7 @@ namespace EAE_Engine
 		public:
 			~ImageManager();
 			void Clean();
-			Image* LoadCustomImage(const char* pImagePathName, float width, float height);
+			Image* LoadCustomImage(const char* pImagePathName, uint32_t rows, uint32_t cols);
 			Image* GetImage(const char* pKey);
 		private:
 			std::map<const char*, Image*> _images;

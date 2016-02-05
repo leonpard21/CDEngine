@@ -214,22 +214,20 @@ namespace
 	void CreateSprite() 
 	{
 		{
-			EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(-0.9f, 0.9f, 0.0f);
-			EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj", spritePos);
-			EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/logo.dds", 500.0f, 500.0f);
-			EAE_Engine::Graphics::ImageRender* pRender1 = EAE_Engine::Graphics::ImageRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
-			EAE_Engine::Graphics::Rectangle coordinate = { 0.0f, 1.0f, 0.0f, 1.0f };
-			EAE_Engine::Graphics::Rectangle pos = { -0.5f, 0.5f, -0.5f, 0.5f };
-			pRender1->CreateImageMesh(pos, coordinate);
+	//		EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(-0.9f, 0.9f, 0.0f);
+	//		EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj", spritePos);
+	//		EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/logo.dds", 1, 1);
+	//		EAE_Engine::Graphics::ImageRender* pRender1 = EAE_Engine::Graphics::ImageRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
+	//		pRender1->SetImagePos(256, 256);
 		}
 		{
 			EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(0.9f, 0.9f, 0.0f);
 			EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj2", spritePos);
-			EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/numbers.dds", 64.0f, 64.0f);
+			EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/numbers.dds", 1, 10);
 			pNumberSpriteRender = EAE_Engine::Graphics::ImageRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
 			EAE_Engine::Graphics::Rectangle coordinate = { 0.1f, 0.2f, 0.0f, 1.0f };
 			EAE_Engine::Graphics::Rectangle pos = { -0.5f, 0.5f, -0.5f, 0.5f };
-			pNumberSpriteRender->CreateImageMesh(pos, coordinate);
+			pNumberSpriteRender->SetImagePos(0.0f, 0.0f, 1);
 		}
 		
 	}

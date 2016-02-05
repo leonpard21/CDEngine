@@ -35,25 +35,42 @@ namespace EAE_Engine
 			SAFE_DELETE(_pImageMesh);
 		}
 
-		Math::ColMatrix44 ImageRender::GetImageMatrix()
+		void ImageRender::SetImagePos(float x, float y, uint32_t index)
 		{
-			Math::ColMatrix44 result = Math::ColMatrix44::Identity;
-			if (_pImage == nullptr)
-				return result;
 			float _defaultScreenWidth = 800.0f;
 			float _defaultScreenHeight = 600.0f;
 			Rect screenRect = GetScreenRect();
 			float defaultRaitoX = _pImage->_width / _defaultScreenWidth * 2.0f; // the screen vertex coordinate is from (-1.0f, 1.0f)
-			float defaultRaitoY = _pImage->_height / _defaultScreenHeight * 2.0f;// the screen vertex coordinate is from (-1.0f, 1.0f)
+			//float defaultRaitoY = _pImage->_height / _defaultScreenHeight * 2.0f;// the screen vertex coordinate is from (-1.0f, 1.0f)
 			float scaleRaitoX = _defaultScreenWidth / screenRect._width;
-			float scaleRaitoY = _defaultScreenHeight / screenRect._height;
-			float aspect = screenRect._width / screenRect._height;
-			result._m00 = defaultRaitoX * scaleRaitoX;
-			result._m11 = defaultRaitoX * scaleRaitoX;
-			return result;
+			//float scaleRaitoY = _defaultScreenHeight / screenRect._height;
+			//float aspect = screenRect._width / screenRect._height;
+			Rectangle pos; 
+			{
+				float widthOfImage = _pImage->_width / (float)_pImage->_cols;
+				float heightOfImage = _pImage->_height / (float)_pImage->_rows;
+				float leftInClip = x / screenRect._width - 1.0f;
+				float rightInClip = (x + widthOfImage) / screenRect._width - 1.0f;
+				float bottomInClip = y / screenRect._height - 1.0f;
+				float topInClip = (y + heightOfImage) / screenRect._height - 1.0f;
+				pos._left = leftInClip * defaultRaitoX * scaleRaitoX;
+				pos._right = rightInClip * defaultRaitoX * scaleRaitoX;
+				pos._bottom = bottomInClip * defaultRaitoX * scaleRaitoX;
+				pos._top = topInClip * defaultRaitoX * scaleRaitoX;
+			}
+			Rectangle texcoord;
+			{
+				uint32_t rowIndex = index / _pImage->_rows;
+				uint32_t colIndex = index % _pImage->_cols;
+				texcoord._left = (float)colIndex / (float)_pImage->_cols;
+				texcoord._right = (float)(colIndex + 1) / (float)_pImage->_cols;
+				texcoord._bottom = (float)rowIndex / (float)_pImage->_rows;
+				texcoord._top = (float)(rowIndex + 1) / (float)_pImage->_rows;
+			}
+			UpdateImageMesh(pos, texcoord);
 		}
 
-		void ImageRender::CreateImageMesh(Rectangle i_pos, Rectangle i_texcoord)
+		void ImageRender::UpdateImageMesh(Rectangle i_pos, Rectangle i_texcoord)
 		{
 			std::vector<ImageVertex> _vertices;
 			ImageVertex vertex0 = { i_pos._left, i_pos._bottom, 0.0f, i_texcoord._left, i_texcoord._top,

@@ -1,9 +1,6 @@
 /* #include statement (platform - independent) */
 #include "shaders.common"
 
-/* Uniform varibales (platform-independent) */
-uniform mat4 g_local_world_matrix;
-
 /* Input/Output variables (platform-specific) */
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 // Entry Point
@@ -60,7 +57,6 @@ void main()
 		// Any matrix transformations that include translation
 		// will operate on a float4 position,
 		// which _must_ have 1 for the w value
-		// o_position = Transform(vec4(i_position_local, 1.0f), g_local_world_matrix);
 		o_position = vec4(i_position_local, 1.0f);
 	}
 	// Pass the input uv to the fragment shader unchanged:

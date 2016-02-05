@@ -239,8 +239,8 @@ HWND CreateMainWindowHandle( const HINSTANCE i_thisInstanceOfTheProgram, const i
 	{
 		// In a real game these values would come from an external source
 		// rather than be hard-coded
-		const int desiredWidth = 1200;
-		const int desiredHeight = 800;
+		const int desiredWidth = 1024;
+		const int desiredHeight = 768;
 
 		// Calculate how much of the window is coming from the "non-client area"
 		// (the borders and title bar)

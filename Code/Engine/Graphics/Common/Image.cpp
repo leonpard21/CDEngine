@@ -26,7 +26,7 @@ namespace EAE_Engine
 			_images.clear();
 		}
 
-		Image* ImageManager::LoadCustomImage(const char* pImagePathName, float width, float height)
+		Image* ImageManager::LoadCustomImage(const char* pImagePathName, uint32_t rows, uint32_t cols)
 		{
 			std::string key = GetFileNameWithoutExtension(pImagePathName);
 			for (std::map<const char*, Image*>::const_iterator iter = _images.begin(); iter != _images.end(); ++iter)
@@ -39,11 +39,11 @@ namespace EAE_Engine
 			TextureInfo textureHandle = TextureManager::GetInstance()->LoadTexture(pImagePathName);
 			Image* pImage = new Image(textureHandle._texture);
 			// First, we need to clip the sprite into rows and heights based on its size.
-			pImage->_rows = textureHandle._width / width;
-			pImage->_cols = textureHandle._height / height;
+			pImage->_rows = rows;
+			pImage->_cols = cols;
 			// Second, we scale the sprite based on the window size.
-			pImage->_width = width;
-			pImage->_height = height;
+			pImage->_width = textureHandle._width;
+			pImage->_height = textureHandle._height;
 			_images.insert(std::pair<const char*, Image*>(_strdup(key.c_str()), pImage));
 			return pImage;
 		}

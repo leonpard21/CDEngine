@@ -33,19 +33,23 @@ namespace EAE_Engine
 		public:
 			ImageRender(MaterialDesc* pMaterial, Image* pImage, Common::ITransform* _pTransform);
 			~ImageRender();
-			Math::ColMatrix44 GetImageMatrix();
-			void CreateImageMesh(Rectangle i_pos, Rectangle i_texcoord);
+			void SetImagePos(float x, float y, uint32_t index = 0);
 
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
 			Common::ITransform* GetTransform() { return _pTrans; }
 			Image* GetImage() { return _pImage; }
 			MaterialDesc* GetMaterial() { return _pMaterial; }
 			AOSMesh* GetMesh() { return _pImageMesh; }
+			
+		private:
+			void ImageRender::UpdateImageMesh(Rectangle i_pos, Rectangle i_texcoord);
+
 		private:
 			MaterialDesc* _pMaterial;
 			Image* _pImage;
 			AOSMesh* _pImageMesh;
 			Common::ITransform* _pTrans;
+			Rectangle _rect;
 		};
 
 		class ImageRenderManager : public Singleton<ImageRenderManager>
