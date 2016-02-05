@@ -4,7 +4,7 @@
 #include "MeshRender.h"
 #include "AOSMesh.h"
 #include "GraphicsInternal.h"
-#include "AOSMeshOp.h"
+#include "MeshOp.h"
 #include "SpriteRender.h"
 #include "Device.h"
 
@@ -93,52 +93,6 @@ namespace EAE_Engine
 				s_pCurrentEffect->Update();
 		}
 
-		bool SetD3DRenderMesh(const SpriteMesh *pSMesh)
-		{
-			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
-			HRESULT result;
-			// Set Vertex Declaration
-			{
-				pD3DDevice->SetVertexDeclaration(pSMesh->GetVertexDeclaration());
-			}
-			// Bind a specific vertex buffer to the device as a data source
-			{
-				// There can be multiple streams of data feeding the display adaptor at the same time
-				const unsigned int streamIndex = 0;
-				// It's possible to start streaming data in the middle of a vertex buffer
-				const unsigned int bufferOffset = 0;
-				// The "stride" defines how large a single vertex is in the stream of data
-				const unsigned int bufferStride = sizeof(SpriteVertex);
-				result = pD3DDevice->SetStreamSource(streamIndex, pSMesh->GetVertexBuffer(), bufferOffset, bufferStride);
-				assert(SUCCEEDED(result));
-			}
-			return SUCCEEDED(result);
-		}
-
-		bool RenderD3DNoIndexPremitives(SpriteMesh *pSMesh)
-		{
-			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
-			if (!pD3DDevice) return false;
-
-			HRESULT result = true;
-			// Render objects from the current streams
-			{
-				// We are using triangles as the "primitive" type,
-				// and we have defined the vertex buffer as a triangle list
-				// (meaning that every triangle is defined by three vertices)
-				const D3DPRIMITIVETYPE primitiveType = D3DPT_TRIANGLESTRIP;
-				// It's possible to start rendering primitives in the middle of the stream
-				const unsigned int indexOfFirstVertexToRender = 0;
-				// We are drawing the AOSMesh
-				{
-					const unsigned int vertexCountToRender = 4;// How vertices from the vertex buffer will be used?
-					result = pD3DDevice->DrawPrimitive(primitiveType, indexOfFirstVertexToRender, vertexCountToRender);
-					assert(SUCCEEDED(result));
-				}
-			}
-			return SUCCEEDED(result);
-		}
-
 		void RenderData2D::Render() 
 		{
 			//If we need to change material, change the material
@@ -148,16 +102,20 @@ namespace EAE_Engine
 			BindCurrentEffect(s_pCurrentEffect);
 			ChangeEffectRenderState(s_pCurrentEffect->GetRenderState());
 			s_pCurrentMaterial->SetUniformForEffect();
+			s_pCurrentMaterial->ChangeTexture(0, _pSpriteRender->GetSprite()->_texture);
 			s_pCurrentMaterial->SetTexturesForEffect();
-
+			Math::ColMatrix44 scaleMat = _pSpriteRender->GetSpriteMatrix();
+			_localToWorld = scaleMat * _localToWorld;
 			// updated the parameters for the material
+			
 			ChangeEffectVariables();
 
-			SpriteMesh* pSMesh = SpriteRenderManager::GetInstance()->GetSpriteMesh();
-			SetD3DRenderMesh(pSMesh);
+			AOSMesh* pSMesh = SpriteRenderManager::GetInstance()->GetSpriteMesh();
+			
+			SetCurrentRenderMesh(pSMesh);
 
 			s_pCurrentEffect->BeginRender();
-			bool renderMeshResult = RenderD3DNoIndexPremitives(pSMesh);
+			bool renderMeshResult = RenderAOSMeshInternal(pSMesh);
 			assert(renderMeshResult);
 			s_pCurrentEffect->EndRender();
 		}

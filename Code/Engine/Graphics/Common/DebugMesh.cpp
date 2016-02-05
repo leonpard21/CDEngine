@@ -4,7 +4,7 @@
 #include "Math/ColMatrix.h"
 #include <vector>
 #include "BinaryFileLoader.h"
-#include "AOSMeshOp.h"
+#include "MeshOp.h"
 #include "RenderObj.h"
 #include "RenderDatas.h"
 #include "MeshRender.h"
@@ -85,7 +85,7 @@ namespace EAE_Engine
 			// For Segments
 			{
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, sizeof(DebugVertex), D3DPT_LINELIST };
+				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, {sizeof(DebugVertex), D3DPT_LINELIST, Default } };
 #elif defined( EAEENGINE_PLATFORM_GL )
 				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr , 2 , sizeof(DebugVertex), GL_LINES };
 #endif
@@ -95,7 +95,7 @@ namespace EAE_Engine
 
 			{
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, sizeof(DebugVertex), D3DPT_TRIANGLELIST };
+				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, { sizeof(DebugVertex), D3DPT_TRIANGLELIST, Default } };
 #elif defined( EAEENGINE_PLATFORM_GL )
 				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr , 2 , sizeof(DebugVertex), GL_TRIANGLES };
 #endif
@@ -105,7 +105,7 @@ namespace EAE_Engine
 
 			{
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, sizeof(DebugVertex), D3DPT_TRIANGLELIST };
+				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, { sizeof(DebugVertex), D3DPT_TRIANGLELIST, Default } };
 #elif defined( EAEENGINE_PLATFORM_GL )
 				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr , 2 , sizeof(DebugVertex), GL_TRIANGLES };
 #endif

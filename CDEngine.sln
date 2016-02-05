@@ -130,14 +130,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BuilderHelper", "Code\Tools
 		{D76FAEE2-0B67-493B-B494-2C5FB20AA14C} = {D76FAEE2-0B67-493B-B494-2C5FB20AA14C}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Meshes", "Meshes", "{0986AFDA-7143-4914-9853-C34D2568843C}"
-	ProjectSection(SolutionItems) = preProject
-		Assets\Meshes\Cylinder.aosmeshtext = Assets\Meshes\Cylinder.aosmeshtext
-		Assets\Meshes\Helix.aosmeshtext = Assets\Meshes\Helix.aosmeshtext
-		Assets\Meshes\Plane.aosmeshtext = Assets\Meshes\Plane.aosmeshtext
-		Assets\Meshes\Sphere.aosmeshtext = Assets\Meshes\Sphere.aosmeshtext
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeshBuilder", "Code\Tools\MeshBuilder\MeshBuilder.vcxproj", "{84C1B326-C4D6-49D2-848F-1381647851ED}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5F8004A7-75AD-49AC-85C7-96D9B9F19533} = {5F8004A7-75AD-49AC-85C7-96D9B9F19533}
@@ -185,8 +177,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Controller", "Code\Engine\C
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MayaMeshExporter", "Code\Tools\MayaMeshExporter\MayaMeshExporter.vcxproj", "{70B81970-5665-4429-B2B2-7F6FCED5AB84}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Materials", "Materials", "{3EC57457-405A-4812-9283-8E359B0CF926}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MaterialBuilder", "Code\Tools\MaterialBuilder\MaterialBuilder.vcxproj", "{B91F1AA4-D5F2-45BE-8538-84EA710BE682}"
 	ProjectSection(ProjectDependencies) = postProject

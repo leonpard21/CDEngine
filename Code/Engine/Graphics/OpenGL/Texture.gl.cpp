@@ -13,12 +13,12 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		bool LoadDDSTextureStatic(const char* const i_path, GLuint& o_texture, std::string* o_errorMessage)
+		bool LoadDDSTextureStatic(const char* const i_path, TextureInfo& textureInfo, std::string* o_errorMessage)
 		{
 			bool wereThereErrors = false;
 			HANDLE fileHandle = INVALID_HANDLE_VALUE;
 			void* fileContents = NULL;
-			o_texture = 0;
+			textureInfo._texture = 0;
 
 			// Open the texture file
 			{
@@ -101,13 +101,13 @@ namespace EAE_Engine
 			// Create a new texture and make it active
 			{
 				const GLsizei textureCount = 1;
-				glGenTextures(textureCount, &o_texture);
+				glGenTextures(textureCount, &textureInfo._texture);
 				const GLenum errorCode = glGetError();
 				if (errorCode == GL_NO_ERROR)
 				{
 					// This code only supports 2D textures;
 					// if you want to support other types you will need to improve this code.
-					glBindTexture(GL_TEXTURE_2D, o_texture);
+					glBindTexture(GL_TEXTURE_2D, textureInfo._texture);
 					const GLenum errorCode = glGetError();
 					if (errorCode != GL_NO_ERROR)
 					{
@@ -281,12 +281,12 @@ namespace EAE_Engine
 				}
 				fileHandle = INVALID_HANDLE_VALUE;
 			}
-			if (wereThereErrors && (o_texture != 0))
+			if (wereThereErrors && (textureInfo._texture != 0))
 			{
 				const GLsizei textureCount = 1;
-				glDeleteTextures(textureCount, &o_texture);
+				glDeleteTextures(textureCount, &textureInfo._texture);
 				assert(glGetError == GL_NO_ERROR);
-				o_texture = 0;
+				textureInfo._texture = 0;
 			}
 
 			return !wereThereErrors;
@@ -306,29 +306,29 @@ namespace EAE_Engine
 		tTexture TextureManager::LoadTexture(const char* pTexturePath)
 		{
 			std::string key = GetFileNameWithoutExtension(pTexturePath);
-			for (std::map<const char*, tTexture>::const_iterator iter = _textures.begin(); iter != _textures.end(); ++iter)
+			for (std::map<const char*, TextureInfo>::const_iterator iter = _textures.begin(); iter != _textures.end(); ++iter)
 			{
 				if (strcmp(iter->first, key.c_str()) == 0)
 				{
-					return iter->second;
+					return iter->second._texture;
 				}
 			}
-			GLuint o_texture = 0;
+			TextureInfo o_textureInfo;
 			std::string o_errorMessage;
-			bool result = LoadDDSTextureStatic(pTexturePath, o_texture, &o_errorMessage);
+			bool result = LoadDDSTextureStatic(pTexturePath, o_textureInfo, &o_errorMessage);
 			glBindTexture(GL_TEXTURE_2D, 0);
 			if(result)
-				_textures.insert(std::pair<const char*, tTexture>(_strdup(key.c_str()), o_texture));
-			return o_texture;
+				_textures.insert(std::pair<const char*, TextureInfo>(_strdup(key.c_str()), o_textureInfo));
+			return o_textureInfo._texture;
 		}
 
 		void TextureManager::Clean()
 		{
-			for (std::map<const char*, tTexture>::const_iterator iter = _textures.begin(); iter != _textures.end();)
+			for (std::map<const char*, TextureInfo>::const_iterator iter = _textures.begin(); iter != _textures.end();)
 			{
 				char* pKey = const_cast<char*>(iter->first);
 				SAFE_DELETE(pKey);
-				tTexture pValue = iter++->second;
+				tTexture pValue = iter++->second._texture;
 				glDeleteTextures(1, &pValue);
 			}
 			_textures.clear();

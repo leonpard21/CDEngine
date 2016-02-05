@@ -8,6 +8,14 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
+		struct TextureInfo
+		{
+			TextureInfo() = default;
+			float _width;
+			float _height;
+			tTexture _texture;
+		};
+
 		struct TextureDesc 
 		{
 			tSamplerID _samplerID;
@@ -25,12 +33,12 @@ namespace EAE_Engine
 		{
 		public:
 			void Clean();
-			tTexture LoadTexture(const char* texturePath);
+			TextureInfo LoadTexture(const char* texturePath);
 		public:
 			static TextureManager* GetInstance();
 			static void CleanInstance();
 		private:
-			std::map<const char*, tTexture> _textures;
+			std::map<const char*, TextureInfo> _textures;
 			static TextureManager* s_pTextureManager;
 		};
 	}

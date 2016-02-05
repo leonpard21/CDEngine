@@ -10,7 +10,7 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		tTexture LoadDDSTextureStatic(const char* texturePath)
+		bool LoadDDSTextureStatic(const char* texturePath, TextureInfo& o_textureInfo)
 		{
 			//Get devices context of D3D
 			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
@@ -25,12 +25,15 @@ namespace EAE_Engine
 			const D3DPOOL letD3dManageMemory = D3DPOOL_MANAGED;
 			const DWORD useDefaultFiltering = D3DX_DEFAULT;
 			const D3DCOLOR noColorKey = 0;
-			D3DXIMAGE_INFO* noSourceInfo = NULL;
+			D3DXIMAGE_INFO imageInfo;
 			PALETTEENTRY* noColorPalette = NULL;
 			const HRESULT result = D3DXCreateTextureFromFileEx(pD3DDevice, texturePath, useDimensionsFromFile, useDimensionsFromFile, useMipMapsFromFile,
-				staticTexture, useFormatFromFile, letD3dManageMemory, useDefaultFiltering, useDefaultFiltering, noColorKey, noSourceInfo, noColorPalette, &pResultTexture);
+				staticTexture, useFormatFromFile, letD3dManageMemory, useDefaultFiltering, useDefaultFiltering, noColorKey, &imageInfo, noColorPalette, &pResultTexture);
+			o_textureInfo._width = imageInfo.Width;
+			o_textureInfo._height = imageInfo.Height;
+			o_textureInfo._texture = (tTexture)pResultTexture;
+			return true;
 
-			return (tTexture)pResultTexture;
 		}
 
 		void TextureDesc::SetTexture() 
@@ -47,35 +50,36 @@ namespace EAE_Engine
 		}
 
 		/////////////////////////////////////TextureManager///////////////////////////////////
-		tTexture TextureManager::LoadTexture(const char* pTexturePath)
+		TextureInfo TextureManager::LoadTexture(const char* pTexturePath)
 		{
 			std::string key = GetFileNameWithoutExtension(pTexturePath);
-			for (std::map<const char*, tTexture>::const_iterator iter = _textures.begin(); iter != _textures.end(); ++iter)
+			for (std::map<const char*, TextureInfo>::const_iterator iter = _textures.begin(); iter != _textures.end(); ++iter)
 			{
 				if (strcmp(iter->first, key.c_str()) == 0)
 				{
 					return iter->second;
 				}
 			}
-			tTexture value = LoadDDSTextureStatic(pTexturePath);
-			_textures.insert(std::pair<const char*, tTexture>(_strdup(key.c_str()), value));
-			for (std::map<const char*, tTexture>::const_iterator iter = _textures.begin(); iter != _textures.end(); ++iter)
+			TextureInfo textureInfo = {0.0f, 0.0f, 0};
+			bool result = LoadDDSTextureStatic(pTexturePath, textureInfo);
+			_textures.insert(std::pair<const char*, TextureInfo>(_strdup(key.c_str()), textureInfo));
+			for (std::map<const char*, TextureInfo>::const_iterator iter = _textures.begin(); iter != _textures.end(); ++iter)
 			{
 				if (strcmp(iter->first, key.c_str()) == 0)
 				{
 					return iter->second;
 				}
 			}
-			return 0;
+			return textureInfo;
 		}
 
 		void TextureManager::Clean()
 		{
-			for (std::map<const char*, tTexture>::const_iterator iter = _textures.begin(); iter != _textures.end();)
+			for (std::map<const char*, TextureInfo>::const_iterator iter = _textures.begin(); iter != _textures.end();)
 			{
 				char* pKey = const_cast<char*>(iter->first);
 				SAFE_DELETE(pKey);
-				tTexture pValue = iter++->second;
+				tTexture pValue = iter++->second._texture;
 				IDirect3DBaseTexture9* pTexture = (IDirect3DBaseTexture9*)pValue;
 				SAFE_RELEASE(pTexture);
 			}

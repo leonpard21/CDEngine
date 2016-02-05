@@ -7,7 +7,6 @@
 #include "Engine/Common/Interfaces.h"
 #include "BasicShapes.h"
 
-#include "SpriteMesh.h"
 #include "Sprite.h"
 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
@@ -20,6 +19,10 @@
 
 namespace EAE_Engine
 {
+	namespace Math
+	{
+		class ColMatrix44;
+	}
 	namespace Graphics
 	{
 		struct MaterialDesc;
@@ -29,6 +32,8 @@ namespace EAE_Engine
 		public:
 			SpriteRender(MaterialDesc* pMaterial, Sprite* pSprite, Common::ITransform* _pTransform);
 			~SpriteRender();
+			Math::ColMatrix44 GetSpriteMatrix();
+
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
 			Common::ITransform* GetTransform() { return _pTrans; }
 			Sprite* GetSprite() { return _pSprite; }
@@ -39,6 +44,7 @@ namespace EAE_Engine
 			Common::ITransform* _pTrans;
 		};
 
+		class AOSMesh;
 		class SpriteRenderManager : public Singleton<SpriteRenderManager>
 		{
 		public:
@@ -47,14 +53,15 @@ namespace EAE_Engine
 			void Init();
 			void Clean();
 
-			SpriteRender* AddSpriteRender(const char* pName, Common::ITransform* pTransform);
+			
+			SpriteRender* AddSpriteRender(Sprite* pSprite, Common::ITransform* pTransform);
 			void UpdateRenderDataList();
 
 			MaterialDesc* GetMaterial() { return _pMaterial; }
-			SpriteMesh* GetSpriteMesh() { return _pSpriteMesh; }
+			AOSMesh* GetSpriteMesh(){ return _pSpriteMesh; }
 		private:
 			MaterialDesc* _pMaterial;
-			SpriteMesh* _pSpriteMesh;
+			AOSMesh* _pSpriteMesh;
 			std::vector<SpriteRender*> _spriteRenders;
 		};
 

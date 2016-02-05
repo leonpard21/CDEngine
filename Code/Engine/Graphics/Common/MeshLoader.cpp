@@ -3,7 +3,7 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
-#include "../Common/AOSMeshOp.h"
+#include "../Common/MeshOp.h"
 #include "../Common/Device.h"
 #include "../Graphics.h"
 #include "../GraphicsInclude.h"
@@ -130,7 +130,7 @@ namespace EAE_Engine
 				// Stream: 0, COLOR0: D3DCOLOR == 4 bytes, Offset = 12
 				{ 0, 32, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 }
 			};
-			EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 4, sizeof(sVertex), D3DPT_TRIANGLELIST };
+			EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 4, { sizeof(sVertex), D3DPT_TRIANGLELIST,  Default } };
 #elif defined( EAEENGINE_PLATFORM_GL )
 			EAE_Engine::Graphics::MeshGLVertexElement element_arr[4] = {
 				{ 0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) },        // Position
