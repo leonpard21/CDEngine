@@ -6,14 +6,14 @@ namespace EAE_Engine
 {
 	namespace Graphics 
 	{
-		struct Rect 
+		struct ScreenRect 
 		{
 			float _x, _y;
 			float _width, _height;
-			Rect() = default;
+			ScreenRect() = default;
 		};
 
-		Rect GetScreenRect(const HWND i_renderingWindow);
+		ScreenRect GetScreenRect(const HWND i_renderingWindow);
 	}
 };
 

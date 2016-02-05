@@ -143,7 +143,7 @@ namespace EAE_Engine
 			CleanDMInstance();
 		}
 
-		Rect GetScreenRect()
+		ScreenRect GetScreenRect()
 		{
 			return GetScreenRect(GetDMInstance()->GetHWND());
 		}

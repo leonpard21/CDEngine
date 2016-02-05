@@ -8,6 +8,7 @@
 #include "Engine/Graphics/Common/ImageRender.h"
 #include "Engine/Graphics/Common/Image.h"
 #include "Engine/Graphics/Common/Camera.h"
+#include "Engine/Graphics/Common/Screen.h"
 #include "Engine/Graphics/Common/BinaryFileLoader.h"
 #include "Engine/Graphics/Common/BasicShapes.h"
 #include "Engine/Common/Interfaces.h"
@@ -128,7 +129,9 @@ void GameplayUpdate()
 				EAE_Engine::DebugShape::AddSphere(start2, 10.0f, blue);
 			}
 		}
-
+		static uint32_t frameIndex = 0;
+		EAE_Engine::Graphics::ScreenRect screenRect{ 32.0f, -32.0f, 64.0f, 64.0f };
+		pNumberSpriteRender->SetImagePos(screenRect, frameIndex++ % 9);
 	}
 }
 
@@ -214,20 +217,21 @@ namespace
 	void CreateSprite() 
 	{
 		{
-	//		EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(-0.9f, 0.9f, 0.0f);
-	//		EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj", spritePos);
-	//		EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/logo.dds", 1, 1);
-	//		EAE_Engine::Graphics::ImageRender* pRender1 = EAE_Engine::Graphics::ImageRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
-	//		pRender1->SetImagePos(256, 256);
+			EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(-0.9f, 0.9f, 0.0f);
+			EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj", spritePos);
+			EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/logo.dds", 1, 1);
+			EAE_Engine::Graphics::ImageRender* pRender1 = EAE_Engine::Graphics::ImageRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
+			EAE_Engine::Graphics::ScreenRect screenRect = { 128.0f, 128.0f, 256.0f, 256.0f };
+			pRender1->SetImagePos(screenRect, 1);
 		}
 		{
 			EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(0.9f, 0.9f, 0.0f);
 			EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj2", spritePos);
 			EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/numbers.dds", 1, 10);
 			pNumberSpriteRender = EAE_Engine::Graphics::ImageRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
-			EAE_Engine::Graphics::Rectangle coordinate = { 0.1f, 0.2f, 0.0f, 1.0f };
-			EAE_Engine::Graphics::Rectangle pos = { -0.5f, 0.5f, -0.5f, 0.5f };
-			pNumberSpriteRender->SetImagePos(0.0f, 0.0f, 1);
+			pNumberSpriteRender->SetAnchor({0.0f, 0.0f, 1.0f, 1.0f});
+			EAE_Engine::Graphics::ScreenRect screenRect = {32.0f, -32.0f, 64.0f, 64.0f};
+			pNumberSpriteRender->SetImagePos(screenRect, 1);
 		}
 		
 	}

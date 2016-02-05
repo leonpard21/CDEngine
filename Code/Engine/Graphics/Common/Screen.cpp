@@ -5,9 +5,9 @@ namespace EAE_Engine
 {
 	namespace Graphics 
 	{
-		Rect GetScreenRect(const HWND i_renderingWindow)
+		ScreenRect GetScreenRect(const HWND i_renderingWindow)
 		{
-			Rect result = { 0.0f, 0.0f, 100.0f, 100.0f };
+			ScreenRect result = { 0.0f, 0.0f, 100.0f, 100.0f };
 			struct
 			{
 				long width;

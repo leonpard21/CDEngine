@@ -24,7 +24,8 @@ namespace EAE_Engine
 		//////////////////////////////////////ImageRender///////////////////////////////////////////////
 
 		ImageRender::ImageRender(MaterialDesc* pMaterial, Image* pImage, Common::ITransform* pTransform):
-			_pMaterial(pMaterial), _pImage(pImage), _pTrans(pTransform)
+			_pMaterial(pMaterial), _pImage(pImage), _pTrans(pTransform), 
+			_anchorPoint({0.5f, 0.5f, 0.5f, 0.5f}), _pivot(Math::Vector2(0.5f, 0.5f))
 		{
 		}
 
@@ -35,28 +36,28 @@ namespace EAE_Engine
 			SAFE_DELETE(_pImageMesh);
 		}
 
-		void ImageRender::SetImagePos(float x, float y, uint32_t index)
+		void ImageRender::SetImagePos(ScreenRect i_imageScreenRect, uint32_t index)
 		{
-			float _defaultScreenWidth = 800.0f;
-			float _defaultScreenHeight = 600.0f;
-			Rect screenRect = GetScreenRect();
-			float defaultRaitoX = _pImage->_width / _defaultScreenWidth * 2.0f; // the screen vertex coordinate is from (-1.0f, 1.0f)
-			//float defaultRaitoY = _pImage->_height / _defaultScreenHeight * 2.0f;// the screen vertex coordinate is from (-1.0f, 1.0f)
-			float scaleRaitoX = _defaultScreenWidth / screenRect._width;
-			//float scaleRaitoY = _defaultScreenHeight / screenRect._height;
-			//float aspect = screenRect._width / screenRect._height;
+			ScreenRect screenInfo = GetScreenRect();
+			float screenWidth = screenInfo._width;
+			float screenHeight = screenInfo._height;
+			Math::Vector2 _anchorMinScreen(_anchorPoint._left * screenWidth,  _anchorPoint._bottom * screenHeight);
+			Math::Vector2 _anchorMaxScreen(_anchorPoint._right * screenWidth, _anchorPoint._top * screenHeight);
+			float screenRectX = i_imageScreenRect._x + (_anchorMinScreen._x + _anchorMaxScreen._x) * 0.5f;
+			float screenRectY = i_imageScreenRect._y + (_anchorMinScreen._y + _anchorMaxScreen._y) * 0.5f;
+			Rectangle imageScreenRectangle; 
+			{
+				imageScreenRectangle._left = screenRectX - _pivot._x * i_imageScreenRect._width;
+				imageScreenRectangle._right = screenRectX + (1.0f - _pivot._x) * i_imageScreenRect._width;
+				imageScreenRectangle._bottom = screenRectY - _pivot._y * i_imageScreenRect._height;
+				imageScreenRectangle._top = screenRectY + (1.0f - _pivot._y) * i_imageScreenRect._height;
+			}
 			Rectangle pos; 
 			{
-				float widthOfImage = _pImage->_width / (float)_pImage->_cols;
-				float heightOfImage = _pImage->_height / (float)_pImage->_rows;
-				float leftInClip = x / screenRect._width - 1.0f;
-				float rightInClip = (x + widthOfImage) / screenRect._width - 1.0f;
-				float bottomInClip = y / screenRect._height - 1.0f;
-				float topInClip = (y + heightOfImage) / screenRect._height - 1.0f;
-				pos._left = leftInClip * defaultRaitoX * scaleRaitoX;
-				pos._right = rightInClip * defaultRaitoX * scaleRaitoX;
-				pos._bottom = bottomInClip * defaultRaitoX * scaleRaitoX;
-				pos._top = topInClip * defaultRaitoX * scaleRaitoX;
+				pos._left = imageScreenRectangle._left / screenWidth * 2.0f - 1.0f; // the screen vertex coordinate is from (-1.0f, 1.0f)
+				pos._right = imageScreenRectangle._right / screenWidth * 2.0f - 1.0f;
+				pos._bottom = imageScreenRectangle._bottom / screenHeight * 2.0f - 1.0f;
+				pos._top = imageScreenRectangle._top / screenHeight* 2.0f - 1.0f;
 			}
 			Rectangle texcoord;
 			{

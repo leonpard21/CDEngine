@@ -199,7 +199,7 @@ namespace EAE_Engine
 			return GLDevice::GetDMInstance()->GetHDC();
 		}
 
-		Rect GetScreenRect() 
+		ScreenRect GetScreenRect() 
 		{
 			return GetScreenRect(GLDevice::GetDMInstance()->GetHWND());
 		}

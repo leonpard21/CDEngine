@@ -6,7 +6,7 @@
 #include "Engine/Math/Vector.h"
 #include "Engine/Common/Interfaces.h"
 #include "BasicShapes.h"
-
+#include "Screen.h"
 #include "Image.h"
 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
@@ -33,23 +33,31 @@ namespace EAE_Engine
 		public:
 			ImageRender(MaterialDesc* pMaterial, Image* pImage, Common::ITransform* _pTransform);
 			~ImageRender();
-			void SetImagePos(float x, float y, uint32_t index = 0);
+			// The @i_imageScreenRect describe the position of the pivot point, 
+			// and the width and height of the Image.
+			// Based on the anchor point and the window size, the image will be scaled.
+			void SetImagePos(ScreenRect i_imageScreenRect, uint32_t index = 0);
 
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
 			Common::ITransform* GetTransform() { return _pTrans; }
 			Image* GetImage() { return _pImage; }
 			MaterialDesc* GetMaterial() { return _pMaterial; }
 			AOSMesh* GetMesh() { return _pImageMesh; }
-			
+			void SetAnchor(Rectangle anchor) { _anchorPoint  = anchor; }
+
 		private:
-			void ImageRender::UpdateImageMesh(Rectangle i_pos, Rectangle i_texcoord);
+			void ImageRender::UpdateImageMesh(Rectangle i_rect, Rectangle i_texcoord);
 
 		private:
 			MaterialDesc* _pMaterial;
 			Image* _pImage;
 			AOSMesh* _pImageMesh;
 			Common::ITransform* _pTrans;
-			Rectangle _rect;
+			// @_pivot is the local ratio of the Image.
+			Math::Vector2 _pivot;
+			// anchor point uses the Viewport coordinate, 
+			// it contains a pair of min and max points.
+			Rectangle _anchorPoint;
 		};
 
 		class ImageRenderManager : public Singleton<ImageRenderManager>
