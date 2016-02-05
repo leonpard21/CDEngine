@@ -123,6 +123,10 @@ return
                 target = "wall_D.dds",
             },
 			{
+                source = "logo.png",
+                target = "logo.dds",
+            },
+			{
                 source = "numbers.png",
                 target = "numbers.dds",
             },

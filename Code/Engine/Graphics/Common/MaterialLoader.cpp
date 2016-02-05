@@ -118,7 +118,7 @@ namespace EAE_Engine
 					// Set the value of the Texture.
 					size_t offsetInTexturePathBuffer = *(size_t*)(&pTex->_texture);
 					const char* pTexName = (char*)(pTexturePathBuffer + offsetInTexturePathBuffer);
-					pTex->_texture = TextureManager::GetInstance()->LoadTexture(pTexName);
+					pTex->_texture = TextureManager::GetInstance()->LoadTexture(pTexName)._texture;
 					// Set the value of the samplerID
 					tSamplerID offsetInSamplerNameBuffer = *(tSamplerID*)(&pTex->_samplerID);
 					const char* pTexSamplerName = (char*)(pTextureSamplerNameBuffer + offsetInSamplerNameBuffer);

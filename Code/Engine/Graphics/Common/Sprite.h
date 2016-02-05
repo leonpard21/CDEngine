@@ -13,20 +13,19 @@ namespace EAE_Engine
 		struct Sprite 
 		{
 			Sprite() = default;
-			Sprite(tTexture texture) : _texture(texture), _index(0), _width(100.0f), _height(100.0f){}
+			Sprite(tTexture texture) : _texture(texture), _width(100.0f), _height(100.0f), _rows(0), _cols(0){}
 			tTexture _texture;
-			uint32_t _index;
 			float _width, _height;
+			uint32_t _rows, _cols;
 		};
-
 
 		class SpriteManager : public Singleton<SpriteManager>
 		{
 		public:
 			~SpriteManager();
 			void Clean();
-			Sprite* LoadSprite(const char* pName, uint32_t index, float width, float height);
-			//Sprite* GetSprite(const char* pName);
+			Sprite* LoadSprite(const char* pSpritePathName, float width, float height);
+			Sprite* GetSprite(const char* pKey);
 		private:
 			std::map<const char*, Sprite*> _sprites;
 		};

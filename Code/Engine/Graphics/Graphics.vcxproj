@@ -36,6 +36,7 @@
     <ClCompile Include="Common\ShaderContent.cpp" />
     <ClCompile Include="Common\ShaderLoader.cpp" />
     <ClCompile Include="Common\Sprite.cpp" />
+    <ClCompile Include="Common\SpriteMesh.cpp" />
     <ClCompile Include="Common\SpriteRender.cpp" />
     <ClCompile Include="Common\Texture.cpp" />
     <ClCompile Include="Common\UniformVariable.cpp" />
@@ -45,7 +46,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Direct3D9\AOSMeshOp.d3d9.cpp">
+    <ClCompile Include="Direct3D9\MeshOp.d3d9.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -70,12 +71,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Direct3D9\Sprite.d3d9.cpp" />
-    <ClCompile Include="Direct3D9\SpriteMesh.d3d9.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Direct3D9\Texture.D3D9.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -95,7 +90,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="OpenGL\AOSMeshOp.gl.cpp">
+    <ClCompile Include="OpenGL\MeshOp.gl.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -139,7 +134,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Common\AOSMeshOp.h" />
     <ClInclude Include="Common\BasicMeshes.h" />
     <ClInclude Include="Common\BasicShapes.h" />
     <ClInclude Include="Common\Camera.h" />
@@ -156,6 +150,7 @@
     <ClInclude Include="Common\GraphicsInternal.h" />
     <ClInclude Include="Common\BinaryFileLoader.h" />
     <ClInclude Include="Common\Material.h" />
+    <ClInclude Include="Common\MeshOp.h" />
     <ClInclude Include="Common\RenderDatas.h" />
     <ClInclude Include="Common\RenderObj.h" />
     <ClInclude Include="Common\Screen.h" />

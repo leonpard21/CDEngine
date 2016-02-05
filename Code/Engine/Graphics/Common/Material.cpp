@@ -67,6 +67,16 @@ namespace EAE_Engine
 			return (TextureDesc*)((uint8_t*)this + sizeof(MaterialDesc) + sizeof(UniformDesc) * _uniformCount);
 		}
 
+		void MaterialDesc::ChangeTexture(uint32_t index, tTexture texture)
+		{
+			if (index >= _textureCount)
+				return;
+			TextureDesc* pTexDescBuffer = GetTextureDesc();
+			if (pTexDescBuffer == nullptr)
+				return;
+			(pTexDescBuffer + index)->_texture = texture;
+		}
+
 ////////////////////////MaterialManager static members//////////////////
 		MaterialManager* MaterialManager::s_pMaterialManager = nullptr;
 

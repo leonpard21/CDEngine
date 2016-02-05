@@ -1,5 +1,5 @@
-#include "../Common/Sprite.h"
-#include "../Common/Texture.h"
+#include "Sprite.h"
+#include "Texture.h"
 #include "Windows/WindowsFunctions.h"
 
 
@@ -28,9 +28,9 @@ namespace EAE_Engine
 			_sprites.clear();
 		}
 
-		Sprite* SpriteManager::LoadSprite(const char* pName, uint32_t index, float width, float height)
+		Sprite* SpriteManager::LoadSprite(const char* pSpritePathName, float width, float height)
 		{
-			std::string key(pName);
+			std::string key = GetFileNameWithoutExtension(pSpritePathName);
 			for (std::map<const char*, Sprite*>::const_iterator iter = _sprites.begin(); iter != _sprites.end(); ++iter)
 			{
 				if (strcmp(iter->first, key.c_str()) == 0)
@@ -38,15 +38,30 @@ namespace EAE_Engine
 					return iter->second;
 				}
 			}
-			tTexture textureHandle = TextureManager::GetInstance()->LoadTexture(pName);
-			Sprite* pSprite = new Sprite(textureHandle);
-			pSprite->_index = index;
+			TextureInfo textureHandle = TextureManager::GetInstance()->LoadTexture(pSpritePathName);
+			Sprite* pSprite = new Sprite(textureHandle._texture);
+			// First, we need to clip the sprite into rows and heights based on its size.
+			pSprite->_rows = textureHandle._width / width;
+			pSprite->_cols = textureHandle._height / height;
+			// Second, we scale the sprite based on the window size.
 			pSprite->_width = width;
 			pSprite->_height = height;
 			_sprites.insert(std::pair<const char*, Sprite*>(_strdup(key.c_str()), pSprite));
 			return pSprite;
 		}
 
+		Sprite* SpriteManager::GetSprite(const char* pKey)
+		{
+			std::string key = GetFileNameWithoutExtension(pKey);
+			for (std::map<const char*, Sprite*>::const_iterator iter = _sprites.begin(); iter != _sprites.end(); ++iter)
+			{
+				if (strcmp(iter->first, key.c_str()) == 0)
+				{
+					return iter->second;
+				}
+			}
+			return nullptr;
+		}
 
 	}
 }

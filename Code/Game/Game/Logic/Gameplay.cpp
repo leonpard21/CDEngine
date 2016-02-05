@@ -6,6 +6,7 @@
 #include "Engine/Graphics/Graphics.h"
 #include "Engine/Graphics/Common/MeshRender.h"
 #include "Engine/Graphics/Common/SpriteRender.h"
+#include "Engine/Graphics/Common/Sprite.h"
 #include "Engine/Graphics/Common/Camera.h"
 #include "Engine/Graphics/Common/BinaryFileLoader.h"
 #include "Engine/Common/Interfaces.h"
@@ -208,11 +209,15 @@ namespace
 
 	void CreateSprite() 
 	{
-		EAE_Engine::Math::Vector3 zero = EAE_Engine::Math::Vector3::Zero;
-		EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj", zero);
-		//EAE_Engine::Math::Vector3 groundScale(5.0f, 5.0f, 1.0f);
-		//pActorGround->GetTransform()->SetLocalScale(groundScale);
-		EAE_Engine::Graphics::SpriteRenderManager::GetInstance()->AddSpriteRender("data/Textures/numbers.dds", pSpriteObj->GetTransform());
+		EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(-0.9f, 0.9f, 0.0f);
+		EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj", spritePos);
+	//	EAE_Engine::Math::Vector3 groundScale(512.0f, 64.0f, 1.0f);
+	//	pSpriteObj->GetTransform()->SetLocalScale(groundScale);
+		EAE_Engine::Graphics::Sprite* pSprite = EAE_Engine::Graphics::SpriteManager::GetInstance()->LoadSprite("data/Textures/logo.dds", 128.0f, 128.0f);
+		EAE_Engine::Graphics::SpriteRenderManager::GetInstance()->AddSpriteRender(pSprite, pSpriteObj->GetTransform());
+
+
+		EAE_Engine::Graphics::Sprite* pSprite2 = EAE_Engine::Graphics::SpriteManager::GetInstance()->LoadSprite("data/Textures/numbers.dds", 64.0f, 64.0f);
 	}
 
 }

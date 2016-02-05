@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <vector>
+#include "CommonDeclare.h"
 
 namespace EAE_Engine 
 {
@@ -58,6 +59,7 @@ namespace EAE_Engine
 			TextureDesc* GetTextureDesc();
 			void SetUniformForEffect();
 			void SetTexturesForEffect();
+			void ChangeTexture(uint32_t index, tTexture texture);
 		};
 
 		struct MaterialKeyValuePair 
