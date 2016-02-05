@@ -5,9 +5,10 @@
 #include "Engine/General/Singleton.hpp"
 #include "Engine/Math/Vector.h"
 #include "Engine/Common/Interfaces.h"
-#include "BasicShapes.h"
+#include "Engine/General/BasicShapes.h"
 #include "Screen.h"
 #include "Image.h"
+#include "RectTransform.h"
 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 #include <d3d9.h>
@@ -53,8 +54,9 @@ namespace EAE_Engine
 			Image* GetImage() { return _pImage; }
 			MaterialDesc* GetMaterial() { return _pMaterial; }
 			AOSMesh* GetMesh() { return _pImageMesh; }
-			void SetAnchor(Rectangle anchor) { _anchorPoint  = anchor; }
 
+			void SetAnchor(Rectangle anchor) { _rectTransform.SetAnchor(anchor); }
+			void SetPivot(Math::Vector2 pivot) { _rectTransform.SetPivot(pivot); }
 		private:
 			void ImageRender::UpdateImageMesh(Rectangle i_rect, Rectangle i_texcoord);
 
@@ -63,11 +65,7 @@ namespace EAE_Engine
 			Image* _pImage;
 			AOSMesh* _pImageMesh;
 			Common::ITransform* _pTrans;
-			// @_pivot is the local ratio of the Image.
-			Math::Vector2 _pivot;
-			// anchor point uses the Viewport coordinate, 
-			// it contains a pair of min and max points.
-			Rectangle _anchorPoint;
+			RectTransform _rectTransform;
 		};
 
 		class ImageRenderManager : public Singleton<ImageRenderManager>

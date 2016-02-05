@@ -26,6 +26,7 @@
     <ClCompile Include="Common\EffectLoader.cpp" />
     <ClCompile Include="Common\Material.cpp" />
     <ClCompile Include="Common\MaterialLoader.cpp" />
+    <ClCompile Include="Common\RectTransform.cpp" />
     <ClCompile Include="Common\RenderDatas.cpp" />
     <ClCompile Include="Common\RenderObj.cpp" />
     <ClCompile Include="Common\Screen.cpp" />
@@ -135,7 +136,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\BasicMeshes.h" />
-    <ClInclude Include="Common\BasicShapes.h" />
     <ClInclude Include="Common\Camera.h" />
     <ClInclude Include="Common\Color.h" />
     <ClInclude Include="Common\CommonDeclare.h" />
@@ -151,6 +151,7 @@
     <ClInclude Include="Common\BinaryFileLoader.h" />
     <ClInclude Include="Common\Material.h" />
     <ClInclude Include="Common\MeshOp.h" />
+    <ClInclude Include="Common\RectTransform.h" />
     <ClInclude Include="Common\RenderDatas.h" />
     <ClInclude Include="Common\RenderObj.h" />
     <ClInclude Include="Common\Screen.h" />

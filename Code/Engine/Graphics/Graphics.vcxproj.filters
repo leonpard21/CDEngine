@@ -74,9 +74,6 @@
     <ClCompile Include="OpenGL\Texture.gl.cpp">
       <Filter>OpenGL\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="Common\Screen.cpp">
-      <Filter>Common\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="Common\RenderObj.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -112,6 +109,12 @@
     </ClCompile>
     <ClCompile Include="OpenGL\Image.gl.cpp">
       <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Screen.cpp">
+      <Filter>Common\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\RectTransform.cpp">
+      <Filter>Common\Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -159,9 +162,6 @@
     <ClInclude Include="Common\UniformDesc.h">
       <Filter>Common\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Common\Screen.h">
-      <Filter>Common\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="Common\RenderObj.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -170,9 +170,6 @@
     </ClInclude>
     <ClInclude Include="Common\BasicMeshes.h">
       <Filter>Common\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\BasicShapes.h">
-      <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\CommonDeclare.h">
       <Filter>Common</Filter>
@@ -193,6 +190,12 @@
       <Filter>Common\Image</Filter>
     </ClInclude>
     <ClInclude Include="Common\ImageRender.h">
+      <Filter>Common\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Screen.h">
+      <Filter>Common\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\RectTransform.h">
       <Filter>Common\Image</Filter>
     </ClInclude>
   </ItemGroup>

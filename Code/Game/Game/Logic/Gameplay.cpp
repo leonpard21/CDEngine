@@ -10,7 +10,7 @@
 #include "Engine/Graphics/Common/Camera.h"
 #include "Engine/Graphics/Common/Screen.h"
 #include "Engine/Graphics/Common/BinaryFileLoader.h"
-#include "Engine/Graphics/Common/BasicShapes.h"
+#include "Engine/General/BasicShapes.h"
 #include "Engine/Common/Interfaces.h"
 #include "Engine/Core/Entirety/World.h"
 #include "Engine/Math/Quaternion.h"

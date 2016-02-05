@@ -29,8 +29,8 @@ namespace EAE_Engine
 			PALETTEENTRY* noColorPalette = NULL;
 			const HRESULT result = D3DXCreateTextureFromFileEx(pD3DDevice, texturePath, useDimensionsFromFile, useDimensionsFromFile, useMipMapsFromFile,
 				staticTexture, useFormatFromFile, letD3dManageMemory, useDefaultFiltering, useDefaultFiltering, noColorKey, &imageInfo, noColorPalette, &pResultTexture);
-			o_textureInfo._width = imageInfo.Width;
-			o_textureInfo._height = imageInfo.Height;
+			o_textureInfo._width = (float)imageInfo.Width;
+			o_textureInfo._height = (float)imageInfo.Height;
 			o_textureInfo._texture = (tTexture)pResultTexture;
 			return true;
 

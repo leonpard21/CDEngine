@@ -5,11 +5,19 @@
 
 namespace EAE_Engine
 {
+	struct Rectangle;
+
 	namespace Math
 	{
 		template<typename T>
+		class TVector4;
+		typedef TVector4<float> Vector4;
+		template<typename T>
 		class TVector3;
 		typedef TVector3<float> Vector3;
+		template<typename T>
+		class TVector2;
+		typedef TVector2<float> Vector2;
 		class ColMatrix44;
 		class Quaternion;
 	}
@@ -81,6 +89,17 @@ namespace EAE_Engine
 			// Parent
 			virtual void SetParent(ITransform* pParent) = 0;
 			virtual ITransform* GetParent() = 0;
+		};
+
+
+		class IRectTransform
+		{
+		public:
+			virtual ~IRectTransform() {}
+			virtual void SetAnchor(Rectangle anchorPoint) = 0;
+			virtual void SetPivot(Math::Vector2 pivot) = 0; 
+			virtual void SetRect(Math::Vector4 values) = 0;
+			virtual Rectangle GetRect() = 0;
 		};
 
 		class ICamera // : public ICompo

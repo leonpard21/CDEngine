@@ -53,7 +53,7 @@
     <ClInclude Include="NamedBitSet.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Singleton.hpp">
+    <ClInclude Include="BasicShapes.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

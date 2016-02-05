@@ -3,8 +3,8 @@
 #include "Engine/Math/Quaternion.h"
 #include "Engine/Math/Vector.h"
 #include "Engine/Math/ColMatrix.h"
-#include "Device.h"
 #include "Screen.h"
+#include "Device.h"
 #include <cassert>
 
 namespace EAE_Engine

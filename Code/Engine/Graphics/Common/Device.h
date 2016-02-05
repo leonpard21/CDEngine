@@ -2,6 +2,7 @@
 #define EAE_ENGINE_DEVICEMANAGER_H
 
 #include "../Graphics.h"
+#include "Screen.h"
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 struct IDirect3DDevice9;
 #elif defined( EAEENGINE_PLATFORM_GL )
@@ -14,7 +15,6 @@ namespace EAE_Engine
 	{
 		bool CreateDevice(const HWND i_renderingWindow);
 		void CleanDevice();
-		struct ScreenRect;
 		ScreenRect GetScreenRect();
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 		IDirect3DDevice9* GetD3DDevice();
