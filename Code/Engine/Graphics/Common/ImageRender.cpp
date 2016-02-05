@@ -36,6 +36,19 @@ namespace EAE_Engine
 			SAFE_DELETE(_pImageMesh);
 		}
 
+		/*
+		Now the GUI image has 2 modes:
+		1. position-mode (the anchor min and max are the same)
+		The 4 parameters of the screenRect are:
+		x, y, the screen position of the anchor point).
+		width, height, the width and the height of the rect we want to render.
+		In this case, the screenRect size will be fixed when we change the window size.
+
+		2. stretch-mode (the anchor min and max are not the same)
+		The 4 parameters of the screenRect are:
+		_left, _right, how far the left edge and right edge from the anchorMinX and anchorMaxX,
+		_bottom, _top, how far the bottom edge and top edge from the anchorMinY and anchorMaxY
+		*/
 		void ImageRender::SetImagePos(Math::Vector4 values, uint32_t index)
 		{
 			ScreenRect screenInfo = GetScreenRect();

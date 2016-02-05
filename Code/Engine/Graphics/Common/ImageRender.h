@@ -33,14 +33,19 @@ namespace EAE_Engine
 		public:
 			ImageRender(MaterialDesc* pMaterial, Image* pImage, Common::ITransform* _pTransform);
 			~ImageRender();
-			// If the min and max anchor point is the same,
-			// then we should use offsetMode, 
-			// we call it position-mode.
-			// in this case the @values describe the position of the pivot point, 
-			// and the width and height of the Image.
-			// Else if the min or max anchor point is not the same,
-			// then we should use the stretch-mode.
-			// the image will be scaled based on the window size.
+			/*
+			Now the GUI image has 2 modes:
+			1. position-mode (the anchor min and max are the same)
+			The 4 parameters of the screenRect are:
+			x, y, the screen position of the anchor point).
+			width, height, the width and the height of the rect we want to render.
+			In this case, the screenRect size will be fixed when we change the window size.
+
+			2. stretch-mode (the anchor min and max are not the same)
+			The 4 parameters of the screenRect are:
+			_left, _right, how far the left edge and right edge from the anchorMinX and anchorMaxX,
+			_bottom, _top, how far the bottom edge and top edge from the anchorMinY and anchorMaxY
+			*/
 			void SetImagePos(Math::Vector4 values, uint32_t index = 0);
 
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
