@@ -33,10 +33,14 @@ namespace EAE_Engine
 		public:
 			ImageRender(MaterialDesc* pMaterial, Image* pImage, Common::ITransform* _pTransform);
 			~ImageRender();
-			// The @i_imageScreenRect describe the position of the pivot point, 
+			// If the min and max anchor point is the same,
+			// then we should use offsetMode, 
+			// in that case the @values describe the position of the pivot point, 
 			// and the width and height of the Image.
-			// Based on the anchor point and the window size, the image will be scaled.
-			void SetImagePos(ScreenRect i_imageScreenRect, uint32_t index = 0);
+			// Else if the min or max anchor point is not the same,
+			// then we should use the stretch mode.
+			// the image will be scaled based on the window size.
+			void SetImagePos(Math::Vector4 values, uint32_t index = 0);
 
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
 			Common::ITransform* GetTransform() { return _pTrans; }
