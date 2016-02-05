@@ -4,7 +4,7 @@
 #include "Effect.h"
 #include "MeshRender.h"
 #include "AOSMesh.h"
-#include "SpriteRender.h"
+#include "ImageRender.h"
 
 #include <algorithm>
 
@@ -27,9 +27,9 @@ namespace EAE_Engine
 				RenderData3D* pRenderData = reinterpret_cast<RenderData3D*>(_pRenderData);
 				pRenderData->Render();
 			}
-			if (_renderWeight._layer == RenderDataLayer::Object2D)
+			if (_renderWeight._layer == RenderDataLayer::UIImage)
 			{
-				RenderData2D* pRenderData = reinterpret_cast<RenderData2D*>(_pRenderData);
+				RenderDataUI* pRenderData = reinterpret_cast<RenderDataUI*>(_pRenderData);
 				pRenderData->Render();
 			}
 		}
@@ -54,12 +54,12 @@ namespace EAE_Engine
 				_renderObjs.push_back(obj);
 			}
 
-			for (std::vector<RenderData2D>::iterator it = _renderData2Ds.begin(); it != _renderData2Ds.end(); ++it)
+			for (std::vector<RenderDataUI>::iterator it = _renderDataImages.begin(); it != _renderDataImages.end(); ++it)
 			{
-				SpriteRender* pSpriteRender = (it)->_pSpriteRender;
-				MaterialDesc* pMaterial = pSpriteRender->GetMaterial();
+				ImageRender* pImageRender = (it)->_pImageRender;
+				MaterialDesc* pMaterial = pImageRender->GetMaterial();
 				RenderWeight weight;
-				weight._layer = RenderDataLayer::Object2D;
+				weight._layer = RenderDataLayer::UIImage;
 				weight._material = pMaterial ? pMaterial->_materialCost._cost : 0;
 				RenderObj obj = { weight, &(*it) };
 				_renderObjs.push_back(obj);

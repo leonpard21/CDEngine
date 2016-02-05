@@ -12,7 +12,7 @@ return
 	materialData = 
 	{
 		sourcePath = "data/Effects/",
-		effectSource = "spriteRender.effect",
+		effectSource = "imageRender.effect",
 		materialCost = 0x11111,
 		textureData = 
 		{

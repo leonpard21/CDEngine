@@ -5,7 +5,7 @@
 #include "AOSMesh.h"
 #include "GraphicsInternal.h"
 #include "MeshOp.h"
-#include "SpriteRender.h"
+#include "ImageRender.h"
 #include "Device.h"
 
 namespace EAE_Engine
@@ -78,10 +78,10 @@ namespace EAE_Engine
 
 
 		///////////////////////////////////////////RenderData2D////////////////////////////////////
-		MaterialDesc* RenderData2D::s_pCurrentMaterial = nullptr;
-		Effect* RenderData2D::s_pCurrentEffect = nullptr;
+		MaterialDesc* RenderDataUI::s_pCurrentMaterial = nullptr;
+		Effect* RenderDataUI::s_pCurrentEffect = nullptr;
 
-		void RenderData2D::ChangeEffectVariables()
+		void RenderDataUI::ChangeEffectVariables()
 		{
 			// Leo: I think for the transform matrix, I should set the uniform variable through the Effect directly.
 			// Set the Transform
@@ -93,24 +93,24 @@ namespace EAE_Engine
 				s_pCurrentEffect->Update();
 		}
 
-		void RenderData2D::Render() 
+		void RenderDataUI::Render() 
 		{
 			//If we need to change material, change the material
-			MaterialDesc* pMaterial = SpriteRenderManager::GetInstance()->GetMaterial();
+			MaterialDesc* pMaterial = ImageRenderManager::GetInstance()->GetMaterial();
 			s_pCurrentMaterial = pMaterial;
 			s_pCurrentEffect = pMaterial->_pEffect;
 			BindCurrentEffect(s_pCurrentEffect);
 			ChangeEffectRenderState(s_pCurrentEffect->GetRenderState());
 			s_pCurrentMaterial->SetUniformForEffect();
-			s_pCurrentMaterial->ChangeTexture(0, _pSpriteRender->GetSprite()->_texture);
+			s_pCurrentMaterial->ChangeTexture(0, _pImageRender->GetImage()->_texture);
 			s_pCurrentMaterial->SetTexturesForEffect();
-			Math::ColMatrix44 scaleMat = _pSpriteRender->GetSpriteMatrix();
+			Math::ColMatrix44 scaleMat = _pImageRender->GetImageMatrix();
 			_localToWorld = scaleMat * _localToWorld;
 			// updated the parameters for the material
 			
 			ChangeEffectVariables();
 
-			AOSMesh* pSMesh = SpriteRenderManager::GetInstance()->GetSpriteMesh();
+			AOSMesh* pSMesh = _pImageRender->GetMesh();
 			
 			SetCurrentRenderMesh(pSMesh);
 

@@ -1,4 +1,4 @@
-#include "../Common/SpriteRender.h"
+#include "../Common/ImageRender.h"
 #include "General/MemoryOp.h"
 #include <string>
 

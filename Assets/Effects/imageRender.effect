@@ -1,0 +1,18 @@
+--[[
+	This is the effects class
+]]
+
+return
+{
+	sourcePath = "data/Shaders/",
+	vsSource = "imageRender.vshd",
+	fsSource = "imageRender.fshd",
+	renderState =
+	{
+		Alpha = true,
+	 	DepthTesting = false,
+		DepthWriting = false,
+		FaceCulling = true,
+	}
+}
+

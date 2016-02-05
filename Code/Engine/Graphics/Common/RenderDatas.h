@@ -14,7 +14,7 @@ namespace EAE_Engine
 		class Effect;
 		struct MaterialDesc;
 		class MeshRender;
-		class SpriteRender;
+		class ImageRender;
 
 		struct RenderData3D
 		{
@@ -36,12 +36,12 @@ namespace EAE_Engine
 			//static MeshRender* s_pCurrentMeshRender;
 		};
 
-		struct RenderData2D
+		struct RenderDataUI
 		{
-			SpriteRender* _pSpriteRender;
+			ImageRender* _pImageRender;
 			Math::ColMatrix44 _localToWorld;
 
-			RenderData2D() = default;
+			RenderDataUI() = default;
 			void ChangeEffectVariables();
 			void Render();
 

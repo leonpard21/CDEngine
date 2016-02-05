@@ -1,5 +1,5 @@
-#ifndef EAE_ENGINE_GRAPHICS_SPRITE_MESH_H
-#define EAE_ENGINE_GRAPHICS_SPRITE_MESH_H
+#ifndef EAE_ENGINE_GRAPHICS_IMAGE_MESH_H
+#define EAE_ENGINE_GRAPHICS_IMAGE_MESH_H
 
 #include <cstdint>
 
@@ -13,7 +13,7 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		struct SpriteVertex
+		struct ImageVertex
 		{
 			float x, y, z;
 			float u, v;
@@ -22,11 +22,11 @@ namespace EAE_Engine
 #elif defined( EAEENGINE_PLATFORM_GL )
 			uint8_t r, g, b, a;	// 8 bits [0,255] per RGBA channel (the alpha channel is unused but is present so that color uses a full 4 bytes)
 #endif	
-			SpriteVertex() = default;
+			ImageVertex() = default;
 		};
 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-		class SpriteMesh
+		class ImageMesh
 		{
 		public:
 			bool Init(void* pVertices);
@@ -44,24 +44,23 @@ namespace EAE_Engine
 
 
 #elif defined(EAEENGINE_PLATFORM_GL)
-		class SpriteMesh
+		class ImageMesh
 		{
 		public:
-			SpriteMesh() {}
-			~SpriteMesh() {}
+			ImageMesh() {}
+			~ImageMesh() {}
 
-			//	bool InitSprite(IDirect3DDevice9* pDevice, void* pVertices);
 			void Release();
 
 
 		private:
 		};
 #endif
-		bool RenderSpriteMeshInternal(SpriteMesh *pSpriteMesh);
+		bool RenderImageMeshInternal(ImageMesh *pImageMesh);
 	}
 }
 
 
 
-#endif //  EAE_ENGINE_GRAPHICS_SPRITE_MESH_H
+#endif //  EAE_ENGINE_GRAPHICS_IMAGE_MESH_H
 

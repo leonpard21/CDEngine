@@ -40,8 +40,8 @@ return
                 target = "debugPrimitive.effect",
             },
 			{
-                source = "spriteRender.effect",
-                target = "spriteRender.effect",
+                source = "imageRender.effect",
+                target = "imageRender.effect",
             },
          },
     },
@@ -78,13 +78,13 @@ return
             },
 			--SpriteRender
 			{
-                source = "spriteRender.vshd",
-                target = "spriteRender.vshd",
+                source = "imageRender.vshd",
+                target = "imageRender.vshd",
 				extraInfo = { dependencies = { "shaders.common" }, optionalArguments = {"vertex"}, }
             },
 			{
-                source = "spriteRender.fshd",
-                target = "spriteRender.fshd",
+                source = "imageRender.fshd",
+                target = "imageRender.fshd",
 				extraInfo = { dependencies = { "shaders.common" }, optionalArguments = {"fragment"}, }
             },
          },
@@ -174,8 +174,8 @@ return
                 target = "debugPrimitives.material",
             },
 			{
-                source = "spriteRender.material",
-                target = "spriteRender.material",
+                source = "imageRender.material",
+                target = "imageRender.material",
             },
 		 },
 	},

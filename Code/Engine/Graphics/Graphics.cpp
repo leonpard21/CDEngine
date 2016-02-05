@@ -13,13 +13,13 @@
 #include "Common/MeshRender.h"
 #include "Common/Camera.h"
 #include "Common/DebugMesh.h"
-#include "Common/SpriteRender.h"
+#include "Common/ImageRender.h"
 #include "Engine/Math/ColMatrix.h"
 
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 #define DRAW_DEBUG_SHAPES
-//#endif
+#endif
 
 // Interface
 //==========
@@ -42,8 +42,8 @@ bool EAE_Engine::Graphics::Initialize( const HWND i_renderingWindow )
 #ifdef DRAW_DEBUG_SHAPES
 	DebugMeshes::GetInstance().Init();
 #endif
-	//SpriteManager::GetInstance()->Init();
-	SpriteRenderManager::GetInstance()->Init();
+	//ImageManager::GetInstance()->Init();
+	ImageRenderManager::GetInstance()->Init();
 	return true;
 OnError:
 	ShutDown();
@@ -84,7 +84,7 @@ void EAE_Engine::Graphics::Render()
 		RenderObjManager::GetInstance().Clean();
 		// Add the MeshRender to the RenderData3D list.
 		MeshRenderManager::GetInstance().UpdateRenderDataList();
-		SpriteRenderManager::GetInstance()->UpdateRenderDataList();
+		ImageRenderManager::GetInstance()->UpdateRenderDataList();
 #ifdef DRAW_DEBUG_SHAPES
 		// Add the DebugMesh to the RenderData3D list.
 		DebugMeshes::GetInstance().Update();
@@ -114,8 +114,8 @@ bool EAE_Engine::Graphics::ShutDown()
 	DebugMeshes::CleanInstance();
 #endif
 	MeshRenderManager::CleanInstance();
-	SpriteRenderManager::Destroy();
-	SpriteManager::Destroy();
+	ImageRenderManager::Destroy();
+	ImageManager::Destroy();
 	UniformVariableManager::CleanInstance();
 	MeshManager::CleanMeshManager();
 	RenderObjManager::CleanInstance();
@@ -132,7 +132,7 @@ void EAE_Engine::Graphics::CleanBeforeRestart()
 	CameraManager::CleanInstance();
 	MeshRenderManager::CleanInstance();
 	RenderObjManager::CleanInstance();
-	SpriteRenderManager::Destroy();
+	ImageRenderManager::Destroy();
 }
 
 void EAE_Engine::Graphics::RemoveMeshRender(Common::ITransform* pTrans)

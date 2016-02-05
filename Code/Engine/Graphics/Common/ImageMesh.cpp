@@ -1,4 +1,4 @@
-#include "SpriteMesh.h"
+#include "ImageMesh.h"
 #include "Device.h"
 #include "MeshOp.h"
 
@@ -8,7 +8,7 @@ namespace EAE_Engine
 	namespace Graphics
 	{
 #if defined(EAEENGINE_PLATFORM_D3D9)
-		bool SpriteMesh::Init(void* pVertices)
+		bool ImageMesh::Init(void* pVertices)
 		{
 			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
 			if (!pD3DDevice) return false;
@@ -37,13 +37,13 @@ namespace EAE_Engine
 				//we use D3DUSAGE_DYNAMIC the user can change the contents during run time 
 				usage |= (D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY);
 			}
-			const uint32_t bufferSize = 4 * sizeof(SpriteVertex);
+			const uint32_t bufferSize = 4 * sizeof(ImageVertex);
 			result = CreateVertexBuffer(_pVertexBuffer, pD3DDevice, usage, bufferSize);
 			result = FillVertexBuffer(_pVertexBuffer, pD3DDevice, pVertices, bufferSize);
 			return result;
 		}
 
-		void SpriteMesh::Release()
+		void ImageMesh::Release()
 		{
 			IDirect3DDevice9* pDevice = GetD3DDevice();
 			if (_pVertexBuffer)
@@ -59,17 +59,17 @@ namespace EAE_Engine
 			}
 		}
 
-		void SpriteMesh::ChangeVertexBuffer(void* pVertices)
+		void ImageMesh::ChangeVertexBuffer(void* pVertices)
 		{
 			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
 			if (!pD3DDevice) 
 				return;
-			const uint32_t bufferSize = 4 * sizeof(SpriteVertex);
+			const uint32_t bufferSize = 4 * sizeof(ImageVertex);
 			FillVertexBuffer(_pVertexBuffer, pD3DDevice, pVertices, bufferSize);
 		}
 
 		///////////////////////////////////////////////Internal Function////////////////////////////////////////////////////
-		bool RenderSpriteMeshInternal(SpriteMesh *pSpriteMesh)
+		bool RenderImageMeshInternal(ImageMesh *pImageMesh)
 		{
 			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
 			if (!pD3DDevice) return false;

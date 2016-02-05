@@ -1,5 +1,5 @@
-#ifndef EAE_ENGINE_GRAPHICS_SPRITERENDER_H
-#define EAE_ENGINE_GRAPHICS_SPRITERENDER_H
+#ifndef EAE_ENGINE_GRAPHICS_IMAGERENDER_H
+#define EAE_ENGINE_GRAPHICS_IMAGERENDER_H
 
 #include <vector>
 #include "Engine/General/Singleton.hpp"
@@ -7,7 +7,7 @@
 #include "Engine/Common/Interfaces.h"
 #include "BasicShapes.h"
 
-#include "Sprite.h"
+#include "Image.h"
 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 #include <d3d9.h>
@@ -26,46 +26,46 @@ namespace EAE_Engine
 	namespace Graphics
 	{
 		struct MaterialDesc;
-		class SpriteRender 
+		class AOSMesh;
+		class ImageRender 
 		{
-			SpriteRender();
+			ImageRender();
 		public:
-			SpriteRender(MaterialDesc* pMaterial, Sprite* pSprite, Common::ITransform* _pTransform);
-			~SpriteRender();
-			Math::ColMatrix44 GetSpriteMatrix();
+			ImageRender(MaterialDesc* pMaterial, Image* pImage, Common::ITransform* _pTransform);
+			~ImageRender();
+			Math::ColMatrix44 GetImageMatrix();
+			void CreateImageMesh(Rectangle i_pos, Rectangle i_texcoord);
 
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
 			Common::ITransform* GetTransform() { return _pTrans; }
-			Sprite* GetSprite() { return _pSprite; }
+			Image* GetImage() { return _pImage; }
 			MaterialDesc* GetMaterial() { return _pMaterial; }
+			AOSMesh* GetMesh() { return _pImageMesh; }
 		private:
 			MaterialDesc* _pMaterial;
-			Sprite* _pSprite;
+			Image* _pImage;
+			AOSMesh* _pImageMesh;
 			Common::ITransform* _pTrans;
 		};
 
-		class AOSMesh;
-		class SpriteRenderManager : public Singleton<SpriteRenderManager>
+		class ImageRenderManager : public Singleton<ImageRenderManager>
 		{
 		public:
-			SpriteRenderManager();
-			~SpriteRenderManager();
+			ImageRenderManager();
+			~ImageRenderManager();
 			void Init();
 			void Clean();
 
-			
-			SpriteRender* AddSpriteRender(Sprite* pSprite, Common::ITransform* pTransform);
+			ImageRender* AddImageRender(Image* pImage, Common::ITransform* pTransform);
 			void UpdateRenderDataList();
-
 			MaterialDesc* GetMaterial() { return _pMaterial; }
-			AOSMesh* GetSpriteMesh(){ return _pSpriteMesh; }
+
 		private:
 			MaterialDesc* _pMaterial;
-			AOSMesh* _pSpriteMesh;
-			std::vector<SpriteRender*> _spriteRenders;
+			std::vector<ImageRender*> _imageRenders;
 		};
 
 	}
 }
 
-#endif//EAE_ENGINE_GRAPHICS_SPRITERENDER_H
+#endif//EAE_ENGINE_GRAPHICS_IMAGERENDER_H

@@ -14,7 +14,7 @@ namespace EAE_Engine
 		class Effect;
 		struct MaterialDesc;
 		class MeshRender;
-		class SpriteRender;
+		class ImageRender;
 
 		// The design of this structure based on the idea of:
 		// Christer Ericson, http://realtimecollisiondetection.net/blog/?p=86
@@ -55,7 +55,7 @@ namespace EAE_Engine
 		enum RenderDataLayer 
 		{
 			Object3D = 0,
-			Object2D = 2, 
+			UIImage = 2, 
 		};
 
 		/*
@@ -80,7 +80,7 @@ namespace EAE_Engine
 		 * At last, we just need to sort the RenderObjList by the RenderWeight.
 		 */
 		struct RenderData3D;
-		struct RenderData2D;
+		struct RenderDataUI;
 		struct RenderObj
 		{
 			RenderObj() = default;
@@ -102,12 +102,12 @@ namespace EAE_Engine
 			};
 			std::vector<RenderObj>& GetRenderObjList() { return _renderObjs; }
 			std::vector<RenderData3D>& GetRenderData3DList() { return _renderData3Ds; }
-			std::vector<RenderData2D>& GetRenderData2DList() { return _renderData2Ds; }
+			std::vector<RenderDataUI>& GetRenderData2DList() { return _renderDataImages; }
 			void Clean();
 			void UpdateRenderObjList();
 		private:
 			std::vector<RenderData3D> _renderData3Ds;
-			std::vector<RenderData2D> _renderData2Ds;
+			std::vector<RenderDataUI> _renderDataImages;
 			std::vector<RenderObj> _renderObjs;
 
 		/////////////////////static_members////////////////////////////

@@ -92,25 +92,25 @@
     <ClCompile Include="Common\RenderDatas.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Direct3D9\Sprite.d3d9.cpp">
-      <Filter>Direct3D9</Filter>
-    </ClCompile>
     <ClCompile Include="Direct3D9\MeshOp.d3d9.cpp">
       <Filter>Direct3D9\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL\MeshOp.gl.cpp">
       <Filter>OpenGL\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Common\Sprite.cpp">
-      <Filter>Common\Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\SpriteRender.cpp">
-      <Filter>Common\Sprite</Filter>
-    </ClCompile>
     <ClCompile Include="Common\MeshRender.cpp">
       <Filter>Common\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Common\SpriteMesh.cpp">
+    <ClCompile Include="Direct3D9\Image.d3d9.cpp">
+      <Filter>Direct3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Image.cpp">
+      <Filter>Common\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ImageMesh.cpp">
+      <Filter>Common\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ImageRender.cpp">
       <Filter>Common\Sprite</Filter>
     </ClCompile>
   </ItemGroup>
@@ -183,16 +183,16 @@
     <ClInclude Include="Common\MeshOp.h">
       <Filter>Common\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Common\Sprite.h">
-      <Filter>Common\Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\SpriteRender.h">
-      <Filter>Common\Sprite</Filter>
-    </ClInclude>
     <ClInclude Include="Common\MeshRender.h">
       <Filter>Common\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Common\SpriteMesh.h">
+    <ClInclude Include="Common\Image.h">
+      <Filter>Common\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ImageMesh.h">
+      <Filter>Common\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ImageRender.h">
       <Filter>Common\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
