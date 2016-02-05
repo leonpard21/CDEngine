@@ -24,7 +24,7 @@ namespace EAE_Engine
 		//////////////////////////////////////ImageRender///////////////////////////////////////////////
 
 		ImageRender::ImageRender(MaterialDesc* pMaterial, Image* pImage, Common::ITransform* pTransform):
-			_pMaterial(pMaterial), _pImage(pImage), _pTrans(pTransform), 
+			_pMaterial(pMaterial), _pImage(pImage), _pTrans(pTransform), _pImageMesh(nullptr), 
 			_anchorPoint({0.5f, 0.5f, 0.5f, 0.5f}), _pivot(Math::Vector2(0.5f, 0.5f))
 		{
 		}
@@ -105,7 +105,10 @@ namespace EAE_Engine
 			};
 			EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr , 3, sizeof(ImageVertex), GL_TRIANGLE_STRIP };
 #endif
-			_pImageMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &_vertices[0], 4, nullptr, 0, nullptr, 0);
+			if (_pImageMesh == nullptr)
+				_pImageMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &_vertices[0], 4, nullptr, 0, nullptr, 0);
+			else
+				_pImageMesh->ChangeWholeBuffers(&_vertices[0], 4, nullptr, 0, nullptr, 0);
 		}
 
 		//////////////////////////////////////ImageManager///////////////////////////////////////////////
