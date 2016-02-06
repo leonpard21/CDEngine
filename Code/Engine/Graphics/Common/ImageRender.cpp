@@ -46,7 +46,7 @@ namespace EAE_Engine
 		_left, _right, how far the left edge and right edge from the anchorMinX and anchorMaxX,
 		_bottom, _top, how far the bottom edge and top edge from the anchorMinY and anchorMaxY
 		*/
-		void ImageRender::SetImagePos(Math::Vector4 values, uint32_t index)
+		void ImageRender::SetImageRect(Math::Vector4 values, uint32_t index)
 		{
 			_rectTransform.SetRect(values);
 			Rectangle texcoord;

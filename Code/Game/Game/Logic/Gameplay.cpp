@@ -132,7 +132,7 @@ void GameplayUpdate()
 		static uint32_t frameIndex = 0;
 		pNumberSpriteRender->SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 		EAE_Engine::Math::Vector4 screenRect = { 32.0f, -32.0f, 64.0f, 64.0f };
-		pNumberSpriteRender->SetImagePos(screenRect, frameIndex++ % 9);
+		pNumberSpriteRender->SetImageRect(screenRect, frameIndex++ % 9);
 	}
 }
 
@@ -224,7 +224,10 @@ namespace
 			EAE_Engine::Graphics::ImageRender* pRender1 = EAE_Engine::Graphics::ImageRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
 			pRender1->SetAnchor({ 0.5f, 0.5f, 0.5f, 0.5f });
 			EAE_Engine::Math::Vector4 screenRect = { 128.0f, 128.0f, 256.0f, 256.0f };
-			pRender1->SetImagePos(screenRect, 1);
+			pRender1->SetImageRect(screenRect, 1);
+			//pRender1->SetAnchor({ 0.0f, 1.0f, 0.0f, 1.0f });
+			//EAE_Engine::Math::Vector4 screenStretch = { 200.0f, 200.0f, 64.0f, 64.0f };
+			//pRender1->SetImageRect(screenStretch, 1);
 		}
 		{
 			EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(0.9f, 0.9f, 0.0f);
@@ -233,10 +236,10 @@ namespace
 			pNumberSpriteRender = EAE_Engine::Graphics::ImageRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
 			//pNumberSpriteRender->SetAnchor({ 0.0f, 1.0f, 0.0f, 1.0f });
 			//EAE_Engine::Math::Vector4 screenStretch = { 200.0f, 200.0f, 64.0f, 64.0f };
-			//pNumberSpriteRender->SetImagePos(screenStretch, 1);
+			//pNumberSpriteRender->SetImageRect(screenStretch, 1);
 			pNumberSpriteRender->SetAnchor({0.0f, 0.0f, 1.0f, 1.0f});
 			EAE_Engine::Math::Vector4 screenRect = {32.0f, -32.0f, 64.0f, 64.0f};
-			pNumberSpriteRender->SetImagePos(screenRect, 1);
+			pNumberSpriteRender->SetImageRect(screenRect, 1);
 		}
 		
 	}

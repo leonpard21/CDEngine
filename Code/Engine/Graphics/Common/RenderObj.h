@@ -19,7 +19,7 @@ namespace EAE_Engine
 		// The design of this structure based on the idea of:
 		// Christer Ericson, http://realtimecollisiondetection.net/blog/?p=86
 		// We use a weight to represent the weight of different RenderObjs.
-		// in this case we can sort the rendering order easily.
+		// in this case we can sort the rendering order based on different preferences easily.
 		struct RenderWeight
 		{
 			union 

@@ -47,7 +47,7 @@ namespace EAE_Engine
 			_left, _right, how far the left edge and right edge from the anchorMinX and anchorMaxX,
 			_bottom, _top, how far the bottom edge and top edge from the anchorMinY and anchorMaxY
 			*/
-			void SetImagePos(Math::Vector4 values, uint32_t index = 0);
+			void SetImageRect(Math::Vector4 values, uint32_t index = 0);
 
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
 			Common::ITransform* GetTransform() { return _pTrans; }

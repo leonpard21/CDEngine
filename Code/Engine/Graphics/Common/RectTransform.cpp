@@ -29,6 +29,8 @@ namespace EAE_Engine
 			ScreenRect screenInfo = GetScreenRect();
 			float screenWidth = screenInfo._width;
 			float screenHeight = screenInfo._height;
+			// We must know the position of the anchor points, 
+			// because whatever mode we are using we need to scale / move the ScreenRect based on the anchor positions. 
 			Math::Vector2 _anchorMinScreen(_anchorPoint._left * screenWidth, _anchorPoint._bottom * screenHeight);
 			Math::Vector2 _anchorMaxScreen(_anchorPoint._right * screenWidth, _anchorPoint._top * screenHeight);
 			Rectangle imageScreenRectangle;
