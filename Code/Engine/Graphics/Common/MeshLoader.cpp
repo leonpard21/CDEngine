@@ -3,7 +3,7 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
-#include "../Common/MeshOp.h"
+#include "../Common/AOSMeshOp.h"
 #include "../Common/Device.h"
 #include "../Graphics.h"
 #include "../GraphicsInclude.h"

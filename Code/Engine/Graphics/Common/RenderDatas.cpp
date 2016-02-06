@@ -4,7 +4,7 @@
 #include "MeshRender.h"
 #include "AOSMesh.h"
 #include "GraphicsInternal.h"
-#include "MeshOp.h"
+#include "AOSMeshOp.h"
 #include "ImageRender.h"
 #include "Device.h"
 

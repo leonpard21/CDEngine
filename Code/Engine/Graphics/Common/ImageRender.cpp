@@ -1,7 +1,7 @@
 #include "ImageRender.h"
 
 #include "AOSMesh.h"
-#include "MeshOp.h"
+#include "AOSMeshOp.h"
 #include "BinaryFileLoader.h"
 #include "Material.h"
 #include "Texture.h"
