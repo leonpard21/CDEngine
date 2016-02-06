@@ -67,6 +67,7 @@ namespace EAE_Engine
 			ImageVertex vertex0 = { i_pos._left, i_pos._bottom, 0.0f, i_texcoord._left, i_texcoord._top,
 				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
 			_vertices.push_back(vertex0);
+#if defined( EAEENGINE_PLATFORM_D3D9 )
 			ImageVertex vertex1 = { i_pos._left, i_pos._top, 0.0f, i_texcoord._left, i_texcoord._bottom,
 				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
 			_vertices.push_back(vertex1);
@@ -76,6 +77,19 @@ namespace EAE_Engine
 			ImageVertex vertex3 = { i_pos._right, i_pos._bottom, 0.0f, i_texcoord._right, i_texcoord._top,
 				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
 			_vertices.push_back(vertex3);
+#elif defined( EAEENGINE_PLATFORM_GL )
+			// We are working under the glFrontFace(GL_CCW) mode.
+			ImageVertex vertex1 = { i_pos._right, i_pos._bottom, 0.0f, i_texcoord._right, i_texcoord._top,
+				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
+			_vertices.push_back(vertex1);
+			ImageVertex vertex2 = { i_pos._left, i_pos._top, 0.0f, i_texcoord._left, i_texcoord._bottom,
+				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
+			_vertices.push_back(vertex2);
+			ImageVertex vertex3 = { i_pos._right, i_pos._top, 0.0f, i_texcoord._right, i_texcoord._bottom,
+				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
+			_vertices.push_back(vertex3);
+#endif
+
 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 			D3DVERTEXELEMENT9 elemnt_arr[] = {
