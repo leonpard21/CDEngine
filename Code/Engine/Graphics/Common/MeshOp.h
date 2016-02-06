@@ -1,5 +1,5 @@
-#ifndef EAE_ENGINE_GRAPHICS_AOSMESHOP_H
-#define EAE_ENGINE_GRAPHICS_AOSMESHOP_H
+#ifndef EAE_ENGINE_GRAPHICS_MESHOP_H
+#define EAE_ENGINE_GRAPHICS_MESHOP_H
 
 
 #include "AOSMesh.h"
@@ -20,10 +20,6 @@ namespace EAE_Engine
 		bool FillIndexBuffer(IDirect3DIndexBuffer9*& io_pVertexBuffer, IDirect3DDevice9* pDevice, void* pIndices, const uint32_t bufferSize);
 		
 #elif defined( EAEENGINE_PLATFORM_GL )
-		AOSMesh* CreateAOSMeshInternal(MeshGLVertexElements elements,
-			void* pVertices, uint32_t vertexCount, 
-			uint32_t* pIndices, uint32_t indexCount, 
-			sSubMesh* pSubMeshes, uint32_t subMeshCount);
 		bool CreateVertexArrayObj(GLuint& io_vertexArrayId);
 		bool DeleteVertexArrayObj(GLuint& o_vertexArrayId);
 		bool CreateBindBufferObj(GLuint& o_bufferId, GLenum bufferTarget);
@@ -34,4 +30,4 @@ namespace EAE_Engine
 	}
 }
 
-#endif//EAE_ENGINE_GRAPHICS_AOSMESHOP_H
+#endif//EAE_ENGINE_GRAPHICS_MESHOP_H

@@ -234,9 +234,6 @@ namespace
 			EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj2", spritePos);
 			EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/numbers.dds", 1, 10);
 			pNumberSpriteRender = EAE_Engine::Graphics::ImageRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
-			//pNumberSpriteRender->SetAnchor({ 0.0f, 1.0f, 0.0f, 1.0f });
-			//EAE_Engine::Math::Vector4 screenStretch = { 200.0f, 200.0f, 64.0f, 64.0f };
-			//pNumberSpriteRender->SetImageRect(screenStretch, 1);
 			pNumberSpriteRender->SetAnchor({0.0f, 0.0f, 1.0f, 1.0f});
 			EAE_Engine::Math::Vector4 screenRect = {32.0f, -32.0f, 64.0f, 64.0f};
 			pNumberSpriteRender->SetImageRect(screenRect, 1);

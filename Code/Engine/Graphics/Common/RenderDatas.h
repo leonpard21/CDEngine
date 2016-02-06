@@ -39,7 +39,6 @@ namespace EAE_Engine
 		struct RenderDataUI
 		{
 			ImageRender* _pImageRender;
-			Math::ColMatrix44 _localToWorld;
 
 			RenderDataUI() = default;
 			void ChangeEffectVariables();

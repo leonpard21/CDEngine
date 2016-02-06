@@ -138,7 +138,7 @@ namespace EAE_Engine
 				{ 2, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) },        // TextureCoordinate
 				{ 3, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(GLubyte) }  // Color
 			};
-			EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr , 4 , sizeof(sVertex), GL_TRIANGLES};
+			EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 4, {sizeof(sVertex), GL_TRIANGLES, GL_STATIC_DRAW } };
 #endif
 			pAOSMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, reinterpret_cast<sVertex*>(pBuffer + vertexOffset), vertexCount,
 				reinterpret_cast<uint32_t*>(pBuffer + indexOffset), indexCount,

@@ -115,14 +115,21 @@ namespace EAE_Engine
 			GLuint _sizeOfType;
 		};
 
+		struct BufferInfo
+		{
+			BufferInfo() = default;
+			GLsizei _stride;
+			GLenum _primitiveMode;
+			GLsizei _usage;
+		};
+
 		struct MeshGLVertexElements 
 		{
 			MeshGLVertexElements() = default;
 			~MeshGLVertexElements() {}
 			MeshGLVertexElement* _pGlements;
-			GLint _elementCount;
-			GLsizei _stride;
-			GLenum _primitiveMode;
+			GLsizei _elementCount;
+			BufferInfo _bufferInfo;
 		};
 
 		class AOSMesh
@@ -140,7 +147,7 @@ namespace EAE_Engine
 			inline GLuint GetVertexArrayID() const { return _vertexArrayId; }
 			inline GLuint GetVertexCount() const { return _vertexCount; }
 			inline GLuint GetIndexCount() const { return _indexCount; }
-			inline GLenum GetPrimitiveMode() const { return _primitiveMode; }
+			inline GLenum GetPrimitiveMode() const { return _bufferInfo._primitiveMode; }
 			inline uint32_t GetSubMeshCount() const { return (uint32_t)_subMeshes.size(); }
 			sSubMesh* GetSubMesh(uint32_t SubMeshIndex);
 			void SetSubMeshes(std::vector<sSubMesh>& subMeshes);
@@ -156,10 +163,15 @@ namespace EAE_Engine
 			GLuint _indexBufferId;
 			GLuint _vertexCount;
 			GLuint _indexCount;
-			GLsizei _stride;
-			GLenum _primitiveMode;
+			BufferInfo _bufferInfo;
 			std::vector<sSubMesh> _subMeshes;
 		};
+
+		AOSMesh* CreateAOSMeshInternal(MeshGLVertexElements elements,
+			void* pVertices, uint32_t vertexCount,
+			uint32_t* pIndices, uint32_t indexCount,
+			sSubMesh* pSubMeshes, uint32_t subMeshCount);
+
 #endif
 		bool RenderAOSMeshInternal(AOSMesh* pAOSMesh, uint32_t submeshindex = 0);
 	}

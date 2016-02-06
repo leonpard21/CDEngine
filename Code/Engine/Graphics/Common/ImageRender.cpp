@@ -93,7 +93,7 @@ namespace EAE_Engine
 				{ 1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) },        // UV
 				{ 2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(GLubyte) }  // Color
 			};
-			EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr , 3, sizeof(ImageVertex), GL_TRIANGLE_STRIP };
+			EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr , 3, { sizeof(ImageVertex), GL_TRIANGLE_STRIP, GL_DYNAMIC_DRAW } };
 #endif
 			if (_pImageMesh == nullptr)
 				_pImageMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &_vertices[0], 4, nullptr, 0, nullptr, 0);
@@ -141,8 +141,8 @@ namespace EAE_Engine
 			for (std::vector<ImageRender*>::iterator it = _imageRenders.begin(); it != _imageRenders.end(); ++it)
 			{
 				Common::ITransform* pTrans = (*it)->GetTransform();
-				Math::ColMatrix44 colMat = pTrans ? pTrans->GetLocalToWorldMatrix() : Math::ColMatrix44::Identity;
-				RenderDataUI renderData = { (*it), colMat };
+				//Math::ColMatrix44 colMat = pTrans ? pTrans->GetLocalToWorldMatrix() : Math::ColMatrix44::Identity;
+				RenderDataUI renderData = { (*it)};
 				renderDataList.push_back(renderData);
 			}
 		}

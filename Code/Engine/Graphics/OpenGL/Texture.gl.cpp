@@ -13,12 +13,12 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		bool LoadDDSTextureStatic(const char* const i_path, TextureInfo& textureInfo, std::string* o_errorMessage)
+		bool LoadDDSTextureStatic(const char* const i_path, TextureInfo& o_textureInfo, std::string* o_errorMessage)
 		{
 			bool wereThereErrors = false;
 			HANDLE fileHandle = INVALID_HANDLE_VALUE;
 			void* fileContents = NULL;
-			textureInfo._texture = 0;
+			o_textureInfo._texture = 0;
 
 			// Open the texture file
 			{
@@ -101,13 +101,13 @@ namespace EAE_Engine
 			// Create a new texture and make it active
 			{
 				const GLsizei textureCount = 1;
-				glGenTextures(textureCount, &textureInfo._texture);
+				glGenTextures(textureCount, &o_textureInfo._texture);
 				const GLenum errorCode = glGetError();
 				if (errorCode == GL_NO_ERROR)
 				{
 					// This code only supports 2D textures;
 					// if you want to support other types you will need to improve this code.
-					glBindTexture(GL_TEXTURE_2D, textureInfo._texture);
+					glBindTexture(GL_TEXTURE_2D, o_textureInfo._texture);
 					const GLenum errorCode = glGetError();
 					if (errorCode != GL_NO_ERROR)
 					{
@@ -281,12 +281,12 @@ namespace EAE_Engine
 				}
 				fileHandle = INVALID_HANDLE_VALUE;
 			}
-			if (wereThereErrors && (textureInfo._texture != 0))
+			if (wereThereErrors && (o_textureInfo._texture != 0))
 			{
 				const GLsizei textureCount = 1;
-				glDeleteTextures(textureCount, &textureInfo._texture);
+				glDeleteTextures(textureCount, &o_textureInfo._texture);
 				assert(glGetError == GL_NO_ERROR);
-				textureInfo._texture = 0;
+				o_textureInfo._texture = 0;
 			}
 
 			return !wereThereErrors;
@@ -303,14 +303,14 @@ namespace EAE_Engine
 		}
 
 ////////////////////////////////////////////////Member Functions////////////////////////////////////////////
-		tTexture TextureManager::LoadTexture(const char* pTexturePath)
+		TextureInfo TextureManager::LoadTexture(const char* pTexturePath)
 		{
 			std::string key = GetFileNameWithoutExtension(pTexturePath);
 			for (std::map<const char*, TextureInfo>::const_iterator iter = _textures.begin(); iter != _textures.end(); ++iter)
 			{
 				if (strcmp(iter->first, key.c_str()) == 0)
 				{
-					return iter->second._texture;
+					return iter->second;
 				}
 			}
 			TextureInfo o_textureInfo;
@@ -319,7 +319,7 @@ namespace EAE_Engine
 			glBindTexture(GL_TEXTURE_2D, 0);
 			if(result)
 				_textures.insert(std::pair<const char*, TextureInfo>(_strdup(key.c_str()), o_textureInfo));
-			return o_textureInfo._texture;
+			return o_textureInfo;
 		}
 
 		void TextureManager::Clean()

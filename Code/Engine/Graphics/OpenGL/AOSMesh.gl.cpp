@@ -1,5 +1,5 @@
 #include "../Common/AOSMesh.h"
-#include "../Common/AOSMeshOp.h"
+#include "../Common/MeshOp.h"
 #include "UserOutput/UserOutput.h"
 #include <string>
 #include <sstream>
@@ -12,7 +12,8 @@ namespace EAE_Engine
 		AOSMesh::AOSMesh() : _vertexArrayId(0), 
 			_vertexBufferId(0), _indexBufferId(0), 
 			_vertexCount(0), _indexCount(0), 
-			_primitiveMode(GL_TRIANGLES), _stride(0) {}
+			_bufferInfo({ 0, GL_TRIANGLES, 0})
+		{}
 
 		AOSMesh::~AOSMesh()
 		{
@@ -26,9 +27,8 @@ namespace EAE_Engine
 			bool wereThereErrors = false;
 			_vertexBufferId = 0;
 			_indexBufferId = 0;
-			_primitiveMode = elements._primitiveMode;
-			_stride = elements._stride;
-			assert(_stride > 0);
+			_bufferInfo = elements._bufferInfo;
+			assert(_bufferInfo._stride > 0);
 			// Create a vertex array object and make it active
 			if (!CreateVertexArrayObj(_vertexArrayId)) 
 			{
@@ -92,14 +92,14 @@ namespace EAE_Engine
 			{
 				result = false;
 			}
-			if (!InitVertexFormat(elements, _stride))
+			if (!InitVertexFormat(elements, _bufferInfo._stride))
 			{
 				result = false;
 			}
 			// Assign the data to the vertex buffer
 			 _vertexCount = vertexCount;//record how many vertex in this AOSMesh
-			const uint32_t bufferSize = vertexCount * _stride;
-			result = FillGLBuffer(GL_ARRAY_BUFFER, pVertices, bufferSize, GL_STATIC_DRAW);
+			const uint32_t bufferSize = vertexCount * _bufferInfo._stride;
+			result = FillGLBuffer(GL_ARRAY_BUFFER, pVertices, bufferSize, _bufferInfo._usage);//suage: GL_STATIC_DRAW
 			return result;
 		}
 
@@ -113,7 +113,7 @@ namespace EAE_Engine
 			// Allocate space and copy the triangle data into the index buffer
 			_indexCount = indexCount;
 			const GLsizeiptr bufferSize = indexCount * sizeof(uint32_t);
-			result = FillGLBuffer(GL_ELEMENT_ARRAY_BUFFER, pIndexData, bufferSize, GL_STATIC_DRAW);
+			result = FillGLBuffer(GL_ELEMENT_ARRAY_BUFFER, pIndexData, bufferSize, _bufferInfo._usage);//suage: GL_STATIC_DRAW
 			// Set the SubMeshes Information
 			for (uint32_t subMeshIndex = 0; subMeshIndex < subMeshCount; ++subMeshIndex)
 			{
@@ -154,7 +154,8 @@ namespace EAE_Engine
 			//Update VOA
 			glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferId);
 			_vertexCount = vertexCount;
-			bool result = FillGLBuffer(GL_ARRAY_BUFFER, pVertices, _vertexCount * _stride, GL_STATIC_DRAW);
+			const uint32_t bufferSize = vertexCount * _bufferInfo._stride;
+			bool result = FillGLBuffer(GL_ARRAY_BUFFER, pVertices, bufferSize, GL_STATIC_DRAW);
 			//Update IOA
 			if (pIndexData != nullptr) 
 			{
@@ -201,6 +202,90 @@ namespace EAE_Engine
 		{
 			_subMeshes.clear();
 			_subMeshes = subMeshes;
+		}
+
+/////////////////////////////////////////////////////////InteralFunctions///////////////////////////////////////////////////////
+		bool RenderElements(AOSMesh* pAOSMesh, uint32_t subMeshIndex);
+		bool RenderArrays(AOSMesh* pAOSMesh);
+
+		AOSMesh* CreateAOSMeshInternal(MeshGLVertexElements elements,
+			void* pVertices, uint32_t vertexCount,
+			uint32_t* pIndices, uint32_t indexCount,
+			sSubMesh* pSubMeshes, uint32_t subMeshCount)
+		{
+			AOSMesh* pMesh = new AOSMesh();
+			pMesh->CreateBuffers(elements,
+				pVertices, vertexCount,
+				pIndices, indexCount,
+				pSubMeshes, subMeshCount);
+			return pMesh;
+		}
+
+		bool RenderAOSMeshInternal(AOSMesh* pAOSMesh, uint32_t subMeshIndex)
+		{
+			bool result = true;
+			if (pAOSMesh->GetIndexCount() > 0)
+			{
+				// The mesh uses indices
+				result = RenderElements(pAOSMesh, subMeshIndex);
+			}
+			else
+			{
+				// The mesh doesn't uses indices
+				result = RenderArrays(pAOSMesh);
+			}
+			return result;
+		}
+
+		bool RenderElements(AOSMesh* pAOSMesh, uint32_t subMeshIndex)
+		{
+			// Render objects from the current streams
+			{
+				// We are using triangles as the "primitive" type,
+				// and we have defined the vertex buffer as a triangle list
+				// (meaning that every triangle is defined by three vertices)
+				const GLenum mode = pAOSMesh->GetPrimitiveMode();
+				// We'll use 32-bit indices in this class to keep things simple
+				// (i.e. every index will be a 32 bit unsigned integer)
+				const GLenum indexType = GL_UNSIGNED_INT;
+				const uint32_t sizeOfIndex = sizeof(uint32_t);
+				// It is possible to start rendering in the middle of an index buffer
+				{
+					// Remember the void ptr should point to a byte, 
+					// so we need to calculate the offset based on the size of each index
+					const GLvoid* const offset = (GLvoid*)(pAOSMesh->GetSubMesh(subMeshIndex)->_firstIndex * sizeOfIndex);
+					// Draw the AOSMesh
+					const GLsizei vertexCountToRender = pAOSMesh->GetSubMesh(subMeshIndex)->GetIndicesCount();//count of vertices we want to render.
+					glDrawElements(mode, vertexCountToRender, indexType, offset);
+					assert(glGetError() == GL_NO_ERROR);
+				}
+			}
+			return glGetError() == GL_NO_ERROR;
+		}
+
+		bool RenderArrays(AOSMesh* pAOSMesh)
+		{
+			// Render objects from the current streams
+			{
+				const GLenum mode = pAOSMesh->GetPrimitiveMode();
+				const GLsizei vertexCountToRender = pAOSMesh->GetVertexCount();
+				const GLint firstofTheVertices = 0;
+				{
+					GLsizei primitiveCountToRender = vertexCountToRender;
+					switch (mode)
+					{
+					case GL_TRIANGLE_STRIP:
+						primitiveCountToRender = vertexCountToRender;// -2;
+						break;
+					default:
+						primitiveCountToRender = vertexCountToRender;
+					}
+					// Draw the AOSMesh
+					glDrawArrays(mode, firstofTheVertices, primitiveCountToRender);
+					assert(glGetError() == GL_NO_ERROR);
+				}
+			}
+			return glGetError() == GL_NO_ERROR;
 		}
 
 	}
