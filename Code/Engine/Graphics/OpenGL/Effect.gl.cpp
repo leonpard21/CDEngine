@@ -24,7 +24,7 @@ namespace EAE_Engine
 			if (!LoadAttachFragmentShader(_programId, i_pFSfilePath))
 				return false;
 			// Link the program
-			if (!LinkProgram(_programId))
+			if (!LinkProgramAfterAttached(_programId))
 				return false;
 			ExtractShaderUniforms();
 			_renderState = renderState;
