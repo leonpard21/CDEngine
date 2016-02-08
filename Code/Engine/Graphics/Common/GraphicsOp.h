@@ -29,12 +29,11 @@ namespace EAE_Engine
 		bool FillGLBuffer(GLenum bufferTarget, void* pVertices, const uint32_t bufferSize, GLenum usage);
 		// Effect Helpers
 		bool CreateProgram(GLuint& o_programId);
-		bool DeleteProgram(GLuint& o_programId);
+		bool DeleteProgram(GLuint& i_programId);
 		bool LoadCompileShader(GLuint& o_shaderId, const char* i_pShaderFilePath, GLenum shaderType);
 		bool AttachShaderToProgram(GLuint& io_programId, GLuint& i_shaderId);
-		bool DeleteShader(GLuint& io_shaderId);
-		bool LinkProgram(GLuint& programId);
-
+		bool DeleteShader(GLuint& i_shaderId);
+		bool LinkProgram(GLuint& io_programId);
 #endif
 
 	}

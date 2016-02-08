@@ -9,19 +9,6 @@
 #include "../../UserOutput/UserOutput.h"
 
 
-namespace 
-{
-	// This helper struct exists to be able to dynamically allocate memory to get "log info"
-	// which will automatically be freed when the struct goes out of scope
-	struct sLogInfo
-	{
-		GLchar* memory;
-		sLogInfo(const size_t i_size) { memory = reinterpret_cast<GLchar*>(malloc(i_size)); }
-		~sLogInfo() { if (memory) free(memory); }
-	};
-}
-
-
 namespace EAE_Engine
 {
 	namespace Graphics
@@ -30,23 +17,15 @@ namespace EAE_Engine
 		{
 			// Create a program
 			if (!CreateProgram(_programId))
-			{
 				return false;
-			}
 			// Load and attach the shaders
 			if (!GLLoadAttachVertexShader(_programId, i_pVSfilePath))
-			{
 				return false;
-			}
 			if (!GLLoadAttachFragmentShader(_programId, i_pFSfilePath))
-			{
 				return false;
-			}
 			// Link the program
 			if (!LinkProgram(_programId))
-			{
 				return false;
-			}
 			ExtractShaderUniforms();
 			_renderState = renderState;
 			return true;
@@ -67,28 +46,6 @@ namespace EAE_Engine
 		{
 			assert(glGetError() == GL_NO_ERROR);
 			return glGetError() == GL_NO_ERROR;
-		}
-
-
-		bool Effect::GLLoadAttachFragmentShader(GLuint& io_programId, const char* i_pFSFilePath)
-		{
-			bool wereThereErrors = false;
-			// Load the source code from file and set it into a shader
-			GLuint fragmentShaderId = 0;
-			if (!LoadCompileShader(fragmentShaderId, i_pFSFilePath, GL_FRAGMENT_SHADER))
-			{
-				wereThereErrors = true;
-				goto OnExit;
-			}
-			// Attach the shader to the program
-			if (!AttachShaderToProgram(io_programId, fragmentShaderId))
-			{
-				wereThereErrors = true;
-				goto OnExit;
-			}
-		OnExit:
-			DeleteShader(fragmentShaderId);
-			return !wereThereErrors;
 		}
 
 		bool Effect::GLLoadAttachVertexShader(GLuint& io_programId, const char* i_pVSFilePath)
@@ -115,6 +72,27 @@ namespace EAE_Engine
 			return !wereThereErrors;
 		}
 	
+		bool Effect::GLLoadAttachFragmentShader(GLuint& io_programId, const char* i_pFSFilePath)
+		{
+			bool wereThereErrors = false;
+			// Load the source code from file and set it into a shader
+			GLuint fragmentShaderId = 0;
+			if (!LoadCompileShader(fragmentShaderId, i_pFSFilePath, GL_FRAGMENT_SHADER))
+			{
+				wereThereErrors = true;
+				goto OnExit;
+			}
+			// Attach the shader to the program
+			if (!AttachShaderToProgram(io_programId, fragmentShaderId))
+			{
+				wereThereErrors = true;
+				goto OnExit;
+			}
+		OnExit:
+			DeleteShader(fragmentShaderId);
+			return !wereThereErrors;
+		}
+
 		void Effect::ExtractShaderUniforms()
 		{
 			const int BUFF_SIZE = 64;

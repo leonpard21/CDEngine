@@ -477,12 +477,12 @@ namespace EAE_Engine
 			return true;
 		}
 
-		bool DeleteProgram(GLuint& o_programId) 
+		bool DeleteProgram(GLuint& i_programId) 
 		{
 			bool wereThereErrors = false;
-			if (o_programId != 0)
+			if (i_programId != 0)
 			{
-				glDeleteProgram(o_programId);
+				glDeleteProgram(i_programId);
 				const GLenum errorCode = glGetError();
 				if (errorCode != GL_NO_ERROR)
 				{
@@ -492,7 +492,7 @@ namespace EAE_Engine
 					EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
 					wereThereErrors = true;
 				}
-				o_programId = 0;
+				i_programId = 0;
 			}
 			return !wereThereErrors;
 		}
@@ -532,12 +532,12 @@ namespace EAE_Engine
 		// once it has been attached to the program we can (and should) delete our reference to it
 		// (any associated memory that OpenGL has allocated internally will be freed
 		// once the program is deleted)
-		bool DeleteShader(GLuint& io_shaderId)
+		bool DeleteShader(GLuint& i_shaderId)
 		{
 			bool wereThereErrors = false;
-			if (io_shaderId != 0)
+			if (i_shaderId != 0)
 			{
-				glDeleteShader(io_shaderId);
+				glDeleteShader(i_shaderId);
 				const GLenum errorCode = glGetError();
 				if (errorCode != GL_NO_ERROR)
 				{
@@ -547,7 +547,7 @@ namespace EAE_Engine
 					EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
 					wereThereErrors = true;
 				}
-				io_shaderId = 0;
+				i_shaderId = 0;
 			}
 			return !wereThereErrors;
 		}
@@ -569,9 +569,9 @@ namespace EAE_Engine
 		}
 
 		// Link the program
-		bool LinkProgram(GLuint& programId)
+		bool LinkProgram(GLuint& io_programId)
 		{
-			glLinkProgram(programId);
+			glLinkProgram(io_programId);
 			GLenum errorCode = glGetError();
 			if (errorCode == GL_NO_ERROR)
 			{
@@ -581,13 +581,13 @@ namespace EAE_Engine
 				std::string linkInfo;
 				{
 					GLint infoSize;
-					glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &infoSize);
+					glGetProgramiv(io_programId, GL_INFO_LOG_LENGTH, &infoSize);
 					errorCode = glGetError();
 					if (errorCode == GL_NO_ERROR)
 					{
 						sLogInfo info(static_cast<size_t>(infoSize));
 						GLsizei* dontReturnLength = NULL;
-						glGetProgramInfoLog(programId, static_cast<GLsizei>(infoSize), dontReturnLength, info.memory);
+						glGetProgramInfoLog(io_programId, static_cast<GLsizei>(infoSize), dontReturnLength, info.memory);
 						errorCode = glGetError();
 						if (errorCode == GL_NO_ERROR)
 						{
@@ -614,7 +614,7 @@ namespace EAE_Engine
 				// Check to see if there were link errors
 				GLint didLinkingSucceed;
 				{
-					glGetProgramiv(programId, GL_LINK_STATUS, &didLinkingSucceed);
+					glGetProgramiv(io_programId, GL_LINK_STATUS, &didLinkingSucceed);
 					errorCode = glGetError();
 					if (errorCode == GL_NO_ERROR)
 					{
