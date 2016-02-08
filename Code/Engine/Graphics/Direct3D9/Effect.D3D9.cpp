@@ -15,7 +15,7 @@ namespace EAE_Engine
 		bool Effect::Init(const char* i_pVSfilePath, const char* i_pFSfilePath, uint32_t renderState)
 		{
 			ShaderContent* pVS = LoadShader(i_pVSfilePath);
-			if (!LoadVertexShader(pVS->GetBufferPtr()))
+			if (!GLLoadAttachVertexShader(pVS->GetBufferPtr()))
 			{
 				SAFE_DELETE(pVS);
 				return false;
@@ -23,7 +23,7 @@ namespace EAE_Engine
 			ExtratVSUniforms();
 			SAFE_DELETE(pVS);
 			ShaderContent* pFS = LoadShader(i_pFSfilePath);
-			if (!LoadFragmentShader(pFS->GetBufferPtr()))
+			if (!GLLoadAttachFragmentShader(pFS->GetBufferPtr()))
 			{
 				Release();
 				SAFE_DELETE(pFS);

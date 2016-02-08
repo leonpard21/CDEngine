@@ -1,6 +1,6 @@
 #include "ImageMesh.h"
 #include "Device.h"
-#include "AOSMeshOp.h"
+#include "GraphicsOp.h"
 
 
 namespace EAE_Engine

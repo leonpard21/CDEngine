@@ -76,9 +76,8 @@ namespace EAE_Engine
 			void OnNotify(UniformVariable* pVariable, GLint location);
 			void Update();
 		private:
-			bool LoadAndAllocateShaderProgram(const char* i_path, void*& o_shader, size_t& o_size, std::string* o_errorMessage);
-			bool LoadFragmentShader(const GLuint o_programId, const char* i_pFSFilePath);
-			bool LoadVertexShader(const GLuint o_programId, const char* i_pVSFilePath);
+			bool GLLoadAttachVertexShader(GLuint& io_programId, const char* i_pVSFilePath);
+			bool GLLoadAttachFragmentShader(GLuint& io_programId, const char* i_pFSFilePath);
 			void ExtractShaderUniforms();
 			// OpenGL encapsulates a matching vertex shader and fragment shader into what it calls a "program".
 

@@ -110,11 +110,11 @@
     <ClCompile Include="Common\RectTransform.cpp">
       <Filter>Common\Image</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGL\AOSMeshOp.gl.cpp">
-      <Filter>OpenGL\Mesh</Filter>
+    <ClCompile Include="OpenGL\GraphicsOp.gl.cpp">
+      <Filter>OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Direct3D9\AOSMeshOp.d3d9.cpp">
-      <Filter>Direct3D9\Mesh</Filter>
+    <ClCompile Include="Direct3D9\GraphicsOp.d3d9.cpp">
+      <Filter>Direct3D9</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -195,8 +195,8 @@
     <ClInclude Include="Common\RectTransform.h">
       <Filter>Common\Image</Filter>
     </ClInclude>
-    <ClInclude Include="Common\AOSMeshOp.h">
-      <Filter>Common\Mesh</Filter>
+    <ClInclude Include="Common\GraphicsOp.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

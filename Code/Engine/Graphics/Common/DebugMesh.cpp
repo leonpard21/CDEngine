@@ -4,7 +4,7 @@
 #include "Math/ColMatrix.h"
 #include <vector>
 #include "BinaryFileLoader.h"
-#include "AOSMeshOp.h"
+#include "GraphicsOp.h"
 #include "RenderObj.h"
 #include "RenderDatas.h"
 #include "MeshRender.h"

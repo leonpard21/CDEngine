@@ -47,7 +47,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Direct3D9\AOSMeshOp.d3d9.cpp">
+    <ClCompile Include="Direct3D9\GraphicsOp.d3d9.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -91,7 +91,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="OpenGL\AOSMeshOp.gl.cpp">
+    <ClCompile Include="OpenGL\GraphicsOp.gl.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -150,7 +150,7 @@
     <ClInclude Include="Common\GraphicsInternal.h" />
     <ClInclude Include="Common\BinaryFileLoader.h" />
     <ClInclude Include="Common\Material.h" />
-    <ClInclude Include="Common\AOSMeshOp.h" />
+    <ClInclude Include="Common\GraphicsOp.h" />
     <ClInclude Include="Common\RectTransform.h" />
     <ClInclude Include="Common\RenderDatas.h" />
     <ClInclude Include="Common\RenderObj.h" />

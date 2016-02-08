@@ -1,5 +1,5 @@
-#ifndef EAE_ENGINE_GRAPHICS_MESHOP_H
-#define EAE_ENGINE_GRAPHICS_MESHOP_H
+#ifndef EAE_ENGINE_GRAPHICS_GRAPHICSOP_H
+#define EAE_ENGINE_GRAPHICS_GRAPHICSOP_H
 
 
 #include "AOSMesh.h"
@@ -20,14 +20,24 @@ namespace EAE_Engine
 		bool FillIndexBuffer(IDirect3DIndexBuffer9*& io_pVertexBuffer, IDirect3DDevice9* pDevice, void* pIndices, const uint32_t bufferSize);
 		
 #elif defined( EAEENGINE_PLATFORM_GL )
+		// Buffer Helpers
 		bool CreateVertexArrayObj(GLuint& io_vertexArrayId);
 		bool DeleteVertexArrayObj(GLuint& o_vertexArrayId);
 		bool CreateBindBufferObj(GLuint& o_bufferId, GLenum bufferTarget);
 		bool DeleteBufferObj(GLuint& io_BufferID, GLsizei bufferCount = 1);
 		bool InitVertexFormat(const MeshGLVertexElements& elements, GLsizei stride);
 		bool FillGLBuffer(GLenum bufferTarget, void* pVertices, const uint32_t bufferSize, GLenum usage);
+		// Effect Helpers
+		bool CreateProgram(GLuint& o_programId);
+		bool DeleteProgram(GLuint& o_programId);
+		bool LoadCompileShader(GLuint& o_shaderId, const char* i_pShaderFilePath, GLenum shaderType);
+		bool AttachShaderToProgram(GLuint& io_programId, GLuint& i_shaderId);
+		bool DeleteShader(GLuint& io_shaderId);
+		bool LinkProgram(GLuint& programId);
+
 #endif
+
 	}
 }
 
-#endif//EAE_ENGINE_GRAPHICS_MESHOP_H
+#endif//EAE_ENGINE_GRAPHICS_GRAPHICSOP_H
