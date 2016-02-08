@@ -496,30 +496,30 @@ namespace EAE_Engine
 			}
 			return !wereThereErrors;
 		}
+		
+		//Check if the runtime compiling shader is supported or not.
+		bool IsRunTimeCompilingShdSupported()
+		{
+			// Verify that compiling shaders at run-time is supported 
+			GLboolean isShaderCompilingSupported;
+			glGetBooleanv(GL_SHADER_COMPILER, &isShaderCompilingSupported);
+			if (!isShaderCompilingSupported)
+			{
+				EAE_Engine::UserOutput::Print("Compiling shaders at run-time isn't supported on this implementation (this should never happen)");
+				return false;
+			}
+			return true;
+		}
 
 		bool LoadCompileShader(GLuint& o_shaderId, const char* i_pShaderFilePath, GLenum shaderType)
 		{
-			// Verify that compiling shaders at run-time is supported 
-			{
-				GLboolean isShaderCompilingSupported;
-				glGetBooleanv(GL_SHADER_COMPILER, &isShaderCompilingSupported);
-				if (!isShaderCompilingSupported)
-				{
-					EAE_Engine::UserOutput::Print("Compiling shaders at run-time isn't supported on this implementation (this should never happen)");
-					return false;
-				}
-			}
-			bool wereThereErrors = false;
+			if (!IsRunTimeCompilingShdSupported())
+				return false;
 			// Load the source code from file and set it into a shader
 			void* pShaderSource = LoadShaderFromFile(o_shaderId, i_pShaderFilePath, shaderType);
 			if (pShaderSource == nullptr)
-			{
-				wereThereErrors = true;
-				goto OnExit;
-			}
-			wereThereErrors = !CompileShaderAfterLoaded(o_shaderId);
-
-		OnExit:
+				return false;
+			bool wereThereErrors = CompileShaderAfterLoaded(o_shaderId);
 			if (pShaderSource != NULL)
 			{
 				free(pShaderSource);
@@ -528,6 +528,22 @@ namespace EAE_Engine
 			return !wereThereErrors;
 		}
 	
+		// Attach the shader to the program
+		bool AttachShaderToProgram(GLuint& io_programId, GLuint& i_shaderId)
+		{
+			glAttachShader(io_programId, i_shaderId);
+			const GLenum errorCode = glGetError();
+			if (errorCode != GL_NO_ERROR)
+			{
+				std::stringstream errorMessage;
+				errorMessage << "OpenGL failed to attach the vertex shader to the program: " <<
+					reinterpret_cast<const char*>(gluErrorString(errorCode));
+				EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
+				return false;
+			}
+			return true;
+		}
+
 		// Even if the shader was successfully compiled
 		// once it has been attached to the program we can (and should) delete our reference to it
 		// (any associated memory that OpenGL has allocated internally will be freed
@@ -550,22 +566,6 @@ namespace EAE_Engine
 				i_shaderId = 0;
 			}
 			return !wereThereErrors;
-		}
-
-		// Attach the shader to the program
-		bool AttachShaderToProgram(GLuint& io_programId, GLuint& i_shaderId)
-		{
-			glAttachShader(io_programId, i_shaderId);
-			const GLenum errorCode = glGetError();
-			if (errorCode != GL_NO_ERROR)
-			{
-				std::stringstream errorMessage;
-				errorMessage << "OpenGL failed to attach the vertex shader to the program: " <<
-					reinterpret_cast<const char*>(gluErrorString(errorCode));
-				EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
-				return false;
-			}
-			return true;
 		}
 
 		// Link the program

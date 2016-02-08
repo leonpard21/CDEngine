@@ -30,6 +30,7 @@ namespace EAE_Engine
 		// Effect Helpers
 		bool CreateProgram(GLuint& o_programId);
 		bool DeleteProgram(GLuint& i_programId);
+		bool IsRunTimeCompilingShdSupported();
 		bool LoadCompileShader(GLuint& o_shaderId, const char* i_pShaderFilePath, GLenum shaderType);
 		bool AttachShaderToProgram(GLuint& io_programId, GLuint& i_shaderId);
 		bool DeleteShader(GLuint& i_shaderId);
