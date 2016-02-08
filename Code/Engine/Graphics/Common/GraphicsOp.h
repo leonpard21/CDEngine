@@ -34,7 +34,7 @@ namespace EAE_Engine
 		bool LoadCompileShader(GLuint& o_shaderId, const char* i_pShaderFilePath, GLenum shaderType);
 		bool AttachShaderToProgram(GLuint& io_programId, GLuint& i_shaderId);
 		bool DeleteShader(GLuint& i_shaderId);
-		bool LinkProgram(GLuint& io_programId);
+		bool LinkProgramAfterAttached(GLuint& io_programId);
 #endif
 
 	}

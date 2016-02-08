@@ -210,81 +210,79 @@ namespace
 	bool CompileShaderAfterLoaded(GLuint& o_shaderId)
 	{
 		// Compile the shader source code
+		glCompileShader(o_shaderId);
+		GLenum errorCode = glGetError();
+		if (errorCode == GL_NO_ERROR)
 		{
-			glCompileShader(o_shaderId);
-			GLenum errorCode = glGetError();
-			if (errorCode == GL_NO_ERROR)
+			// Get compilation info
+			// (this won't be used unless compilation fails
+			// but it can be useful to look at when debugging)
+			std::string compilationInfo;
 			{
-				// Get compilation info
-				// (this won't be used unless compilation fails
-				// but it can be useful to look at when debugging)
-				std::string compilationInfo;
+				GLint infoSize;
+				glGetShaderiv(o_shaderId, GL_INFO_LOG_LENGTH, &infoSize);
+				errorCode = glGetError();
+				if (errorCode == GL_NO_ERROR)
 				{
-					GLint infoSize;
-					glGetShaderiv(o_shaderId, GL_INFO_LOG_LENGTH, &infoSize);
+					sLogInfo info(static_cast<size_t>(infoSize));
+					GLsizei* dontReturnLength = NULL;
+					glGetShaderInfoLog(o_shaderId, static_cast<GLsizei>(infoSize), dontReturnLength, info.memory);
 					errorCode = glGetError();
 					if (errorCode == GL_NO_ERROR)
 					{
-						sLogInfo info(static_cast<size_t>(infoSize));
-						GLsizei* dontReturnLength = NULL;
-						glGetShaderInfoLog(o_shaderId, static_cast<GLsizei>(infoSize), dontReturnLength, info.memory);
-						errorCode = glGetError();
-						if (errorCode == GL_NO_ERROR)
-						{
-							compilationInfo = info.memory;
-						}
-						else
-						{
+						compilationInfo = info.memory;
+					}
+					else
+					{
 
-							std::stringstream errorMessage;
-							errorMessage << "OpenGL failed to get compilation info of the vertex shader source code: " <<
-								reinterpret_cast<const char*>(gluErrorString(errorCode));
-							EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
-							return false;
-						}
-					}
-					else
-					{
 						std::stringstream errorMessage;
-						errorMessage << "OpenGL failed to get the length of the vertex shader compilation info: " <<
+						errorMessage << "OpenGL failed to get compilation info of the vertex shader source code: " <<
 							reinterpret_cast<const char*>(gluErrorString(errorCode));
 						EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
 						return false;
 					}
 				}
-				// Check to see if there were compilation errors
-				GLint didCompilationSucceed;
+				else
 				{
-					glGetShaderiv(o_shaderId, GL_COMPILE_STATUS, &didCompilationSucceed);
-					errorCode = glGetError();
-					if (errorCode == GL_NO_ERROR)
-					{
-						if (didCompilationSucceed == GL_FALSE)
-						{
-							std::stringstream errorMessage;
-							errorMessage << "The vertex shader failed to compile:\n" << compilationInfo;
-							EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
-							return false;
-						}
-					}
-					else
+					std::stringstream errorMessage;
+					errorMessage << "OpenGL failed to get the length of the vertex shader compilation info: " <<
+						reinterpret_cast<const char*>(gluErrorString(errorCode));
+					EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
+					return false;
+				}
+			}
+			// Check to see if there were compilation errors
+			GLint didCompilationSucceed;
+			{
+				glGetShaderiv(o_shaderId, GL_COMPILE_STATUS, &didCompilationSucceed);
+				errorCode = glGetError();
+				if (errorCode == GL_NO_ERROR)
+				{
+					if (didCompilationSucceed == GL_FALSE)
 					{
 						std::stringstream errorMessage;
-						errorMessage << "OpenGL failed to find out if compilation of the vertex shader source code succeeded: " <<
-							reinterpret_cast<const char*>(gluErrorString(errorCode));
+						errorMessage << "The vertex shader failed to compile:\n" << compilationInfo;
 						EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
 						return false;
 					}
 				}
+				else
+				{
+					std::stringstream errorMessage;
+					errorMessage << "OpenGL failed to find out if compilation of the vertex shader source code succeeded: " <<
+						reinterpret_cast<const char*>(gluErrorString(errorCode));
+					EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
+					return false;
+				}
 			}
-			else
-			{
-				std::stringstream errorMessage;
-				errorMessage << "OpenGL failed to compile the vertex shader source code: " <<
-					reinterpret_cast<const char*>(gluErrorString(errorCode));
-				EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
-				return false;
-			}
+		}
+		else
+		{
+			std::stringstream errorMessage;
+			errorMessage << "OpenGL failed to compile the vertex shader source code: " <<
+				reinterpret_cast<const char*>(gluErrorString(errorCode));
+			EAE_Engine::UserOutput::Print(errorMessage.str().c_str());
+			return false;
 		}
 		return true;
 	}
@@ -519,13 +517,15 @@ namespace EAE_Engine
 			void* pShaderSource = LoadShaderFromFile(o_shaderId, i_pShaderFilePath, shaderType);
 			if (pShaderSource == nullptr)
 				return false;
-			bool wereThereErrors = !CompileShaderAfterLoaded(o_shaderId);
+			bool result = CompileShaderAfterLoaded(o_shaderId);
+			// Since we have compiled the Shader from the Source, 
+			// we don't need the ShaderShource Anymore.
 			if (pShaderSource != NULL)
 			{
 				free(pShaderSource);
 				pShaderSource = NULL;
 			}
-			return !wereThereErrors;
+			return result;
 		}
 	
 		// Attach the shader to the program
@@ -569,7 +569,7 @@ namespace EAE_Engine
 		}
 
 		// Link the program
-		bool LinkProgram(GLuint& io_programId)
+		bool LinkProgramAfterAttached(GLuint& io_programId)
 		{
 			glLinkProgram(io_programId);
 			GLenum errorCode = glGetError();

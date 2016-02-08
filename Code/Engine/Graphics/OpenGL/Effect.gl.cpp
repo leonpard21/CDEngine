@@ -19,9 +19,9 @@ namespace EAE_Engine
 			if (!CreateProgram(_programId))
 				return false;
 			// Load and attach the shaders
-			if (!GLLoadAttachVertexShader(_programId, i_pVSfilePath))
+			if (!LoadAttachVertexShader(_programId, i_pVSfilePath))
 				return false;
-			if (!GLLoadAttachFragmentShader(_programId, i_pFSfilePath))
+			if (!LoadAttachFragmentShader(_programId, i_pFSfilePath))
 				return false;
 			// Link the program
 			if (!LinkProgram(_programId))
@@ -48,10 +48,11 @@ namespace EAE_Engine
 			return glGetError() == GL_NO_ERROR;
 		}
 
-		bool Effect::GLLoadAttachVertexShader(GLuint& io_programId, const char* i_pVSFilePath)
+		bool Effect::LoadAttachVertexShader(GLuint& io_programId, const char* i_pVSFilePath)
 		{
 			bool wereThereErrors = false;
 			GLuint vertexShaderId = 0;
+			// Load and compile the vertex shader
 			if (!LoadCompileShader(vertexShaderId, i_pVSFilePath, GL_VERTEX_SHADER)) 
 			{
 				wereThereErrors = true;
@@ -72,7 +73,7 @@ namespace EAE_Engine
 			return !wereThereErrors;
 		}
 	
-		bool Effect::GLLoadAttachFragmentShader(GLuint& io_programId, const char* i_pFSFilePath)
+		bool Effect::LoadAttachFragmentShader(GLuint& io_programId, const char* i_pFSFilePath)
 		{
 			bool wereThereErrors = false;
 			// Load the source code from file and set it into a shader
@@ -89,6 +90,10 @@ namespace EAE_Engine
 				goto OnExit;
 			}
 		OnExit:
+			// Even if the shader was successfully compiled
+			// once it has been attached to the program we can (and should) delete our reference to it
+			// (any associated memory that OpenGL has allocated internally will be freed
+			// once the program is deleted)
 			DeleteShader(fragmentShaderId);
 			return !wereThereErrors;
 		}
