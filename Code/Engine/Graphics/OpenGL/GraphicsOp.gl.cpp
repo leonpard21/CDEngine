@@ -519,7 +519,7 @@ namespace EAE_Engine
 			void* pShaderSource = LoadShaderFromFile(o_shaderId, i_pShaderFilePath, shaderType);
 			if (pShaderSource == nullptr)
 				return false;
-			bool wereThereErrors = CompileShaderAfterLoaded(o_shaderId);
+			bool wereThereErrors = !CompileShaderAfterLoaded(o_shaderId);
 			if (pShaderSource != NULL)
 			{
 				free(pShaderSource);
