@@ -15,7 +15,7 @@ namespace EAE_Engine
 		bool Effect::Init(const char* i_pVSfilePath, const char* i_pFSfilePath, uint32_t renderState)
 		{
 			ShaderContent* pVS = LoadShader(i_pVSfilePath);
-			if (!LoadAttachVertexShader(pVS->GetBufferPtr()))
+			if (!LoadVertexShader(pVS->GetBufferPtr()))
 			{
 				SAFE_DELETE(pVS);
 				return false;
@@ -23,7 +23,7 @@ namespace EAE_Engine
 			ExtratVSUniforms();
 			SAFE_DELETE(pVS);
 			ShaderContent* pFS = LoadShader(i_pFSfilePath);
-			if (!LoadAttachFragmentShader(pFS->GetBufferPtr()))
+			if (!LoadFragmentShader(pFS->GetBufferPtr()))
 			{
 				Release();
 				SAFE_DELETE(pFS);
@@ -43,33 +43,11 @@ namespace EAE_Engine
 			if (pD3DDevice)
 			{
 				SAFE_RELEASE(_pVSConstantTable);
-				SAFE_RELEASE(_vertexShader);
-				SAFE_RELEASE(_fragmentShader);
+				SAFE_RELEASE(_pVertexShader);
+				SAFE_RELEASE(_pFragmentShader);
 			}
 
 			return true;
-		}
-
-		bool Effect::LoadFragmentShader(uint8_t* i_pFSBuffer)
-		{
-			//Get devices context of D3D
-			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
-			if (!pD3DDevice) return false;
-
-			// Get the fragment shader constant table
-			D3DXGetShaderConstantTable(reinterpret_cast<const DWORD*>(i_pFSBuffer), &_pFSConstantTable);
-			// Create the fragment shader object
-			bool wereThereErrors = false;
-			{
-				HRESULT result = pD3DDevice->CreatePixelShader(reinterpret_cast<DWORD*>(i_pFSBuffer),
-					&_fragmentShader);
-				if (FAILED(result))
-				{
-					EAE_Engine::UserOutput::Print("Direct3D failed to create the fragment shader");
-					wereThereErrors = true;
-				}
-			}
-			return !wereThereErrors;
 		}
 
 		bool Effect::LoadVertexShader(uint8_t* i_pVSBuffer)
@@ -84,10 +62,32 @@ namespace EAE_Engine
 			bool wereThereErrors = false;
 			{
 				HRESULT result = pD3DDevice->CreateVertexShader(reinterpret_cast<DWORD*>(i_pVSBuffer),
-					&_vertexShader);
+					&_pVertexShader);
 				if (FAILED(result))
 				{
 					EAE_Engine::UserOutput::Print("Direct3D failed to create the vertex shader");
+					wereThereErrors = true;
+				}
+			}
+			return !wereThereErrors;
+		}
+
+		bool Effect::LoadFragmentShader(uint8_t* i_pFSBuffer)
+		{
+			//Get devices context of D3D
+			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
+			if (!pD3DDevice) return false;
+
+			// Get the fragment shader constant table
+			D3DXGetShaderConstantTable(reinterpret_cast<const DWORD*>(i_pFSBuffer), &_pFSConstantTable);
+			// Create the fragment shader object
+			bool wereThereErrors = false;
+			{
+				HRESULT result = pD3DDevice->CreatePixelShader(reinterpret_cast<DWORD*>(i_pFSBuffer),
+					&_pFragmentShader);
+				if (FAILED(result))
+				{
+					EAE_Engine::UserOutput::Print("Direct3D failed to create the fragment shader");
 					wereThereErrors = true;
 				}
 			}

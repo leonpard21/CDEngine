@@ -1,6 +1,6 @@
 #include "../Common/AOSMesh.h"
 #include "../Common/Device.h"
-#include "../Common/MeshOp.h"
+#include "../Common/GraphicsOp.h"
 #include "UserOutput/UserOutput.h"
 #include <d3d9.h>
 #include <cassert>

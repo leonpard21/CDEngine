@@ -26,7 +26,7 @@ namespace EAE_Engine
 		class Effect
 		{
 		public:
-			Effect() : _vertexShader(NULL), _fragmentShader(NULL), _pVSConstantTable(NULL), _renderState(0) {}
+			Effect() : _pVertexShader(NULL), _pFragmentShader(NULL), _pVSConstantTable(NULL), _renderState(0) {}
 			bool Init(const char* i_pVSfilePath, const char* i_pFSfilePath, uint32_t renderState);
 			bool BeginRender();
 			bool EndRender();
@@ -35,8 +35,8 @@ namespace EAE_Engine
 			void SetUniform(UniformType type, D3DXHANDLE handle, void* pArray, size_t count, ShaderTypes shaderType);
 			// this interface will be used in the UniformDesc System.
 			void SetUniform(D3DXHANDLE handle, void* pArray, size_t count, ShaderTypes shaderType);
-			IDirect3DVertexShader9* GetVS() { return _vertexShader; }
-			IDirect3DPixelShader9* GetFS() { return _fragmentShader; }
+			IDirect3DVertexShader9* GetVS() { return _pVertexShader; }
+			IDirect3DPixelShader9* GetFS() { return _pFragmentShader; }
 			uint32_t GetRenderState(){ return _renderState; }
 			tUniformHandle GetHandle(const char* pName, ShaderTypes shaderType);
 			tSamplerID GetSamplerID(const char* pName, ShaderTypes shaderType);
@@ -48,8 +48,8 @@ namespace EAE_Engine
 			void ExtratVSUniforms();
 			void ExtratFSUniforms();
 		private:
-			IDirect3DVertexShader9* _vertexShader;
-			IDirect3DPixelShader9* _fragmentShader;
+			IDirect3DVertexShader9* _pVertexShader;
+			IDirect3DPixelShader9* _pFragmentShader;
 			ID3DXConstantTable* _pVSConstantTable;
 			ID3DXConstantTable* _pFSConstantTable;
 			uint32_t _renderState;
