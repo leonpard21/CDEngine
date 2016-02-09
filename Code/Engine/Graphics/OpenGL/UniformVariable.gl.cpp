@@ -11,7 +11,7 @@ namespace EAE_Engine
 		{
 			_handle = pEffect->GetLocation(pName);
 		}
-
+		//////////////////////////////////UniformVariable////////////////////////////////////
 		UniformVariable::UniformVariable(const char* pname, UniformType type) :
 			_pElements(nullptr), _elementCount(0)
 		{

@@ -67,10 +67,13 @@ void EAE_Engine::Graphics::SetCameraParameters(Camera* pCamera)
 #elif defined( EAEENGINE_PLATFORM_GL )
 	viewprojmatrices._worldViewMatrix = pCamera->GetWroldToViewMatrix();
 	viewprojmatrices._viewProjMatrix = pCamera->GetProjClipMatrix();
-	UniformVariableManager::GetInstance().ChangeValue<Math::ColMatrix44>("g_CameraMatrices._world_view_mtarix", &viewprojmatrices._worldViewMatrix, 1);
-	UniformVariableManager::GetInstance().ChangeValue<Math::ColMatrix44>("g_CameraMatrices._view_project_matrix", &viewprojmatrices._viewProjMatrix, 1);
-	UniformVariableManager::GetInstance().NotifyOwners("g_CameraMatrices._world_view_mtarix");
-	UniformVariableManager::GetInstance().NotifyOwners("g_CameraMatrices._view_project_matrix");
+	UniformVariableManager::GetInstance().ChangeValue<Math::ColMatrix44>("_world_view_matrix", &viewprojmatrices._worldViewMatrix, 1);
+	UniformVariableManager::GetInstance().ChangeValue<Math::ColMatrix44>("_view_project_matrix", &viewprojmatrices._viewProjMatrix, 1);
+	UniformVariableManager::GetInstance().NotifyOwners("_world_view_matrix");
+	UniformVariableManager::GetInstance().NotifyOwners("_view_project_matrix");
+	UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock("CameraMatrices");
+	pUB->SetBlockValue(&viewprojmatrices, sizeof(viewprojmatrices));
+	UniformBlockManager::GetInstance()->NotifyOwners("CameraMatrices");
 #endif
 }
 
@@ -117,6 +120,7 @@ bool EAE_Engine::Graphics::ShutDown()
 	ImageRenderManager::Destroy();
 	ImageManager::Destroy();
 	UniformVariableManager::CleanInstance();
+	UniformBlockManager::Destroy();
 	MeshManager::CleanMeshManager();
 	RenderObjManager::CleanInstance();
 	CameraManager::CleanInstance();

@@ -60,10 +60,14 @@ extern PFNGLUSEPROGRAMPROC glUseProgram;
 extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
 extern PFNGLGETACTIVEUNIFORMPROC glGetActiveUniform;
 extern PFNGLCOMPRESSEDTEXIMAGE2DPROC glCompressedTexImage2D;
-
-
 extern PFNGLUNIFORM1IPROC glUniform1i;
 
+extern PFNGLGETUNIFORMBLOCKINDEXPROC glGetUniformBlockIndex;
+extern PFNGLUNIFORMBLOCKBINDINGPROC glUniformBlockBinding;
+extern PFNGLGETACTIVEUNIFORMBLOCKIVPROC glGetActiveUniformBlockiv;
+extern PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC glGetActiveUniformBlockName;
+
+extern PFNGLBINDBUFFERBASEPROC glBindBufferBase;
 
 // Initialization
 //---------------

@@ -14,6 +14,7 @@
 #endif
 
 #include "UniformVariable.h"
+#include "UniformBlock.h"
 #include "Texture.h"
 
 namespace EAE_Engine
@@ -74,10 +75,12 @@ namespace EAE_Engine
 			GLint GetLocation(const char* pName);
 			tSamplerID GetSamplerID(const char* pName, ShaderTypes shaderType);
 			void OnNotify(UniformVariable* pVariable, GLint location);
+			void OnNotify(UniformBlock* pBlock);
 			void Update();
 		private:
 			bool LoadAttachVertexShader(GLuint& io_programId, const char* i_pVSFilePath);
 			bool LoadAttachFragmentShader(GLuint& io_programId, const char* i_pFSFilePath);
+			void ExtractShaderUniformBlocks();
 			void ExtractShaderUniforms();
 			// OpenGL encapsulates a matching vertex shader and fragment shader into what it calls a "program".
 
@@ -100,7 +103,8 @@ namespace EAE_Engine
 			//	* The final color that the pixel should be
 			GLuint _programId;
 			uint32_t _renderState;
-			std::map<GLint, UniformVariable*> _updateList;
+			std::map<GLint, UniformVariable*> _updateVariableList;
+			std::map<const char*, UniformBlock*> _updateBlockList;
 		};
 #endif
 

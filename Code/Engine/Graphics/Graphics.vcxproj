@@ -40,6 +40,7 @@
     <ClCompile Include="Common\ImageMesh.cpp" />
     <ClCompile Include="Common\ImageRender.cpp" />
     <ClCompile Include="Common\Texture.cpp" />
+    <ClCompile Include="Common\UniformBlock.cpp" />
     <ClCompile Include="Common\UniformVariable.cpp" />
     <ClCompile Include="Direct3D9\AOSMesh.d3d9.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -169,6 +170,7 @@
     <ClInclude Include="Common\ImageMesh.h" />
     <ClInclude Include="Common\ImageRender.h" />
     <ClInclude Include="Common\Texture.h" />
+    <ClInclude Include="Common\UniformBlock.h" />
     <ClInclude Include="Common\UniformDesc.h" />
     <ClInclude Include="Common\UniformVariable.h" />
     <ClInclude Include="Graphics.h" />

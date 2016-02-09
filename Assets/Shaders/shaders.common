@@ -20,9 +20,9 @@
 #define texture2D tex2D 
 
 #elif defined( EAEENGINE_PLATFORM_GL )
-
 // The version of GLSL to use must come first
-#version 330
+#version 410
+
 // This extension is required in order to specify explicit locations for shader inputs and outputs
 #extension GL_ARB_separate_shader_objects : require
 
@@ -38,6 +38,34 @@
 // Translate HLSL functions types to GLSL
 #define Transform( i_vector, i_matrix ) i_vector * i_matrix
 #define tex2D texture2D 
+
+#endif
+
+
+// Vertex Transform Define.
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+
+struct CameraMatrices
+{
+	mat4 _world_view_matrix;
+	mat4 _view_project_matrix;
+};
+uniform CameraMatrices g_CameraMatrices;
+
+#define worldViewMatrix g_CameraMatrices._world_view_matrix
+#define viewProjMatrix g_CameraMatrices._view_project_matrix
+
+#elif defined( EAEENGINE_PLATFORM_GL )
+
+layout(std140) uniform CameraMatrices
+{
+	mat4 _world_view_matrix;
+	mat4 _view_project_matrix;
+} ;
+
+#define worldViewMatrix _world_view_matrix
+#define viewProjMatrix _view_project_matrix
+
 
 #endif
 

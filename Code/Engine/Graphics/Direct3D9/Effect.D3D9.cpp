@@ -278,18 +278,18 @@ namespace EAE_Engine
 
 		void Effect::OnNotify(UniformVariable* pVariable, D3DXHANDLE location)
 		{
-			_updateList[location] = pVariable;
+			_updateVariableList[location] = pVariable;
 		}
 
 		void Effect::Update()
 		{
-			for (std::map<D3DXHANDLE, UniformVariable*>::iterator iter = _updateList.begin(); iter != _updateList.end(); ++iter)
+			for (std::map<D3DXHANDLE, UniformVariable*>::iterator iter = _updateVariableList.begin(); iter != _updateVariableList.end(); ++iter)
 			{
 				D3DXHANDLE location = iter->first;
 				UniformVariable* pValue = iter->second;
 				SetUniform(pValue->GetUniformType(), location, pValue->GetElements(), pValue->GetElementCount(), pValue->GetShaderType());
 			}
-			_updateList.clear();
+			_updateVariableList.clear();
 		}
 
 /////////////////////////////////////////////////////////////////////////////////

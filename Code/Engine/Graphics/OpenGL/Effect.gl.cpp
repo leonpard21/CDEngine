@@ -1,5 +1,4 @@
 #include "../Common/Effect.h"
-#include "../Common/UniformVariable.h"
 #include "../Common/GraphicsOp.h"
 #include <cstdint>
 #include <string>
@@ -26,6 +25,7 @@ namespace EAE_Engine
 			// Link the program
 			if (!LinkProgramAfterAttached(_programId))
 				return false;
+			ExtractShaderUniformBlocks();
 			ExtractShaderUniforms();
 			_renderState = renderState;
 			return true;
@@ -98,6 +98,31 @@ namespace EAE_Engine
 			return !wereThereErrors;
 		}
 
+		void Effect::ExtractShaderUniformBlocks()
+		{
+			GLint numBlocks;
+			glGetProgramiv(_programId, GL_ACTIVE_UNIFORM_BLOCKS, &numBlocks);
+			//std::vector<std::string> nameList;
+			//nameList.reserve(numBlocks);
+			for (int blockIx = 0; blockIx < numBlocks; ++blockIx)
+			{
+				GLint nameLen;
+				glGetActiveUniformBlockiv(_programId, blockIx, GL_UNIFORM_BLOCK_NAME_LENGTH, &nameLen);
+				std::vector<GLchar> name; //Yes, not std::string. There's a reason for that.
+				name.resize(nameLen);
+				glGetActiveUniformBlockName(_programId, blockIx, nameLen, NULL, &name[0]);
+				//nameList.push_back(std::string());
+				//nameList.back().assign(name.begin(), name.end() - 1); //Remove the null terminator.
+				std::string blockName;
+				blockName.assign(name.begin(), name.end() - 1);
+				GLint uniformBlockSize;
+				glGetActiveUniformBlockiv(_programId, blockIx, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlockSize);
+				UniformBlock* pUniformBlock = new UniformBlock(blockName.c_str(), uniformBlockSize);
+				pUniformBlock->AddOwner(this);
+				UniformBlockManager::GetInstance()->AddUniformBlock(pUniformBlock);
+			}
+		}
+
 		void Effect::ExtractShaderUniforms()
 		{
 			const int BUFF_SIZE = 64;
@@ -115,6 +140,8 @@ namespace EAE_Engine
 				// (Note that if you declare a uniform but don't use it in the shader,
 				// it will be optimized out and glGetUniformLocation() won't find it.)
 				GLint location = glGetUniformLocation(_programId, name);
+				// if the uniform name doesn't exist or it is a member of UniformBlock,
+				// then it'll have a location -1, which is invalid.
 				if (location == -1)
 					continue;
 				if (type == GL_FLOAT_MAT4)
@@ -212,26 +239,38 @@ namespace EAE_Engine
 		{
 			GLint location = glGetUniformLocation(_programId, pName);
 			return location;
-			//return (tSamplerIDType)GetLocation(pName);
 		}
 
 		void Effect::OnNotify(UniformVariable* pVariable, GLint location)
 		{
 			// if any uniform variable has been changed, we need to record it
-			_updateList[location] = pVariable;
+			_updateVariableList[location] = pVariable;
+		}
+
+		void Effect::OnNotify(UniformBlock* pBlock)
+		{
+			_updateBlockList[pBlock->GetName()] = pBlock;
 		}
 
 		void Effect::Update()
 		{
 			// for the changed uniform variables, we should update them for the graphic cards.
-			for (std::map<GLint, UniformVariable*>::iterator iter = _updateList.begin(); iter != _updateList.end(); ++iter)
+			for (std::map<GLint, UniformVariable*>::iterator iter = _updateVariableList.begin(); iter != _updateVariableList.end(); ++iter)
 			{
 				GLint location = iter->first;
 				if (location == -1) return;
 				UniformVariable* pValue = iter->second;
 				SetUniform(pValue->GetUniformType(), location, pValue->GetElements(), pValue->GetElementCount());
 			}
-			_updateList.clear();
+			_updateVariableList.clear();
+			for (std::map<const char*, UniformBlock*>::iterator iter = _updateBlockList.begin(); iter != _updateBlockList.end(); ++iter)
+			{
+				UniformBlock* pBlock = iter->second;
+				GLuint blockIndex = glGetUniformBlockIndex(_programId, iter->first);
+				pBlock->UpdateUniformBlockBuffer();
+				glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex, pBlock->GetUboId());
+			}
+			_updateBlockList.clear();
 		}
 
 
