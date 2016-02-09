@@ -76,6 +76,15 @@ namespace EAE_Engine
 			}
 		*/
 
+		void UniformBlock::SetBlockData(UniformBlockData* pUBD, uint32_t count)
+		{
+			for (uint32_t index = 0; index < count; ++index)
+			{
+				CopyMem((uint8_t*)pUBD[index]._pMemberBuffer, (uint8_t*)_pBuffer + pUBD[index]._offset, pUBD[index]._sizeOfMemberBuffer);
+			}
+		}
+
+
 		void UniformBlock::UpdateUniformBlockBuffer()
 		{
 			glBindBuffer(GL_UNIFORM_BUFFER, _uboId);
@@ -132,11 +141,6 @@ namespace EAE_Engine
 			}
 		}
 
-		////////////////////////////////////////////////////
-		void SetCameraMatricesBlock(UniformBlock* pUB, CameraMatrices& cameraMatrices) 
-		{
-			CopyMem((uint8_t*)&cameraMatrices, pUB->GetBuffer(), sizeof(cameraMatrices));
-		}
 
 #endif 
 

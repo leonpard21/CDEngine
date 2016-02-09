@@ -30,6 +30,21 @@ namespace EAE_Engine
 			Math::ColMatrix44 _viewProjMatrix;
 		};
 
+		/*
+		 * Because the alignment in GLSL uniform block is different with the C/C++ structure.
+		 * So we use this structure to set each element of the Uniform Block.
+		 * _offset is the offset from the beginning of the UniformBlock->_pBuffer,
+		 * _pMemberBuffer is the buffer of the value of the member, it can be any type.
+		 * _sizeOfMemberBuffer shows how many bytes we need to copy.
+		 */
+		struct UniformBlockData 
+		{
+			UniformBlockData() = default;
+			uint32_t _offset;
+			void* _pMemberBuffer;
+			uint32_t _sizeOfMemberBuffer;
+		};
+
 		class Effect;
 		class UniformBlock 
 		{
@@ -43,6 +58,7 @@ namespace EAE_Engine
 			GLubyte* GetBuffer() { return _pBuffer; }
 			GLint GetBufferSize() {	return _blockSize; }
 
+			void SetBlockData(UniformBlockData* pUBD, uint32_t count);
 			void UpdateUniformBlockBuffer();
 		private:
 			char* _pBlockName;
@@ -68,15 +84,6 @@ namespace EAE_Engine
 
 		
 		/////////////////////////////////////////////////////////////////
-		/*
-		 * Because we need to set the UniformBlock and we should know their structures in advance,
-		 * so we list the setter functions for whatever structures we known.
-
-		 * Remember that the alignment in GLSL is different with C/C++,
-		 * so we really need to know the structures' alignment in advances.
-		 * That's why we cannot copy and write the buffer directly for most of the structures.
-		 */
-		void SetCameraMatricesBlock(UniformBlock* pUB, CameraMatrices& cameraMatrices);
 
 #endif 
 
