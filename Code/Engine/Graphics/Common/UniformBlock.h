@@ -72,9 +72,9 @@ namespace EAE_Engine
 		 * Because we need to set the UniformBlock and we should know their structures in advance,
 		 * so we list the setter functions for whatever structures we known.
 
-		 * Remeber that the alignment in GLSL is different with C/C++,
+		 * Remember that the alignment in GLSL is different with C/C++,
 		 * so we really need to know the structures' alignment in advances.
-		 * That's why we cannot copy and write the buffer directly for most of the strucutres.
+		 * That's why we cannot copy and write the buffer directly for most of the structures.
 		 */
 		void SetCameraMatricesBlock(UniformBlock* pUB, CameraMatrices& cameraMatrices);
 
