@@ -1,0 +1,31 @@
+/*
+	This file should be included by any vertex shader uses CameraMatrices
+*/
+
+// Vertex Transform Define.
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+
+struct CameraMatrices
+{
+	mat4 _world_view_matrix;
+	mat4 _view_project_matrix;
+};
+uniform CameraMatrices g_CameraMatrices;
+
+#define worldViewMatrix g_CameraMatrices._world_view_matrix
+#define viewProjMatrix g_CameraMatrices._view_project_matrix
+
+#elif defined( EAEENGINE_PLATFORM_GL )
+
+layout(std140) uniform CameraMatrices
+{
+	mat4 _world_view_matrix;
+	mat4 _view_project_matrix;
+};
+
+#define worldViewMatrix _world_view_matrix
+#define viewProjMatrix _view_project_matrix
+
+
+#endif
+

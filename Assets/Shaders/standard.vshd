@@ -1,5 +1,6 @@
 /* #include statement (platform - independent) */
 #include "shaders.common"
+#include "cameraMatrix.common"
 
 /* Uniform varibales (platform-independent) */
 uniform mat4 g_local_world_matrix;

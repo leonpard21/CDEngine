@@ -53,7 +53,7 @@ return
 		    {
                 source = "standard.vshd",
                 target = "standard.vshd",
-				extraInfo = { dependencies = { "shaders.common" }, optionalArguments = {"vertex"}, }
+				extraInfo = { dependencies = { "shaders.common", "cameraMatrix.common" }, optionalArguments = {"vertex"}, }
             },
             {
                 source = "standard.fshd",
@@ -69,7 +69,7 @@ return
 			{
                 source = "debugPrimitive.vshd",
                 target = "debugPrimitive.vshd",
-				extraInfo = { dependencies = { "shaders.common" }, optionalArguments = {"vertex"}, }
+				extraInfo = { dependencies = { "shaders.common", "cameraMatrix.common" }, optionalArguments = {"vertex"}, }
             },
 			{
                 source = "debugPrimitive.fshd",
