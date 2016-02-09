@@ -55,7 +55,7 @@ namespace EAE_Engine
 			ID3DXConstantTable* _pFSConstantTable;
 			uint32_t _renderState;
 			// when we have a new uniform variable to update, we add it to the list.
-			std::map<D3DXHANDLE, UniformVariable*> _updateList;
+			std::map<D3DXHANDLE, UniformVariable*> _updateVariableList;
 		};
 #elif defined( EAEENGINE_PLATFORM_GL )
 		class Effect

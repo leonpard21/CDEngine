@@ -14,6 +14,13 @@ namespace EAE_Engine
 		class UniformBlock
 		{
 		};
+
+		class UniformBlockManager : public Singleton<UniformBlockManager>
+		{
+		public:
+			~UniformBlockManager() {}
+		};
+
 #elif defined( EAEENGINE_PLATFORM_GL )
 		class Effect;
 		class UniformBlock 
@@ -38,8 +45,7 @@ namespace EAE_Engine
 			std::vector<Effect*> _owners;
 		};
 
-#endif 
-	
+
 		class UniformBlockManager : public Singleton<UniformBlockManager>
 		{
 		public:
@@ -52,6 +58,9 @@ namespace EAE_Engine
 		private:
 			std::vector<UniformBlock*> _uniformBlocks;
 		};
+
+#endif 
+
 
 
 	}
