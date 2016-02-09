@@ -26,6 +26,5 @@ layout(std140) uniform CameraMatrices
 #define worldViewMatrix gCamera._world_view_matrix 
 #define viewProjMatrix gCamera._view_project_matrix 
 
-
 #endif
 

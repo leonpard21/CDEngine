@@ -4,6 +4,7 @@
 #include <vector>
 #include "UniformDesc.h"
 #include "General/Singleton.hpp"
+#include "Math/ColMatrix.h"
 
 namespace EAE_Engine
 {
@@ -22,21 +23,27 @@ namespace EAE_Engine
 		};
 
 #elif defined( EAEENGINE_PLATFORM_GL )
+
+		struct CameraMatrices
+		{
+			Math::ColMatrix44 _worldViewMatrix;
+			Math::ColMatrix44 _viewProjMatrix;
+		};
+
 		class Effect;
 		class UniformBlock 
 		{
 		public:
 			UniformBlock(const char* pName, const GLint blockSize);
 			~UniformBlock();
-			const char* GetName() { return _pBlockName; }
-			GLuint GetUboId() { return _uboId; }
-
-			void InitBlockBuffer(GLuint programID);
-			void SetBlockValue(void* pData, const GLuint bufferSize);
-			void UpdateUniformBlockBuffer();
 			void AddOwner(Effect* pEffect);
 			void NotifyOwners();
+			const char* GetName() { return _pBlockName; }
+			GLuint GetUboId() { return _uboId; }
+			GLubyte* GetBuffer() { return _pBuffer; }
+			GLint GetBufferSize() {	return _blockSize; }
 
+			void UpdateUniformBlockBuffer();
 		private:
 			char* _pBlockName;
 			GLint _blockSize;
@@ -58,6 +65,18 @@ namespace EAE_Engine
 		private:
 			std::vector<UniformBlock*> _uniformBlocks;
 		};
+
+		
+		/////////////////////////////////////////////////////////////////
+		/*
+		 * Because we need to set the UniformBlock and we should know their structures in advance,
+		 * so we list the setter functions for whatever structures we known.
+
+		 * Remeber that the alignment in GLSL is different with C/C++,
+		 * so we really need to know the structures' alignment in advances.
+		 * That's why we cannot copy and write the buffer directly for most of the strucutres.
+		 */
+		void SetCameraMatricesBlock(UniformBlock* pUB, CameraMatrices& cameraMatrices);
 
 #endif 
 

@@ -68,7 +68,7 @@ void EAE_Engine::Graphics::SetCameraParameters(Camera* pCamera)
 	viewprojmatrices._worldViewMatrix = pCamera->GetWroldToViewMatrix();
 	viewprojmatrices._viewProjMatrix = pCamera->GetProjClipMatrix();
 	UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock("CameraMatrices");
-	pUB->SetBlockValue(&viewprojmatrices, sizeof(viewprojmatrices));
+	SetCameraMatricesBlock(pUB, viewprojmatrices);
 	UniformBlockManager::GetInstance()->NotifyOwners("CameraMatrices");
 #endif
 }

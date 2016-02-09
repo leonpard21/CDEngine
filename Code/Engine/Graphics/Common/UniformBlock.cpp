@@ -36,8 +36,20 @@ namespace EAE_Engine
 			DeleteBufferObj(_uboId);
 		}
 
-		void UniformBlock::InitBlockBuffer(GLuint programID) 
-		{/*
+		void UniformBlock::AddOwner(Effect* pEffect)
+		{
+			_owners.push_back(pEffect);
+		}
+
+		void UniformBlock::NotifyOwners()
+		{
+			for (size_t i = 0; i < _owners.size(); ++i)
+			{
+				_owners[i]->OnNotify(this);
+			}
+		}
+
+		/*
 			GLuint index = glGetUniformBlockIndex(programID, _pBlockName);
 
 			if (index != GL_INVALID_INDEX)
@@ -61,48 +73,16 @@ namespace EAE_Engine
 
 					// now I can use name, type and offset!
 				}
-			}*/
-		}
-		
-		void UniformBlock::SetBlockValue(void* pData, const GLuint bufferSize)
-		{
-			CopyMem((uint8_t*)pData, _pBuffer, bufferSize);
-		}
+			}
+		*/
 
 		void UniformBlock::UpdateUniformBlockBuffer()
 		{
-			/*
-			glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniforms_buffer);
-			uniforms_block * block = (uniforms_block *)glMapBufferRange(GL_UNIFORM_BUFFER,
-				0,
-				sizeof(uniforms_block),
-				GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
-
-			vmath::mat4 model_matrix = vmath::scale(7.0f);
-
-			block->mv_matrix = view_matrix * model_matrix;
-			block->view_matrix = view_matrix;
-			block->proj_matrix = vmath::perspective(50.0f, (float)info.windowWidth / (float)info.windowHeight,
-				0.1f, 1000.0f);
-			glUnmapBuffer(GL_UNIFORM_BUFFER);
-			*/
 			glBindBuffer(GL_UNIFORM_BUFFER, _uboId);
 			glBufferData(GL_UNIFORM_BUFFER, _blockSize, _pBuffer, GL_DYNAMIC_DRAW);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
 
-		void UniformBlock::AddOwner(Effect* pEffect)
-		{
-			_owners.push_back(pEffect);
-		}
-
-		void UniformBlock::NotifyOwners()
-		{
-			for (size_t i = 0; i < _owners.size(); ++i)
-			{
-				_owners[i]->OnNotify(this);
-			}
-		}
 
 		////////////////////////UniformBlocksManager////////////////////////////
 
@@ -150,6 +130,12 @@ namespace EAE_Engine
 					break;
 				}
 			}
+		}
+
+		////////////////////////////////////////////////////
+		void SetCameraMatricesBlock(UniformBlock* pUB, CameraMatrices& cameraMatrices) 
+		{
+			CopyMem((uint8_t*)&cameraMatrices, pUB->GetBuffer(), sizeof(cameraMatrices));
 		}
 
 #endif 
