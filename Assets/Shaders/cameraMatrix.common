@@ -21,10 +21,10 @@ layout(std140) uniform CameraMatrices
 {
 	mat4 _world_view_matrix;
 	mat4 _view_project_matrix;
-};
+}gCamera;
 
-#define worldViewMatrix _world_view_matrix
-#define viewProjMatrix _view_project_matrix
+#define worldViewMatrix gCamera._world_view_matrix 
+#define viewProjMatrix gCamera._view_project_matrix 
 
 
 #endif
