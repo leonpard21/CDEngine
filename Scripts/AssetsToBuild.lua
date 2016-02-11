@@ -134,6 +134,10 @@ return
 				source = "UIsprite.png",
 				target = "UIsprite.dds",
 			},
+			{
+				source = "grey.jpg",
+				target = "grey.dds",
+			},
 		 },
 	},
 	{

@@ -4,7 +4,7 @@
 
 namespace EAE_Engine{
 	namespace Math{
-		static const float Pi = 3.14159f;
+		extern const float Pi;
 
 		template<class T>
 		const T& max(const T& a, const T& b)

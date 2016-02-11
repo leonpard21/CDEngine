@@ -21,7 +21,7 @@ namespace EAE_Engine
 
 		ImageRender::ImageRender(MaterialDesc* pMaterial, Image* pImage, RectTransform* pRectTransform):
 			_pMaterial(pMaterial), _pImage(pImage), _pImageMesh(nullptr),
-			_pRectTransform(pRectTransform)
+			_pRectTransform(pRectTransform), _color(1.0f, 1.0f, 1.0f, 1.0f)
 		{
 		}
 
@@ -49,30 +49,39 @@ namespace EAE_Engine
 
 		void ImageRender::UpdateImageMesh(Rectangle i_pos, Rectangle i_texcoord)
 		{
+			uint8_t color[4] = 
+			{
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+				_color._b, _color._g, _color._r, _color._a
+#elif defined( EAEENGINE_PLATFORM_GL )
+				_color._r, _color._g, _color._b, _color._a
+#endif
+			};
+
 			std::vector<ImageVertex> _vertices;
 			ImageVertex vertex0 = { i_pos._left, i_pos._bottom, 0.0f, i_texcoord._left, i_texcoord._top,
-				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
+				color[0], color[1], color[2], color[3] };
 			_vertices.push_back(vertex0);
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 			ImageVertex vertex1 = { i_pos._left, i_pos._top, 0.0f, i_texcoord._left, i_texcoord._bottom,
-				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
+				color[0], color[1], color[2], color[3] };
 			_vertices.push_back(vertex1);
 			ImageVertex vertex2 = { i_pos._right, i_pos._top, 0.0f, i_texcoord._right, i_texcoord._bottom,
-				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
+				color[0], color[1], color[2], color[3] };
 			_vertices.push_back(vertex2);
 			ImageVertex vertex3 = { i_pos._right, i_pos._bottom, 0.0f, i_texcoord._right, i_texcoord._top,
-				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
+				color[0], color[1], color[2], color[3] };
 			_vertices.push_back(vertex3);
 #elif defined( EAEENGINE_PLATFORM_GL )
 			// We are working under the glFrontFace(GL_CCW) mode.
 			ImageVertex vertex1 = { i_pos._right, i_pos._bottom, 0.0f, i_texcoord._right, i_texcoord._top,
-				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
+				color[0], color[1], color[2], color[3] };
 			_vertices.push_back(vertex1);
 			ImageVertex vertex2 = { i_pos._left, i_pos._top, 0.0f, i_texcoord._left, i_texcoord._bottom,
-				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
+				color[0], color[1], color[2], color[3] };
 			_vertices.push_back(vertex2);
 			ImageVertex vertex3 = { i_pos._right, i_pos._top, 0.0f, i_texcoord._right, i_texcoord._bottom,
-				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
+				color[0], color[1], color[2], color[3] };
 			_vertices.push_back(vertex3);
 #endif
 #if defined( EAEENGINE_PLATFORM_D3D9 )

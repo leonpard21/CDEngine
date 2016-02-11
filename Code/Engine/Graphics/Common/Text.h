@@ -27,6 +27,36 @@ namespace EAE_Engine
 			RectTransform _rectTransform;
 		};
 
+
+		struct UIImage
+		{
+			UIImage() = default;
+			Image* _pImage;
+			RectTransform _rectTransform;
+		};
+
+		struct Slider 
+		{
+			Slider() = default;
+			void SetHandle(float handleValue);
+			UIImage _backgroundImage;
+			UIImage _handleImage;
+			float _min;
+			float _max;
+			float _interval;
+			RectTransform _rectTransform;
+		};
+
+		struct Toggle
+		{
+			Toggle() = default;
+			void Check(bool checked);
+			UIImage _backgroundImage;
+			UIImage _checkMarkImage;
+			bool _checked;
+			RectTransform _rectTransform;
+		};
+
 	}
 }
 

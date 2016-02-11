@@ -39,6 +39,7 @@ namespace EAE_Engine
 		void RenderObjManager::Clean()
 		{
 			_renderData3Ds.clear();
+			_renderDataUIs.clear();
 			_renderObjs.clear();
 		}
 
@@ -55,7 +56,7 @@ namespace EAE_Engine
 				_renderObjs.push_back(obj);
 			}
 			_renderData3Ds.clear();
-			for (std::vector<RenderDataUI>::iterator it = _renderDataImages.begin(); it != _renderDataImages.end(); ++it)
+			for (std::vector<RenderDataUI>::iterator it = _renderDataUIs.begin(); it != _renderDataUIs.end(); ++it)
 			{
 				CanvasRenderData* pCanvasRenderData = (it)->_pCanvasRenderData;
 				RenderWeight weight;
@@ -77,7 +78,7 @@ namespace EAE_Engine
 				RenderObj obj = { weight, &(*it) };
 				_renderObjs.push_back(obj);
 			}
-			_renderDataImages.clear();
+			_renderDataUIs.clear();
 			std::sort(_renderObjs.begin(), _renderObjs.end(), sortFunc);
 		}
 

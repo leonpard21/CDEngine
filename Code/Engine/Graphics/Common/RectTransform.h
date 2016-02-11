@@ -18,7 +18,7 @@ namespace EAE_Engine
 			void SetAnchor(Rectangle anchorPoint) { _anchorPoint = anchorPoint; }
 			Rectangle GetAnchor() { return _anchorPoint; }
 			void SetRect(Rectangle rect) { _rect = rect; }
-	//		Rectangle GetRect() { return _rect; }
+			Rectangle GetRect() { return _rect; }
 			Rectangle GetScreenSpaceRect();
 			Rectangle GetClipRect();
 

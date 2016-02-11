@@ -102,12 +102,12 @@ namespace EAE_Engine
 			};
 			std::vector<RenderObj>& GetRenderObjList() { return _renderObjs; }
 			std::vector<RenderData3D>& GetRenderData3DList() { return _renderData3Ds; }
-			std::vector<RenderDataUI>& GetRenderData2DList() { return _renderDataImages; }
+			std::vector<RenderDataUI>& GetRenderData2DList() { return _renderDataUIs; }
 			void Clean();
 			void UpdateRenderObjList();
 		private:
 			std::vector<RenderData3D> _renderData3Ds;
-			std::vector<RenderDataUI> _renderDataImages;
+			std::vector<RenderDataUI> _renderDataUIs;
 			std::vector<RenderObj> _renderObjs;
 
 		/////////////////////static_members////////////////////////////

@@ -130,7 +130,7 @@ namespace EAE_Engine
 					}
 				}
 				// Add indices for south pole
-				uint32_t southPoleIndex = _vertices.size() - 1;
+				uint32_t southPoleIndex = (uint32_t)_vertices.size() - 1;
 				// The second last row should be southPoleIndex - 1 - sliceCount = southPoleIndex - ringVertexCount.
 				baseIndex = southPoleIndex - ringVertexCount;
 				for (uint32_t i = 0; i < sliceCount; ++i) {

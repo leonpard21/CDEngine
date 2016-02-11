@@ -3,6 +3,7 @@
 
 #include "Image.h"
 #include "RectTransform.h"
+#include "Color.h"
 
 namespace EAE_Engine
 {
@@ -21,9 +22,7 @@ namespace EAE_Engine
 			Image* GetImage() { return _pImage; }
 			MaterialDesc* GetMaterial() { return _pMaterial; }
 			AOSMesh* GetMesh() { return _pImageMesh; }
-	//		void SetAnchor(Rectangle anchor) { _pRectTransform->SetAnchor(anchor); }
-	//		void SetPivot(Math::Vector2 pivot) { _pRectTransform->SetPivot(pivot); }
-			
+			void SetColor(Color color) { _color = color; }
 
 		private:
 			void UpdateImageMesh(Rectangle i_rect, Rectangle i_texcoord);
@@ -33,6 +32,7 @@ namespace EAE_Engine
 			Image* _pImage;
 			AOSMesh* _pImageMesh;
 			RectTransform* _pRectTransform;
+			Color _color;
 		};
 	}
 }

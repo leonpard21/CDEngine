@@ -22,6 +22,7 @@
     <ClCompile Include="Common\BasicMeshes.cpp" />
     <ClCompile Include="Common\Camera.cpp" />
     <ClCompile Include="Common\CanvasRender.cpp" />
+    <ClCompile Include="Common\Color.cpp" />
     <ClCompile Include="Common\DebugMesh.cpp" />
     <ClCompile Include="Common\Effect.cpp" />
     <ClCompile Include="Common\EffectLoader.cpp" />

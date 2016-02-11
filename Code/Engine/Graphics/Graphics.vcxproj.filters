@@ -131,6 +131,9 @@
     <ClCompile Include="Common\Text.cpp">
       <Filter>Common\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Common\Color.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />

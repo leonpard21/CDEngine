@@ -38,7 +38,7 @@ namespace EAE_Engine
 		void FontManager::DrawString(Rectangle rect, const char* pSentense)
 		{
 			RECT font_rect;
-			SetRect(&font_rect, rect._left, rect._top, rect._right, rect._bottom);
+			SetRect(&font_rect, (INT)rect._left, (INT)rect._top, (INT)rect._right, (INT)rect._bottom);
 			INT font_height = _pFont->DrawText(NULL, //pSprite
 				pSentense,  //pString
 				-1,          //Count

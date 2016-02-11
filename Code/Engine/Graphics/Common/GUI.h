@@ -11,15 +11,6 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		enum eGUIType 
-		{
-			TEXT_COM,
-			BUTTON_COM,
-			SLIDER_COM,
-			CHECKBOX_COM,
-			IMAGE_COM,
-		};
-
 
 		class UIElementManager : public Singleton<UIElementManager>
 		{
@@ -31,10 +22,14 @@ namespace EAE_Engine
 
 			Text* AddText(std::string value, Common::ITransform* pTrans);
 			Button* AddButton(BtnCallBack* pCallBack, Common::ITransform* pTrans);
+			Slider* AddSlider(float min, float max, Common::ITransform* pTrans);
+			Toggle* AddToggle(bool checked, Common::ITransform* pTrans);
 
 		private:
 			std::vector<Button> _buttons;
 			std::vector<Text> _texts;
+			std::vector<Slider> _sliders;
+			std::vector<Toggle> _toggles;
 		};
 
 

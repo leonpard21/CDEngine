@@ -56,6 +56,8 @@ EAE_Engine::Graphics::ImageRender* pNumberSpriteRender = nullptr;
 
 EAE_Engine::Graphics::Text* pFrameText = nullptr;
 EAE_Engine::Graphics::Button* pControlBtn = nullptr;
+EAE_Engine::Graphics::Slider* pSlider = nullptr;
+EAE_Engine::Graphics::Toggle* pToggle = nullptr;
 
 void btnCallBack(void*) 
 {
@@ -275,7 +277,25 @@ namespace
 			pControlBtn->_text._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pControlBtn->_text._rectTransform.SetRect({ 32.0f, -64.0f, 64.0f, 64.0f });
 		}
-
+		EAE_Engine::Common::IGameObj* pSliderObj = EAE_Engine::Core::World::GetInstance().AddGameObj("sliderObj", textPos);
+		{
+			pSlider = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddSlider(0.0f, 100.0f, pSliderObj->GetTransform());
+			pSlider->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			pSlider->_rectTransform.SetRect({ 64.0f, -128.0f, 64.0f, 64.0f });
+			pSlider->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			pSlider->_backgroundImage._rectTransform.SetRect({ 64.0f, -128.0f, 128.0f, 16.0f });
+			pSlider->SetHandle(50.0f);
+		}
+		EAE_Engine::Common::IGameObj* pToggleObj = EAE_Engine::Core::World::GetInstance().AddGameObj("toggleObj", textPos);
+		{
+			pToggle = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddToggle(true, pToggleObj->GetTransform());
+			pToggle->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			pToggle->_rectTransform.SetRect({ 64.0f, -168.0f, 64.0f, 64.0f });
+			pToggle->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			pToggle->_backgroundImage._rectTransform.SetRect({ 64.0f, -168.0f, 64.0f, 16.0f });
+			pToggle->Check(false);
+			pToggle->Check(true);
+		}
 	}
 
 }
