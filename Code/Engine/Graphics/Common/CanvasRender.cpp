@@ -13,8 +13,8 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		TextRender::TextRender(Text* pText, Common::ITransform* pTrans) :
-			_pText(pText), _pTrans(pTrans)
+		TextRender::TextRender(Text* pText, RectTransform* pTrans) :
+			_pText(pText), _pRectTransform(pTrans)
 		{
 		}
 
@@ -53,17 +53,17 @@ namespace EAE_Engine
 			_canvasRenderDatas.clear();
 		}
 
-		ImageRender* CanvasRenderManager::AddImageRender(Image* pImage, Common::ITransform* pTransform)
+		ImageRender* CanvasRenderManager::AddImageRender(Image* pImage, RectTransform* pRectTransform)
 		{
-			ImageRender* pImageRender = new ImageRender(_pMaterial, pImage, pTransform);
+			ImageRender* pImageRender = new ImageRender(_pMaterial, pImage, pRectTransform);
 			CanvasRenderData newData = {eCanvasRender::IMAGE, pImageRender };
 			_canvasRenderDatas.push_back(newData);
 			return pImageRender;
 		}
 
-		TextRender* CanvasRenderManager::AddTextRender(Text* pText, Common::ITransform* pTransform)
+		TextRender* CanvasRenderManager::AddTextRender(Text* pText, RectTransform* pRectTransform)
 		{
-			TextRender* pTextRender = new TextRender(pText, pTransform);
+			TextRender* pTextRender = new TextRender(pText, pRectTransform);
 			CanvasRenderData newData = { eCanvasRender::TEXT, pTextRender };
 			_canvasRenderDatas.push_back(newData);
 			return pTextRender;

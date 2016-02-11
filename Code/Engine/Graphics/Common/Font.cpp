@@ -44,7 +44,7 @@ namespace EAE_Engine
 				-1,          //Count
 				&font_rect,  //pRect
 				DT_LEFT | DT_NOCLIP,//Format,//DT_LEFT | DT_WORDBREAK, //Format,
-				0xFFFFFFFF); //Color
+				0xFFFF00FF); //Color, 0xFFFFFFFF
 		}
 
 

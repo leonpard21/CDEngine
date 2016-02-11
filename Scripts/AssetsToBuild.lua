@@ -130,6 +130,10 @@ return
                 source = "numbers.png",
                 target = "numbers.dds",
             },
+			{
+				source = "UIsprite.png",
+				target = "UIsprite.dds",
+			},
 		 },
 	},
 	{

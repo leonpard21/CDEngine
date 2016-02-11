@@ -20,10 +20,9 @@ namespace EAE_Engine
 
 		struct TextRender
 		{
-			TextRender(Text* pText, Common::ITransform* pTrans);
+			TextRender(Text* pText, RectTransform* pTrans);
 			Text* _pText;
-			RectTransform _rectTransform;
-			Common::ITransform* _pTrans;
+			RectTransform* _pRectTransform;
 		};
 
 		struct CanvasRenderData 
@@ -41,10 +40,11 @@ namespace EAE_Engine
 			void Init();
 			void Clean();
 
-			ImageRender* AddImageRender(Image* pImage, Common::ITransform* pTransform);
-			TextRender* AddTextRender(Text* pText, Common::ITransform* pTransform);
+			ImageRender* AddImageRender(Image* pImage, RectTransform* pRectTransform);
+			TextRender* AddTextRender(Text* pText, RectTransform* pRectTransform);
 			void UpdateRenderDataList();
 			MaterialDesc* GetMaterial() { return _pMaterial; }
+			//std::vector<CanvasRenderData>& GetRenderDatas() { return _canvasRenderDatas; }
 
 		private:
 			MaterialDesc* _pMaterial;

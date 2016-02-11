@@ -116,7 +116,6 @@ namespace EAE_Engine
 			s_pCurrentMaterial->ChangeTexture(0, pImageRender->GetImage()->_texture);
 			s_pCurrentMaterial->SetTexturesForEffect();
 			// updated the parameters for the material
-			
 			ChangeEffectVariables();
 			AOSMesh* pSMesh = pImageRender->GetMesh();
 			
@@ -130,8 +129,12 @@ namespace EAE_Engine
 
 		void RenderDataUI::RenderText(TextRender* pTextRender)
 		{
-			Rectangle rect = pTextRender->_rectTransform.GetRect();
+			Rectangle rect = pTextRender->_pRectTransform->GetScreenSpaceRect();
 			Text* pText = pTextRender->_pText;
+			ScreenRect screenInfo = GetScreenRect();
+			float screenHeight = screenInfo._height;
+			rect._bottom = screenHeight - rect._bottom;
+			rect._top = screenHeight - rect._top;
 			FontManager::GetInstance()->DrawString(rect, pText->_value.c_str());
 		}
 	}

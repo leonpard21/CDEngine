@@ -19,7 +19,7 @@
 #include "Engine/Graphics/Common/DebugMesh.h"
 #include "Engine/Graphics/Common/Text.h"
 #include "Engine/Graphics/Common/RectTransform.h"
-
+#include "Engine/Graphics/Common/GUI.h"
 
 namespace 
 {
@@ -36,7 +36,6 @@ namespace
 	void CreateSprite();
 	void CreateDebugMenu();
 }
-
 
 const char* const pathGround = "data/Meshes/warehouse.aosmesh";
 const char* const pathPlayer = "data/Meshes/playerPlane.aosmesh";
@@ -56,6 +55,12 @@ PlayerController* pPlayerController = nullptr;
 EAE_Engine::Graphics::ImageRender* pNumberSpriteRender = nullptr;
 
 EAE_Engine::Graphics::Text* pFrameText = nullptr;
+EAE_Engine::Graphics::Button* pControlBtn = nullptr;
+
+void btnCallBack(void*) 
+{
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -134,10 +139,7 @@ void GameplayUpdate()
 				EAE_Engine::Debug::AddSphere(start2, 10.0f, blue);
 			}
 		}
-		//static uint32_t frameIndex = 0;
-		//pNumberSpriteRender->SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
-		//EAE_Engine::Math::Vector4 screenRect = { 32.0f, -32.0f, 64.0f, 64.0f };
-		//pNumberSpriteRender->SetImageRect(screenRect, frameIndex++ % 9);
+	
 
 		char text[20];
 		int fps = 1.0f / elpasedTime;
@@ -148,7 +150,7 @@ void GameplayUpdate()
 
 void GameplayExit()
 {
-	SAFE_DELETE(pFrameText);
+	
 }
 
 namespace
@@ -228,6 +230,7 @@ namespace
 
 	void CreateSprite() 
 	{
+		/*
 		{
 			EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(-0.9f, 0.9f, 0.0f);
 			EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj", spritePos);
@@ -245,26 +248,34 @@ namespace
 			EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj2", spritePos);
 			EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/numbers.dds", 1, 10);
 			pNumberSpriteRender = EAE_Engine::Graphics::CanvasRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
-			pNumberSpriteRender->SetAnchor({0.0f, 0.0f, 1.0f, 1.0f});
-			EAE_Engine::Math::Vector4 screenRect = {32.0f, -32.0f, 64.0f, 64.0f};
-			pNumberSpriteRender->SetImageRect(screenRect, 1);
 		}
+		*/
 	}
 
 	void CreateDebugMenu()
 	{
-		pFrameText = new EAE_Engine::Graphics::Text();
-		pFrameText->_value = "this is a test.";
 		EAE_Engine::Math::Vector3 textPos = EAE_Engine::Math::Vector3::Zero;
 		EAE_Engine::Common::IGameObj* pTextObj = EAE_Engine::Core::World::GetInstance().AddGameObj("textObj", textPos);
 		{
-
+			/*
 			EAE_Engine::Graphics::TextRender* pTextRender = 
-				EAE_Engine::Graphics::CanvasRenderManager::GetInstance()->AddTextRender(pFrameText, pTextObj->GetTransform());
+			EAE_Engine::Graphics::CanvasRenderManager::GetInstance()->AddTextRender(pFrameText, pTextObj->GetTransform());
 			pTextRender->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pTextRender->_rectTransform.SetRect({ 32.0f, -32.0f, 64.0f, 64.0f });
+			*/
+			pFrameText = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddText("test", pTextObj->GetTransform());
+			pFrameText->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			pFrameText->_rectTransform.SetRect({ 32.0f, -32.0f, 64.0f, 64.0f });
 		}
-		
+		EAE_Engine::Common::IGameObj* pBtnObj = EAE_Engine::Core::World::GetInstance().AddGameObj("btnObj", textPos);
+		{
+			pControlBtn = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddButton(btnCallBack, pBtnObj->GetTransform());
+			pControlBtn->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			pControlBtn->_rectTransform.SetRect({ 32.0f, -64.0f, 64.0f, 64.0f });
+			pControlBtn->_text._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			pControlBtn->_text._rectTransform.SetRect({ 32.0f, -64.0f, 64.0f, 64.0f });
+		}
+
 	}
 
 }

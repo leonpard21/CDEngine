@@ -55,7 +55,7 @@ namespace EAE_Engine
 		enum RenderDataLayer 
 		{
 			Object3D = 0,
-			UIImage = 2, 
+			UIElement = 2, 
 		};
 
 		/*

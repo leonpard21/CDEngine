@@ -28,7 +28,7 @@ namespace EAE_Engine
 				RenderData3D* pRenderData = reinterpret_cast<RenderData3D*>(_pRenderData);
 				pRenderData->Render();
 			}
-			if (_renderWeight._layer == RenderDataLayer::UIImage)
+			if (_renderWeight._layer == RenderDataLayer::UIElement)
 			{
 				RenderDataUI* pRenderData = reinterpret_cast<RenderDataUI*>(_pRenderData);
 				pRenderData->Render();
@@ -59,7 +59,7 @@ namespace EAE_Engine
 			{
 				CanvasRenderData* pCanvasRenderData = (it)->_pCanvasRenderData;
 				RenderWeight weight;
-				weight._layer = RenderDataLayer::UIImage;
+				weight._layer = RenderDataLayer::UIElement;
 				// I haven't decide how to deal with the material in 2D.
 				// So I leave these code at here right now.
 				/*

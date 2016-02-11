@@ -11,6 +11,24 @@ namespace EAE_Engine
 		{
 		}
 
+		Rectangle RectTransform::GetClipRect()
+		{
+			Rectangle imageScreenRectangle = GetScreenSpaceRect();
+			ScreenRect screenInfo = GetScreenRect();
+			float screenWidth = screenInfo._width;
+			float screenHeight = screenInfo._height;
+			// Since we have got the 4 positions of the 4 vertices in screen pos, 
+			// we can convert the screen pos to clip pos. 
+			Rectangle clipPos;
+			{
+				clipPos._left = imageScreenRectangle._left / screenWidth * 2.0f - 1.0f; // the screen vertex coordinate is from (-1.0f, 1.0f)
+				clipPos._right = imageScreenRectangle._right / screenWidth * 2.0f - 1.0f;
+				clipPos._bottom = imageScreenRectangle._bottom / screenHeight * 2.0f - 1.0f;
+				clipPos._top = imageScreenRectangle._top / screenHeight* 2.0f - 1.0f;
+			}
+			return clipPos;
+		}
+
 		/*
 		Now the GUI image has 2 modes:
 		1. position-mode (the anchor min and max are the same)
@@ -24,8 +42,11 @@ namespace EAE_Engine
 		_left, _right, how far the left edge and right edge from the anchorMinX and anchorMaxX,
 		_bottom, _top, how far the bottom edge and top edge from the anchorMinY and anchorMaxY
 		*/
-		void RectTransform::SetRect(Math::Vector4 values)
+		Rectangle RectTransform::GetScreenSpaceRect()
 		{
+			Rectangle rect = _rect;
+			Math::Vector4 values = { rect._left, rect._right, rect._bottom, rect._top };
+			//
 			ScreenRect screenInfo = GetScreenRect();
 			float screenWidth = screenInfo._width;
 			float screenHeight = screenInfo._height;
@@ -64,16 +85,8 @@ namespace EAE_Engine
 				imageScreenRectangle._bottom = _anchorMinScreen._y + imageStretchRect._bottom;
 				imageScreenRectangle._top = _anchorMaxScreen._y - imageStretchRect._top;
 			}
-			// Since we have got the 4 positions of the 4 vertices in screen pos, 
-			// we can convert the screen pos to clip pos. 
-			Rectangle clipPos;
-			{
-				clipPos._left = imageScreenRectangle._left / screenWidth * 2.0f - 1.0f; // the screen vertex coordinate is from (-1.0f, 1.0f)
-				clipPos._right = imageScreenRectangle._right / screenWidth * 2.0f - 1.0f;
-				clipPos._bottom = imageScreenRectangle._bottom / screenHeight * 2.0f - 1.0f;
-				clipPos._top = imageScreenRectangle._top / screenHeight* 2.0f - 1.0f;
-			}
-			_rect = clipPos;
+			return imageScreenRectangle;
 		}
+
 	}
 }

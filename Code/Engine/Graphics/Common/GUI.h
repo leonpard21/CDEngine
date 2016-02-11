@@ -1,7 +1,8 @@
 #ifndef EAE_ENGINE_GRAPHICS_GUI_H
 #define EAE_ENGINE_GRAPHICS_GUI_H
 
-#include "RectTransform.h"
+
+#include "Text.h"
 #include "Engine/General/Singleton.hpp"
 #include "Engine/Common/Interfaces.h"
 #include <vector>
@@ -19,22 +20,21 @@ namespace EAE_Engine
 			IMAGE_COM,
 		};
 
-		struct UIComponent 
-		{
-			eGUIType _type;
-			RectTransform _rectTransform;
-			void* _pComponent;
-		};
 
 		class UIElementManager : public Singleton<UIElementManager>
 		{
 		public:
 			~UIElementManager();
+			void Init();
 			void Clean();
-			void AddText(const char* pName, std::string value);
+			void Update();
+
+			Text* AddText(std::string value, Common::ITransform* pTrans);
+			Button* AddButton(BtnCallBack* pCallBack, Common::ITransform* pTrans);
 
 		private:
-			std::vector<UIComponent> _uiElements;
+			std::vector<Button> _buttons;
+			std::vector<Text> _texts;
 		};
 
 

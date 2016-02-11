@@ -19,10 +19,10 @@ namespace EAE_Engine
 	{
 		//////////////////////////////////////ImageRender///////////////////////////////////////////////
 
-		ImageRender::ImageRender(MaterialDesc* pMaterial, Image* pImage, Common::ITransform* pTransform):
-			_pMaterial(pMaterial), _pImage(pImage), _pImageMesh(nullptr)
+		ImageRender::ImageRender(MaterialDesc* pMaterial, Image* pImage, RectTransform* pRectTransform):
+			_pMaterial(pMaterial), _pImage(pImage), _pImageMesh(nullptr),
+			_pRectTransform(pRectTransform)
 		{
-			_pTrans = pTransform;
 		}
 
 		ImageRender::~ImageRender()
@@ -32,22 +32,9 @@ namespace EAE_Engine
 			SAFE_DELETE(_pImageMesh);
 		}
 
-		/*
-		Now the GUI image has 2 modes:
-		1. position-mode (the anchor min and max are the same)
-		The 4 parameters of the screenRect are:
-		x, y, the screen position of the anchor point).
-		width, height, the width and the height of the rect we want to render.
-		In this case, the screenRect size will be fixed when we change the window size.
-
-		2. stretch-mode (the anchor min and max are not the same)
-		The 4 parameters of the screenRect are:
-		_left, _right, how far the left edge and right edge from the anchorMinX and anchorMaxX,
-		_bottom, _top, how far the bottom edge and top edge from the anchorMinY and anchorMaxY
-		*/
-		void ImageRender::SetImageRect(Math::Vector4 values, uint32_t index)
+		void ImageRender::SetImageRect(uint32_t index)
 		{
-			_rectTransform.SetRect(values);
+			Rectangle imageRect = _pRectTransform->GetClipRect();
 			Rectangle texcoord;
 			{
 				uint32_t rowIndex = index / _pImage->_rows;
@@ -57,7 +44,7 @@ namespace EAE_Engine
 				texcoord._bottom = (float)rowIndex / (float)_pImage->_rows;
 				texcoord._top = (float)(rowIndex + 1) / (float)_pImage->_rows;
 			}
-			UpdateImageMesh(_rectTransform.GetRect(), texcoord);
+			UpdateImageMesh(imageRect, texcoord);
 		}
 
 		void ImageRender::UpdateImageMesh(Rectangle i_pos, Rectangle i_texcoord)
