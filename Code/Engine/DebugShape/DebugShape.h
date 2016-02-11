@@ -6,7 +6,7 @@
 
 namespace EAE_Engine 
 {
-	namespace DebugShape 
+	namespace Debug 
 	{
 		struct DebugSegment
 		{

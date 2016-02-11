@@ -144,7 +144,7 @@ namespace EAE_Engine
 
 		void DebugMeshes::GenerateDebugSegments()
 		{
-			std::vector<DebugShape::DebugSegment>& debugSegments = DebugShape::DebugShapes::GetInstance().GetSegments();
+			std::vector<Debug::DebugSegment>& debugSegments = Debug::DebugShapes::GetInstance().GetSegments();
 			//  Make sure that the debugSegments has primitives to draw
 			if (debugSegments.size() == 0) return;
 			// Setup the Vertices Information
@@ -178,7 +178,7 @@ namespace EAE_Engine
 
 		void DebugMeshes::GenerateDebugBoxes()
 		{
-			std::vector<DebugShape::DebugBox>& debugboxes = DebugShape::DebugShapes::GetInstance().GetBoxes();
+			std::vector<Debug::DebugBox>& debugboxes = Debug::DebugShapes::GetInstance().GetBoxes();
 			//  Make sure that the debugSegments has primitives to draw
 			if (debugboxes.size() == 0) return;
 			BoxMesh standardBox;
@@ -192,7 +192,7 @@ namespace EAE_Engine
 			uint32_t indexCount = 0;
 			for (uint32_t boxIndex = 0; boxIndex < debugboxes.size(); ++boxIndex)
 			{
-				DebugShape::DebugBox debugbox = debugboxes[boxIndex];
+				Debug::DebugBox debugbox = debugboxes[boxIndex];
 				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(debugbox._rotation, debugbox._pos);
 				Math::ColMatrix44 scaleMatrix = Math::ColMatrix44(debugbox._extents);
 				tranformsMatrix = scaleMatrix * tranformsMatrix;
@@ -287,7 +287,7 @@ namespace EAE_Engine
 
 		void DebugMeshes::GenerateDebugSpheres()
 		{
-			std::vector<DebugShape::DebugSphere>& debugSpheres = DebugShape::DebugShapes::GetInstance().GetSpheres();
+			std::vector<Debug::DebugSphere>& debugSpheres = Debug::DebugShapes::GetInstance().GetSpheres();
 			//  Make sure that the debugSegments has primitives to draw
 			if (debugSpheres.size() == 0) return;
 			// alloc memory for buffers
@@ -308,7 +308,7 @@ namespace EAE_Engine
 			// Get vertices and indices information for all of the debug meshes
 			for (uint32_t sphereIndex = 0; sphereIndex < debugSpheres.size(); ++sphereIndex)
 			{
-				DebugShape::DebugSphere debugSphere = debugSpheres[sphereIndex];
+				Debug::DebugSphere debugSphere = debugSpheres[sphereIndex];
 				SphereMesh standardSphere(6, 6);
 				uint32_t verticesOfThisBox = (uint32_t)standardSphere._vertices.size();
 				uint32_t indicesOfThisBox = (uint32_t)standardSphere._indices.size();

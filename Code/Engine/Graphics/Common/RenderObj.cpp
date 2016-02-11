@@ -5,6 +5,7 @@
 #include "MeshRender.h"
 #include "AOSMesh.h"
 #include "ImageRender.h"
+#include "CanvasRender.h"
 
 #include <algorithm>
 
@@ -56,11 +57,23 @@ namespace EAE_Engine
 
 			for (std::vector<RenderDataUI>::iterator it = _renderDataImages.begin(); it != _renderDataImages.end(); ++it)
 			{
-				ImageRender* pImageRender = (it)->_pImageRender;
-				MaterialDesc* pMaterial = pImageRender->GetMaterial();
+				CanvasRenderData* pCanvasRenderData = (it)->_pCanvasRenderData;
 				RenderWeight weight;
 				weight._layer = RenderDataLayer::UIImage;
-				weight._material = pMaterial ? pMaterial->_materialCost._cost : 0;
+				// I haven't decide how to deal with the material in 2D.
+				// So I leave these code at here right now.
+				/*
+				if (pCanvasRenderData->_renderType == eCanvasRender::IMAGE)
+				{
+					ImageRender* pImageRender = (ImageRender*)pCanvasRenderData->_pCanvasRender;
+					MaterialDesc* pMaterial = pImageRender->GetMaterial();
+					weight._material = pMaterial ? pMaterial->_materialCost._cost : 0;
+				}
+				else if (pCanvasRenderData->_renderType == eCanvasRender::TEXT)
+				{
+				
+				}
+				*/
 				RenderObj obj = { weight, &(*it) };
 				_renderObjs.push_back(obj);
 			}

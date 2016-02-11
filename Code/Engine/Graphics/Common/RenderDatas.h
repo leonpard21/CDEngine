@@ -14,7 +14,6 @@ namespace EAE_Engine
 		class Effect;
 		struct MaterialDesc;
 		class MeshRender;
-		class ImageRender;
 
 		struct RenderData3D
 		{
@@ -36,13 +35,19 @@ namespace EAE_Engine
 			//static MeshRender* s_pCurrentMeshRender;
 		};
 
+
+		struct CanvasRenderData;
+		struct TextRender;
+		class ImageRender;
 		struct RenderDataUI
 		{
-			ImageRender* _pImageRender;
+			CanvasRenderData* _pCanvasRenderData;
 
 			RenderDataUI() = default;
 			void ChangeEffectVariables();
 			void Render();
+			void RenderImage(ImageRender* pImageRender);
+			void RenderText(TextRender* pTextRender);
 
 			static MaterialDesc* s_pCurrentMaterial;
 			static Effect* s_pCurrentEffect;

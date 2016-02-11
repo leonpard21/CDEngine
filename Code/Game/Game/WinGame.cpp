@@ -381,6 +381,8 @@ bool CleanupMainWindow()
 
 bool OnMainWindowClosed( const HINSTANCE i_thisInstanceOfTheProgram )
 {
+	GameplayExit();
+
 	bool wereThereErrors = false;
 
 	if ( !CleanupMainWindow() )

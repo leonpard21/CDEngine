@@ -5,8 +5,11 @@
 #include "AOSMesh.h"
 #include "GraphicsInternal.h"
 #include "GraphicsOp.h"
-#include "ImageRender.h"
 #include "Device.h"
+
+#include "ImageRender.h"
+#include "CanvasRender.h"
+#include "Font.h"
 
 namespace EAE_Engine
 {
@@ -88,22 +91,34 @@ namespace EAE_Engine
 				s_pCurrentEffect->Update();
 		}
 
-		void RenderDataUI::Render() 
+		void RenderDataUI::Render()
+		{
+			if (_pCanvasRenderData->_renderType == eCanvasRender::IMAGE) 
+			{
+				RenderImage((ImageRender*)(_pCanvasRenderData->_pCanvasRender));
+			}
+			else if (_pCanvasRenderData->_renderType == eCanvasRender::TEXT) 
+			{
+				TextRender* pTextRender = (TextRender*)(_pCanvasRenderData->_pCanvasRender);
+				RenderText(pTextRender);
+			}
+		}
+
+		void RenderDataUI::RenderImage(ImageRender* pImageRender) 
 		{
 			//If we need to change material, change the material
-			MaterialDesc* pMaterial = ImageRenderManager::GetInstance()->GetMaterial();
+			MaterialDesc* pMaterial = CanvasRenderManager::GetInstance()->GetMaterial();
 			s_pCurrentMaterial = pMaterial;
 			s_pCurrentEffect = pMaterial->_pEffect;
 			BindCurrentEffect(s_pCurrentEffect);
 			ChangeEffectRenderState(s_pCurrentEffect->GetRenderState());
 			s_pCurrentMaterial->SetUniformForEffect();
-			s_pCurrentMaterial->ChangeTexture(0, _pImageRender->GetImage()->_texture);
+			s_pCurrentMaterial->ChangeTexture(0, pImageRender->GetImage()->_texture);
 			s_pCurrentMaterial->SetTexturesForEffect();
 			// updated the parameters for the material
 			
 			ChangeEffectVariables();
-
-			AOSMesh* pSMesh = _pImageRender->GetMesh();
+			AOSMesh* pSMesh = pImageRender->GetMesh();
 			
 			SetCurrentRenderMesh(pSMesh);
 
@@ -113,7 +128,12 @@ namespace EAE_Engine
 			s_pCurrentEffect->EndRender();
 		}
 
-
+		void RenderDataUI::RenderText(TextRender* pTextRender)
+		{
+			Rectangle rect = pTextRender->_rectTransform.GetRect();
+			Text* pText = pTextRender->_pText;
+			FontManager::GetInstance()->DrawString(rect, pText->_value.c_str());
+		}
 	}
 }
 

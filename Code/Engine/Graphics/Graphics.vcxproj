@@ -21,9 +21,12 @@
   <ItemGroup>
     <ClCompile Include="Common\BasicMeshes.cpp" />
     <ClCompile Include="Common\Camera.cpp" />
+    <ClCompile Include="Common\CanvasRender.cpp" />
     <ClCompile Include="Common\DebugMesh.cpp" />
     <ClCompile Include="Common\Effect.cpp" />
     <ClCompile Include="Common\EffectLoader.cpp" />
+    <ClCompile Include="Common\Font.cpp" />
+    <ClCompile Include="Common\GUI.cpp" />
     <ClCompile Include="Common\Material.cpp" />
     <ClCompile Include="Common\MaterialLoader.cpp" />
     <ClCompile Include="Common\RectTransform.cpp" />
@@ -39,6 +42,7 @@
     <ClCompile Include="Common\Image.cpp" />
     <ClCompile Include="Common\ImageMesh.cpp" />
     <ClCompile Include="Common\ImageRender.cpp" />
+    <ClCompile Include="Common\Text.cpp" />
     <ClCompile Include="Common\Texture.cpp" />
     <ClCompile Include="Common\UniformBlock.cpp" />
     <ClCompile Include="Common\UniformVariable.cpp" />
@@ -143,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="Common\BasicMeshes.h" />
     <ClInclude Include="Common\Camera.h" />
+    <ClInclude Include="Common\CanvasRender.h" />
     <ClInclude Include="Common\Color.h" />
     <ClInclude Include="Common\CommonDeclare.h" />
     <ClInclude Include="Common\DebugMesh.h" />
@@ -153,8 +158,10 @@
       </ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Common\Effect.h" />
+    <ClInclude Include="Common\Font.h" />
     <ClInclude Include="Common\GraphicsInternal.h" />
     <ClInclude Include="Common\BinaryFileLoader.h" />
+    <ClInclude Include="Common\GUI.h" />
     <ClInclude Include="Common\Material.h" />
     <ClInclude Include="Common\GraphicsOp.h" />
     <ClInclude Include="Common\RectTransform.h" />
@@ -169,6 +176,7 @@
     <ClInclude Include="Common\Image.h" />
     <ClInclude Include="Common\ImageMesh.h" />
     <ClInclude Include="Common\ImageRender.h" />
+    <ClInclude Include="Common\Text.h" />
     <ClInclude Include="Common\Texture.h" />
     <ClInclude Include="Common\UniformBlock.h" />
     <ClInclude Include="Common\UniformDesc.h" />

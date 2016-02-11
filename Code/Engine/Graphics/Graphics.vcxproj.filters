@@ -93,13 +93,13 @@
       <Filter>Direct3D9</Filter>
     </ClCompile>
     <ClCompile Include="Common\Image.cpp">
-      <Filter>Common\Image</Filter>
+      <Filter>Common\UI\Image</Filter>
     </ClCompile>
     <ClCompile Include="Common\ImageMesh.cpp">
-      <Filter>Common\Image</Filter>
+      <Filter>Common\UI\Image</Filter>
     </ClCompile>
     <ClCompile Include="Common\ImageRender.cpp">
-      <Filter>Common\Image</Filter>
+      <Filter>Common\UI\Image</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL\Image.gl.cpp">
       <Filter>OpenGL</Filter>
@@ -108,7 +108,7 @@
       <Filter>Common\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Common\RectTransform.cpp">
-      <Filter>Common\Image</Filter>
+      <Filter>Common\UI\Image</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL\GraphicsOp.gl.cpp">
       <Filter>OpenGL</Filter>
@@ -118,6 +118,18 @@
     </ClCompile>
     <ClCompile Include="Common\UniformBlock.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Font.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\GUI.cpp">
+      <Filter>Common\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\CanvasRender.cpp">
+      <Filter>Common\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Text.cpp">
+      <Filter>Common\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,25 +196,37 @@
       <Filter>Common\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Common\Image.h">
-      <Filter>Common\Image</Filter>
+      <Filter>Common\UI\Image</Filter>
     </ClInclude>
     <ClInclude Include="Common\ImageMesh.h">
-      <Filter>Common\Image</Filter>
+      <Filter>Common\UI\Image</Filter>
     </ClInclude>
     <ClInclude Include="Common\ImageRender.h">
-      <Filter>Common\Image</Filter>
+      <Filter>Common\UI\Image</Filter>
     </ClInclude>
     <ClInclude Include="Common\Screen.h">
       <Filter>Common\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Common\RectTransform.h">
-      <Filter>Common\Image</Filter>
+      <Filter>Common\UI\Image</Filter>
     </ClInclude>
     <ClInclude Include="Common\GraphicsOp.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\UniformBlock.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Font.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GUI.h">
+      <Filter>Common\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CanvasRender.h">
+      <Filter>Common\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Text.h">
+      <Filter>Common\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -251,7 +275,10 @@
     <Filter Include="Common\DebugMeshes">
       <UniqueIdentifier>{3b0e16a8-0fa5-464f-82e4-4e51783f42c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\Image">
+    <Filter Include="Common\UI">
+      <UniqueIdentifier>{dd888565-e6be-4e04-aae9-2a01ad3bf72b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\UI\Image">
       <UniqueIdentifier>{6d3207a2-f5be-4c8d-93d2-22f88eeb3ffb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

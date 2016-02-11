@@ -6,6 +6,7 @@
 #include "Engine/Graphics/Graphics.h"
 #include "Engine/Graphics/Common/MeshRender.h"
 #include "Engine/Graphics/Common/ImageRender.h"
+#include "Engine/Graphics/Common/CanvasRender.h"
 #include "Engine/Graphics/Common/Image.h"
 #include "Engine/Graphics/Common/Camera.h"
 #include "Engine/Graphics/Common/Screen.h"
@@ -16,6 +17,8 @@
 #include "Engine/Math/Quaternion.h"
 #include "Engine/Engine/Engine.h"
 #include "Engine/Graphics/Common/DebugMesh.h"
+#include "Engine/Graphics/Common/Text.h"
+#include "Engine/Graphics/Common/RectTransform.h"
 
 
 namespace 
@@ -31,6 +34,7 @@ namespace
 	void CreatePlayer();
 	void CreateCamera();
 	void CreateSprite();
+	void CreateDebugMenu();
 }
 
 
@@ -50,6 +54,8 @@ CameraController* pCamController = nullptr;
 PlayerController* pPlayerController = nullptr;
 
 EAE_Engine::Graphics::ImageRender* pNumberSpriteRender = nullptr;
+
+EAE_Engine::Graphics::Text* pFrameText = nullptr;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -90,7 +96,7 @@ void GameplayUpdate()
 		ResetLevel();
 		_resetCDRemain = 1.0f;
 	}
-	else 
+	else
 	{
 		_resetLevelController = false;
 		_resetLevel = false;
@@ -98,8 +104,8 @@ void GameplayUpdate()
 		//float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		_resetCDRemain -= elpasedTime;
-		
-		EAE_Engine::DebugShape::CleanDebugShapes();
+		//DebugInformations
+		EAE_Engine::Debug::CleanDebugShapes();
 		EAE_Engine::Math::Vector3 yellow(1.0f, 1.0f, 0.0f);
 		EAE_Engine::Math::Vector3 red(1.0f, 0.0f, 0.0f);
 		EAE_Engine::Math::Vector3 green(0.0f, 1.0f, 0.0f);
@@ -109,36 +115,38 @@ void GameplayUpdate()
 			EAE_Engine::Math::Vector3 start = EAE_Engine::Math::Vector3(0.0f, 0.0f, -10.0f);
 			EAE_Engine::Math::Vector3 end(0.0f, 100.0f, -10.0f);
 			EAE_Engine::Math::Vector3 end2(100.0f, 0.0f, -10.0f);
-			EAE_Engine::DebugShape::AddSegment(start, end, yellow);
-			EAE_Engine::DebugShape::AddSegment(start, end2, red);
+			EAE_Engine::Debug::AddSegment(start, end, yellow);
+			EAE_Engine::Debug::AddSegment(start, end2, red);
 			// DebugBoxes
 			{
 				EAE_Engine::Math::Vector3 externs(5.0f, 5.0f, 5.0f);
 				EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
 				EAE_Engine::Math::Vector3 boxPos0 = EAE_Engine::Math::Vector3(0.0f, 0.0f, 0.0f);
-				EAE_Engine::DebugShape::AddBox(externs, boxPos0, rotation, red);
+				EAE_Engine::Debug::AddBox(externs, boxPos0, rotation, red);
 				EAE_Engine::Math::Vector3 externs1(10.0f, 10.0f, 10.0f);
 				EAE_Engine::Math::Vector3 boxPos1 = EAE_Engine::Math::Vector3(25.0f, 5.0f, 0.0f);
-				EAE_Engine::DebugShape::AddBox(externs1, boxPos1, rotation, yellow);
+				EAE_Engine::Debug::AddBox(externs1, boxPos1, rotation, yellow);
 			}
 			// DebugSpheres
 			{
 				EAE_Engine::Math::Vector3 start1 = EAE_Engine::Math::Vector3(-5.0f, 0.0f, 0.0f);
-				EAE_Engine::DebugShape::AddSphere(start1, 10.0f, green);
+				EAE_Engine::Debug::AddSphere(start1, 10.0f, green);
 				EAE_Engine::Math::Vector3 start2 = EAE_Engine::Math::Vector3(0.0f, 1.0f, 0.0f);
-				EAE_Engine::DebugShape::AddSphere(start2, 10.0f, blue);
+				EAE_Engine::Debug::AddSphere(start2, 10.0f, blue);
 			}
 		}
 		static uint32_t frameIndex = 0;
 		pNumberSpriteRender->SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 		EAE_Engine::Math::Vector4 screenRect = { 32.0f, -32.0f, 64.0f, 64.0f };
 		pNumberSpriteRender->SetImageRect(screenRect, frameIndex++ % 9);
+
+
 	}
 }
 
 void GameplayExit()
 {
-
+	SAFE_DELETE(pFrameText);
 }
 
 namespace
@@ -164,6 +172,7 @@ namespace
 		CreatePlayer();
 		CreateCamera();
 		CreateSprite();
+		CreateDebugMenu();
 		return true;
 	}
 
@@ -221,7 +230,7 @@ namespace
 			EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(-0.9f, 0.9f, 0.0f);
 			EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj", spritePos);
 			EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/logo.dds", 1, 1);
-			EAE_Engine::Graphics::ImageRender* pRender1 = EAE_Engine::Graphics::ImageRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
+			EAE_Engine::Graphics::ImageRender* pRender1 = EAE_Engine::Graphics::CanvasRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
 			pRender1->SetAnchor({ 0.5f, 0.5f, 0.5f, 0.5f });
 			EAE_Engine::Math::Vector4 screenRect = { 128.0f, 128.0f, 256.0f, 256.0f };
 			pRender1->SetImageRect(screenRect, 1);
@@ -233,10 +242,25 @@ namespace
 			EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(0.9f, 0.9f, 0.0f);
 			EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj2", spritePos);
 			EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/numbers.dds", 1, 10);
-			pNumberSpriteRender = EAE_Engine::Graphics::ImageRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
+			pNumberSpriteRender = EAE_Engine::Graphics::CanvasRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
 			pNumberSpriteRender->SetAnchor({0.0f, 0.0f, 1.0f, 1.0f});
 			EAE_Engine::Math::Vector4 screenRect = {32.0f, -32.0f, 64.0f, 64.0f};
 			pNumberSpriteRender->SetImageRect(screenRect, 1);
+		}
+	}
+
+	void CreateDebugMenu()
+	{
+		pFrameText = new EAE_Engine::Graphics::Text();
+		pFrameText->_value = "this is a test.";
+		EAE_Engine::Math::Vector3 textPos = EAE_Engine::Math::Vector3::Zero;
+		EAE_Engine::Common::IGameObj* pTextObj = EAE_Engine::Core::World::GetInstance().AddGameObj("textObj", textPos);
+		{
+
+			EAE_Engine::Graphics::TextRender* pTextRender = 
+				EAE_Engine::Graphics::CanvasRenderManager::GetInstance()->AddTextRender(pFrameText, pTextObj->GetTransform());
+			pTextRender->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			pTextRender->_rectTransform.SetRect({ 32.0f, -32.0f, 64.0f, 64.0f });
 		}
 		
 	}

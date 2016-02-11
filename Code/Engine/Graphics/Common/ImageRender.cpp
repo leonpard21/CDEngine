@@ -2,18 +2,16 @@
 
 #include "AOSMesh.h"
 #include "GraphicsOp.h"
-#include "BinaryFileLoader.h"
 #include "Material.h"
 #include "Texture.h"
-#include "RenderObj.h"
-#include "RenderDatas.h"
 #include "Device.h"
 #include "ImageMesh.h"
+#include "Screen.h"
 
 #include "Math/ColMatrix.h"
 #include "General/MemoryOp.h"
 #include <string>
-
+#include "CanvasRender.h"
 
 namespace EAE_Engine
 {
@@ -22,8 +20,9 @@ namespace EAE_Engine
 		//////////////////////////////////////ImageRender///////////////////////////////////////////////
 
 		ImageRender::ImageRender(MaterialDesc* pMaterial, Image* pImage, Common::ITransform* pTransform):
-			_pMaterial(pMaterial), _pImage(pImage), _pTrans(pTransform), _pImageMesh(nullptr)
+			_pMaterial(pMaterial), _pImage(pImage), _pImageMesh(nullptr)
 		{
+			_pTrans = pTransform;
 		}
 
 		ImageRender::~ImageRender()
@@ -89,8 +88,6 @@ namespace EAE_Engine
 				(uint8_t)255, (uint8_t)255, (uint8_t)255, (uint8_t)255 };
 			_vertices.push_back(vertex3);
 #endif
-
-
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 			D3DVERTEXELEMENT9 elemnt_arr[] = {
 				// Stream: 0, POSITION: 3 floats == 12 bytes, Offset = 0
@@ -114,52 +111,5 @@ namespace EAE_Engine
 			else
 				_pImageMesh->ChangeWholeBuffers(&_vertices[0], 4, nullptr, 0, nullptr, 0);
 		}
-
-		//////////////////////////////////////ImageManager///////////////////////////////////////////////
-
-		ImageRenderManager::ImageRenderManager()
-		{}
-
-		ImageRenderManager::~ImageRenderManager()
-		{
-			Clean();
-		}
-
-		void ImageRenderManager::Init() 
-		{
-			LoadMaterial("data/Materials/imageRender.material");
-			_pMaterial = MaterialManager::GetInstance()->GetMaterial("imageRender");
-		}
-
-		void ImageRenderManager::Clean()
-		{
-			for (std::vector<ImageRender*>::iterator iter = _imageRenders.begin(); iter != _imageRenders.end(); )
-			{
-				ImageRender* pObj = *iter++;
-				SAFE_DELETE(pObj);
-			}
-			_imageRenders.clear();
-
-		}
-
-		ImageRender* ImageRenderManager::AddImageRender(Image* pImage, Common::ITransform* pTransform)
-		{
-			ImageRender* pImageRender = new ImageRender(_pMaterial, pImage, pTransform);
-			_imageRenders.push_back(pImageRender);
-			return pImageRender;
-		}
-
-		void ImageRenderManager::UpdateRenderDataList()
-		{
-			std::vector<RenderDataUI>& renderDataList = RenderObjManager::GetInstance().GetRenderData2DList();
-			for (std::vector<ImageRender*>::iterator it = _imageRenders.begin(); it != _imageRenders.end(); ++it)
-			{
-				Common::ITransform* pTrans = (*it)->GetTransform();
-				//Math::ColMatrix44 colMat = pTrans ? pTrans->GetLocalToWorldMatrix() : Math::ColMatrix44::Identity;
-				RenderDataUI renderData = { (*it)};
-				renderDataList.push_back(renderData);
-			}
-		}
-
 	}
 }

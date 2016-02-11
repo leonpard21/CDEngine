@@ -66,7 +66,7 @@ namespace EAE_Engine
 			Controller::ControllerManager::CleanInstance();
 			Collider::ColliderManager::CleanInstance();
 			Graphics::ShutDown();
-			DebugShape::DebugShapes::CleanInstance();
+			Debug::DebugShapes::CleanInstance();
 			Core::World::CleanInstance();
 			SAFE_DELETE(_pRemoveList);
 		}

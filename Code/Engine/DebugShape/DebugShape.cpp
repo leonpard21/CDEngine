@@ -1,15 +1,9 @@
 #include "DebugShape.h"
 #include "General/MemoryOp.h"
-//#include "Graphics/Common/AOSMesh.h"
-//#include "Graphics/Common/Effect.h"
-//#include "Graphics/Common/MeshManager.h"
-
-
-
 
 namespace EAE_Engine 
 {
-	namespace DebugShape 
+	namespace Debug
 	{
 		void DebugShapes::AddSegment(Math::Vector3 i_start, Math::Vector3 i_end, Math::Vector3 i_color)
 		{

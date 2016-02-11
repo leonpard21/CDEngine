@@ -9,9 +9,15 @@
     <ClInclude Include="DebugShape.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="DebugMenu.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DebugShape.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugMenu.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

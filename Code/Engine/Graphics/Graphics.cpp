@@ -13,7 +13,8 @@
 #include "Common/MeshRender.h"
 #include "Common/Camera.h"
 #include "Common/DebugMesh.h"
-#include "Common/ImageRender.h"
+#include "Common/CanvasRender.h"
+#include "Common/Font.h"
 #include "Engine/Math/ColMatrix.h"
 
 
@@ -43,7 +44,8 @@ bool EAE_Engine::Graphics::Initialize( const HWND i_renderingWindow )
 	DebugMeshes::GetInstance().Init();
 #endif
 	//ImageManager::GetInstance()->Init();
-	ImageRenderManager::GetInstance()->Init();
+	CanvasRenderManager::GetInstance()->Init();
+	FontManager::GetInstance()->Init();
 	return true;
 OnError:
 	ShutDown();
@@ -85,7 +87,7 @@ void EAE_Engine::Graphics::Render()
 		RenderObjManager::GetInstance().Clean();
 		// Add the MeshRender to the RenderData3D list.
 		MeshRenderManager::GetInstance().UpdateRenderDataList();
-		ImageRenderManager::GetInstance()->UpdateRenderDataList();
+		CanvasRenderManager::GetInstance()->UpdateRenderDataList();
 #ifdef DRAW_DEBUG_SHAPES
 		// Add the DebugMesh to the RenderData3D list.
 		DebugMeshes::GetInstance().Update();
@@ -101,6 +103,7 @@ void EAE_Engine::Graphics::Render()
 		}
 	}
 	PostRender();
+
 }
 
 void EAE_Engine::Graphics::PostRender()
@@ -115,7 +118,7 @@ bool EAE_Engine::Graphics::ShutDown()
 	DebugMeshes::CleanInstance();
 #endif
 	MeshRenderManager::CleanInstance();
-	ImageRenderManager::Destroy();
+	CanvasRenderManager::Destroy();
 	ImageManager::Destroy();
 	UniformVariableManager::CleanInstance();
 	UniformBlockManager::Destroy();
@@ -125,6 +128,7 @@ bool EAE_Engine::Graphics::ShutDown()
 	EffectsManager::CleanInstance();
 	MaterialManager::CleanInstance();
 	TextureManager::CleanInstance();
+	FontManager::Destroy();
 	CleanDevice();
 	return !wereThereErrors;
 }
@@ -134,7 +138,7 @@ void EAE_Engine::Graphics::CleanBeforeRestart()
 	CameraManager::CleanInstance();
 	MeshRenderManager::CleanInstance();
 	RenderObjManager::CleanInstance();
-	ImageRenderManager::Destroy();
+	CanvasRenderManager::Destroy();
 }
 
 void EAE_Engine::Graphics::RemoveMeshRender(Common::ITransform* pTrans)
