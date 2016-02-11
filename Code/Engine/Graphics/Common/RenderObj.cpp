@@ -54,7 +54,7 @@ namespace EAE_Engine
 				RenderObj obj = { weight, &(*it) };
 				_renderObjs.push_back(obj);
 			}
-
+			_renderData3Ds.clear();
 			for (std::vector<RenderDataUI>::iterator it = _renderDataImages.begin(); it != _renderDataImages.end(); ++it)
 			{
 				CanvasRenderData* pCanvasRenderData = (it)->_pCanvasRenderData;
@@ -77,7 +77,7 @@ namespace EAE_Engine
 				RenderObj obj = { weight, &(*it) };
 				_renderObjs.push_back(obj);
 			}
-
+			_renderDataImages.clear();
 			std::sort(_renderObjs.begin(), _renderObjs.end(), sortFunc);
 		}
 

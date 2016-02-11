@@ -101,7 +101,6 @@ void GameplayUpdate()
 		_resetLevelController = false;
 		_resetLevel = false;
 		EAE_Engine::Engine::EngineUpdate();
-		//float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		_resetCDRemain -= elpasedTime;
 		//DebugInformations
@@ -135,12 +134,15 @@ void GameplayUpdate()
 				EAE_Engine::Debug::AddSphere(start2, 10.0f, blue);
 			}
 		}
-		static uint32_t frameIndex = 0;
-		pNumberSpriteRender->SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
-		EAE_Engine::Math::Vector4 screenRect = { 32.0f, -32.0f, 64.0f, 64.0f };
-		pNumberSpriteRender->SetImageRect(screenRect, frameIndex++ % 9);
+		//static uint32_t frameIndex = 0;
+		//pNumberSpriteRender->SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+		//EAE_Engine::Math::Vector4 screenRect = { 32.0f, -32.0f, 64.0f, 64.0f };
+		//pNumberSpriteRender->SetImageRect(screenRect, frameIndex++ % 9);
 
-
+		char text[20];
+		int fps = 1.0f / elpasedTime;
+		sprintf_s(text, "FPS:%d", fps);
+		pFrameText->_value = text;
 	}
 }
 
