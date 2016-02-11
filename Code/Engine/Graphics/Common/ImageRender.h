@@ -17,22 +17,25 @@ namespace EAE_Engine
 		public:
 			ImageRender(MaterialDesc* pMaterial, Image* pImage, RectTransform* pRectTransform);
 			~ImageRender();
-			void SetImageRect(uint32_t index = 0);
 
 			Image* GetImage() { return _pImage; }
 			MaterialDesc* GetMaterial() { return _pMaterial; }
 			AOSMesh* GetMesh() { return _pImageMesh; }
 			void SetColor(Color color) { _color = color; }
+			void SetImageRect(uint32_t index = 0) { _index = index; }
+
+			void UpdateImageRect();
 
 		private:
 			void UpdateImageMesh(Rectangle i_rect, Rectangle i_texcoord);
-
+		
 		private:
 			MaterialDesc* _pMaterial;
 			Image* _pImage;
 			AOSMesh* _pImageMesh;
 			RectTransform* _pRectTransform;
 			Color _color;
+			uint32_t _index;
 		};
 	}
 }

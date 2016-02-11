@@ -117,6 +117,7 @@ namespace EAE_Engine
 			s_pCurrentMaterial->SetTexturesForEffect();
 			// updated the parameters for the material
 			ChangeEffectVariables();
+			pImageRender->UpdateImageRect();
 			AOSMesh* pSMesh = pImageRender->GetMesh();
 			
 			SetCurrentRenderMesh(pSMesh);

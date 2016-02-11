@@ -32,13 +32,13 @@ namespace EAE_Engine
 			SAFE_DELETE(_pImageMesh);
 		}
 
-		void ImageRender::SetImageRect(uint32_t index)
+		void ImageRender::UpdateImageRect()
 		{
 			Rectangle imageRect = _pRectTransform->GetClipRect();
 			Rectangle texcoord;
 			{
-				uint32_t rowIndex = index / _pImage->_rows;
-				uint32_t colIndex = index % _pImage->_cols;
+				uint32_t rowIndex = _index / _pImage->_rows;
+				uint32_t colIndex = _index % _pImage->_cols;
 				texcoord._left = (float)colIndex / (float)_pImage->_cols;
 				texcoord._right = (float)(colIndex + 1) / (float)_pImage->_cols;
 				texcoord._bottom = (float)rowIndex / (float)_pImage->_rows;

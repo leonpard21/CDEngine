@@ -55,6 +55,7 @@ namespace EAE_Engine
 					pImageRender->SetColor(Color::Red);
 				else
 					pImageRender->SetColor(Color::White);
+
 			}
 			// Iterate all of the Texts
 			for (std::vector<Text>::iterator it = _texts.begin(); it != _texts.end(); ++it)
