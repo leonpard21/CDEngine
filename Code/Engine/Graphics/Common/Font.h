@@ -26,7 +26,7 @@ namespace EAE_Engine
 			ID3DXFont* _pFont;
 		};
 #elif defined( EAEENGINE_PLATFORM_GL )
-		class Font : public Singleton<Font>
+		class FontManager : public Singleton<FontManager>
 		{
 		public:
 			inline void Init() {}
