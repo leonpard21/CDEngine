@@ -39,9 +39,9 @@ namespace EAE_Engine
 		class DebugShapes 
 		{
 		public:
-			void AddSegment(Math::Vector3 i_start, Math::Vector3 i_end, Math::Vector3 i_color);
-			void AddBox(Math::Vector3 i_extents, Math::Vector3 i_pos, Math::Quaternion i_rotation, Math::Vector3 i_color);
-			void AddSphere(Math::Vector3 i_pos, float radius, Math::Vector3 i_color);
+			DebugSegment* AddSegment(Math::Vector3 i_start, Math::Vector3 i_end, Math::Vector3 i_color);
+			DebugBox* AddBox(Math::Vector3 i_extents, Math::Vector3 i_pos, Math::Quaternion i_rotation, Math::Vector3 i_color);
+			DebugSphere* AddSphere(Math::Vector3 i_pos, float radius, Math::Vector3 i_color);
 			inline std::vector<DebugSegment>& GetSegments() { return _segments; }
 			inline std::vector<DebugBox>& GetBoxes() { return _boxes; }
 			inline std::vector<DebugSphere>& GetSpheres() { return _spheres; }
@@ -65,19 +65,19 @@ namespace EAE_Engine
 			DebugShapes::GetInstance().Clean(); 
 		}
 
-		inline void AddSegment(Math::Vector3 i_start, Math::Vector3 i_end, Math::Vector3 i_color) 
+		inline DebugSegment* AddSegment(Math::Vector3 i_start, Math::Vector3 i_end, Math::Vector3 i_color) 
 		{
-			DebugShapes::GetInstance().AddSegment(i_start, i_end, i_color);
+			return DebugShapes::GetInstance().AddSegment(i_start, i_end, i_color);
 		}
 
-		inline void AddBox(Math::Vector3 i_extents, Math::Vector3 i_pos, Math::Quaternion i_rotation, Math::Vector3 i_color)
+		inline DebugBox* AddBox(Math::Vector3 i_extents, Math::Vector3 i_pos, Math::Quaternion i_rotation, Math::Vector3 i_color)
 		{
-			DebugShapes::GetInstance().AddBox(i_extents, i_pos, i_rotation, i_color);
+			return DebugShapes::GetInstance().AddBox(i_extents, i_pos, i_rotation, i_color);
 		}
 
-		inline void AddSphere(Math::Vector3 i_pos, float radius, Math::Vector3 i_color)
+		inline DebugSphere* AddSphere(Math::Vector3 i_pos, float radius, Math::Vector3 i_color)
 		{
-			DebugShapes::GetInstance().AddSphere(i_pos, radius, i_color);
+			return DebugShapes::GetInstance().AddSphere(i_pos, radius, i_color);
 		}
 
 	}

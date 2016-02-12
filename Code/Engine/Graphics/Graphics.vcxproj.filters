@@ -134,6 +134,9 @@
     <ClCompile Include="Common\Color.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="Common\Device.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />

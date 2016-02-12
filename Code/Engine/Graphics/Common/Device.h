@@ -3,6 +3,7 @@
 
 #include "../Graphics.h"
 #include "Screen.h"
+#include "Math/Vector.h"
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 struct IDirect3DDevice9;
 #elif defined( EAEENGINE_PLATFORM_GL )
@@ -21,6 +22,9 @@ namespace EAE_Engine
 #elif defined( EAEENGINE_PLATFORM_GL )
 		HDC GetDeviceContext();
 #endif
+		Math::Vector2 ConvertWinToEngineScreenPos(Math::Vector2 winScreenPos);
+		Math::Vector2 ConvertEngineToWinScreenPos(Math::Vector2 engineScreenPos);
+
 	}
 }
 

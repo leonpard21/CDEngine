@@ -58,7 +58,7 @@ EAE_Engine::Graphics::Text* pFrameText = nullptr;
 EAE_Engine::Graphics::Button* pControlBtn = nullptr;
 EAE_Engine::Graphics::Slider* pSlider = nullptr;
 EAE_Engine::Graphics::Toggle* pToggle = nullptr;
-
+EAE_Engine::Debug::DebugSphere* pDebugSphere = nullptr;
 void btnCallBack(void*) 
 {
 
@@ -91,6 +91,8 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	_windowWidth = windowWidth;
 	_windowHeight = windowHeight;
 	result = InitLevel();
+
+
 	return true;
 }
  
@@ -111,6 +113,7 @@ void GameplayUpdate()
 		float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		_resetCDRemain -= elpasedTime;
 		//DebugInformations
+		/*
 		EAE_Engine::Debug::CleanDebugShapes();
 		EAE_Engine::Math::Vector3 yellow(1.0f, 1.0f, 0.0f);
 		EAE_Engine::Math::Vector3 red(1.0f, 0.0f, 0.0f);
@@ -141,12 +144,17 @@ void GameplayUpdate()
 				EAE_Engine::Debug::AddSphere(start2, 10.0f, blue);
 			}
 		}
-	
+		*/
 
 		char text[20];
 		int fps = 1.0f / elpasedTime;
 		sprintf_s(text, "FPS:%d", fps);
 		pFrameText->_value = text;
+
+		pDebugSphere->_radius = 5.0f;// pSlider->_handleValue / 10.0f;
+
+		bool hoving = EAE_Engine::Graphics::OnClick(pToggle->_rectTransform);
+		pToggle->_checked = hoving;
 	}
 }
 
@@ -256,15 +264,14 @@ namespace
 
 	void CreateDebugMenu()
 	{
+		// Add debugSphere.
+		EAE_Engine::Math::Vector3 green(0.0f, 1.0f, 0.0f);
+		EAE_Engine::Math::Vector3 start1 = EAE_Engine::Math::Vector3(-5.0f, 0.0f, 0.0f);
+		pDebugSphere = EAE_Engine::Debug::AddSphere(start1, 10.0f, green);
+		// Add widgets
 		EAE_Engine::Math::Vector3 textPos = EAE_Engine::Math::Vector3::Zero;
 		EAE_Engine::Common::IGameObj* pTextObj = EAE_Engine::Core::World::GetInstance().AddGameObj("textObj", textPos);
 		{
-			/*
-			EAE_Engine::Graphics::TextRender* pTextRender = 
-			EAE_Engine::Graphics::CanvasRenderManager::GetInstance()->AddTextRender(pFrameText, pTextObj->GetTransform());
-			pTextRender->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
-			pTextRender->_rectTransform.SetRect({ 32.0f, -32.0f, 64.0f, 64.0f });
-			*/
 			pFrameText = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddText("test", pTextObj->GetTransform());
 			pFrameText->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pFrameText->_rectTransform.SetRect({ 32.0f, -32.0f, 64.0f, 64.0f });
@@ -274,6 +281,8 @@ namespace
 			pControlBtn = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddButton(btnCallBack, pBtnObj->GetTransform());
 			pControlBtn->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pControlBtn->_rectTransform.SetRect({ 32.0f, -64.0f, 64.0f, 64.0f });
+			pControlBtn->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			pControlBtn->_backgroundImage._rectTransform.SetRect({ 32.0f, -64.0f, 64.0f, 64.0f });
 			pControlBtn->_text._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pControlBtn->_text._rectTransform.SetRect({ 32.0f, -64.0f, 64.0f, 64.0f });
 		}
@@ -290,11 +299,11 @@ namespace
 		{
 			pToggle = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddToggle(true, pToggleObj->GetTransform());
 			pToggle->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
-			pToggle->_rectTransform.SetRect({ 64.0f, -168.0f, 64.0f, 64.0f });
+			pToggle->_rectTransform.SetRect({ 16.0f, -168.0f, 16.0f, 16.0f });
 			pToggle->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
-			pToggle->_backgroundImage._rectTransform.SetRect({ 64.0f, -168.0f, 64.0f, 16.0f });
-			pToggle->Check(false);
-			pToggle->Check(true);
+			pToggle->_backgroundImage._rectTransform.SetRect({ 16.0f, -168.0f, 16.0f, 16.0f });
+			pToggle->_checked = false;
+			//pToggle->Check(true);
 		}
 	}
 

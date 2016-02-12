@@ -11,7 +11,7 @@ namespace EAE_Engine
 		{
 		}
 
-		Rectangle RectTransform::GetClipRect()
+		Rectangle RectTransform::GetClipRect() const
 		{
 			Rectangle imageScreenRectangle = GetScreenSpaceRect();
 			ScreenRect screenInfo = GetScreenRect();
@@ -42,7 +42,7 @@ namespace EAE_Engine
 		_left, _right, how far the left edge and right edge from the anchorMinX and anchorMaxX,
 		_bottom, _top, how far the bottom edge and top edge from the anchorMinY and anchorMaxY
 		*/
-		Rectangle RectTransform::GetScreenSpaceRect()
+		Rectangle RectTransform::GetScreenSpaceRect() const
 		{
 			Rectangle rect = _rect;
 			Math::Vector4 values = { rect._left, rect._right, rect._bottom, rect._top };

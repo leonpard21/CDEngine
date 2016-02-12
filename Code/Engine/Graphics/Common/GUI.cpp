@@ -24,13 +24,37 @@ namespace EAE_Engine
 
 		void UIElementManager::Update()
 		{
+			// Iterate all of the Buttons
+			for (std::vector<Button>::iterator it = _buttons.begin(); it != _buttons.end(); ++it)
+			{
+				Button* pBtn = &*it;
+				pBtn->Update();
+			}
+			// Iterate all of the Sliders
+			for (std::vector<Slider>::iterator it = _sliders.begin(); it != _sliders.end(); ++it)
+			{
+				Slider* pSlider = &*it;
+				pSlider->Update();
+			}
+			// Iterate all of the Toggles
+			for (std::vector<Toggle>::iterator it = _toggles.begin(); it != _toggles.end(); ++it)
+			{
+				Toggle* pToggle = &*it;
+				pToggle->Update();
+			}
+
+			UpdateCanvasRender();
+		}
+
+		void UIElementManager::UpdateCanvasRender()
+		{
 			CanvasRenderManager* crManager = CanvasRenderManager::GetInstance();
 			CanvasRenderManager::GetInstance()->Clean();
 			// Iterate all of the Buttons
 			for (std::vector<Button>::iterator it = _buttons.begin(); it != _buttons.end(); ++it)
 			{
 				Button* pBtn = &*it;
-				ImageRender* pImageRender = crManager->AddImageRender(pBtn->_pImage, &pBtn->_rectTransform);
+				ImageRender* pImageRender = crManager->AddImageRender(pBtn->_backgroundImage._pImage, &pBtn->_backgroundImage._rectTransform);
 				pImageRender->SetImageRect(0);
 				TextRender* pTextRender = crManager->AddTextRender(&pBtn->_text, &pBtn->_text._rectTransform);
 			}
@@ -77,8 +101,9 @@ namespace EAE_Engine
 		{
 			RectTransform _rectTransform;
 			Image* btnImage = ImageManager::GetInstance()->GetImage("UISprite");
-			Text text = { "btn", _rectTransform };
-			_buttons.push_back({ text, btnImage, pCallBack, _rectTransform });
+			UIImage btnBackImage = { btnImage, _rectTransform };
+			Text text = { "btn",  _rectTransform };
+			_buttons.push_back({ text, btnBackImage, pCallBack, _rectTransform });
 			return &_buttons.back();
 		}
 
@@ -89,7 +114,7 @@ namespace EAE_Engine
 			Image* pBackGroundImage = ImageManager::GetInstance()->GetImage("grey");
 			UIImage backgroundimage = { pBackGroundImage, _rectTransform};
 			UIImage handleimage = { pHandleImage, _rectTransform };
-			_sliders.push_back({ backgroundimage, handleimage, min, max, 1.0f });
+			_sliders.push_back({ backgroundimage, handleimage, min, max, 1.0f, 0.0f, _rectTransform });
 			return &_sliders.back();
 		}
 

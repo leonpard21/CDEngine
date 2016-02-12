@@ -2,8 +2,8 @@
 	This file contains wrappers for Windows functions
 */
 
-#ifndef EAE_Engine_WINDOWS_FUNCTIONS_H
-#define EAE_Engine_WINDOWS_FUNCTIONS_H
+#ifndef EAE_ENGINE_WINDOWS_FUNCTIONS_H
+#define EAE_ENGINE_WINDOWS_FUNCTIONS_H
 
 #include "WindowsIncludes.h"
 
@@ -27,6 +27,10 @@ namespace EAE_Engine
 	std::string GetLastWindowsError( DWORD* o_optionalErrorCode = NULL );
 	bool GetLastWriteTime( const char* const i_path, uint64_t& o_lastWriteTime, std::string* o_errorMessage = NULL );
 	std::string GetFileNameWithoutExtension(const char* path);
+	bool GetCursorPos(POINT& o_point);
+	bool GetCursorPosInWindow(HWND hWnd, POINT& o_point);
+	HWND GeActiceWindowHandle();
+	bool GetCursorPosInActiveWindow(POINT& o_point);
 }
 
-#endif	// EAE_Engine_WINDOWS_FUNCTIONS_H
+#endif	// EAE_ENGINE_WINDOWS_FUNCTIONS_H

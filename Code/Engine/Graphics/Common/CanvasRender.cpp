@@ -74,7 +74,7 @@ namespace EAE_Engine
 			std::vector<RenderDataUI>& renderDataList = RenderObjManager::GetInstance().GetRenderData2DList();
 			for (std::vector<CanvasRenderData>::iterator it = _canvasRenderDatas.begin(); it != _canvasRenderDatas.end(); ++it)
 			{
-				RenderDataUI renderData = { &(*it)};
+				RenderDataUI renderData = { &(*it) };
 				renderDataList.push_back(renderData);
 			}
 		}

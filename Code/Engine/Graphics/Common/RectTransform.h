@@ -19,8 +19,8 @@ namespace EAE_Engine
 			Rectangle GetAnchor() { return _anchorPoint; }
 			void SetRect(Rectangle rect) { _rect = rect; }
 			Rectangle GetRect() { return _rect; }
-			Rectangle GetScreenSpaceRect();
-			Rectangle GetClipRect();
+			Rectangle GetScreenSpaceRect() const;
+			Rectangle GetClipRect() const;
 
 		private:
 			// @_pivot is the local ratio of the Image.

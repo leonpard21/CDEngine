@@ -2,9 +2,10 @@
 	This file manages user input from the keyboard or mouse
 */
 
-#ifndef EAE6320_USERINPUT_H
-#define EAE6320_USERINPUT_H
+#ifndef EAE_ENGINE_USERINPUT_H
+#define EAE_ENGINE_USERINPUT_H
 
+#include "Engine/Math/Vector.h"
 // Interface
 //==========
 
@@ -22,7 +23,9 @@ namespace EAE_Engine
 		bool IsKeyPressed( const int i_virtualKeyCode );
 		bool IsKeyReleased(const int i_virtualKeyCode);
 		bool IsMouseButtonPressed( const int i_virtualButtonCode );
+		Math::Vector2 GetMousePos();
+
 	}
 }
 
-#endif	// EAE6320_USERINPUT_H
+#endif	// EAE_ENGINE_USERINPUT_H

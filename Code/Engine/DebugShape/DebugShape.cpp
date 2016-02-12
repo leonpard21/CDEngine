@@ -5,19 +5,22 @@ namespace EAE_Engine
 {
 	namespace Debug
 	{
-		void DebugShapes::AddSegment(Math::Vector3 i_start, Math::Vector3 i_end, Math::Vector3 i_color)
+		DebugSegment* DebugShapes::AddSegment(Math::Vector3 i_start, Math::Vector3 i_end, Math::Vector3 i_color)
 		{
 			_segments.push_back({ i_start, i_end, i_color});
+			return &_segments.back();
 		}
 
-		void DebugShapes::AddBox(Math::Vector3 i_extents, Math::Vector3 i_pos, Math::Quaternion i_rotation, Math::Vector3 i_color)
+		DebugBox* DebugShapes::AddBox(Math::Vector3 i_extents, Math::Vector3 i_pos, Math::Quaternion i_rotation, Math::Vector3 i_color)
 		{
 			_boxes.push_back({ i_extents, i_pos, i_rotation, i_color});
+			return &_boxes.back();
 		}
 
-		void DebugShapes::AddSphere(Math::Vector3 i_pos, float radius, Math::Vector3 i_color)
+		DebugSphere* DebugShapes::AddSphere(Math::Vector3 i_pos, float radius, Math::Vector3 i_color)
 		{
 			_spheres.push_back({ i_pos, i_color, radius });
+			return &_spheres.back();
 		}
 
 		void DebugShapes::Clean()

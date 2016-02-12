@@ -26,6 +26,9 @@ namespace EAE_Engine
 			Toggle* AddToggle(bool checked, Common::ITransform* pTrans);
 
 		private:
+			void UpdateCanvasRender();
+
+		private:
 			std::vector<Button> _buttons;
 			std::vector<Text> _texts;
 			std::vector<Slider> _sliders;

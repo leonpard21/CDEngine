@@ -461,3 +461,26 @@ std::string EAE_Engine::GetFileNameWithoutExtension(const char* path)
 	return result;
 }
 
+bool EAE_Engine::GetCursorPos(POINT& o_point)
+{
+	return GetCursorPos(&o_point);
+}
+
+bool EAE_Engine::GetCursorPosInWindow(HWND hWnd, POINT& o_point)
+{
+	GetCursorPos(&o_point);
+	return ScreenToClient(hWnd, &o_point);
+}
+
+HWND EAE_Engine::GeActiceWindowHandle()
+{
+	HWND hWnd = ::GetActiveWindow();
+	return hWnd;
+}
+
+bool EAE_Engine::GetCursorPosInActiveWindow(POINT& o_point)
+{
+	return GetCursorPosInWindow(GeActiceWindowHandle(), o_point);
+}
+
+
