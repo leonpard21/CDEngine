@@ -8,6 +8,7 @@
 #include "Engine/CollisionDetection/ColliderBase.h"
 #include "Engine/Common/Interfaces.h"
 #include "Engine/DebugShape/DebugShape.h"
+#include "Engine/UserInput/UserInput.h"
 #include <vector>
 
 namespace EAE_Engine
@@ -43,6 +44,7 @@ namespace EAE_Engine
 		{
 			Time::Initialize();
 			_pRemoveList = new std::vector<EAE_Engine::Common::ITransform*>();
+			UserInput::Input::GetInstance()->Init();
 			bool result = Graphics::Initialize(i_renderingWindow);
 			return result;
 		}
@@ -52,6 +54,7 @@ namespace EAE_Engine
 			EAE_Engine::Time::OnNewFrame();
 			float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 			Collider::Update(elpasedTime); 
+			UserInput::Input::GetInstance()->Update();
 			EAE_Engine::Controller::ControllerManager::GetInstance().UpdateAll();
 			RemoveAllActorsInList();
 		}
@@ -63,6 +66,7 @@ namespace EAE_Engine
 
 		void EngineEnd()
 		{
+			UserInput::Input::Destroy();
 			Controller::ControllerManager::CleanInstance();
 			Collider::ColliderManager::CleanInstance();
 			Graphics::ShutDown();

@@ -28,11 +28,21 @@ namespace EAE_Engine
 		bool OnClick(const RectTransform& rectTransform)
 		{
 			bool onHoving = OnHovering(rectTransform);
-			bool clicking = UserInput::IsMouseButtonPressed(VK_LBUTTON);
+			bool onPressDown = UserInput::Input::GetInstance()->GetKeyState(VK_LBUTTON) == UserInput::KeyState::OnPressed;
+			if (onHoving && onPressDown)
+				return true;
+			return false;
+		}
+
+		bool OnDrag(const RectTransform& rectTransform)
+		{
+			bool onHoving = OnHovering(rectTransform);
+			bool clicking = UserInput::Input::GetInstance()->GetKeyState(VK_LBUTTON) == UserInput::KeyState::OnPressing;
 			if (onHoving && clicking)
 				return true;
 			return false;
 		}
+
 
 		void Button::Update() 
 		{
@@ -49,29 +59,25 @@ namespace EAE_Engine
 		{
 			// the handle's anchor should same with the background
 			_handleImage._rectTransform.SetAnchor(_backgroundImage._rectTransform.GetAnchor());
-			if (OnClick(_handleImage._rectTransform))
+			if (OnDrag(_handleImage._rectTransform))
 			{
-				OnDrag();
+				Math::Vector2 screenPos = UserInput::GetMousePos();
+				screenPos = ConvertWinToEngineScreenPos(screenPos);
+				// get the range of the background image, in screen coordinate
+				Rectangle range = _backgroundImage._rectTransform.GetScreenSpaceRect();
+				screenPos._x = Math::max<float>(screenPos._x, range._left);
+				screenPos._x = Math::min<float>(screenPos._x, range._right);
+
+				// calculate and convert the screenYpos from windows Screen coordinate to our Unity style screen coordinate.
+				float screenYpos = -1.0f * (GetScreenRect()._height - (range._bottom + range._top) / 2.0f);
+				Rectangle handleRect = { screenPos._x, screenYpos, 16.0f, 16.0f };
+				_handleImage._rectTransform.SetRect(handleRect);
+
+				_handleValue = (screenPos._x - range._left) / (range._right - range._left) * (_max - _min) + _min;
 			}
 			UpdateHandle();
 		}
 
-		void Slider::OnDrag()
-		{
-			Math::Vector2 screenPos = UserInput::GetMousePos();
-			screenPos = ConvertWinToEngineScreenPos(screenPos);
-			// get the range of the background image, in screen coordinate
-			Rectangle range = _backgroundImage._rectTransform.GetScreenSpaceRect();
-			screenPos._x = Math::max<float>(screenPos._x, range._left);
-			screenPos._x = Math::min<float>(screenPos._x, range._right);
-
-			// calculate and convert the screenYpos from windows Screen coordinate to our Unity style screen coordinate.
-			float screenYpos = -1.0f * (GetScreenRect()._height - (range._bottom + range._top) / 2.0f);
-			Rectangle handleRect = { screenPos._x, screenYpos, 16.0f, 16.0f };
-			_handleImage._rectTransform.SetRect(handleRect);
-
-			_handleValue = (screenPos._x - range._left) / (range._right - range._left) * (_max - _min) + _min;
-		}
 
 		// handleValue should be a value between _min and _max
 		void Slider::UpdateHandle()

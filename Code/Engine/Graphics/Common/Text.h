@@ -11,6 +11,7 @@ namespace EAE_Engine
 	{
 		bool OnHovering(const RectTransform& rectTransform);
 		bool OnClick(const RectTransform& rectTransform);
+		bool OnDrag(const RectTransform& rectTransform);
 
 		struct Text 
 		{
@@ -43,7 +44,6 @@ namespace EAE_Engine
 			void Update();
 			void SetHandle(float handleValue) { _handleValue = handleValue; }
 			void UpdateHandle();
-			void OnDrag();
 			UIImage _backgroundImage;
 			UIImage _handleImage;
 			float _min;
