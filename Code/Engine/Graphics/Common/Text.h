@@ -41,7 +41,8 @@ namespace EAE_Engine
 		{
 			Slider() = default;
 			void Update();
-			void SetHandle(float handleValue);
+			void SetHandle(float handleValue) { _handleValue = handleValue; }
+			void UpdateHandle();
 			void OnDrag();
 			UIImage _backgroundImage;
 			UIImage _handleImage;

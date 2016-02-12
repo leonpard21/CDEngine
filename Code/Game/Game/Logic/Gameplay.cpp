@@ -61,7 +61,8 @@ EAE_Engine::Graphics::Toggle* pToggle = nullptr;
 EAE_Engine::Debug::DebugSphere* pDebugSphere = nullptr;
 void btnCallBack(void*) 
 {
-
+	if (pSlider)
+		pSlider->_handleValue = 20.0f;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -152,9 +153,11 @@ void GameplayUpdate()
 		pFrameText->_value = text;
 		static float radisu = 1.0f;
 		pDebugSphere->_radius = pSlider->_handleValue / 10.0f;
-
-		bool hoving = EAE_Engine::Graphics::OnClick(pToggle->_rectTransform);
-		pToggle->_checked = hoving;
+		EAE_Engine::Debug::CleanDebugShapes();
+		if (pToggle->_checked)
+		{
+			EAE_Engine::Debug::DebugShapes::GetInstance().GetSpheres().push_back(*pDebugSphere);
+		}
 	}
 }
 
@@ -302,8 +305,7 @@ namespace
 			pToggle->_rectTransform.SetRect({ 16.0f, -168.0f, 16.0f, 16.0f });
 			pToggle->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pToggle->_backgroundImage._rectTransform.SetRect({ 16.0f, -168.0f, 16.0f, 16.0f });
-			pToggle->_checked = false;
-			//pToggle->Check(true);
+			pToggle->_checked = true;
 		}
 	}
 
