@@ -150,8 +150,8 @@ void GameplayUpdate()
 		int fps = 1.0f / elpasedTime;
 		sprintf_s(text, "FPS:%d", fps);
 		pFrameText->_value = text;
-
-		pDebugSphere->_radius = 5.0f;// pSlider->_handleValue / 10.0f;
+		static float radisu = 1.0f;
+		pDebugSphere->_radius = pSlider->_handleValue / 10.0f;
 
 		bool hoving = EAE_Engine::Graphics::OnClick(pToggle->_rectTransform);
 		pToggle->_checked = hoving;
@@ -288,7 +288,7 @@ namespace
 		}
 		EAE_Engine::Common::IGameObj* pSliderObj = EAE_Engine::Core::World::GetInstance().AddGameObj("sliderObj", textPos);
 		{
-			pSlider = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddSlider(0.0f, 100.0f, pSliderObj->GetTransform());
+			pSlider = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddSlider(50.0f, 200.0f, pSliderObj->GetTransform());
 			pSlider->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pSlider->_rectTransform.SetRect({ 64.0f, -128.0f, 64.0f, 64.0f });
 			pSlider->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });

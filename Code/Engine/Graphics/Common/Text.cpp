@@ -84,7 +84,7 @@ namespace EAE_Engine
 			Rectangle handleRect = { screenPos._x, screenYpos, 16.0f, 16.0f };
 			_handleImage._rectTransform.SetRect(handleRect);
 
-			_handleValue = (screenPos._x - range._left) / (range._right - range._left);
+			_handleValue = (screenPos._x - range._left) / (range._right - range._left) * (_max - _min) + _min;
 		}
 
 		void Toggle::Update()
