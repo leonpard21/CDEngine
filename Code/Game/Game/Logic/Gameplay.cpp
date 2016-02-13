@@ -148,8 +148,8 @@ void GameplayUpdate()
 		*/
 
 		char text[20];
-		int fps = 1.0f / elpasedTime;
-		sprintf_s(text, "FPS:%d", fps);
+		float fps = 1.0f / elpasedTime;
+		sprintf_s(text, "FPS:%.2f", fps);
 		pFrameText->_value = text;
 		static float radisu = 1.0f;
 		pDebugSphere->_radius = pSlider->_handleValue / 10.0f;
@@ -243,26 +243,6 @@ namespace
 
 	void CreateSprite() 
 	{
-		/*
-		{
-			EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(-0.9f, 0.9f, 0.0f);
-			EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj", spritePos);
-			EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/logo.dds", 1, 1);
-			EAE_Engine::Graphics::ImageRender* pRender1 = EAE_Engine::Graphics::CanvasRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
-			pRender1->SetAnchor({ 0.5f, 0.5f, 0.5f, 0.5f });
-			EAE_Engine::Math::Vector4 screenRect = { 128.0f, 128.0f, 256.0f, 256.0f };
-			pRender1->SetImageRect(screenRect, 1);
-			//pRender1->SetAnchor({ 0.0f, 1.0f, 0.0f, 1.0f });
-			//EAE_Engine::Math::Vector4 screenStretch = { 200.0f, 200.0f, 64.0f, 64.0f };
-			//pRender1->SetImageRect(screenStretch, 1);
-		}
-		{
-			EAE_Engine::Math::Vector3 spritePos = EAE_Engine::Math::Vector3(0.9f, 0.9f, 0.0f);
-			EAE_Engine::Common::IGameObj* pSpriteObj = EAE_Engine::Core::World::GetInstance().AddGameObj("spriteObj2", spritePos);
-			EAE_Engine::Graphics::Image* pSprite = EAE_Engine::Graphics::ImageManager::GetInstance()->LoadCustomImage("data/Textures/numbers.dds", 1, 10);
-			pNumberSpriteRender = EAE_Engine::Graphics::CanvasRenderManager::GetInstance()->AddImageRender(pSprite, pSpriteObj->GetTransform());
-		}
-		*/
 	}
 
 	void CreateDebugMenu()
@@ -305,7 +285,6 @@ namespace
 			pToggle->_rectTransform.SetRect({ 16.0f, -168.0f, 16.0f, 16.0f });
 			pToggle->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pToggle->_backgroundImage._rectTransform.SetRect({ 16.0f, -168.0f, 16.0f, 16.0f });
-			pToggle->_checked = true;
 		}
 	}
 
