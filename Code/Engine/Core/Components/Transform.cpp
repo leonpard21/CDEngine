@@ -128,22 +128,33 @@ namespace EAE_Engine
 		Math::Vector3& Transform::GetVelocity() { return _velocity; }
 		void Transform::SetVelocity(Math::Vector3& velocity) { _velocity = velocity; }
 		// Transform Matrices
-		Math::ColMatrix44 Transform::GetRotateTransformMatrix() { return Math::ColMatrix44(GetRotation(), GetPos()); }
+		Math::ColMatrix44 Transform::GetRotateTransformMatrix() { 
+			Math::ColMatrix44 result;
+			if(_pParent)
+				result = Math::ColMatrix44(_localRotation, _localPosition) * _pParent->GetRotateTransformMatrix();
+			else 
+				result = Math::ColMatrix44(_localRotation, _localPosition);
+			return result;
+		}
+
 		Math::ColMatrix44 Transform::GetLocalToWorldMatrix() 
 		{
 			// When we want to get the transform Matrix of a Transform,
 			// we should use the Global Rotaion and Global Position,
 			// so we don't need to care the local position and how many parents it has.
-			Math::Quaternion rotation = GetRotation();
-			Math::ColMatrix44 rotateTransMat = Math::ColMatrix44(rotation, GetPos());
+			Math::ColMatrix44 rotateTransMat = Math::ColMatrix44(_localRotation, _localPosition);
 			Math::ColMatrix44 scaleMat = Math::ColMatrix44::Identity;
 			{
-				Math::Vector3 scale = GetScale();
+				Math::Vector3 scale = _localScale;
 				scaleMat._m00 = scale.x();
 				scaleMat._m11 = scale.y();
 				scaleMat._m22 = scale.z();
 			}
-			return rotateTransMat * scaleMat;
+			Math::ColMatrix44 localTransformMatrix = rotateTransMat * scaleMat;
+			if (!_pParent)
+				return localTransformMatrix;
+			else
+				return localTransformMatrix * _pParent->GetLocalToWorldMatrix();
 		}
 		Math::Vector3 Transform::GetForward()
 		{

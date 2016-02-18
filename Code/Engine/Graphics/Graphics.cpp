@@ -77,6 +77,10 @@ void EAE_Engine::Graphics::SetCameraParameters(Camera* pCamera)
 	pUB->SetBlockData(data, 2);
 	UniformBlockManager::GetInstance()->NotifyOwners("CameraMatrices");
 #endif
+	// Set the CameraPos
+	Math::Vector3 camPos = pCamera->GetTransform()->GetPos();
+	UniformVariableManager::GetInstance().ChangeValue<Math::Vector3>("_camera_pos", &camPos, 1);
+	UniformVariableManager::GetInstance().NotifyOwners("_camera_pos");
 }
 
 void EAE_Engine::Graphics::Render()

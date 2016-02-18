@@ -13,12 +13,16 @@ return
                 target = "ground.aosmesh",
             },
 			{
-                source = "PlayerPlane.aosmeshtext",
-                target = "playerPlane.aosmesh",
-            },
-			{
 				source = "warehouse.aosmeshtext",
 				target = "warehouse.aosmesh",
+			},
+			{
+				source = "Sphere.aosmeshtext",
+				target = "sphere.aosmesh",
+			},
+			{
+				source = "Helix.aosmeshtext",
+				target = "helix.aosmesh",
 			},
         }
     },
@@ -42,6 +46,10 @@ return
 			{
                 source = "imageRender.effect",
                 target = "imageRender.effect",
+            },
+			{
+                source = "phongShading.effect",
+                target = "phongShading.effect",
             },
          },
     },
@@ -87,6 +95,17 @@ return
                 target = "imageRender.fshd",
 				extraInfo = { dependencies = { "shaders.common" }, optionalArguments = {"fragment"}, }
             },
+			--PhoneShading
+			{
+				source = "phongShading.vshd",
+				target = "phongShading.vshd",
+				extraInfo = { dependencies = { "shaders.common", "cameraMatrix.common" }, optionalArguments = {"vertex"}, }
+			},
+			{
+				source = "phongShading.fshd",
+                target = "phongShading.fshd",
+				extraInfo = { dependencies = { "shaders.common", "phongLight.common" }, optionalArguments = {"fragment"}, }
+			}, 
          },
     },  
 	{
@@ -184,6 +203,10 @@ return
 			{
                 source = "imageRender.material",
                 target = "imageRender.material",
+            },
+			{
+                source = "phongShading.material",
+                target = "phongShading.material",
             },
 		 },
 	},

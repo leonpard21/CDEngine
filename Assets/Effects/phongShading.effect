@@ -1,0 +1,16 @@
+--[[
+	This is the effects class
+]]
+
+return
+{
+	sourcePath = "data/Shaders/",
+	vsSource = "phongShading.vshd",
+	fsSource = "phongShading.fshd",
+	renderState =
+	{
+	 	DepthTesting = true,
+		DepthWriting = true,
+	}
+}
+

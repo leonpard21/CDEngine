@@ -30,6 +30,21 @@ namespace EAE_Engine
 			}
 		};
 
+		struct UniformBlockData
+		{
+			char* _pName;
+			float* _pValue;
+			uint32_t _valueCount;
+			Graphics::ShaderTypes _shaderType;
+			UniformBlockData() : _pName(nullptr), _pValue(nullptr),
+				_valueCount(0), _shaderType(Graphics::ShaderTypes::Unknown) {}
+			~UniformBlockData()
+			{
+				SAFE_DELETE(_pName);
+				SAFE_DELETE_ARRAY(_pValue);
+			}
+		};
+
 		struct TextureData
 		{
 			char* _pName;

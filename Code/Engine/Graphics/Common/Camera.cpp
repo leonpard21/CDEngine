@@ -33,7 +33,10 @@ namespace EAE_Engine
 
 		Math::ColMatrix44 Camera::GetWroldToViewMatrix() 
 		{
-			return CreateWorldToViewMatrix(_pTransform->GetRotation(), _pTransform->GetPos()); 
+			Math::ColMatrix44 result = CreateWorldToViewMatrix(_pTransform->GetRotation(), _pTransform->GetPos());
+			Math::ColMatrix44 inverse;
+			_pTransform->GetRotateTransformMatrix().GetInverse(inverse);
+			return inverse;
 		}
 
 		Math::ColMatrix44 Camera::GetProjClipMatrix() 

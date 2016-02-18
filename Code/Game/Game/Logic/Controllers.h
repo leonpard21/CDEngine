@@ -67,12 +67,11 @@ public:
 			EAE_Engine::Math::Vector3 worldPos = _pCamera->ConvertViewportToWorld(viewportPos);
 			assert((worldPos - newPos).Magnitude() < 0.1f);
 		}
-
 		// Set rotation
-		EAE_Engine::Math::Quaternion rotationOffset = RotateAroundY();
-		_pTransform->Rotate(rotationOffset);
+		//EAE_Engine::Math::Quaternion rotationOffset = RotateAroundY();
+		//_pTransform->Rotate(rotationOffset);
 	}
-
+/*
 	EAE_Engine::Math::Quaternion RotateAroundY()
 	{
 		float rotatAngle = 0.0f;
@@ -89,7 +88,7 @@ public:
 		EAE_Engine::Math::Quaternion quat(rotatAngle * unitsToRotate, EAE_Engine::Math::Vector3::Up);
 		return quat;
 	}
-
+*/
 private:
 	EAE_Engine::Common::ICamera* _pCamera;
 	EAE_Engine::Common::ITransform* _pTargetTrans;
@@ -107,6 +106,10 @@ public:
 
 	void Update()
 	{
+		// Set rotation
+		EAE_Engine::Math::Quaternion rotationOffset = RotateAroundY();
+		_pTransform->Rotate(rotationOffset);
+		// set position
 		EAE_Engine::Math::Vector3 offset = GetInput();
 		EAE_Engine::Math::Vector3 newPos = _pTransform->GetPos() + offset;
 		if (!EAE_Engine::Graphics::CameraManager::Valid())
@@ -130,14 +133,14 @@ private:
 		EAE_Engine::Math::Vector3 offset = EAE_Engine::Math::Vector3::Zero;
 		// Get the direction
 		{
-			EAE_Engine::Math::Vector3 cam_forward = EAE_Engine::Graphics::CameraManager::GetInstance().GetCam()->GetTransform()->GetForward();
+			EAE_Engine::Math::Vector3 forward = _pTransform->GetForward();
 			if (EAE_Engine::UserInput::IsKeyPressed('W'))
 			{
-				offset = cam_forward;
+				offset = forward;
 			}
 			if (EAE_Engine::UserInput::IsKeyPressed('S'))
 			{
-				offset = cam_forward * -1.0f;
+				offset = forward * -1.0f;
 			}
 			if (EAE_Engine::UserInput::IsKeyPressed('Q'))
 			{
@@ -154,6 +157,23 @@ private:
 		const float unitsToMove = unitsPerSecond * EAE_Engine::Time::GetSecondsElapsedThisFrame();	// Normalize the offset																	
 		offset *= unitsToMove;
 		return offset;
+	}
+
+	EAE_Engine::Math::Quaternion RotateAroundY()
+	{
+		float rotatAngle = 0.0f;
+		if (EAE_Engine::UserInput::IsKeyPressed('A'))
+		{
+			rotatAngle -= 1.0f;
+		}
+		if (EAE_Engine::UserInput::IsKeyPressed('D'))
+		{
+			rotatAngle += 1.0f;
+		}
+		const float unitsPerSecond = 1.0f;
+		const float unitsToRotate = unitsPerSecond * EAE_Engine::Time::GetSecondsElapsedThisFrame();
+		EAE_Engine::Math::Quaternion quat(rotatAngle * unitsToRotate, EAE_Engine::Math::Vector3::Up);
+		return quat;
 	}
 
 private:

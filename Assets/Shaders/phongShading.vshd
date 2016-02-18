@@ -2,8 +2,13 @@
 #include "shaders.common"
 #include "cameraMatrix.common"
 
+
 /* Uniform varibales (platform-independent) */
 uniform mat4 g_local_world_matrix;
+// Position of light
+uniform vec3 _light_pos = vec3(0.0, 20.0, 0.0);
+// Position of Camera
+uniform vec3 _camera_pos = vec3(0.0, 0.0, 0.0);
 
 /* Input/Output variables (platform-specific) */
 #if defined( EAEENGINE_PLATFORM_D3D9 )
@@ -21,7 +26,9 @@ void main(
 	out float4 o_position : POSITION,
 	out float3 o_normalWorld : NORMAL,
 	out float2 o_texcoords : TEXCOORD0,
-	out float4 o_color : COLOR
+	out float4 o_color : COLOR,
+	out float3 o_lightDir : TEXCOORD1,
+	out float3 o_viewDir : TEXCOORD2
 	)
 
 #elif defined ( EAEENGINE_PLATFORM_GL )
@@ -37,6 +44,8 @@ layout(location = 3) in vec4 i_color;
 layout(location = 0) out vec3 o_normalWorld;
 layout(location = 1) out vec2 o_texcoords;
 layout(location = 2) out vec4 o_color;
+layout(location = 3) out vec3 o_lightDir;
+layout(location = 4) out vec3 o_viewDir;
 
 // Entry Point
 //============
@@ -46,19 +55,12 @@ void main()
 /* main() function definition (platform-independent) */
 {
 	// Calculate the position of this vertex on screen
-	{
-		float4 position_world = Transform(float4(i_position_local, 1.0f), g_local_world_matrix);
-		float4 position_view = Transform(position_world, worldViewMatrix);
-		o_position = Transform(position_view, viewProjMatrix);
-	}
+	float4 position_world = Transform(float4(i_position_local, 1.0f), g_local_world_matrix);
+	float4 position_view = Transform(position_world, worldViewMatrix);
+	o_position = Transform(position_view, viewProjMatrix);
 	// Pass the input normal to the fragment shader,
 	{
-		/*
-		vec4 normalLocal = vec4(i_normalLocal, 0.0f);
-		mat4 transposedLocalToWorld = transpose(g_local_world_matrix);
-		vec4 normalWorld = Transform( normalLocal, transposedLocalToWorld );
-		o_normalWorld = normalWorld.xyz;
-		*/
+		// convert to world space
 		mat3 rotation_localToWorld = mat3(
 		g_local_world_matrix[0].xyz,
 		g_local_world_matrix[1].xyz,
@@ -69,4 +71,8 @@ void main()
 	o_texcoords = i_texcoords;
 	// Pass the input color to the fragment shader unchanged:
 	o_color = i_color;
+	// Calculate the light Dir
+	o_lightDir = _light_pos - position_world.xyz;
+	// output the View Dir
+	o_viewDir = _camera_pos - position_world.xyz;
 }

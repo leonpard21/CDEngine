@@ -38,7 +38,7 @@ namespace
 }
 
 const char* const pathGround = "data/Meshes/warehouse.aosmesh";
-const char* const pathPlayer = "data/Meshes/playerPlane.aosmesh";
+const char* const pathPlayer = "data/Meshes/helix.aosmesh";
 
 EAE_Engine::Collider::Collider* pPlayerCollider = nullptr;
 
@@ -82,6 +82,7 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	}
 
 //	EAE_Engine::Graphics::LoadMaterial("data/Materials/white.material");
+	EAE_Engine::Graphics::LoadMaterial("data/Materials/phongShading.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/lambert.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/floor.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/railing.material");
@@ -212,9 +213,9 @@ namespace
 		{
 			EAE_Engine::Math::Vector3 zero = EAE_Engine::Math::Vector3::Zero;
 			pPlayerObj = EAE_Engine::Core::World::GetInstance().AddGameObj("player", zero);
-			//std::vector<std::string> materialList;
-			//materialList.push_back("white");
-			//EAE_Engine::Graphics::AddMeshRender(pathPlayer, materialList, pPlayerObj->GetTransform());
+			std::vector<std::string> materialList;
+			materialList.push_back("phongShading");
+			EAE_Engine::Graphics::AddMeshRender(pathPlayer, materialList, pPlayerObj->GetTransform());
 			//Set Collider
 			//EAE_Engine::Math::Vector3 playerSize = EAE_Engine::Math::Vector3(0.3f, 1.0f, 0.3f);
 			//pPlayerCollider = EAE_Engine::Collider::CreateOBBCollider(pPlayerObj->GetTransform(), playerSize);
@@ -227,18 +228,19 @@ namespace
 
 	void CreateCamera() 
 	{
-		EAE_Engine::Math::Vector3 camera_pos = EAE_Engine::Math::Vector3(0.0f, 3.0f, 5.0f);
+		EAE_Engine::Math::Vector3 camera_pos = EAE_Engine::Math::Vector3(0.0f, 2.0f, 5.0f);
 		EAE_Engine::Math::Vector3 axis(1.0f, 0.0f, 0.0f);
-		float radian = EAE_Engine::Math::ConvertDegreesToRadians(2.0f);
+		float radian = EAE_Engine::Math::ConvertDegreesToRadians(20.0f);
 		EAE_Engine::Math::Quaternion camera_rotation(radian, axis);
 		//EAE_Engine::Math::Quaternion camera_rotation = EAE_Engine::Math::Quaternion::Identity;
 		pCamera = EAE_Engine::Engine::CreateCamera("mainCamera", camera_pos, camera_rotation,
 			_windowWidth, _windowHeight);
 		pCameraObj = pCamera->GetTransform()->GetGameObj();
+		pCamera->GetTransform()->SetParent(pPlayerObj->GetTransform());
 		//Camera Controller
-		pCamController = new CameraController(pCamera);
-		pCamController->SetTarget(pPlayerObj->GetTransform());
-		EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pCamController);
+		//pCamController = new CameraController(pCamera);
+		//pCamController->SetTarget(pPlayerObj->GetTransform());
+		//EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pCamController);
 	}
 
 	void CreateSprite() 

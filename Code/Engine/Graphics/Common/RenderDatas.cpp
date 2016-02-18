@@ -35,6 +35,7 @@ namespace EAE_Engine
 			UniformVariableManager::GetInstance().ChangeValue<Math::ColMatrix44>("g_local_world_matrix", &_localToWorld, 1);
 			UniformVariableManager::GetInstance().NotifyOwners("g_local_world_matrix");
 
+
 			// Update all of the uniform variables changed so far for the effect.
 			if (s_pCurrentEffect)
 				s_pCurrentEffect->Update();

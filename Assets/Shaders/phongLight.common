@@ -1,27 +1,56 @@
 /* #include statement (platform - independent) */
 
+// lighting attribute
+uniform vec3 _diffuse_albedo = vec3(0.5, 0.2, 0.7);
+uniform vec3 specularAlbedo = vec3(0.7, 0.7, 0.7);
+uniform float specularPower = 128.0;
+
+/*
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+
+struct SpecularLight
+{
+	float3 _specular_albedo;
+	float _specular_power;
+};
+uniform SpecularLight g_SpecularLight;
+
+#define specularAlbedo g_SpecularLight._specular_albedo 
+#define specularPower g_SpecularLight._specular_power 
+
+#elif defined( EAEENGINE_PLATFORM_GL )
+
+layout(std140) uniform SpecularLight
+{
+	vec3 _specular_albedo;
+	float _specular_power;
+};
+
+#define specularAlbedo SpecularLight._specular_albedo 
+#define specularPower SpecularLight._specular_power 
+
+#endif
+*/
 
 // Lambert Diffuse Lighting
-void CalculateDiffuseLighting(const in float3 i_normal_world, const in float3 i_light_direction, 
-	const in float3 i_diffuse_albedo, out float3 o_lighting_diffuse)
+void CalculateDiffuseLighting(const in float3 i_normal_world, const in float3 i_light_direction, out float3 o_lighting_diffuse)
 {
 	// Calculate how parallel the light and the normal are
 	float lambertTerm;
 	{
 		// Reverse the light direction so that it represents the unit vector from the fragment to the light
-		float dotProduct = dot(i_normal_world, -lightVector);
+		float dotProduct = dot(i_normal_world, -i_light_direction);
 		// The dot product will be negative if the normal is facing away from the light (i.e. in shadow)
 		// and so it should be clamped to 0 (i.e. the light won't affect it)
 		lambertTerm = max(0.0, dotProduct);
 	}
 	// The diffuse lighting is a combination of the lambert term and the light's color
-	o_lighting_diffuse = lambertTerm * i_diffuse_albedo;
+	o_lighting_diffuse = lambertTerm * _diffuse_albedo;
 }
 
 // View-Dependent light
 void CalculateSpecularLighting(const in float3 i_normal_world, const in float3 i_light_direction, 
-	const in float3 i_viewDirection, const float i_specular_power, const float3 i_specular_albedo, 
-	out float3 o_lighting_specular)
+	const in float3 i_viewDirection, out float3 o_lighting_specular)
 {
 	float specularAmount;
 	{
@@ -37,9 +66,9 @@ void CalculateSpecularLighting(const in float3 i_normal_world, const in float3 i
 		}
 		// A pow() function is used as a hack to approximate how big or small the specular highlight is
 		// (which makes an object seem more "shiny", or smooth as opposed to rough)
-		specularAmount = pow(dotProduct, i_specular_power);
+		specularAmount = pow(dotProduct, specularPower);
 	}
 	// The specular lighting is a combination of the specular amount and the light's color
-	o_lighting_specular = i_specular_albedo * specularAmount;
+	o_lighting_specular = specularAlbedo * specularAmount;
 }
 

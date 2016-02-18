@@ -101,7 +101,7 @@ namespace EAE_Engine
 			float windowWidth, float windowHeight)
 		{
 			Common::IGameObj* pCameraObj = EAE_Engine::Core::World::GetInstance().AddGameObj(pCamName, pos);
-			pCameraObj->GetTransform()->Rotate(rotation);
+			pCameraObj->GetTransform()->SetLocalRotation(rotation);
 			Common::ICamera* pCamera = Graphics::AddCamrea(windowWidth, windowHeight, pCameraObj->GetTransform());
 			return pCamera;
 		}

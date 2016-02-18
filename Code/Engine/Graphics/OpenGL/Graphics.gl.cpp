@@ -61,6 +61,7 @@ namespace EAE_Engine
 				glUseProgram(pEffect->GetProgram());
 			else
 				glUseProgram(0);
+		//	glBindTexture(GL_TEXTURE_2D, 0);
 			return glGetError() == GL_NO_ERROR;
 		}
 
