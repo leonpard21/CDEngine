@@ -80,7 +80,6 @@ namespace EAE_Engine
 			s_pCurrentMaterial->_pEffect->EndRender();
 		}
 
-
 		///////////////////////////////////////////RenderData2D////////////////////////////////////
 		MaterialDesc* RenderDataUI::s_pCurrentMaterial = nullptr;
 		Effect* RenderDataUI::s_pCurrentEffect = nullptr;

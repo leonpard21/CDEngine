@@ -34,10 +34,10 @@ namespace EAE_Engine
 		{
 			char* _pName;
 			float* _pValue;
-			uint32_t _valueCount;
+			uint32_t _size;
 			Graphics::ShaderTypes _shaderType;
 			UniformBlockData() : _pName(nullptr), _pValue(nullptr),
-				_valueCount(0), _shaderType(Graphics::ShaderTypes::Unknown) {}
+				_size(0), _shaderType(Graphics::ShaderTypes::Unknown) {}
 			~UniformBlockData()
 			{
 				SAFE_DELETE(_pName);
@@ -82,6 +82,11 @@ namespace EAE_Engine
 
 namespace
 {
+	void FillUniformData(EAE_Engine::Tools::UniformData& uniformData)
+	{
+		
+	}
+
 	bool LoadTableValues_filenames(lua_State& io_luaState, EAE_Engine::Tools::MaterialData*& o_pMaterial);
 	bool LoadMaterial(const char* const i_path, EAE_Engine::Tools::MaterialData*& o_pMaterial);
 	bool LoadMaterialData(lua_State& io_luaState, EAE_Engine::Tools::MaterialData*& o_pMaterial);

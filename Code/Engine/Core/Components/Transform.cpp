@@ -52,10 +52,12 @@ namespace EAE_Engine
 				return _localPosition;
 			else 
 			{
-				Math::Vector3 result = _pParent->GetPos() + _localPosition;
+				Math::Vector4 localPos(_localPosition._x, _localPosition._y, _localPosition._z, 1.0f);
+				Math::Vector3 result = localPos * _pParent->GetLocalToWorldMatrix();
 				return result;
 			}
 		}
+
 		void Transform::SetPos(const Math::Vector3& pos) 
 		{
 			if (_pParent == nullptr)
@@ -65,13 +67,14 @@ namespace EAE_Engine
 				_localPosition = pos - _pParent->GetPos();
 			}
 		}
+
 		Math::Quaternion Transform::GetRotation() 
 		{ 
 			if (_pParent == nullptr)
 				return _localRotation; 
 			else 
 			{
-				Math::Quaternion result = _pParent->GetRotation() * _localRotation;
+				Math::Quaternion result = _localRotation * _pParent->GetRotation();
 				return result;
 			}
 		}
