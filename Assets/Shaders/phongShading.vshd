@@ -6,7 +6,7 @@
 /* Uniform varibales (platform-independent) */
 uniform mat4 g_local_world_matrix;
 // Position of light
-uniform vec3 _light_pos = vec3(0.0, 20.0, 0.0);
+uniform vec3 _light_pos = vec3(0.0, 50.0, 0.0);
 // Position of Camera
 uniform vec3 _camera_pos = vec3(0.0, 0.0, 0.0);
 
@@ -71,8 +71,8 @@ void main()
 	o_texcoords = i_texcoords;
 	// Pass the input color to the fragment shader unchanged:
 	o_color = i_color;
-	// Calculate the light Dir
-	o_lightDir = _light_pos - position_world.xyz;
+	// Calculate the light Dir (inverse)
+	o_lightDir =  position_world.xyz - _light_pos;
 	// output the View Dir
 	o_viewDir = _camera_pos - position_world.xyz;
 }

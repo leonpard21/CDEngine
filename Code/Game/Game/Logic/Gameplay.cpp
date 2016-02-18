@@ -38,7 +38,7 @@ namespace
 }
 
 const char* const pathGround = "data/Meshes/warehouse.aosmesh";
-const char* const pathPlayer = "data/Meshes/helix.aosmesh";
+const char* const pathPlayer = "data/Meshes/sphere.aosmesh";
 
 EAE_Engine::Collider::Collider* pPlayerCollider = nullptr;
 
