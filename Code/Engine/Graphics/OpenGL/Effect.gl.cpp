@@ -113,6 +113,7 @@ namespace EAE_Engine
 				blockName.assign(name.begin(), name.end() - 1);
 				GLint uniformBlockSize;
 				glGetActiveUniformBlockiv(_programId, blockIx, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlockSize);
+				// only when we didn't create the UniformBlock, we need to create it.
 				if (!UniformBlockManager::GetInstance()->Contains(blockName.c_str()))
 				{
 					UniformBlock* pUniformBlock = new UniformBlock(blockName.c_str(), uniformBlockSize);
