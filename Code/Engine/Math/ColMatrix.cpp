@@ -145,8 +145,8 @@ namespace EAE_Engine
 		}
 
 		ColMatrix44::ColMatrix44(const Quaternion& i_rotation, const Vector3& i_translation):
-			_m30(i_translation._x), _m31(i_translation._y), _m32(i_translation._z),
-			_m03(0.0f), _m13(0.0f), _m23(0.0f), _m33(1.0f)
+			_m03(i_translation._x), _m13(i_translation._y), _m23(i_translation._z),
+			_m30(0.0f), _m31(0.0f), _m32(0.0f), _m33(1.0f)
 		{
 			const float _2x = i_rotation._x + i_rotation._x;
 			const float _2y = i_rotation._y + i_rotation._y;
@@ -162,15 +162,15 @@ namespace EAE_Engine
 			const float _2zw = _2z * i_rotation._w;
 
 			_m00 = 1.0f - _2yy - _2zz;
-			_m10 = _2xy + _2zw;
-			_m20 = _2xz - _2yw;
+			_m10 = _2xy - _2zw;
+			_m20 = _2xz + _2yw;
 
-			_m01 = _2xy - _2zw;
+			_m01 = _2xy + _2zw;
 			_m11 = 1.0f - _2xx - _2zz;
-			_m21 = _2yz + _2xw;
+			_m21 = _2yz - _2xw;
 
-			_m02 = _2xz + _2yw;
-			_m12 = _2yz - _2xw;
+			_m02 = _2xz - _2yw;
+			_m12 = _2yz + _2xw;
 			_m22 = 1.0f - _2xx - _2yy;
 		}
 

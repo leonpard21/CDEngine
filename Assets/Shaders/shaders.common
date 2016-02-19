@@ -16,7 +16,7 @@
 #define gl_Position o_position
 
 // Translate GLSL functions types to HLSL
-#define Transform( i_vector, i_matrix ) mul( i_vector, i_matrix )
+#define Transform( i_vector, i_matrix ) mul( i_matrix, i_vector)
 #define texture2D tex2D 
 
 #elif defined( EAEENGINE_PLATFORM_GL )
@@ -36,7 +36,7 @@
 #define o_position gl_Position
 
 // Translate HLSL functions types to GLSL
-#define Transform( i_vector, i_matrix ) i_vector * i_matrix
+#define Transform( i_vector, i_matrix ) i_matrix * i_vector
 #define tex2D texture2D 
 
 #endif

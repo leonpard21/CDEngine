@@ -124,13 +124,13 @@ namespace EAE_Engine
 			const float _2zz = _2z * i_rotation._z;
 			const float _2zw = _2z * i_rotation._w;
 			result._m00 = 1.0f - _2yy - _2zz;
-			result._m10 = _2xy + _2zw;
-			result._m20 = _2xz - _2yw;
-			result._m01 = _2xy - _2zw;
+			result._m10 = _2xy - _2zw;
+			result._m20 = _2xz + _2yw;
+			result._m01 = _2xy + _2zw;
 			result._m11 = 1.0f - _2xx - _2zz;
-			result._m21 = _2yz + _2xw;
-			result._m02 = _2xz + _2yw;
-			result._m12 = _2yz - _2xw;
+			result._m21 = _2yz - _2xw;
+			result._m02 = _2xz - _2yw;
+			result._m12 = _2yz + _2xw;
 			result._m22 = 1.0f - _2xx - _2yy;
 			return result;
 		}

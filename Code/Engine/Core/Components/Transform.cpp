@@ -53,7 +53,7 @@ namespace EAE_Engine
 			else 
 			{
 				Math::Vector4 localPos(_localPosition._x, _localPosition._y, _localPosition._z, 1.0f);
-				Math::Vector3 result = localPos * _pParent->GetLocalToWorldMatrix();
+				Math::Vector3 result =  _pParent->GetLocalToWorldMatrix() * localPos;
 				return result;
 			}
 		}
@@ -78,6 +78,7 @@ namespace EAE_Engine
 				return result;
 			}
 		}
+
 		void Transform::SetRotation(const Math::Quaternion& i_other) 
 		{ 
 			if (_pParent == nullptr)
@@ -88,6 +89,7 @@ namespace EAE_Engine
 				_localRotation = result;
 			}
 		}
+
 		void Transform::SetScale(const Math::Vector3& scale) 
 		{
 			if (scale.Magnitude() < FLT_EPSILON) 
@@ -134,7 +136,7 @@ namespace EAE_Engine
 		Math::ColMatrix44 Transform::GetRotateTransformMatrix() { 
 			Math::ColMatrix44 result;
 			if(_pParent)
-				result = Math::ColMatrix44(_localRotation, _localPosition) * _pParent->GetRotateTransformMatrix();
+				result = _pParent->GetRotateTransformMatrix() * Math::ColMatrix44(_localRotation, _localPosition);
 			else 
 				result = Math::ColMatrix44(_localRotation, _localPosition);
 			return result;
@@ -157,17 +159,14 @@ namespace EAE_Engine
 			if (!_pParent)
 				return localTransformMatrix;
 			else
-				return localTransformMatrix * _pParent->GetLocalToWorldMatrix();
+				return _pParent->GetLocalToWorldMatrix() * localTransformMatrix;
 		}
 		Math::Vector3 Transform::GetForward()
 		{
 			Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
 			// Remember that we are working on the ColumnMatrix and Right hand coordinate.
 			// So the 3rd axis of the RotateTransformMatrix is pointing to the backward
-			// However, because we use i_vec * i_matrix in our engine,
-			// and we actually saved the tranpose of column matrix,
-			// so instead of getting z-col, we can z-row
-			Math::Vector3 forward = rotationMat.GetRow(2) * -1.0f;
+			Math::Vector3 forward = rotationMat.GetCol(2) * -1.0f;
 			return forward.Normalize();
 		}
 

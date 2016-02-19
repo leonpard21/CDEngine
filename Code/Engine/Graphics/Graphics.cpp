@@ -108,6 +108,12 @@ void EAE_Engine::Graphics::Render()
 		{
 			it->Render();
 		}
+		Camera* pCamera = CameraManager::GetInstance().GetCam();
+		Math::Vector3 worldPos = pCamera->GetTransform()->GetPos() + pCamera->GetTransform()->GetForward() * 100.0f;
+		Math::Vector3 viewportPos = pCamera->ConvertWorldToViewport(worldPos);
+		Math::Vector3 worldPos2 = pCamera->ConvertViewportToWorld(viewportPos);
+		assert((worldPos - worldPos2).Magnitude() < 0.1f);
+		size_t t = 0;
 	}
 	PostRender();
 }
