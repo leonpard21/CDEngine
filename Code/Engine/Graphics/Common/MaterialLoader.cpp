@@ -77,10 +77,10 @@ namespace EAE_Engine
 				free(pathOfEffect);
 			}
 			// Set the buffer of each segement
-			UniformDesc* pUniformDescBuffer = nullptr;
+			UniformData* pUniformDescBuffer = nullptr;
 			uint8_t* pUniformVariableValueBuffer = nullptr;
 			uint8_t* pUniformVariableNameBuffer = nullptr;
-			TextureDesc* pTextureDescBuffer = nullptr;
+			TextureData* pTextureDescBuffer = nullptr;
 			uint8_t* pTexturePathBuffer = nullptr;
 			uint8_t* pTextureSamplerNameBuffer = nullptr;
 			{
@@ -100,7 +100,7 @@ namespace EAE_Engine
 			// Third, Set each UniformDesc of this MaterialDesc
 			for (uint32_t index = 0; index < pMaterialDesc->_uniformCount; ++index)
 			{
-				UniformDesc* pUD = &pUniformDescBuffer[index];
+				UniformData* pUD = &pUniformDescBuffer[index];
 				// Remember that I did a tricky solution in the MaterialBuilder 
 				// that I use the _handler to save the offset of the Name in UniformVariableNameBuffer
 				// Because the size of the _handler will be different on x64 and x86,
@@ -113,7 +113,7 @@ namespace EAE_Engine
 			// Forth, Set each TextureDesc of this MaterialDesc
 			for (uint32_t index = 0; index < pMaterialDesc->_textureCount; ++index)
 			{
-				TextureDesc* pTex = &pTextureDescBuffer[index];
+				TextureData* pTex = &pTextureDescBuffer[index];
 				{
 					// Set the value of the Texture.
 					size_t offsetInTexturePathBuffer = *(size_t*)(&pTex->_texture);
@@ -146,7 +146,7 @@ namespace EAE_Engine
 			SetMem(pOutBuffer, o_lengthOfWholerMaterialBuffer - o_lengthOfEffectPath, 0);
 			CopyMem(pBuffer, pOutBuffer, o_lengthOfWholerMaterialBuffer - o_lengthOfEffectPath);
 			MaterialDesc* pTtemp = (MaterialDesc*)pOutBuffer;
-			assert(pTtemp->_sizeOfMaterialBuffer == o_lengthOfWholerMaterialBuffer - o_lengthOfEffectPath);
+			assert(pTtemp->_sizeOfMaterialBuffer == o_lengthOfWholerMaterialBuffer);
 			// Third, add this MaterialDesc buffer to the Material Map.
 			std::string mat_path(i_pBinaryMaterialFile);
 			std::string key = GetFileNameWithoutExtension(mat_path.c_str());

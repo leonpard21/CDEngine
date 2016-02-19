@@ -83,13 +83,13 @@ bool GameplayInit(float windowWidth, float windowHeight)
 
 //	EAE_Engine::Graphics::LoadMaterial("data/Materials/white.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/phongShading.material");
-	EAE_Engine::Graphics::LoadMaterial("data/Materials/lambert.material");
-	EAE_Engine::Graphics::LoadMaterial("data/Materials/floor.material");
-	EAE_Engine::Graphics::LoadMaterial("data/Materials/railing.material");
-	EAE_Engine::Graphics::LoadMaterial("data/Materials/ceiling.material");
-	EAE_Engine::Graphics::LoadMaterial("data/Materials/metal.material");
-	EAE_Engine::Graphics::LoadMaterial("data/Materials/cement.material");
-	EAE_Engine::Graphics::LoadMaterial("data/Materials/walls.material");
+//	EAE_Engine::Graphics::LoadMaterial("data/Materials/lambert.material");
+//	EAE_Engine::Graphics::LoadMaterial("data/Materials/floor.material");
+//	EAE_Engine::Graphics::LoadMaterial("data/Materials/railing.material");
+//	EAE_Engine::Graphics::LoadMaterial("data/Materials/ceiling.material");
+//	EAE_Engine::Graphics::LoadMaterial("data/Materials/metal.material");
+//	EAE_Engine::Graphics::LoadMaterial("data/Materials/cement.material");
+//	EAE_Engine::Graphics::LoadMaterial("data/Materials/walls.material");
 	_windowWidth = windowWidth;
 	_windowHeight = windowHeight;
 	result = InitLevel();
@@ -185,7 +185,7 @@ namespace
 		materialList.push_back("metal");
 		materialList.push_back("cement");
 		materialList.push_back("walls");
-		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
+//		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
 
 		CreatePlayer();
 		CreateCamera();

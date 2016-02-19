@@ -15,61 +15,46 @@ namespace EAE_Engine
 {
 	namespace Tools
 	{
-		struct UniformData
+		struct UniformInfo
 		{
 			char* _pName;
 			float* _pValue;
 			uint32_t _valueCount;
 			Graphics::ShaderTypes _shaderType;
-			UniformData() : _pName(nullptr), _pValue(nullptr),
+			UniformInfo() : _pName(nullptr), _pValue(nullptr),
 				_valueCount(0), _shaderType(Graphics::ShaderTypes::Unknown) {}
-			~UniformData()
+			~UniformInfo()
 			{
 				SAFE_DELETE(_pName);
 				SAFE_DELETE_ARRAY(_pValue);
 			}
 		};
 
-		struct UniformBlockData
-		{
-			char* _pName;
-			float* _pValue;
-			uint32_t _size;
-			Graphics::ShaderTypes _shaderType;
-			UniformBlockData() : _pName(nullptr), _pValue(nullptr),
-				_size(0), _shaderType(Graphics::ShaderTypes::Unknown) {}
-			~UniformBlockData()
-			{
-				SAFE_DELETE(_pName);
-				SAFE_DELETE_ARRAY(_pValue);
-			}
-		};
-
-		struct TextureData
+		struct TextureInfo
 		{
 			char* _pName;
 			char* _pTexPath;
 			Graphics::ShaderTypes _shaderType;
-			TextureData() : _pName(nullptr), _pTexPath(nullptr) {}
-			~TextureData()
+			TextureInfo() : _pName(nullptr), _pTexPath(nullptr) {}
+			~TextureInfo()
 			{
 				SAFE_DELETE(_pName);
 				SAFE_DELETE(_pTexPath);
 			}
 		};
 
-		struct MaterialData
+		struct MaterialInfo
 		{
 			char* _pEffectPath;
 			char* _pEffectSource;
 			uint32_t _materialCost;
-			UniformData* _pUniformData;
+			UniformInfo* _pUniformData;
 			uint32_t _uniformCount;
-			TextureData* _pTexData;
+			TextureInfo* _pTexData;
 			uint32_t _texCount;
-			MaterialData() :_pEffectPath(nullptr), _pEffectSource(nullptr), _materialCost(0), 
+			MaterialInfo() :_pEffectPath(nullptr), _pEffectSource(nullptr), _materialCost(0), 
 				_pUniformData(nullptr), _uniformCount(0), _pTexData(nullptr), _texCount(0) {}
-			~MaterialData()
+			~MaterialInfo()
 			{
 				SAFE_DELETE(_pEffectPath);
 				SAFE_DELETE(_pEffectSource);
@@ -82,14 +67,14 @@ namespace EAE_Engine
 
 namespace
 {
-	void FillUniformData(EAE_Engine::Tools::UniformData& uniformData)
+	void FillUniformData(EAE_Engine::Tools::UniformInfo& uniformData)
 	{
 		
 	}
 
-	bool LoadTableValues_filenames(lua_State& io_luaState, EAE_Engine::Tools::MaterialData*& o_pMaterial);
-	bool LoadMaterial(const char* const i_path, EAE_Engine::Tools::MaterialData*& o_pMaterial);
-	bool LoadMaterialData(lua_State& io_luaState, EAE_Engine::Tools::MaterialData*& o_pMaterial);
+	bool LoadTableValues_filenames(lua_State& io_luaState, EAE_Engine::Tools::MaterialInfo*& o_pMaterial);
+	bool LoadMaterial(const char* const i_path, EAE_Engine::Tools::MaterialInfo*& o_pMaterial);
+	bool LoadMaterialData(lua_State& io_luaState, EAE_Engine::Tools::MaterialInfo*& o_pMaterial);
 
 	inline EAE_Engine::Graphics::ShaderTypes GetShaderType(const char* pTypeName)
 	{
@@ -101,7 +86,7 @@ namespace
 		return result;
 	}
 
-	bool LoadTableValues(lua_State& io_luaState, EAE_Engine::Tools::MaterialData*& o_pMaterial)
+	bool LoadTableValues(lua_State& io_luaState, EAE_Engine::Tools::MaterialInfo*& o_pMaterial)
 	{
 		if (!LoadTableValues_filenames(io_luaState, o_pMaterial))
 		{
@@ -110,10 +95,10 @@ namespace
 		return true;
 	}
 
-	bool LoadTableValues_filenames(lua_State& io_luaState, EAE_Engine::Tools::MaterialData*& o_pMaterial)
+	bool LoadTableValues_filenames(lua_State& io_luaState, EAE_Engine::Tools::MaterialInfo*& o_pMaterial)
 	{
 		bool wereThereErrors = false;
-		o_pMaterial = new EAE_Engine::Tools::MaterialData();
+		o_pMaterial = new EAE_Engine::Tools::MaterialInfo();
 		if (!o_pMaterial)
 		{
 			return false;
@@ -159,7 +144,7 @@ namespace
 				o_pMaterial->_uniformCount = arrayLength;
 				if (arrayLength > 0)
 				{
-					o_pMaterial->_pUniformData = new EAE_Engine::Tools::UniformData[o_pMaterial->_uniformCount];
+					o_pMaterial->_pUniformData = new EAE_Engine::Tools::UniformInfo[o_pMaterial->_uniformCount];
 					// Remember that Lua arrays are 1-based and not 0-based!
 					for (int i = 1; i <= arrayLength; ++i)
 					{
@@ -214,7 +199,7 @@ namespace
 				o_pMaterial->_texCount = arrayLength;
 				if (arrayLength > 0)
 				{
-					o_pMaterial->_pTexData = new EAE_Engine::Tools::TextureData[o_pMaterial->_texCount];
+					o_pMaterial->_pTexData = new EAE_Engine::Tools::TextureInfo[o_pMaterial->_texCount];
 					// Remember that Lua arrays are 1-based and not 0-based!
 					for (int i = 1; i <= arrayLength; ++i)
 					{
@@ -253,7 +238,7 @@ namespace
 		return true;
 	}
 
-	bool LoadMaterial(const char* const i_path, EAE_Engine::Tools::MaterialData*& o_pMaterial)
+	bool LoadMaterial(const char* const i_path, EAE_Engine::Tools::MaterialInfo*& o_pMaterial)
 	{
 		bool wereThereErrors = false;
 
@@ -372,7 +357,7 @@ namespace
 		return !wereThereErrors;
 	}
 
-	bool LoadMaterialData(lua_State& io_luaState, EAE_Engine::Tools::MaterialData*& o_pMaterial)
+	bool LoadMaterialData(lua_State& io_luaState, EAE_Engine::Tools::MaterialInfo*& o_pMaterial)
 	{
 		bool wereThereErrors = false;
 		// If this code is reached the asset file was loaded successfully,
@@ -394,7 +379,7 @@ namespace EAE_Engine
 	{
 		bool GenerateBinaryMaterialData(const char* i_luaMaterialFile, char*& o_pBuffer, uint32_t& o_sizeOfBuffer)
 		{
-			MaterialData* pMaterialData = nullptr;
+			MaterialInfo* pMaterialData = nullptr;
 			uint32_t o_sizeOfUniformNameBuffer = 0;
 			uint32_t o_sizeOfValueBuffer = 0;
 			uint32_t o_sizeOfTexPathBuffer = 0;
@@ -407,7 +392,7 @@ namespace EAE_Engine
 			uint32_t effectSourceLength = (uint32_t)strlen(pMaterialData->_pEffectSource);
 			uint32_t lengthOfEffectPath = (sourcePathLength + effectSourceLength + 1);
 			// 1. We need to save the sUniformDesc for each Uniform Variable.
-			uint32_t uniformDescArrayLength = (uint32_t)(pMaterialData->_uniformCount * sizeof(Graphics::UniformDesc));
+			uint32_t uniformDescArrayLength = (uint32_t)(pMaterialData->_uniformCount * sizeof(Graphics::UniformData));
 			// 2. Get the general information of the UniformDesc Data
 			for (uint32_t index = 0; index < pMaterialData->_uniformCount; ++index)
 			{
@@ -415,7 +400,7 @@ namespace EAE_Engine
 				o_sizeOfUniformNameBuffer += (uint32_t)strlen(pMaterialData->_pUniformData[index]._pName) + 1;
 			}
 			// 1. We need to save the sTextureDesc for each texture.
-			uint32_t textureDescArrayLength = (uint32_t)(pMaterialData->_texCount * sizeof(Graphics::TextureDesc));
+			uint32_t textureDescArrayLength = (uint32_t)(pMaterialData->_texCount * sizeof(Graphics::TextureData));
 			// 2. Get the general information of the TextureDesc Data
 			for (uint32_t index = 0; index < pMaterialData->_texCount; ++index)
 			{
@@ -457,7 +442,7 @@ namespace EAE_Engine
 					// Write effectFileName
 					CopyMem(reinterpret_cast<uint8_t*>(pMaterialData->_pEffectSource), reinterpret_cast<uint8_t*>(o_pBuffer) + offsetForEffectPath, effectSourceLength);
 				}
-				pMaterialDesc->_sizeOfMaterialBuffer = o_sizeOfBuffer - lengthOfEffectPath;
+				pMaterialDesc->_sizeOfMaterialBuffer = o_sizeOfBuffer;
 				pMaterialDesc->_uniformCount = pMaterialData->_uniformCount;
 				pMaterialDesc->_textureCount = pMaterialData->_texCount;
 				// we need to jump over the MaterialDesc the uniformDescArrayLength for the Uniform Variable Value Buffer
@@ -483,7 +468,7 @@ namespace EAE_Engine
 				uint32_t totalOffsetOfUniformVariableNameBuffer = pMaterialDesc->_offsetOfUniformVariableNameBuffer;
 				for (size_t i = 0; i < pMaterialData->_uniformCount; ++i)
 				{
-					Graphics::UniformDesc* pUniformDesc = (Graphics::UniformDesc*)(reinterpret_cast<uint8_t*>(o_pBuffer) + offset);
+					Graphics::UniformData* pUniformDesc = (Graphics::UniformData*)(reinterpret_cast<uint8_t*>(o_pBuffer) + offset);
 					// set the shaderType
 					pUniformDesc->_shaderType = pMaterialData->_pUniformData[i]._shaderType;
 					// Set the UniformVariable Value Buffer
@@ -507,7 +492,7 @@ namespace EAE_Engine
 						offsetInNameBuffer += sizeOfValueBufferToCopy + 1;
 					}
 					// move to set the next UniformDesc
-					offset += sizeof(Graphics::UniformDesc);
+					offset += sizeof(Graphics::UniformData);
 				}
 			}
 			// Now the offset should point to the start of the TextureDesc buffers.
@@ -519,7 +504,7 @@ namespace EAE_Engine
 				uint32_t totalOffsetOfTextureSamplerBuffer = pMaterialDesc->_offsetOfTextureSamplerBuffer;
 				for (size_t i = 0; i < pMaterialData->_texCount; ++i)
 				{
-					Graphics::TextureDesc* pTexDesc = (Graphics::TextureDesc*)(reinterpret_cast<uint8_t*>(o_pBuffer) + offset);
+					Graphics::TextureData* pTexDesc = (Graphics::TextureData*)(reinterpret_cast<uint8_t*>(o_pBuffer) + offset);
 					// Set the Texture Path Buffer
 					{
 						*reinterpret_cast<size_t*>(&(pTexDesc->_texture)) = offsetInPathBuffer;
@@ -537,7 +522,7 @@ namespace EAE_Engine
 					// set the shaderType
 					pTexDesc->_shaderType = pMaterialData->_pTexData[i]._shaderType;
 					// move to set the next UniformDesc
-					offset += sizeof(Graphics::TextureDesc);
+					offset += sizeof(Graphics::TextureData);
 				}
 			}
 			SAFE_DELETE(pMaterialData);
