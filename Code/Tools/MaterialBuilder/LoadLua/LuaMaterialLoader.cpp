@@ -392,7 +392,7 @@ namespace EAE_Engine
 			uint32_t effectSourceLength = (uint32_t)strlen(pMaterialData->_pEffectSource);
 			uint32_t lengthOfEffectPath = (sourcePathLength + effectSourceLength + 1);
 			// 1. We need to save the sUniformDesc for each Uniform Variable.
-			uint32_t uniformDescArrayLength = (uint32_t)(pMaterialData->_uniformCount * sizeof(Graphics::UniformData));
+			uint32_t uniformDescArrayLength = (uint32_t)(pMaterialData->_uniformCount * sizeof(Graphics::UniformDesc));
 			// 2. Get the general information of the UniformDesc Data
 			for (uint32_t index = 0; index < pMaterialData->_uniformCount; ++index)
 			{
@@ -400,7 +400,7 @@ namespace EAE_Engine
 				o_sizeOfUniformNameBuffer += (uint32_t)strlen(pMaterialData->_pUniformData[index]._pName) + 1;
 			}
 			// 1. We need to save the sTextureDesc for each texture.
-			uint32_t textureDescArrayLength = (uint32_t)(pMaterialData->_texCount * sizeof(Graphics::TextureData));
+			uint32_t textureDescArrayLength = (uint32_t)(pMaterialData->_texCount * sizeof(Graphics::TextureDesc));
 			// 2. Get the general information of the TextureDesc Data
 			for (uint32_t index = 0; index < pMaterialData->_texCount; ++index)
 			{
@@ -468,7 +468,7 @@ namespace EAE_Engine
 				uint32_t totalOffsetOfUniformVariableNameBuffer = pMaterialDesc->_offsetOfUniformVariableNameBuffer;
 				for (size_t i = 0; i < pMaterialData->_uniformCount; ++i)
 				{
-					Graphics::UniformData* pUniformDesc = (Graphics::UniformData*)(reinterpret_cast<uint8_t*>(o_pBuffer) + offset);
+					Graphics::UniformDesc* pUniformDesc = (Graphics::UniformDesc*)(reinterpret_cast<uint8_t*>(o_pBuffer) + offset);
 					// set the shaderType
 					pUniformDesc->_shaderType = pMaterialData->_pUniformData[i]._shaderType;
 					// Set the UniformVariable Value Buffer
@@ -482,17 +482,15 @@ namespace EAE_Engine
 					}
 					// Set the UniformVariable Name Buffer
 					{
-						// Be careful, I am using a tricky method that I save the offset to the Name in the _handle.
-						// But be careful that the _handle will be different on x64 and x86,
-						// so we really really need to take care the size of it.
-						*reinterpret_cast<size_t*>(&(pUniformDesc->_handle)) = offsetInNameBuffer;
+						// Save the offset of the Name in NameBuffer
+						pUniformDesc->_offsetInNameBuffer = offsetInNameBuffer;
 						uint32_t sizeOfValueBufferToCopy = (uint32_t)strlen(pMaterialData->_pUniformData[i]._pName);
 						// Copy the name to the target position
 						CopyMem((uint8_t*)pMaterialData->_pUniformData[i]._pName, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfUniformVariableNameBuffer + offsetInNameBuffer, sizeOfValueBufferToCopy);
 						offsetInNameBuffer += sizeOfValueBufferToCopy + 1;
 					}
 					// move to set the next UniformDesc
-					offset += sizeof(Graphics::UniformData);
+					offset += sizeof(Graphics::UniformDesc);
 				}
 			}
 			// Now the offset should point to the start of the TextureDesc buffers.
@@ -504,7 +502,7 @@ namespace EAE_Engine
 				uint32_t totalOffsetOfTextureSamplerBuffer = pMaterialDesc->_offsetOfTextureSamplerBuffer;
 				for (size_t i = 0; i < pMaterialData->_texCount; ++i)
 				{
-					Graphics::TextureData* pTexDesc = (Graphics::TextureData*)(reinterpret_cast<uint8_t*>(o_pBuffer) + offset);
+					Graphics::TextureDesc* pTexDesc = (Graphics::TextureDesc*)(reinterpret_cast<uint8_t*>(o_pBuffer) + offset);
 					// Set the Texture Path Buffer
 					{
 						*reinterpret_cast<size_t*>(&(pTexDesc->_texture)) = offsetInPathBuffer;
@@ -514,7 +512,7 @@ namespace EAE_Engine
 					}
 					// Set the Texture Sampler UniformVariable Buffer
 					{
-						*reinterpret_cast<tSamplerID*>(&(pTexDesc->_samplerID)) = offsetInSamplerBuffer;
+						pTexDesc->_offsetInTexturePathBuffer = offsetInSamplerBuffer;
 						uint32_t sizeOfSamplerNameToCopy = (uint32_t)strlen(pMaterialData->_pTexData[i]._pName);
 						CopyMem((uint8_t*)pMaterialData->_pTexData[i]._pName, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfTextureSamplerBuffer + offsetInSamplerBuffer, sizeOfSamplerNameToCopy);
 						offsetInSamplerBuffer += sizeOfSamplerNameToCopy + 1;
@@ -522,7 +520,7 @@ namespace EAE_Engine
 					// set the shaderType
 					pTexDesc->_shaderType = pMaterialData->_pTexData[i]._shaderType;
 					// move to set the next UniformDesc
-					offset += sizeof(Graphics::TextureData);
+					offset += sizeof(Graphics::TextureDesc);
 				}
 			}
 			SAFE_DELETE(pMaterialData);

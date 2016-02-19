@@ -293,7 +293,7 @@ namespace EAE_Engine
 		}
 
 
-		void TextureData::SetTexture(uint32_t textureUnit)
+		void TextureDesc::SetTexture(uint32_t textureUnit)
 		{
 			// We need three things to setup the texture:
 			// The texture, the samplerID, and the textureUnit number.

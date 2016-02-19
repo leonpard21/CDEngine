@@ -7,7 +7,7 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		void UniformData::SetHanlde(const char* pName, Effect* pEffect)
+		void UniformDesc::SetHanlde(const char* pName, Effect* pEffect)
 		{
 			_handle = pEffect->GetLocation(pName);
 		}

@@ -24,17 +24,15 @@ namespace EAE_Engine
 	namespace Graphics
 	{
 		class Effect;
-		struct UniformInfo
-		{
-			
-		};
-		struct UniformData
+		struct UniformDesc
 		{
 			tUniformHandle _handle;
 			uint32_t _offsetInValueBuffer;
 			uint32_t _valueBufferSize;
+			uint32_t _offsetInNameBuffer;
 			ShaderTypes _shaderType;
-			UniformData() : _handle(0), _offsetInValueBuffer(0), _valueBufferSize(0), _shaderType(ShaderTypes::Unknown) {}
+			UniformDesc() : _handle(0), _offsetInValueBuffer(0), _valueBufferSize(0), 
+				_offsetInNameBuffer(0), _shaderType(ShaderTypes::Unknown) {}
 			void SetHanlde(const char* pName, Effect* pEffect);
 		};
 	}

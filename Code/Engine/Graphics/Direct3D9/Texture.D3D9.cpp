@@ -36,7 +36,7 @@ namespace EAE_Engine
 
 		}
 
-		void TextureData::SetTexture() 
+		void TextureDesc::SetTexture() 
 		{
 			//Get devices context of D3D
 			IDirect3DDevice9* pD3DDevice = GetD3DDevice();

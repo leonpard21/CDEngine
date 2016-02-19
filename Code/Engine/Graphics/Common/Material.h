@@ -28,8 +28,8 @@ namespace EAE_Engine
 		};
 
 		class Effect;
-		struct UniformData;
-		struct TextureData;
+		struct UniformDesc;
+		struct TextureDesc;
 		struct MaterialDesc
 		{
 			// The Material should know what's the effect,
@@ -50,13 +50,13 @@ namespace EAE_Engine
 			MaterialDesc() : _pEffect(nullptr), _sizeOfMaterialBuffer(0), _uniformCount(0),
 				_offsetOfUniformVariableValueBuffer(0), _offsetOfUniformVariableNameBuffer(0), 
 				_textureCount(0), _offsetOfTexturePathBuffer(0), _offsetOfTextureSamplerBuffer(0){}
-			inline UniformData* GetUniformDesc() 
+			inline UniformDesc* GetUniformDesc() 
 			{
 				if (_uniformCount == 0)
 					return nullptr;
-				return (UniformData*)((uint8_t*)this + sizeof(MaterialDesc));
+				return (UniformDesc*)((uint8_t*)this + sizeof(MaterialDesc));
 			}
-			TextureData* GetTextureDesc();
+			TextureDesc* GetTextureDesc();
 			void SetUniformForEffect();
 			void SetTexturesForEffect();
 			void ChangeTexture(uint32_t index, tTexture texture);

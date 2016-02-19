@@ -20,13 +20,13 @@ namespace EAE_Engine
 		{
 			uint8_t* pUniformVariableValueBuffer = nullptr;
 			pUniformVariableValueBuffer = (uint8_t*)this + _offsetOfUniformVariableValueBuffer;
-			UniformData* pUniformDescBuffer = GetUniformDesc();
+			UniformDesc* pUniformDescBuffer = GetUniformDesc();
 			if (!pUniformDescBuffer)
 				return;
 			// Set each UniformDesc of this MaterialDesc
 			for (size_t index = 0; index < _uniformCount; ++index)
 			{
-				UniformData* pUD = &pUniformDescBuffer[index];
+				UniformDesc* pUD = &pUniformDescBuffer[index];
 				uint8_t* pValue = pUniformVariableValueBuffer + pUD->_offsetInValueBuffer;
 				uint32_t count = pUD->_valueBufferSize / sizeof(float);
 #if defined( EAEENGINE_PLATFORM_D3D9 )
@@ -39,7 +39,7 @@ namespace EAE_Engine
 
 		void MaterialDesc::SetTexturesForEffect()
 		{
-			TextureData* pTexDescBuffer = GetTextureDesc();
+			TextureDesc* pTexDescBuffer = GetTextureDesc();
 			if (pTexDescBuffer == nullptr)
 				return;
 			// Set each UniformDesc of this MaterialDesc
@@ -60,18 +60,18 @@ namespace EAE_Engine
 			}
 		}
 
-		TextureData* MaterialDesc::GetTextureDesc()
+		TextureDesc* MaterialDesc::GetTextureDesc()
 		{
 			if (_textureCount == 0)
 				return nullptr;
-			return (TextureData*)((uint8_t*)this + sizeof(MaterialDesc) + sizeof(UniformData) * _uniformCount);
+			return (TextureDesc*)((uint8_t*)this + sizeof(MaterialDesc) + sizeof(UniformDesc) * _uniformCount);
 		}
 
 		void MaterialDesc::ChangeTexture(uint32_t index, tTexture texture)
 		{
 			if (index >= _textureCount)
 				return;
-			TextureData* pTexDescBuffer = GetTextureDesc();
+			TextureDesc* pTexDescBuffer = GetTextureDesc();
 			if (pTexDescBuffer == nullptr)
 				return;
 			(pTexDescBuffer + index)->_texture = texture;

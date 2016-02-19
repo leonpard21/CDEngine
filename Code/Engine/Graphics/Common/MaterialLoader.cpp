@@ -77,10 +77,10 @@ namespace EAE_Engine
 				free(pathOfEffect);
 			}
 			// Set the buffer of each segement
-			UniformData* pUniformDescBuffer = nullptr;
+			UniformDesc* pUniformDescBuffer = nullptr;
 			uint8_t* pUniformVariableValueBuffer = nullptr;
 			uint8_t* pUniformVariableNameBuffer = nullptr;
-			TextureData* pTextureDescBuffer = nullptr;
+			TextureDesc* pTextureDescBuffer = nullptr;
 			uint8_t* pTexturePathBuffer = nullptr;
 			uint8_t* pTextureSamplerNameBuffer = nullptr;
 			{
@@ -100,12 +100,12 @@ namespace EAE_Engine
 			// Third, Set each UniformDesc of this MaterialDesc
 			for (uint32_t index = 0; index < pMaterialDesc->_uniformCount; ++index)
 			{
-				UniformData* pUD = &pUniformDescBuffer[index];
+				UniformDesc* pUD = &pUniformDescBuffer[index];
 				// Remember that I did a tricky solution in the MaterialBuilder 
 				// that I use the _handler to save the offset of the Name in UniformVariableNameBuffer
 				// Because the size of the _handler will be different on x64 and x86,
 				// so I really really should be careful about it.
-				size_t offsetInNameBuffer = *(size_t*)(&pUD->_handle);
+				size_t offsetInNameBuffer = pUD->_offsetInNameBuffer;
 				const char* pUniformName = (char*)(pUniformVariableNameBuffer + offsetInNameBuffer);
 				pUD->SetHanlde(pUniformName, pMaterialDesc->_pEffect);
 				size_t t = 0;
@@ -113,10 +113,10 @@ namespace EAE_Engine
 			// Forth, Set each TextureDesc of this MaterialDesc
 			for (uint32_t index = 0; index < pMaterialDesc->_textureCount; ++index)
 			{
-				TextureData* pTex = &pTextureDescBuffer[index];
+				TextureDesc* pTex = &pTextureDescBuffer[index];
 				{
 					// Set the value of the Texture.
-					size_t offsetInTexturePathBuffer = *(size_t*)(&pTex->_texture);
+					size_t offsetInTexturePathBuffer = pTex->_offsetInTexturePathBuffer;
 					const char* pTexName = (char*)(pTexturePathBuffer + offsetInTexturePathBuffer);
 					pTex->_texture = TextureManager::GetInstance()->LoadTexture(pTexName)._texture;
 					// Set the value of the samplerID
