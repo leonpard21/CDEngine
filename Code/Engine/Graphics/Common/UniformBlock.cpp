@@ -22,8 +22,8 @@ namespace EAE_Engine
 		{
 			_pBuffer = new GLubyte[_blockSize];
 
-		//	glGenBuffers(1, &_uboId);
-		//	glBindBuffer(GL_UNIFORM_BUFFER, _uboId);
+			//glGenBuffers(1, &_uboId);
+			//glBindBuffer(GL_UNIFORM_BUFFER, _uboId);
 			CreateBindBufferObj(_uboId, GL_UNIFORM_BUFFER);
 			glBufferData(GL_UNIFORM_BUFFER, _blockSize, NULL, GL_DYNAMIC_DRAW);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -49,33 +49,6 @@ namespace EAE_Engine
 			}
 		}
 
-		/*
-			GLuint index = glGetUniformBlockIndex(programID, _pBlockName);
-
-			if (index != GL_INVALID_INDEX)
-			{
-				glUniformBlockBinding(programID, index, _uboId);
-
-				GLint activeUniformsInBlock;
-				glGetActiveUniformBlockiv(programID, index, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &activeUniformsInBlock);
-
-				GLint *indices = new GLint[activeUniformsInBlock];
-				glGetActiveUniformBlockiv(programID, index, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, indices);
-
-				for (GLuint i = 0; i < activeUniformsInBlock; ++i)
-				{
-					const GLuint index = (GLuint)indices[i];
-
-					glGetActiveUniformName(shader->id, index, 256, 0, variable);
-
-					glGetActiveUniformsiv(shader->id, 1, &index, GL_UNIFORM_TYPE, &type);
-					glGetActiveUniformsiv(shader->id, 1, &index, GL_UNIFORM_OFFSET, &offset);
-
-					// now I can use name, type and offset!
-				}
-			}
-		*/
-
 		void UniformBlock::SetBlockData(UniformBlockData* pUBD, uint32_t count)
 		{
 			for (uint32_t index = 0; index < count; ++index)
@@ -84,11 +57,10 @@ namespace EAE_Engine
 			}
 		}
 
-
 		void UniformBlock::UpdateUniformBlockBuffer()
 		{
 			glBindBuffer(GL_UNIFORM_BUFFER, _uboId);
-			glBufferData(GL_UNIFORM_BUFFER, _blockSize, _pBuffer, GL_DYNAMIC_DRAW);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0.0f, _blockSize, _pBuffer);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
 
@@ -100,9 +72,18 @@ namespace EAE_Engine
 			Clean();
 		}
 
-		void UniformBlockManager::AddUniformBlock(UniformBlock* pBlock)
+		UniformBlock* UniformBlockManager::AddUniformBlock(UniformBlock* pBlock)
 		{
+			for (std::vector<UniformBlock*>::iterator iter = _uniformBlocks.begin(); iter != _uniformBlocks.end();)
+			{
+				UniformBlock* pUB = *iter++;
+				if (strcmp(pUB->GetName(), pBlock->GetName()) == 0)
+				{
+					return pUB;
+				}
+			}
 			_uniformBlocks.push_back(pBlock);
+			return pBlock;
 		}
 
 		void UniformBlockManager::Clean() 
@@ -113,6 +94,32 @@ namespace EAE_Engine
 				SAFE_DELETE(pUB);
 			}
 			_uniformBlocks.clear();
+		}
+
+		bool UniformBlockManager::Contains(const char* pBlockName)
+		{
+			for (std::vector<UniformBlock*>::iterator iter = _uniformBlocks.begin(); iter != _uniformBlocks.end(); iter++)
+			{
+				UniformBlock* pUB = *iter;
+				if (strcmp(pUB->GetName(), pBlockName) == 0)
+				{
+					return true;
+				}
+			}
+			return  false;
+		}
+
+		GLuint UniformBlockManager::GetIndexOfUniformBlock(const char* pBlockName)
+		{
+			GLuint index = 0;
+			for (std::vector<UniformBlock*>::iterator iter = _uniformBlocks.begin(); iter != _uniformBlocks.end(); iter++, index++)
+			{
+				UniformBlock* pUB = *iter;
+				if (strcmp(pUB->GetName(), pBlockName) == 0)
+				{
+					return index;
+				}
+			}
 		}
 
 		UniformBlock* UniformBlockManager::GetUniformBlock(const char* pBlockName)

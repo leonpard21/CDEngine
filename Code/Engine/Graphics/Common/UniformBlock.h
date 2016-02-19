@@ -61,11 +61,11 @@ namespace EAE_Engine
 			void SetBlockData(UniformBlockData* pUBD, uint32_t count);
 			void UpdateUniformBlockBuffer();
 		private:
-			char* _pBlockName;
-			GLint _blockSize;
 			GLubyte* _pBuffer;
+			GLint _blockSize;
 			GLuint _uboId;
 			std::vector<Effect*> _owners;
+			char* _pBlockName;
 		};
 
 
@@ -73,9 +73,11 @@ namespace EAE_Engine
 		{
 		public:
 			~UniformBlockManager();
-			void AddUniformBlock(UniformBlock* pBlock);
+			UniformBlock* AddUniformBlock(UniformBlock* pBlock);
 			void Clean();
-
+			bool Contains(const char* pBlockName);
+			GLuint GetIndexOfUniformBlock(const char* pBlockName);
+			uint32_t GetUniformBlockCount() { return _uniformBlocks.size(); }
 			UniformBlock* GetUniformBlock(const char* pBlockName);
 			void NotifyOwners(const char* pBlockName);
 		private:

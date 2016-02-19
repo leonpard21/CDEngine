@@ -2,10 +2,9 @@
 
 // lighting attribute
 uniform vec3 _diffuse_albedo = vec3(0.5, 0.2, 0.7);
-uniform vec3 specularAlbedo = vec3(0.7, 0.7, 0.7);
-uniform float specularPower = 128.0;
+//uniform vec3 specularAlbedo = vec3(0.7, 0.7, 0.7);
+//uniform float specularPower = 128.0;
 
-/*
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 
 struct SpecularLight
@@ -24,13 +23,13 @@ layout(std140) uniform SpecularLight
 {
 	vec3 _specular_albedo;
 	float _specular_power;
-};
+}gSpecularLight;
 
-#define specularAlbedo SpecularLight._specular_albedo 
-#define specularPower SpecularLight._specular_power 
+#define specularAlbedo gSpecularLight._specular_albedo 
+#define specularPower gSpecularLight._specular_power 
 
 #endif
-*/
+
 
 // Lambert Diffuse Lighting
 void CalculateDiffuseLighting(const in float3 i_normal_world, const in float3 i_light_direction, out float3 o_lighting_diffuse)

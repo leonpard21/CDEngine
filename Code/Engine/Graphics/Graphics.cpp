@@ -30,6 +30,7 @@ namespace EAE_Engine
 	namespace Graphics
 	{
 		void SetCameraParameters(Camera* pCamera);
+		void SetLightParameters();
 		void PreRender();
 		void PostRender();
 	}
@@ -83,9 +84,23 @@ void EAE_Engine::Graphics::SetCameraParameters(Camera* pCamera)
 	UniformVariableManager::GetInstance().NotifyOwners("_camera_pos");
 }
 
+void EAE_Engine::Graphics::SetLightParameters()
+{
+#if defined( EAEENGINE_PLATFORM_GL )
+	UniformBlock* pSLUB = UniformBlockManager::GetInstance()->GetUniformBlock("SpecularLight");
+	Math::Vector3 specularAlbedo(1.0f, 1.0f, 1.0f);
+	float specularPower = 128.0f;
+	UniformBlockData sldata[] = { { 0, &specularAlbedo, sizeof(Math::Vector3) },
+	{ 0 + sizeof(Math::Vector3), &specularPower, sizeof(float) } };
+	pSLUB->SetBlockData(sldata, 2);
+	UniformBlockManager::GetInstance()->NotifyOwners("SpecularLight");
+#endif
+}
+
 void EAE_Engine::Graphics::Render()
 {
 	SetCameraParameters(CameraManager::GetInstance().GetCam());
+	SetLightParameters();
 	PreRender();
 	// The actual function calls that draw geometry
 	{

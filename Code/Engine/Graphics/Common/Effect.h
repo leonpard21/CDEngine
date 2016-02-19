@@ -77,6 +77,7 @@ namespace EAE_Engine
 			void OnNotify(UniformVariable* pVariable, GLint location);
 			void OnNotify(UniformBlock* pBlock);
 			void Update();
+
 		private:
 			bool LoadAttachVertexShader(GLuint& io_programId, const char* i_pVSFilePath);
 			bool LoadAttachFragmentShader(GLuint& io_programId, const char* i_pFSFilePath);

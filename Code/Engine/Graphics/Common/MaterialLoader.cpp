@@ -70,6 +70,10 @@ namespace EAE_Engine
 			MaterialDesc* pMaterialDesc = (MaterialDesc*)((uint8_t*)pBuffer + offset);
 			// Second, load the path of the effect file
 			{
+				// Remember that I did a tricky solution in the MaterialBuilder 
+				// that I use the _pEffect to save the offset of the Name in Effect
+				// Because the size of the _handler will be different on x64 and x86,
+				// so I really really should be careful about it.
 				size_t offsetForEffectPathName = *(size_t*)(&pMaterialDesc->_pEffect);
 				char* pathOfEffect = _strdup(pBuffer + offsetForEffectPathName);
 				o_lengthOfEffectPath = (uint32_t)strlen(pBuffer + offsetForEffectPathName) + 1;
@@ -77,6 +81,8 @@ namespace EAE_Engine
 				free(pathOfEffect);
 			}
 			// Set the buffer of each segement
+			UniformBlockDesc* pUniformBlockDescBuffer = nullptr;
+			uint8_t* pUniformBlockNameBuffer = nullptr;
 			UniformDesc* pUniformDescBuffer = nullptr;
 			uint8_t* pUniformVariableValueBuffer = nullptr;
 			uint8_t* pUniformVariableNameBuffer = nullptr;
@@ -84,6 +90,11 @@ namespace EAE_Engine
 			uint8_t* pTexturePathBuffer = nullptr;
 			uint8_t* pTextureSamplerNameBuffer = nullptr;
 			{
+				if (pMaterialDesc->_uniformBlockCount > 0)
+				{
+					pUniformBlockDescBuffer = pMaterialDesc->GetUniformBlockDesc();
+					pUniformBlockNameBuffer = (uint8_t*)pMaterialDesc + pMaterialDesc->_offsetOfUniformBlockNameBuffer;
+				}
 				if (pMaterialDesc->_uniformCount > 0)
 				{
 					pUniformDescBuffer = pMaterialDesc->GetUniformDesc();
@@ -98,17 +109,47 @@ namespace EAE_Engine
 				}
 			}
 			// Third, Set each UniformDesc of this MaterialDesc
-			for (uint32_t index = 0; index < pMaterialDesc->_uniformCount; ++index)
+			for (uint32_t ubIndex = 0; ubIndex < pMaterialDesc->_uniformBlockCount; ++ubIndex)
 			{
-				UniformDesc* pUD = &pUniformDescBuffer[index];
-				// Remember that I did a tricky solution in the MaterialBuilder 
-				// that I use the _handler to save the offset of the Name in UniformVariableNameBuffer
-				// Because the size of the _handler will be different on x64 and x86,
-				// so I really really should be careful about it.
-				size_t offsetInNameBuffer = pUD->_offsetInNameBuffer;
-				const char* pUniformName = (char*)(pUniformVariableNameBuffer + offsetInNameBuffer);
-				pUD->SetHanlde(pUniformName, pMaterialDesc->_pEffect);
-				size_t t = 0;
+				UniformBlockDesc* pUBD = &pUniformBlockDescBuffer[ubIndex];
+				size_t offsetInNameBuffer = pUBD->_offsetInUniformBlockNameBuffer;
+				const char* pUBName = (char*)(pUniformBlockNameBuffer + offsetInNameBuffer);
+				uint32_t startIndex = pUBD->_startUniformDescIndex;
+				uint32_t endIndex = pUBD->_endUniformDescIndex;
+				// Add the default block members to be the Uniform Variables.
+				if (strcmp(pUBName, "Default") == 0)
+				{
+					for (uint32_t uIndex = startIndex; uIndex <= endIndex; ++uIndex)
+					{
+						UniformDesc* pUD = &pUniformDescBuffer[uIndex];
+						
+						size_t offsetInNameBuffer = pUD->_offsetInNameBuffer;
+						const char* pUniformName = (char*)(pUniformVariableNameBuffer + offsetInNameBuffer);
+						pUD->SetHanlde(pUniformName, pMaterialDesc->_pEffect);
+						size_t t = 0;
+					}
+				}
+				// Add the undefault block members to be Uniform Blocks
+				else 
+				{
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+					for (uint32_t uIndex = startIndex; uIndex <= endIndex; ++uIndex)
+					{
+						UniformDesc* pUD = &pUniformDescBuffer[uIndex];
+
+						size_t offsetInNameBuffer = pUD->_offsetInNameBuffer;
+						const char* pUniformName = (char*)(pUniformVariableNameBuffer + offsetInNameBuffer);
+						pUD->SetHanlde(pUniformName, pMaterialDesc->_pEffect);
+						size_t t = 0;
+					}
+#elif defined( EAEENGINE_PLATFORM_GL )
+					// For the UniformBlock, We should get the instance of it,
+					// Since we have scaned the Uniform Blocks when we were creating Effect,
+					// We should be able to get their reference.
+					UniformBlock* pUniformBlock = UniformBlockManager::GetInstance()->GetUniformBlock(pUBName);
+					pUBD->_pUniformBlock = pUniformBlock;
+#endif
+				}
 			}
 			// Forth, Set each TextureDesc of this MaterialDesc
 			for (uint32_t index = 0; index < pMaterialDesc->_textureCount; ++index)

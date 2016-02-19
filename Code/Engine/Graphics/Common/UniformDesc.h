@@ -33,12 +33,14 @@ namespace EAE_Engine
 		 * @_endUniformDescIndex is the last index of the UniformDesc contained in this block
 		 * Remember that by default, there is a global Uniform Block.
 		 */
+		struct UniformBlock;
 		struct UniformBlockDesc 
 		{
 			UniformBlockDesc() = default;
-			uint32_t _offsetInUniformPackageNameBuffer;
+			uint32_t _offsetInUniformBlockNameBuffer;
 			uint32_t _startUniformDescIndex;
 			uint32_t _endUniformDescIndex;
+			UniformBlock* _pUniformBlock;
 		};
 
 		struct UniformDesc

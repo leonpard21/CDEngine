@@ -20,20 +20,49 @@ namespace EAE_Engine
 		{
 			uint8_t* pUniformVariableValueBuffer = nullptr;
 			pUniformVariableValueBuffer = (uint8_t*)this + _offsetOfUniformVariableValueBuffer;
+			UniformBlockDesc* pUBD = GetUniformBlockDesc();
+			if (!pUBD) return;
 			UniformDesc* pUniformDescBuffer = GetUniformDesc();
-			if (!pUniformDescBuffer)
-				return;
-			// Set each UniformDesc of this MaterialDesc
-			for (size_t index = 0; index < _uniformCount; ++index)
+			if (!pUniformDescBuffer) return;
+			uint8_t* pUniformBlockNameBuffer = (uint8_t*)this + _offsetOfUniformBlockNameBuffer;
+			for (uint32_t index = 0; index < _uniformBlockCount; ++index)
 			{
-				UniformDesc* pUD = &pUniformDescBuffer[index];
-				uint8_t* pValue = pUniformVariableValueBuffer + pUD->_offsetInValueBuffer;
-				uint32_t count = pUD->_valueBufferSize / sizeof(float);
+				size_t offsetInNameBuffer = pUBD[index]._offsetInUniformBlockNameBuffer;
+				const char* pUBName = (char*)(pUniformBlockNameBuffer + offsetInNameBuffer);
+				uint32_t startIndex = pUBD[index]._startUniformDescIndex;
+				uint32_t endIndex = pUBD[index]._endUniformDescIndex;
+				if (strcmp(pUBName, "Default") == 0)
+				{
+					// Set each UniformDesc of this MaterialDesc
+					for (size_t index = startIndex; index <= endIndex; ++index)
+					{
+						UniformDesc* pUD = &pUniformDescBuffer[index];
+						uint8_t* pValue = pUniformVariableValueBuffer + pUD->_offsetInValueBuffer;
+						uint32_t count = pUD->_valueBufferSize / sizeof(float);
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-				_pEffect->SetUniform(pUD->_handle, (float*)pValue, count, pUD->_shaderType);
+						_pEffect->SetUniform(pUD->_handle, (float*)pValue, count, pUD->_shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )
-				_pEffect->SetUniform(pUD->_handle, (float*)pValue, count);
+						_pEffect->SetUniform(pUD->_handle, (float*)pValue, count);
 #endif
+					}
+				}
+				
+				else
+				{
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+					// Set each UniformDesc of this MaterialDesc
+					for (size_t index = startIndex; index <= endIndex; ++index)
+					{
+						UniformDesc* pUD = &pUniformDescBuffer[index];
+						uint8_t* pValue = pUniformVariableValueBuffer + pUD->_offsetInValueBuffer;
+						uint32_t count = pUD->_valueBufferSize / sizeof(float);
+						_pEffect->SetUniform(pUD->_handle, (float*)pValue, count, pUD->_shaderType);
+					}
+#elif defined( EAEENGINE_PLATFORM_GL )
+					UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock(pUBName);
+
+#endif
+				}
 			}
 		}
 
@@ -60,11 +89,22 @@ namespace EAE_Engine
 			}
 		}
 
+		UniformBlockDesc* MaterialDesc::GetUniformBlockDesc()
+		{
+			if (_uniformBlockCount == 0) return nullptr;
+			return (UniformBlockDesc*)((uint8_t*)this + sizeof(MaterialDesc));
+		}
+		UniformDesc* MaterialDesc::GetUniformDesc()
+		{
+			if (_uniformCount == 0) return nullptr;
+			return (UniformDesc*)((uint8_t*)this + sizeof(MaterialDesc) + sizeof(UniformBlockDesc) * _uniformBlockCount);
+		}
+
 		TextureDesc* MaterialDesc::GetTextureDesc()
 		{
 			if (_textureCount == 0)
 				return nullptr;
-			return (TextureDesc*)((uint8_t*)this + sizeof(MaterialDesc) + sizeof(UniformDesc) * _uniformCount);
+			return (TextureDesc*)((uint8_t*)this + sizeof(MaterialDesc) + sizeof(UniformBlockDesc) * _uniformBlockCount + sizeof(UniformDesc) * _uniformCount);
 		}
 
 		void MaterialDesc::ChangeTexture(uint32_t index, tTexture texture)

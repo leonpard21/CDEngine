@@ -102,8 +102,6 @@ namespace EAE_Engine
 		{
 			GLint numBlocks;
 			glGetProgramiv(_programId, GL_ACTIVE_UNIFORM_BLOCKS, &numBlocks);
-			//std::vector<std::string> nameList;
-			//nameList.reserve(numBlocks);
 			for (int blockIx = 0; blockIx < numBlocks; ++blockIx)
 			{
 				GLint nameLen;
@@ -111,17 +109,26 @@ namespace EAE_Engine
 				std::vector<GLchar> name; //Yes, not std::string. There's a reason for that.
 				name.resize(nameLen);
 				glGetActiveUniformBlockName(_programId, blockIx, nameLen, NULL, &name[0]);
-				//nameList.push_back(std::string());
-				//nameList.back().assign(name.begin(), name.end() - 1); //Remove the null terminator.
 				std::string blockName;
 				blockName.assign(name.begin(), name.end() - 1);
 				GLint uniformBlockSize;
 				glGetActiveUniformBlockiv(_programId, blockIx, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlockSize);
-				UniformBlock* pUniformBlock = new UniformBlock(blockName.c_str(), uniformBlockSize);
-				pUniformBlock->AddOwner(this);
-				UniformBlockManager::GetInstance()->AddUniformBlock(pUniformBlock);
+				if (!UniformBlockManager::GetInstance()->Contains(blockName.c_str()))
+				{
+					UniformBlock* pUniformBlock = new UniformBlock(blockName.c_str(), uniformBlockSize);
+					// the 2nd parameter is the index of the index Of uniform block,
+					// the 3nd parameter is the openGL binding point, which is not the buffer we want to use.
+					// the same UniformBlock in different shader, should bind to the same Binding point,
+					// we also bind this binding point to the BufferObj, 
+					// which contains the data we will offer to the graphics card.
+					// in this case, same uniform block in different shader are sharing data in the same buffer.
+					glUniformBlockBinding(_programId, blockIx, UniformBlockManager::GetInstance()->GetUniformBlockCount());
+					pUniformBlock->AddOwner(this);
+					UniformBlockManager::GetInstance()->AddUniformBlock(pUniformBlock);
+				}
 			}
 		}
+
 
 		void Effect::ExtractShaderUniforms()
 		{
@@ -266,9 +273,10 @@ namespace EAE_Engine
 			for (std::map<const char*, UniformBlock*>::iterator iter = _updateBlockList.begin(); iter != _updateBlockList.end(); ++iter)
 			{
 				UniformBlock* pBlock = iter->second;
-				GLuint blockIndex = glGetUniformBlockIndex(_programId, iter->first);
+				GLuint bindingPoint = UniformBlockManager::GetInstance()->GetIndexOfUniformBlock(iter->first);
+				glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, pBlock->GetUboId());
+				assert(glGetError() == GL_NO_ERROR);
 				pBlock->UpdateUniformBlockBuffer();
-				glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex, pBlock->GetUboId());
 			}
 			_updateBlockList.clear();
 		}

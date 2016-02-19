@@ -3,6 +3,7 @@
 #include <sstream>
 #include "External/Lua/Includes.h"
 #include "Engine/Math/Vector.h"
+#include "Engine/Math/MathTool.h"
 #include "Engine/General/MemoryOp.h"
 #include "Tools/BuilderHelper/cbBuilder.h"
 #include "Engine/Graphics/Common/UniformDesc.h"// Get the UniformDesc
@@ -135,7 +136,8 @@ namespace
 
 	bool FillAllUniformDataStringKeys(lua_State& io_luaState, EAE_Engine::Tools::MaterialInfo*& o_pMaterial)
 	{
-		int countOfUniformDataWeHaveFilled = 0;
+		int indexOfUniformData = 0;
+		int indexOfUniformBlock = 0;
 		lua_pushnil(&io_luaState);	// This tells lua_next() to return the first key
 		const int tableIndex = -2;
 		while (lua_next(&io_luaState, tableIndex))
@@ -147,16 +149,22 @@ namespace
 			{
 				if (lua_istable(&io_luaState, -1))
 				{
+					const char* pKey = lua_tostring(&io_luaState, -2);
+					o_pMaterial->_pUniformBlockInfo[indexOfUniformBlock]._pName = _strdup(pKey);
 					// get the count of UniformDatas in each UniformBlock
 					const int arrayLength = luaL_len(&io_luaState, -1);
+					assert(arrayLength > 0);
+					o_pMaterial->_pUniformBlockInfo[indexOfUniformBlock]._firstIndexOfUniformInfo = indexOfUniformData;
 					for (int i = 1; i <= arrayLength; ++i)
 					{
 						// fill each UniformData
 						lua_pushinteger(&io_luaState, i);
 						lua_gettable(&io_luaState, -2);
-						FillUniformData(io_luaState, o_pMaterial->_pUniformInfo[countOfUniformDataWeHaveFilled++]);
+						FillUniformData(io_luaState, o_pMaterial->_pUniformInfo[indexOfUniformData++]);
 						lua_pop(&io_luaState, 1);
 					}
+					o_pMaterial->_pUniformBlockInfo[indexOfUniformBlock]._lastIndexOfUniformInfo = indexOfUniformData - 1;
+					++indexOfUniformBlock;
 				}
 			}
 			// To iterate to the next key/value pair, pop the value, but leave the key:
@@ -462,10 +470,11 @@ namespace EAE_Engine
 		bool GenerateBinaryMaterialData(const char* i_luaMaterialFile, char*& o_pBuffer, uint32_t& o_sizeOfBuffer)
 		{
 			MaterialInfo* pMaterialData = nullptr;
+			uint32_t o_sizeOfUniformBlockNameBuffer = 0;
 			uint32_t o_sizeOfUniformNameBuffer = 0;
-			uint32_t o_sizeOfValueBuffer = 0;
-			uint32_t o_sizeOfTexPathBuffer = 0;
-			uint32_t o_sizeOfTexUniformNameBuffer = 0;
+			uint32_t o_sizeOfUniformVariableBuffer = 0;
+			uint32_t o_sizeOfTexPathNameBuffer = 0;
+			uint32_t o_sizeOfTexSamplerNameBuffer = 0;
 			if (!LoadMaterial(i_luaMaterialFile, pMaterialData))
 			{
 				return false;
@@ -473,21 +482,28 @@ namespace EAE_Engine
 			uint32_t sourcePathLength = (uint32_t)strlen(pMaterialData->_pEffectPath);
 			uint32_t effectSourceLength = (uint32_t)strlen(pMaterialData->_pEffectSource);
 			uint32_t lengthOfEffectPath = (sourcePathLength + effectSourceLength + 1);
+			// 1. Let's get the size of UnifromBlockDesc we need 
+			uint32_t uniformBlockDescBufferSize = pMaterialData->_uniformBlockCount * sizeof(Graphics::UniformBlockDesc);
+			// 2. Get the UniformBlockDesc Name size
+			for (uint32_t index = 0; index < pMaterialData->_uniformBlockCount; ++index)
+			{
+				o_sizeOfUniformBlockNameBuffer += (uint32_t)strlen(pMaterialData->_pUniformBlockInfo[index]._pName) + 1;
+			}
 			// 1. We need to save the sUniformDesc for each Uniform Variable.
-			uint32_t uniformDescArrayLength = (uint32_t)(pMaterialData->_uniformCount * sizeof(Graphics::UniformDesc));
+			uint32_t uniformDescBufferSize = (uint32_t)(pMaterialData->_uniformCount * sizeof(Graphics::UniformDesc));
 			// 2. Get the general information of the UniformDesc Data
 			for (uint32_t index = 0; index < pMaterialData->_uniformCount; ++index)
 			{
-				o_sizeOfValueBuffer += pMaterialData->_pUniformInfo[index]._valueCount * sizeof(float);
+				o_sizeOfUniformVariableBuffer += pMaterialData->_pUniformInfo[index]._valueCount * sizeof(float);
 				o_sizeOfUniformNameBuffer += (uint32_t)strlen(pMaterialData->_pUniformInfo[index]._pName) + 1;
 			}
 			// 1. We need to save the sTextureDesc for each texture.
-			uint32_t textureDescArrayLength = (uint32_t)(pMaterialData->_texCount * sizeof(Graphics::TextureDesc));
+			uint32_t textureDescBufferSize = (uint32_t)(pMaterialData->_texCount * sizeof(Graphics::TextureDesc));
 			// 2. Get the general information of the TextureDesc Data
 			for (uint32_t index = 0; index < pMaterialData->_texCount; ++index)
 			{
-				o_sizeOfTexPathBuffer += (uint32_t)strlen(pMaterialData->_pTexInfo[index]._pTexPath) + 1;
-				o_sizeOfTexUniformNameBuffer += (uint32_t)strlen(pMaterialData->_pTexInfo[index]._pName) + 1;
+				o_sizeOfTexPathNameBuffer += (uint32_t)strlen(pMaterialData->_pTexInfo[index]._pTexPath) + 1;
+				o_sizeOfTexSamplerNameBuffer += (uint32_t)strlen(pMaterialData->_pTexInfo[index]._pName) + 1;
 			}
 			// Here we need to alloc the memory for the data we need to ouput to the binary file
 			// First, we will save a MaterialDesc and the information.
@@ -500,8 +516,9 @@ namespace EAE_Engine
 			// Forth, o_sizeOfValueBuffer will be the space for all of the UniformVariables Values,
 			// and o_sizeOfNameBuffer will be the space for all of the UniformVariables Names.
 			// At the end, lengthOfEffectPath = (sourcePathLength + effectSourceLength + 1) will be the path name of the effect, it ends with a /0.
-			o_sizeOfBuffer = sizeof(Graphics::MaterialDesc) + uniformDescArrayLength + textureDescArrayLength + o_sizeOfValueBuffer + 
-				o_sizeOfUniformNameBuffer + o_sizeOfTexPathBuffer + o_sizeOfTexUniformNameBuffer + lengthOfEffectPath;
+			o_sizeOfBuffer = sizeof(Graphics::MaterialDesc) + uniformBlockDescBufferSize + uniformDescBufferSize + 
+				textureDescBufferSize + o_sizeOfUniformVariableBuffer + o_sizeOfUniformNameBuffer + 
+				o_sizeOfUniformBlockNameBuffer + o_sizeOfTexPathNameBuffer + o_sizeOfTexSamplerNameBuffer + lengthOfEffectPath;
 			// allocate memory for file content
 			o_pBuffer = new char[o_sizeOfBuffer];
 			SetMem(reinterpret_cast<uint8_t*>(o_pBuffer), o_sizeOfBuffer, 0);
@@ -512,8 +529,9 @@ namespace EAE_Engine
 			{
 				// Write the effect file path & name to the buffer
 				{
-					uint32_t offsetForEffectPath = sizeof(Graphics::MaterialDesc) + uniformDescArrayLength + textureDescArrayLength + o_sizeOfValueBuffer +
-						o_sizeOfUniformNameBuffer + o_sizeOfTexPathBuffer + o_sizeOfTexUniformNameBuffer;
+					uint32_t offsetForEffectPath = sizeof(Graphics::MaterialDesc) + uniformBlockDescBufferSize + uniformDescBufferSize +
+						textureDescBufferSize + o_sizeOfUniformVariableBuffer + o_sizeOfUniformNameBuffer +
+						o_sizeOfUniformBlockNameBuffer + o_sizeOfTexPathNameBuffer + o_sizeOfTexSamplerNameBuffer;
 					// Since we save the MaterialDesc at first and EffectPathName at the end, we should have:
 					assert(o_sizeOfBuffer - lengthOfEffectPath == offsetForEffectPath);
 					// Set the content of the Effect Pointer to be the Offset to the effect name path
@@ -525,21 +543,50 @@ namespace EAE_Engine
 					CopyMem(reinterpret_cast<uint8_t*>(pMaterialData->_pEffectSource), reinterpret_cast<uint8_t*>(o_pBuffer) + offsetForEffectPath, effectSourceLength);
 				}
 				pMaterialDesc->_sizeOfMaterialBuffer = o_sizeOfBuffer;
+				pMaterialDesc->_uniformBlockCount = pMaterialData->_uniformBlockCount;
 				pMaterialDesc->_uniformCount = pMaterialData->_uniformCount;
 				pMaterialDesc->_textureCount = pMaterialData->_texCount;
 				// we need to jump over the MaterialDesc the uniformDescArrayLength for the Uniform Variable Value Buffer
 				// 1. We put the offset of the UniformVarible Value Buffer
 				// 2. We put the offset of the UniofrmVariable Name Buffer
-				pMaterialDesc->_offsetOfUniformVariableValueBuffer = sizeof(Graphics::MaterialDesc) + uniformDescArrayLength + textureDescArrayLength;
-				pMaterialDesc->_offsetOfUniformVariableNameBuffer = pMaterialDesc->_offsetOfUniformVariableValueBuffer + o_sizeOfValueBuffer;
+				pMaterialDesc->_offsetOfUniformVariableValueBuffer = sizeof(Graphics::MaterialDesc) + uniformBlockDescBufferSize +
+					uniformDescBufferSize + textureDescBufferSize;
+				pMaterialDesc->_offsetOfUniformVariableNameBuffer = pMaterialDesc->_offsetOfUniformVariableValueBuffer + o_sizeOfUniformVariableBuffer;
+				// we need to jump over the MaterialDesc, UniformBlockDescs, 
+				// UniformDescs and TextureDescs for the Uniform Block Name Buffer
+				pMaterialDesc->_offsetOfUniformBlockNameBuffer = pMaterialDesc->_offsetOfUniformVariableNameBuffer + o_sizeOfUniformNameBuffer;
 				// 1. We put the offset of the path of the textures at first, 
 				// 2. We put the offset of the Uniform Variable Names of the texture sampler.
-				pMaterialDesc->_offsetOfTexturePathBuffer = pMaterialDesc->_offsetOfUniformVariableNameBuffer + o_sizeOfUniformNameBuffer;
-				pMaterialDesc->_offsetOfTextureSamplerBuffer = pMaterialDesc->_offsetOfTexturePathBuffer + o_sizeOfTexPathBuffer;
+				pMaterialDesc->_offsetOfTexturePathBuffer = pMaterialDesc->_offsetOfUniformBlockNameBuffer + o_sizeOfUniformBlockNameBuffer;
+				pMaterialDesc->_offsetOfTextureSamplerBuffer = pMaterialDesc->_offsetOfTexturePathBuffer + o_sizeOfTexPathNameBuffer;
 				// We also need to set the value of the MaterialCost
 				pMaterialDesc->_materialCost = pMaterialData->_materialCost;
 				// Now we have finished the setting of the MaterialDesc, so we add sizeof(MaterialDesc) to the offset.
 				offset += sizeof(Graphics::MaterialDesc);
+			}
+			// Now the offset should point to the start of the UniformBlockDesc buffers.
+			// So Let's set all of UniformBlockDesc information.
+			{
+				uint32_t offsetInNameBuffer = 0;
+				uint32_t offsetOfUniformBlockNameBuffer = pMaterialDesc->_offsetOfUniformBlockNameBuffer;
+				for (size_t i = 0; i < pMaterialData->_uniformBlockCount; ++i) 
+				{
+					Graphics::UniformBlockDesc* pUniformBlockDesc = (Graphics::UniformBlockDesc*)(reinterpret_cast<uint8_t*>(o_pBuffer) + offset);
+					pUniformBlockDesc->_startUniformDescIndex = pMaterialData->_pUniformBlockInfo[i]._firstIndexOfUniformInfo;
+					pUniformBlockDesc->_endUniformDescIndex = pMaterialData->_pUniformBlockInfo[i]._lastIndexOfUniformInfo;
+					pUniformBlockDesc->_pUniformBlock = nullptr;
+					// Set the UniformBlockVariable Name Buffer
+					{
+						// Save the offset of the Name in NameBuffer
+						pUniformBlockDesc->_offsetInUniformBlockNameBuffer = offsetInNameBuffer;
+						uint32_t sizeOfValueBufferToCopy = (uint32_t)strlen(pMaterialData->_pUniformBlockInfo[i]._pName);
+						// Copy the name to the target position
+						CopyMem((uint8_t*)pMaterialData->_pUniformBlockInfo[i]._pName, reinterpret_cast<uint8_t*>(o_pBuffer) + offsetOfUniformBlockNameBuffer + offsetInNameBuffer, sizeOfValueBufferToCopy);
+						offsetInNameBuffer += sizeOfValueBufferToCopy + 1;
+					}					
+					// move to set the next UniformBlockDesc
+					offset += sizeof(Graphics::UniformBlockDesc);
+				}
 			}
 			// Now the offset should point to the start of the UniformDesc buffers.
 			// So Let's set all of UniformDesc information.
