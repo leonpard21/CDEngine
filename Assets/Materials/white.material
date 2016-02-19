@@ -16,10 +16,13 @@ return
 		materialCost = 0x00100,
 		uniformData = 
 		{
+			Default = 
 			{
-				name = "g_RGBColor",
-				value = { 1, 1, 1, },
-				shaderType = "fragment",
+				{
+					name = "g_RGBColor",
+					value = { 1, 1, 1, },
+					shaderType = "fragment",
+				},
 			},
 		},
 		textureData = 

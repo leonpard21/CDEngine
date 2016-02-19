@@ -10,10 +10,13 @@ return
 		effectSource = "standard.effect",
 		uniformData = 
 		{
+			Default = 
 			{
-				name = "g_RGBColor",
-				value = { 1, 1, 1, },
-				shaderType = "fragment",
+				{
+					name = "g_RGBColor",
+					value = { 1, 1, 1, },
+					shaderType = "fragment",
+				},
 			},
 		},
 		textureData = 

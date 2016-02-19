@@ -30,6 +30,13 @@ namespace EAE_Engine
 			}
 		};
 
+		struct UniformBlockInfo
+		{
+			char* _pName;
+			uint32_t _firstIndexOfUniformInfo;
+			uint32_t _lastIndexOfUniformInfo;
+		};
+
 		struct TextureInfo
 		{
 			char* _pName;
@@ -48,18 +55,22 @@ namespace EAE_Engine
 			char* _pEffectPath;
 			char* _pEffectSource;
 			uint32_t _materialCost;
-			UniformInfo* _pUniformData;
+			UniformInfo* _pUniformInfo;
 			uint32_t _uniformCount;
-			TextureInfo* _pTexData;
+			TextureInfo* _pTexInfo;
 			uint32_t _texCount;
+			UniformBlockInfo* _pUniformBlockInfo;
+			uint32_t _uniformBlockCount;
 			MaterialInfo() :_pEffectPath(nullptr), _pEffectSource(nullptr), _materialCost(0), 
-				_pUniformData(nullptr), _uniformCount(0), _pTexData(nullptr), _texCount(0) {}
+				_pUniformInfo(nullptr), _uniformCount(0), _pTexInfo(nullptr), _texCount(0),
+				_pUniformBlockInfo(nullptr), _uniformBlockCount(0){}
 			~MaterialInfo()
 			{
 				SAFE_DELETE(_pEffectPath);
 				SAFE_DELETE(_pEffectSource);
-				SAFE_DELETE_ARRAY(_pUniformData);
-				SAFE_DELETE_ARRAY(_pTexData);
+				SAFE_DELETE_ARRAY(_pUniformInfo);
+				SAFE_DELETE_ARRAY(_pTexInfo);
+				SAFE_DELETE_ARRAY(_pUniformBlockInfo);
 			}
 		};
 	}
@@ -67,12 +78,9 @@ namespace EAE_Engine
 
 namespace
 {
-	void FillUniformData(EAE_Engine::Tools::UniformInfo& uniformData)
-	{
-		
-	}
-
 	bool LoadTableValues_filenames(lua_State& io_luaState, EAE_Engine::Tools::MaterialInfo*& o_pMaterial);
+	void FillUniformData(lua_State& io_luaState, EAE_Engine::Tools::UniformInfo& uniformData);
+	void FillTextureData(lua_State& io_luaState, EAE_Engine::Tools::TextureInfo& textureData);
 	bool LoadMaterial(const char* const i_path, EAE_Engine::Tools::MaterialInfo*& o_pMaterial);
 	bool LoadMaterialData(lua_State& io_luaState, EAE_Engine::Tools::MaterialInfo*& o_pMaterial);
 
@@ -84,6 +92,77 @@ namespace
 		else if (strcmp("vertex", pTypeName) == 0)
 			result = EAE_Engine::Graphics::ShaderTypes::Vertex;
 		return result;
+	}
+
+	// Get the count of all UniformData 
+	bool GetCountOfUniformDataStringKeys(lua_State& io_luaState, EAE_Engine::Tools::MaterialInfo*& o_pMaterial)
+	{
+		// now -1 of io_luaStateis the UniformData table we are iteating:
+		o_pMaterial->_uniformCount = 0;
+		o_pMaterial->_uniformBlockCount = 0;//by default we should have a default block.
+		lua_pushnil(&io_luaState);// This tells lua_next() to return the first key
+		const int tableIndex = -2;
+		// After lua_next() the key is at -2 and the value is at -1:
+		while (lua_next(&io_luaState, tableIndex))
+		{
+			// we get a table of string key, then this is a UniformBlock,
+			// we need to get the count of its children.
+			if (lua_type(&io_luaState, -2) == LUA_TSTRING)
+			{
+				const char* pKey = lua_tostring(&io_luaState, -2);
+				++o_pMaterial->_uniformBlockCount;
+				if (lua_istable(&io_luaState, -1)) 
+				{
+					const int arrayLength = luaL_len(&io_luaState, -1);
+					o_pMaterial->_uniformCount += arrayLength;
+				}
+			}
+			// To iterate to the next key/value pair, pop the value, but leave the key:
+			lua_pop(&io_luaState, 1);
+			// One important subtlety to note:
+			// We can't change the table while iterating using lua_next(),
+			// if we calling lua_tostring() on a number does that.
+			// Read more here: http://www.lua.org/manual/5.2/manual.html#lua_next
+		}
+		if (o_pMaterial->_uniformCount > 0)
+		{
+			// allocate the memory for the UnifromDatas and UniformBlocks
+			o_pMaterial->_pUniformInfo = new EAE_Engine::Tools::UniformInfo[o_pMaterial->_uniformCount];
+			o_pMaterial->_pUniformBlockInfo = new EAE_Engine::Tools::UniformBlockInfo[o_pMaterial->_uniformBlockCount];
+		}
+		return true;
+	}
+
+	bool FillAllUniformDataStringKeys(lua_State& io_luaState, EAE_Engine::Tools::MaterialInfo*& o_pMaterial)
+	{
+		int countOfUniformDataWeHaveFilled = 0;
+		lua_pushnil(&io_luaState);	// This tells lua_next() to return the first key
+		const int tableIndex = -2;
+		while (lua_next(&io_luaState, tableIndex))
+		{
+			// After lua_next() the key is at -2 and the value is at -1:
+			// if we get a table of string key, then this is a UniformBlock,
+			// we need to go through each of its children(UniformData).
+			if (lua_type(&io_luaState, -2) == LUA_TSTRING)
+			{
+				if (lua_istable(&io_luaState, -1))
+				{
+					// get the count of UniformDatas in each UniformBlock
+					const int arrayLength = luaL_len(&io_luaState, -1);
+					for (int i = 1; i <= arrayLength; ++i)
+					{
+						// fill each UniformData
+						lua_pushinteger(&io_luaState, i);
+						lua_gettable(&io_luaState, -2);
+						FillUniformData(io_luaState, o_pMaterial->_pUniformInfo[countOfUniformDataWeHaveFilled++]);
+						lua_pop(&io_luaState, 1);
+					}
+				}
+			}
+			// To iterate to the next key/value pair, pop the value, but leave the key:
+			lua_pop(&io_luaState, 1);
+		}
+		return true;
 	}
 
 	bool LoadTableValues(lua_State& io_luaState, EAE_Engine::Tools::MaterialInfo*& o_pMaterial)
@@ -138,53 +217,14 @@ namespace
 			const char* const key = "uniformData";
 			lua_pushstring(&io_luaState, key);
 			lua_gettable(&io_luaState, -2);
-			if (lua_istable(&io_luaState, -1))
+			if (!lua_isnil(&io_luaState, -1))
 			{
-				const int arrayLength = luaL_len(&io_luaState, -1);
-				o_pMaterial->_uniformCount = arrayLength;
-				if (arrayLength > 0)
+				// first calculate the number of Uniform Data
+				GetCountOfUniformDataStringKeys(io_luaState, o_pMaterial);
+				// second fill the data of each Uniform Data
+				if (o_pMaterial->_uniformCount > 0)
 				{
-					o_pMaterial->_pUniformData = new EAE_Engine::Tools::UniformInfo[o_pMaterial->_uniformCount];
-					// Remember that Lua arrays are 1-based and not 0-based!
-					for (int i = 1; i <= arrayLength; ++i)
-					{
-						lua_pushinteger(&io_luaState, i);
-						lua_gettable(&io_luaState, -2);
-						{
-							const char* const key = "name";
-							lua_pushstring(&io_luaState, key);
-							lua_gettable(&io_luaState, -2);
-							const char* pName = lua_tostring(&io_luaState, -1);
-							o_pMaterial->_pUniformData[i - 1]._pName = _strdup(pName);
-							lua_pop(&io_luaState, 1);
-						}
-						{
-							const char* const key = "value";
-							lua_pushstring(&io_luaState, key);
-							lua_gettable(&io_luaState, -2);
-							assert(lua_istable(&io_luaState, -1));
-							const int valueTableLength = luaL_len(&io_luaState, -1);
-							o_pMaterial->_pUniformData[i - 1]._valueCount = valueTableLength;
-							o_pMaterial->_pUniformData[i - 1]._pValue = new float[valueTableLength];
-							for (int j = 1; j <= valueTableLength; ++j)
-							{
-								lua_pushinteger(&io_luaState, j);
-								lua_gettable(&io_luaState, -2);
-								o_pMaterial->_pUniformData[i - 1]._pValue[j - 1] = (float)lua_tonumber(&io_luaState, -1);
-								lua_pop(&io_luaState, 1);
-							}
-							lua_pop(&io_luaState, 1);
-						}
-						{
-							const char* const key = "shaderType";
-							lua_pushstring(&io_luaState, key);
-							lua_gettable(&io_luaState, -2);
-							const char* pShaderType = lua_tostring(&io_luaState, -1);
-							o_pMaterial->_pUniformData[i - 1]._shaderType = GetShaderType(pShaderType);
-							lua_pop(&io_luaState, 1);
-						}
-						lua_pop(&io_luaState, 1);
-					}
+					FillAllUniformDataStringKeys(io_luaState, o_pMaterial);
 				}
 			}
 			lua_pop(&io_luaState, 1);
@@ -199,36 +239,13 @@ namespace
 				o_pMaterial->_texCount = arrayLength;
 				if (arrayLength > 0)
 				{
-					o_pMaterial->_pTexData = new EAE_Engine::Tools::TextureInfo[o_pMaterial->_texCount];
+					o_pMaterial->_pTexInfo = new EAE_Engine::Tools::TextureInfo[o_pMaterial->_texCount];
 					// Remember that Lua arrays are 1-based and not 0-based!
 					for (int i = 1; i <= arrayLength; ++i)
 					{
 						lua_pushinteger(&io_luaState, i);
 						lua_gettable(&io_luaState, -2);
-						{
-							const char* const key = "name";
-							lua_pushstring(&io_luaState, key);
-							lua_gettable(&io_luaState, -2);
-							const char* pName = lua_tostring(&io_luaState, -1);
-							o_pMaterial->_pTexData[i - 1]._pName = _strdup(pName);
-							lua_pop(&io_luaState, 1);
-						}
-						{
-							const char* const key = "path";
-							lua_pushstring(&io_luaState, key);
-							lua_gettable(&io_luaState, -2);
-							const char* pPath = lua_tostring(&io_luaState, -1);
-							o_pMaterial->_pTexData[i - 1]._pTexPath = _strdup(pPath);
-							lua_pop(&io_luaState, 1);
-						}
-						{
-							const char* const key = "shaderType";
-							lua_pushstring(&io_luaState, key);
-							lua_gettable(&io_luaState, -2);
-							const char* pShaderType = lua_tostring(&io_luaState, -1);
-							o_pMaterial->_pTexData[i - 1]._shaderType = GetShaderType(pShaderType);
-							lua_pop(&io_luaState, 1);
-						}
+						FillTextureData(io_luaState, o_pMaterial->_pTexInfo[i - 1]);
 						lua_pop(&io_luaState, 1);
 					}
 				}
@@ -236,6 +253,71 @@ namespace
 			lua_pop(&io_luaState, 1);
 		}
 		return true;
+	}
+
+	void FillUniformData(lua_State& io_luaState, EAE_Engine::Tools::UniformInfo& uniformData)
+	{
+		{
+			const char* const key = "name";
+			lua_pushstring(&io_luaState, key);
+			lua_gettable(&io_luaState, -2);
+			const char* pName = lua_tostring(&io_luaState, -1);
+			uniformData._pName = _strdup(pName);
+			lua_pop(&io_luaState, 1);
+		}
+		{
+			const char* const key = "value";
+			lua_pushstring(&io_luaState, key);
+			lua_gettable(&io_luaState, -2);
+			assert(lua_istable(&io_luaState, -1));
+			const int valueTableLength = luaL_len(&io_luaState, -1);
+			uniformData._valueCount = valueTableLength;
+			uniformData._pValue = new float[valueTableLength];
+			for (int j = 1; j <= valueTableLength; ++j)
+			{
+				lua_pushinteger(&io_luaState, j);
+				lua_gettable(&io_luaState, -2);
+				uniformData._pValue[j - 1] = (float)lua_tonumber(&io_luaState, -1);
+				lua_pop(&io_luaState, 1);
+			}
+			lua_pop(&io_luaState, 1);
+		}
+		{
+			const char* const key = "shaderType";
+			lua_pushstring(&io_luaState, key);
+			lua_gettable(&io_luaState, -2);
+			const char* pShaderType = lua_tostring(&io_luaState, -1);
+			uniformData._shaderType = GetShaderType(pShaderType);
+			lua_pop(&io_luaState, 1);
+		}
+	}
+
+	void FillTextureData(lua_State& io_luaState, EAE_Engine::Tools::TextureInfo& textureData)
+	{
+		{
+			const char* const key = "name";
+			lua_pushstring(&io_luaState, key);
+			lua_gettable(&io_luaState, -2);
+			const char* pName = lua_tostring(&io_luaState, -1);
+			textureData._pName = _strdup(pName);
+			lua_pop(&io_luaState, 1);
+		}
+		{
+			const char* const key = "path";
+			lua_pushstring(&io_luaState, key);
+			lua_gettable(&io_luaState, -2);
+			const char* pPath = lua_tostring(&io_luaState, -1);
+			textureData._pTexPath = _strdup(pPath);
+			lua_pop(&io_luaState, 1);
+		}
+		{
+			const char* const key = "shaderType";
+			lua_pushstring(&io_luaState, key);
+			lua_gettable(&io_luaState, -2);
+			const char* pShaderType = lua_tostring(&io_luaState, -1);
+			textureData._shaderType = GetShaderType(pShaderType);
+			lua_pop(&io_luaState, 1);
+		}
 	}
 
 	bool LoadMaterial(const char* const i_path, EAE_Engine::Tools::MaterialInfo*& o_pMaterial)
@@ -396,16 +478,16 @@ namespace EAE_Engine
 			// 2. Get the general information of the UniformDesc Data
 			for (uint32_t index = 0; index < pMaterialData->_uniformCount; ++index)
 			{
-				o_sizeOfValueBuffer += pMaterialData->_pUniformData[index]._valueCount * sizeof(float);
-				o_sizeOfUniformNameBuffer += (uint32_t)strlen(pMaterialData->_pUniformData[index]._pName) + 1;
+				o_sizeOfValueBuffer += pMaterialData->_pUniformInfo[index]._valueCount * sizeof(float);
+				o_sizeOfUniformNameBuffer += (uint32_t)strlen(pMaterialData->_pUniformInfo[index]._pName) + 1;
 			}
 			// 1. We need to save the sTextureDesc for each texture.
 			uint32_t textureDescArrayLength = (uint32_t)(pMaterialData->_texCount * sizeof(Graphics::TextureDesc));
 			// 2. Get the general information of the TextureDesc Data
 			for (uint32_t index = 0; index < pMaterialData->_texCount; ++index)
 			{
-				o_sizeOfTexPathBuffer += (uint32_t)strlen(pMaterialData->_pTexData[index]._pTexPath) + 1;
-				o_sizeOfTexUniformNameBuffer += (uint32_t)strlen(pMaterialData->_pTexData[index]._pName) + 1;
+				o_sizeOfTexPathBuffer += (uint32_t)strlen(pMaterialData->_pTexInfo[index]._pTexPath) + 1;
+				o_sizeOfTexUniformNameBuffer += (uint32_t)strlen(pMaterialData->_pTexInfo[index]._pName) + 1;
 			}
 			// Here we need to alloc the memory for the data we need to ouput to the binary file
 			// First, we will save a MaterialDesc and the information.
@@ -470,23 +552,23 @@ namespace EAE_Engine
 				{
 					Graphics::UniformDesc* pUniformDesc = (Graphics::UniformDesc*)(reinterpret_cast<uint8_t*>(o_pBuffer) + offset);
 					// set the shaderType
-					pUniformDesc->_shaderType = pMaterialData->_pUniformData[i]._shaderType;
+					pUniformDesc->_shaderType = pMaterialData->_pUniformInfo[i]._shaderType;
 					// Set the UniformVariable Value Buffer
 					{
 						pUniformDesc->_offsetInValueBuffer = offsetInValueBuffer;
-						uint32_t sizeOfValueBufferToCopy = pMaterialData->_pUniformData[i]._valueCount * sizeof(float);
+						uint32_t sizeOfValueBufferToCopy = pMaterialData->_pUniformInfo[i]._valueCount * sizeof(float);
 						pUniformDesc->_valueBufferSize = sizeOfValueBufferToCopy;
 						// Copy the value to the target position
-						CopyMem((uint8_t*)pMaterialData->_pUniformData[i]._pValue, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfUniformVariableValueBuffer + offsetInValueBuffer, sizeOfValueBufferToCopy);
+						CopyMem((uint8_t*)pMaterialData->_pUniformInfo[i]._pValue, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfUniformVariableValueBuffer + offsetInValueBuffer, sizeOfValueBufferToCopy);
 						offsetInValueBuffer += sizeOfValueBufferToCopy;
 					}
 					// Set the UniformVariable Name Buffer
 					{
 						// Save the offset of the Name in NameBuffer
 						pUniformDesc->_offsetInNameBuffer = offsetInNameBuffer;
-						uint32_t sizeOfValueBufferToCopy = (uint32_t)strlen(pMaterialData->_pUniformData[i]._pName);
+						uint32_t sizeOfValueBufferToCopy = (uint32_t)strlen(pMaterialData->_pUniformInfo[i]._pName);
 						// Copy the name to the target position
-						CopyMem((uint8_t*)pMaterialData->_pUniformData[i]._pName, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfUniformVariableNameBuffer + offsetInNameBuffer, sizeOfValueBufferToCopy);
+						CopyMem((uint8_t*)pMaterialData->_pUniformInfo[i]._pName, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfUniformVariableNameBuffer + offsetInNameBuffer, sizeOfValueBufferToCopy);
 						offsetInNameBuffer += sizeOfValueBufferToCopy + 1;
 					}
 					// move to set the next UniformDesc
@@ -506,19 +588,19 @@ namespace EAE_Engine
 					// Set the Texture Path Buffer
 					{
 						*reinterpret_cast<size_t*>(&(pTexDesc->_texture)) = offsetInPathBuffer;
-						uint32_t sizeOfPathBufferToCopy = (uint32_t)strlen(pMaterialData->_pTexData[i]._pTexPath);
-						CopyMem((uint8_t*)pMaterialData->_pTexData[i]._pTexPath, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfTexturePathBuffer + offsetInPathBuffer, sizeOfPathBufferToCopy);
+						uint32_t sizeOfPathBufferToCopy = (uint32_t)strlen(pMaterialData->_pTexInfo[i]._pTexPath);
+						CopyMem((uint8_t*)pMaterialData->_pTexInfo[i]._pTexPath, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfTexturePathBuffer + offsetInPathBuffer, sizeOfPathBufferToCopy);
 						offsetInPathBuffer += sizeOfPathBufferToCopy + 1;
 					}
 					// Set the Texture Sampler UniformVariable Buffer
 					{
 						pTexDesc->_offsetInTexturePathBuffer = offsetInSamplerBuffer;
-						uint32_t sizeOfSamplerNameToCopy = (uint32_t)strlen(pMaterialData->_pTexData[i]._pName);
-						CopyMem((uint8_t*)pMaterialData->_pTexData[i]._pName, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfTextureSamplerBuffer + offsetInSamplerBuffer, sizeOfSamplerNameToCopy);
+						uint32_t sizeOfSamplerNameToCopy = (uint32_t)strlen(pMaterialData->_pTexInfo[i]._pName);
+						CopyMem((uint8_t*)pMaterialData->_pTexInfo[i]._pName, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfTextureSamplerBuffer + offsetInSamplerBuffer, sizeOfSamplerNameToCopy);
 						offsetInSamplerBuffer += sizeOfSamplerNameToCopy + 1;
 					}
 					// set the shaderType
-					pTexDesc->_shaderType = pMaterialData->_pTexData[i]._shaderType;
+					pTexDesc->_shaderType = pMaterialData->_pTexInfo[i]._shaderType;
 					// move to set the next UniformDesc
 					offset += sizeof(Graphics::TextureDesc);
 				}
