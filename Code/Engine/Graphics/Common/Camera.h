@@ -1,7 +1,7 @@
 #ifndef EAEENGINE_GRPHICS_CAMERAH
 #define EAEENGINE_GRPHICS_CAMERAH
 #include "Engine/Common/Interfaces.h"
-#include "Engine/Math/MathFunctions.h"
+#include "Engine/Math/MathTool.h"
 
 namespace EAE_Engine
 {

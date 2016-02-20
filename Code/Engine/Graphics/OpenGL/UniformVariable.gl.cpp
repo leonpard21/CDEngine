@@ -13,40 +13,17 @@ namespace EAE_Engine
 			_handle = pEffect->GetLocation(pName);
 		}
 		//////////////////////////////////UniformVariable////////////////////////////////////
-		UniformVariable::UniformVariable(const char* pname, UniformType type) :
-			_pElements(nullptr), _elementCount(0)
+		UniformVariable::UniformVariable(const char* pname, GLsizei bufferSize, UniformType type) :
+			_bufferSize(bufferSize), _uniformType(type)
 		{
 			_name = std::string(pname);
-			_uniformType = type;
-			switch (type)
-			{
-			case UniformType::float1:
-				_pElements = new float;
-				_elementCount = 1;
-				break;
-			case UniformType::float2:
-				_pElements = new float[2];
-				_elementCount = 2;
-				break;
-			case UniformType::float3:
-				_pElements = new float[3];
-				_elementCount = 3;
-				break;
-			case UniformType::float4:
-				_pElements = new float[4];
-				_elementCount = 4;
-				break;
-			case UniformType::mat4:
-				_pElements = new Math::ColMatrix44();
-				_elementCount = 1;
-				break;
-			}
+			_pBuffer = new uint8_t[bufferSize];
 		}
 
 		bool UniformVariable::operator == (const UniformVariable& i_other)
 		{
 			bool nameEqual = _name == i_other._name;
-			bool typeEqual = _uniformType == i_other._uniformType;
+			bool typeEqual = _bufferSize == i_other._bufferSize;
 			return nameEqual && typeEqual;
 		}
 
@@ -67,7 +44,7 @@ namespace EAE_Engine
 
 
 		////////////////////////////////////////UniformVariableManager//////////////////////////////////////
-		UniformVariable* UniformVariableManager::GetUniformVariable(const char* pUniformVariable, UniformType type)
+		UniformVariable* UniformVariableManager::GetUniformVariable(const char* pUniformVariable, GLsizei bufferSize, UniformType type)
 		{
 			UniformVariable* pResult = nullptr;
 			for (std::vector<UniformVariable*>::iterator iter = _uniformVariables.begin(); iter != _uniformVariables.end();)
@@ -78,7 +55,7 @@ namespace EAE_Engine
 				 	return pUV;
 				}
 			}
-			pResult = new UniformVariable(pUniformVariable, type);
+			pResult = new UniformVariable(pUniformVariable, bufferSize, type);
 			_uniformVariables.push_back(pResult);
 			return pResult;
 		}

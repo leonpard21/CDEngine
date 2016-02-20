@@ -38,11 +38,11 @@ namespace EAE_Engine
 					{
 						UniformDesc* pUD = &pUniformDescBuffer[index];
 						uint8_t* pValue = pUniformVariableValueBuffer + pUD->_offsetInValueBuffer;
-						uint32_t count = pUD->_valueBufferSize / sizeof(float);
+						uint32_t bufferSize = pUD->_valueBufferSize;
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-						_pEffect->SetUniform(pUD->_handle, (float*)pValue, count, pUD->_shaderType);
+						_pEffect->SetUniform(pUD->_handle, pValue, bufferSize, pUD->_shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )
-						_pEffect->SetUniform(pUD->_handle, (float*)pValue, count);
+						_pEffect->SetUniform(pUD->_handle, pValue, bufferSize);
 #endif
 					}
 				}

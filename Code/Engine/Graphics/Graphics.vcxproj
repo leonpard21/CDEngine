@@ -186,9 +186,6 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsInclude.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Common\UniformVariable.inl" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5657829E-D16C-44A5-89F4-7FE780F76DB1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

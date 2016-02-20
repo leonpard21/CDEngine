@@ -154,45 +154,46 @@ namespace EAE_Engine
 					continue;
 				if (type == GL_FLOAT_MAT4)
 				{
-					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, UniformType::mat4);
+					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, bufSize, UniformType::mat4);
 					pUV->AddOwner(this, location);
 				}
 				else if (type == GL_FLOAT_VEC4)
 				{
-					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, UniformType::float4);
+					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, bufSize, UniformType::float4);
 					pUV->AddOwner(this, location);
 				}
 				else if (type == GL_FLOAT_VEC3)
 				{
-					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, UniformType::float3);
+					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, bufSize, UniformType::float3);
 					pUV->AddOwner(this, location);
 				}
 				else if (type == GL_FLOAT)
 				{
-					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, UniformType::float1);
+					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, bufSize, UniformType::float1);
 					pUV->AddOwner(this, location);
 				}
 			}
 		}
 
-		void Effect::SetUniform(UniformType type, GLint location, void* pArray, size_t count)
+		void Effect::SetUniform(UniformType type, GLint location, void* pBuffer, size_t bufferSize)
 		{
 			if (location == -1) 
 				return;
+			int count = bufferSize / sizeof(float);
 			if (type == UniformType::float1)
 			{
 				// Set a single 3-dimensional float at that location
-				glUniform1fv(location, 1, (float*)pArray);
+				glUniform1fv(location, 1, (float*)pBuffer);
 			}
 			if (type == UniformType::float2)
 			{
 				// Set a single 2-dimensional float at that location
-				glUniform2fv(location, count / 2, (float*)pArray);
+				glUniform2fv(location, count / 2, (float*)pBuffer);
 			}
 			if (type == UniformType::float3)
 			{
 				// Set a single 3-dimensional float at that location
-				glUniform3fv(location, 1, (float*)pArray);
+				glUniform3fv(location, 1, (float*)pBuffer);
 			}
 			else if (type == UniformType::mat4)
 			{
@@ -201,29 +202,30 @@ namespace EAE_Engine
 				// OpenGL does store matrices as columns, and so in this case we don't want the API to transpose anything.
 				// reinterpret_cast trick is used as in Direct3D. 
 				// This wouldn't work if GLfloat wasn't a float
-				glUniformMatrix4fv(location, uniformCountToSet, dontTranspose, reinterpret_cast<const GLfloat*>(pArray));
+				glUniformMatrix4fv(location, uniformCountToSet, dontTranspose, reinterpret_cast<const GLfloat*>(pBuffer));
 				GLenum errorCode = glGetError();
 				assert(GL_NO_ERROR == glGetError());
 			}
 		}
 
-		void Effect::SetUniform(GLint location, void* pArray, size_t count)
+		void Effect::SetUniform(GLint location, void* pBuffer, size_t bufferSize)
 		{
 			if (location == -1) return;
+			int count = bufferSize / sizeof(float);
 			if (count == 1)
 			{
 				// Set a single 3-dimensional float at that location
-				glUniform1fv(location, 1, (float*)pArray);
+				glUniform1fv(location, 1, (float*)pBuffer);
 			}
 			if (count == 2)
 			{
 				// Set a single 2-dimensional float at that location
-				glUniform2fv(location, count / 2, (float*)pArray);
+				glUniform2fv(location, count / 2, (float*)pBuffer);
 			}
 			if (count == 3)
 			{
 				// Set a single 3-dimensional float at that location
-				glUniform3fv(location, 1, (float*)pArray);
+				glUniform3fv(location, 1, (float*)pBuffer);
 			}
 			else if (count == 16)
 			{
@@ -232,7 +234,7 @@ namespace EAE_Engine
 				// OpenGL does store matrices as columns, and so in this case we don't want the API to transpose anything.
 				// reinterpret_cast trick is used as in Direct3D. 
 				// This wouldn't work if GLfloat wasn't a float
-				glUniformMatrix4fv(location, uniformCountToSet, dontTranspose, reinterpret_cast<const GLfloat*>(pArray));
+				glUniformMatrix4fv(location, uniformCountToSet, dontTranspose, reinterpret_cast<const GLfloat*>(pBuffer));
 			}
 		}
 
@@ -263,7 +265,7 @@ namespace EAE_Engine
 				GLint location = iter->first;
 				if (location == -1) return;
 				UniformVariable* pValue = iter->second;
-				SetUniform(pValue->GetUniformType(), location, pValue->GetElements(), pValue->GetElementCount());
+				SetUniform(pValue->GetUniformType(), location, pValue->GetBuffer(), pValue->GetBufferSize());
 			}
 			_updateVariableList.clear();
 			for (std::map<const char*, UniformBlock*>::iterator iter = _updateBlockList.begin(); iter != _updateBlockList.end(); ++iter)

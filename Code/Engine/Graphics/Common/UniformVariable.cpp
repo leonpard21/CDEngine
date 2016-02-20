@@ -15,7 +15,7 @@ namespace EAE_Engine
 	{
 		UniformVariable::~UniformVariable()
 		{
-			SAFE_DELETE_ARRAY(_pElements);
+			SAFE_DELETE_ARRAY(_pBuffer);
 		}
 
 		void UniformVariable::NotifyOwner(Effect* pEffect)
@@ -26,9 +26,9 @@ namespace EAE_Engine
 				if (pEffect != _owner[i])
 					continue;
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-				_owner[i]->SetUniform(_uniformType, _location[i], _pElements, _elementCount, _shaderType);
+				_owner[i]->SetUniform( _location[i], _pBuffer, _bufferSize, _shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )
-				_owner[i]->SetUniform(_uniformType, _location[i], _pElements, _elementCount);
+				_owner[i]->SetUniform(_location[i], _pBuffer, _bufferSize);
 #endif
 			}
 		}
@@ -64,6 +64,21 @@ namespace EAE_Engine
 				if (strcmp(pUV->GetName(), pUniformVariable) == 0)
 				{
 					pUV->NotifyOwners();
+					break;
+				}
+			}
+		}
+
+		// This is the interface to communicate with the Engine/Core.
+		// The Engine/Core just need to take care the variable name and its value.  
+		void UniformVariableManager::ChangeValue(const char* pUniformVariable, void* pValues, uint32_t bufferSize)
+		{
+			for (std::vector<UniformVariable*>::iterator iter = _uniformVariables.begin(); iter != _uniformVariables.end();)
+			{
+				UniformVariable* pUV = *iter++;
+				if (pUV->GetName() == std::string(pUniformVariable))
+				{
+					pUV->SetValue(pValues, bufferSize);
 					break;
 				}
 			}

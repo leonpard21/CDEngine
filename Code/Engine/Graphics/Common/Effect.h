@@ -33,9 +33,9 @@ namespace EAE_Engine
 			bool EndRender();
 			bool Release();
 			// this interface will be used in the UniformVariable System.
-			void SetUniform(UniformType type, D3DXHANDLE handle, void* pArray, size_t count, ShaderTypes shaderType);
+			void SetUniform(UniformType type, D3DXHANDLE handle, void* pBuffer, uint32_t bufferSize, ShaderTypes shaderType);
 			// this interface will be used in the UniformDesc System.
-			void SetUniform(D3DXHANDLE handle, void* pArray, size_t count, ShaderTypes shaderType);
+			void SetUniform(D3DXHANDLE handle, void* pBuffer, uint32_t bufferSize, ShaderTypes shaderType);
 			IDirect3DVertexShader9* GetVS() { return _pVertexShader; }
 			IDirect3DPixelShader9* GetFS() { return _pFragmentShader; }
 			uint32_t GetRenderState(){ return _renderState; }
@@ -68,9 +68,9 @@ namespace EAE_Engine
 			bool EndRender();
 			bool Release();
 			// this interface will be used in the UniformVariable System.
-			void SetUniform(UniformType type, GLint location, void* pArray, size_t count);
+			void SetUniform(UniformType type, GLint location, void* pBuffer, size_t bufferSize);
 			// this interface will be used in the UniformDesc System.
-			void SetUniform(GLint location, void* pArray, size_t count);
+			void SetUniform(GLint location, void* pBuffer, size_t bufferSize);
 			GLuint GetProgram() { return _programId; }
 			uint32_t GetRenderState() { return _renderState; }
 			GLint GetLocation(const char* pName);

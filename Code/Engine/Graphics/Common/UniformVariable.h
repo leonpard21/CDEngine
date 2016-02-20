@@ -28,38 +28,36 @@ namespace EAE_Engine
 		class UniformVariable
 		{
 		public:
-			UniformVariable(const char* pname, UniformType type, ShaderTypes shadertype);
+			UniformVariable(const char* pname, uint32_t bufferSize, ShaderTypes shadertype);
 			~UniformVariable();
 			inline const char* GetName() { return _name.c_str(); }
 			bool operator == (const UniformVariable& i_other);
+			void* GetBuffer() { return _pBuffer; }
+			uint32_t GetBufferSize() { return _bufferSize; }
 
 			void AddOwner(Effect* pShader, tUniformHandle location);
 			void NotifyOwners();
 			void NotifyOwner(Effect* pEffect);
-			template<typename T>
-			void SetValue(T* values, size_t count)
+			void SetValue(void* pValue, uint32_t bufferSize)
 			{
-				memcpy(_pElements, values, count * sizeof(T));
+				memcpy(_pBuffer, pValue, bufferSize);
 			}
-			UniformType GetUniformType() { return _uniformType; }
 			ShaderTypes GetShaderType() { return _shaderType; }
-			void* GetElements() { return _pElements; }
-			size_t GetElementCount() { return _elementCount; }
+
 		private:
 			std::vector<Effect*> _owner;  // List containing references to the owners needed so they can be notified
 			std::vector<tUniformHandle> _location;
 			std::string _name; // The name of the uniform variable in the HLSL program
-			UniformType _uniformType;
 			ShaderTypes _shaderType;
-			void* _pElements;
-			size_t _elementCount;
+			void* _pBuffer;
+			uint32_t _bufferSize;
 		};
 		
 #elif defined( EAEENGINE_PLATFORM_GL )
 		class UniformVariable
 		{
 		public:
-			UniformVariable(const char* pname, UniformType type);
+			UniformVariable(const char* pname, GLsizei bufferSize, UniformType type);
 			~UniformVariable();
 			inline const char* GetName() { return _name.c_str(); }
 			bool operator == (const UniformVariable& i_other);
@@ -67,22 +65,20 @@ namespace EAE_Engine
 			void AddOwner(Effect* pEffect, tUniformHandle location);
 			void NotifyOwners();
 			void NotifyOwner(Effect* pEffect);
-			template<typename T>
-			void SetValue(T* values, size_t count)
+			inline void SetValue(void* pValue, GLsizei bufferSize)
 			{
-				GLsizei glcounts = (GLsizei)(count * sizeof(T));
-				memcpy(_pElements, values, glcounts);
+				memcpy(_pBuffer, pValue, bufferSize);
 			}
 			UniformType GetUniformType() { return _uniformType; }
-			void* GetElements() { return _pElements; }
-			GLsizei GetElementCount() { return _elementCount; }
+			void* GetBuffer() { return _pBuffer; }
+			GLsizei GetBufferSize() { return _bufferSize; }
 		private:
 			std::vector<Effect*> _owner;  // List containing references to the owners needed so they can be notified.
 			std::vector<tUniformHandle> _location; // list of locations/handles for the GLSL uniform variable
 			std::string _name; // The name of the uniform variable in the GLSL program
 			UniformType _uniformType;
-			void* _pElements;
-			GLsizei _elementCount;
+			void* _pBuffer;
+			GLsizei _bufferSize;
 		};
 
 #endif 
@@ -94,15 +90,14 @@ namespace EAE_Engine
 			// This is the interface to communicate with the Grphics itself.
 			// The Graphics, we need to know 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-			UniformVariable* GetUniformVariable(const char* pUniformVariable, UniformType type, ShaderTypes shaderType);
+			UniformVariable* GetUniformVariable(const char* pUniformVariable, uint32_t bufferSize, ShaderTypes shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )
-			UniformVariable* GetUniformVariable(const char* pUniformVariable, UniformType type);
+			UniformVariable* GetUniformVariable(const char* pUniformVariable, GLint bufferSize, UniformType type);
 #endif 
 			void Clean();
 			// This is the interface to communicate with the Engine/Core.
 			// The Engine/Core just need to take care the variable name and its value.  
-			template<typename T>
-			void ChangeValue(const char* pUniformVariable, T* pValues, size_t count);
+			void ChangeValue(const char* pUniformVariable, void* pValues, uint32_t bufferSize);
 			void NotifyOwners(const char* pUniformVariable);
 
 			std::vector<UniformVariable*> _uniformVariables;
@@ -115,10 +110,7 @@ namespace EAE_Engine
 			static void CleanInstance();
 		};
 
-
-
 	}
 }
 
-#include "UniformVariable.inl"
 #endif//EAE_ENGINE_UNIFORMVARIABLE_H

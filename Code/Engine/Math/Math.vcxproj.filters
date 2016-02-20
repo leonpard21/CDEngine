@@ -5,7 +5,6 @@
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="RowMatrix.cpp" />
     <ClCompile Include="ColMatrix.cpp" />
-    <ClCompile Include="MathFunctions.cpp" />
     <ClCompile Include="Quaternion.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -14,7 +13,6 @@
     <ClInclude Include="Vector.h" />
     <ClInclude Include="RowMatrix.h" />
     <ClInclude Include="ColMatrix.h" />
-    <ClInclude Include="MathFunctions.h" />
     <ClInclude Include="Quaternion.h" />
   </ItemGroup>
   <ItemGroup>

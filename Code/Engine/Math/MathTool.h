@@ -1,5 +1,5 @@
-#ifndef MATH_TOOL_H
-#define MATH_TOOL_H
+#ifndef EAE_ENGINE_MATH_TOOL_H
+#define EAE_ENGINE_MATH_TOOL_H
 #include <ctime>
 
 namespace EAE_Engine{
@@ -34,7 +34,9 @@ namespace EAE_Engine{
 		{
 			return t >= 0 ? t : -t;
 		}
+
+		float ConvertDegreesToRadians(const float i_degrees);
 	}
 }
 
-#endif//MATH_TOOL_H
+#endif//EAE_ENGINE_MATH_TOOL_H

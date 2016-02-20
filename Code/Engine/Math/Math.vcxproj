@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClCompile Include="ColMatrix.cpp" />
     <ClCompile Include="Quaternion.cpp" />
-    <ClCompile Include="MathFunctions.cpp" />
     <ClCompile Include="MathTool.cpp" />
     <ClCompile Include="RowMatrix.cpp" />
     <ClCompile Include="Rectangle.cpp" />
@@ -29,7 +28,6 @@
   <ItemGroup>
     <ClInclude Include="ColMatrix.h" />
     <ClInclude Include="Quaternion.h" />
-    <ClInclude Include="MathFunctions.h" />
     <ClInclude Include="MathTool.h" />
     <ClInclude Include="RowMatrix.h" />
     <ClInclude Include="Rectangle.h" />

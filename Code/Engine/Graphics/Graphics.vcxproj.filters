@@ -288,9 +288,4 @@
       <UniqueIdentifier>{6d3207a2-f5be-4c8d-93d2-22f88eeb3ffb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Common\UniformVariable.inl">
-      <Filter>Common\Effect</Filter>
-    </None>
-  </ItemGroup>
 </Project>

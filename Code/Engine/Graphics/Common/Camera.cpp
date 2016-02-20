@@ -39,6 +39,9 @@ namespace EAE_Engine
 			//Set the camera materices for D3D or GL
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 			const char* pCamBlockName = "g_CameraMatrices";
+			// The standard Direct3D stores matrices as rows but we are storing them as columns. 
+			// (Confusingly, standard Direct3D interprets matrices as being stored in columns on the GPU
+			// Since we're using Right Hand Matrices in the Engine, we need to offer the Transpose of the matrices.
 			viewprojmatrices._worldViewMatrix = GetWroldToViewMatrix().GetTranspose();
 			viewprojmatrices._viewProjMatrix = GetProjClipMatrix().GetTranspose();
 #elif defined( EAEENGINE_PLATFORM_GL )
@@ -53,7 +56,7 @@ namespace EAE_Engine
 			UniformBlockManager::GetInstance()->NotifyOwners(pCamBlockName);
 			// Set the CameraPos
 			Math::Vector3 camPos = _pTransform->GetPos();
-			UniformVariableManager::GetInstance().ChangeValue<Math::Vector3>("_camera_pos", &camPos, 1);
+			UniformVariableManager::GetInstance().ChangeValue("_camera_pos", &camPos, sizeof(Math::Vector3));
 			UniformVariableManager::GetInstance().NotifyOwners("_camera_pos");
 		}
 
