@@ -9,14 +9,6 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		enum UniformType
-		{
-			float1,
-			float2,
-			float3,
-			float4,
-			mat4,
-		};
 
 		struct CameraMatrices
 		{
@@ -54,6 +46,15 @@ namespace EAE_Engine
 		};
 		
 #elif defined( EAEENGINE_PLATFORM_GL )
+		enum UniformType
+		{
+			float1,
+			float2,
+			float3,
+			float4,
+			mat4,
+		};
+
 		class UniformVariable
 		{
 		public:
@@ -92,7 +93,7 @@ namespace EAE_Engine
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 			UniformVariable* GetUniformVariable(const char* pUniformVariable, uint32_t bufferSize, ShaderTypes shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )
-			UniformVariable* GetUniformVariable(const char* pUniformVariable, GLint bufferSize, UniformType type);
+			UniformVariable* GetUniformVariable(const char* pUniformVariable, GLsizei bufferSize, UniformType type);
 #endif 
 			void Clean();
 			// This is the interface to communicate with the Engine/Core.

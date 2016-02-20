@@ -13,6 +13,8 @@ namespace EAE_Engine
 			_handle = pEffect->GetLocation(pName);
 		}
 		//////////////////////////////////UniformVariable////////////////////////////////////
+		// In OpenGL, beacuse we need to use glUniform### interfaces, we need to recored their type.
+		// That's why I'm using the UniformType 
 		UniformVariable::UniformVariable(const char* pname, GLsizei bufferSize, UniformType type) :
 			_bufferSize(bufferSize), _uniformType(type)
 		{

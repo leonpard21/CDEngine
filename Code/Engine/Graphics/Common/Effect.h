@@ -32,9 +32,7 @@ namespace EAE_Engine
 			bool BeginRender();
 			bool EndRender();
 			bool Release();
-			// this interface will be used in the UniformVariable System.
-			void SetUniform(UniformType type, D3DXHANDLE handle, void* pBuffer, uint32_t bufferSize, ShaderTypes shaderType);
-			// this interface will be used in the UniformDesc System.
+			// this interface will be used in the UniformVariable System and the UniformDesc System.
 			void SetUniform(D3DXHANDLE handle, void* pBuffer, uint32_t bufferSize, ShaderTypes shaderType);
 			IDirect3DVertexShader9* GetVS() { return _pVertexShader; }
 			IDirect3DPixelShader9* GetFS() { return _pFragmentShader; }

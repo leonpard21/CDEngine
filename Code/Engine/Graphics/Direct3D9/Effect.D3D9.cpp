@@ -170,7 +170,7 @@ namespace EAE_Engine
 			}
 		}
 
-		void Effect::SetUniform(UniformType type, D3DXHANDLE handle, void* pBuffer, uint32_t bufferSize, ShaderTypes shaderType)
+		void Effect::SetUniform(D3DXHANDLE handle, void* pBuffer, uint32_t bufferSize, ShaderTypes shaderType)
 		{
 			//Get devices context of D3D
 			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
@@ -200,26 +200,6 @@ namespace EAE_Engine
 			// On the other hand, SetMatrixTranspose() function just passes them to the GPU directly
 			// If we use the bottom one, we should use Transpose Matrix of ColMatrix44
 			// Like: HRESULT result = pConstantTable->SetMatrixTranspose(pD3DDevice, handle, reinterpret_cast<const D3DXMATRIX*>(pBuffer));
-		}
-
-		void Effect::SetUniform(D3DXHANDLE handle, void* pBuffer, uint32_t bufferSize, ShaderTypes shaderType)
-		{
-			//Get devices context of D3D
-			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
-			if (!pD3DDevice) return;
-			// check we should set the uniform for vertexshader or fragmentshader
-			ID3DXConstantTable* pConstantTable = nullptr;
-			if (shaderType == ShaderTypes::Vertex)
-				pConstantTable = _pVSConstantTable;
-			else
-				pConstantTable = _pFSConstantTable;
-			if (!pConstantTable)
-				return;
-			// The handle is what we can get from the constantTable by using:
-			// handle = _pVSConstantTable->GetConstantByName(NULL, pArrayName);
-			if (handle == NULL) return;
-			HRESULT result = pConstantTable->SetValue(pD3DDevice, handle, pBuffer, bufferSize);
-			assert(SUCCEEDED(result));
 		}
 
 		tUniformHandle Effect::GetHandle(const char* pName, ShaderTypes shaderType)
