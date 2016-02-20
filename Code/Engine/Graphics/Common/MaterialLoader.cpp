@@ -116,8 +116,11 @@ namespace EAE_Engine
 				const char* pUBName = (char*)(pUniformBlockNameBuffer + offsetInNameBuffer);
 				uint32_t startIndex = pUBD->_startUniformDescIndex;
 				uint32_t endIndex = pUBD->_endUniformDescIndex;
-				// Add the default block members to be the Uniform Variables.
-				if (strcmp(pUBName, "Default") == 0)
+				// For the UniformVariable/UniformBlock, 
+				// we will save the instance of them in UniformDesc*/UniformBlock*.
+				// Since we have scaned the Uniform Blocks when we were creating Effect,
+				// we should be able to get their reference.
+				if (strcmp(pUBName, "Default") == 0) // Add the default block members to be the Uniform Variables.
 				{
 					for (uint32_t uIndex = startIndex; uIndex <= endIndex; ++uIndex)
 					{
@@ -125,16 +128,11 @@ namespace EAE_Engine
 						
 						size_t offsetInNameBuffer = pUD->_offsetInNameBuffer;
 						const char* pUniformName = (char*)(pUniformVariableNameBuffer + offsetInNameBuffer);
-						pUD->SetHanlde(pUniformName, pMaterialDesc->_pEffect);
-						size_t t = 0;
+						pUD->SetUniformVariable(pUniformName, pMaterialDesc->_pEffect);
 					}
 				}
-				// Add the undefault block members to be Uniform Blocks
-				else 
+				else // Add the undefault block members to be Uniform Blocks
 				{
-					// For the UniformBlock, We should get the instance of it,
-					// Since we have scaned the Uniform Blocks when we were creating Effect,
-					// We should be able to get their reference.
 					UniformBlock* pUniformBlock = UniformBlockManager::GetInstance()->GetUniformBlock(pUBName);
 					pUBD->_pUniformBlock = pUniformBlock;
 				}

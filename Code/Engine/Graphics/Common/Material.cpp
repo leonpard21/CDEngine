@@ -39,10 +39,12 @@ namespace EAE_Engine
 						UniformDesc* pUD = &pUniformDescBuffer[index];
 						uint8_t* pValue = pUniformVariableValueBuffer + pUD->_offsetInValueBuffer;
 						uint32_t bufferSize = pUD->_valueBufferSize;
+						pUD->_pUniformVariable->SetValue(pValue, bufferSize);
+						pUD->_pUniformVariable->NotifyOwner(_pEffect);
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-						_pEffect->SetUniform(pUD->_handle, pValue, bufferSize, pUD->_shaderType);
+						//_pEffect->SetUniform(pUD->_handle, pValue, bufferSize, pUD->_shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )
-						_pEffect->SetUniform(pUD->_handle, pValue, bufferSize);
+						//_pEffect->SetUniform(pUD->_handle, pValue, bufferSize);
 #endif
 					}
 				}
@@ -55,8 +57,12 @@ namespace EAE_Engine
 					{
 						UniformDesc* pUD = &pUniformDescBuffer[index];
 						uint8_t* pValue = pUniformVariableValueBuffer + pUD->_offsetInValueBuffer;
-						uint32_t count = pUD->_valueBufferSize / sizeof(float);
-						_pEffect->SetUniform(pUD->_handle, (float*)pValue, count, pUD->_shaderType);
+						uint32_t bufferSize = pUD->_valueBufferSize;
+						if (pUD->_pUniformVariable)
+						{
+							pUD->_pUniformVariable->SetValue(pValue, bufferSize);
+							pUD->_pUniformVariable->NotifyOwner(_pEffect);
+						}
 					}
 #elif defined( EAEENGINE_PLATFORM_GL )
 					UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock(pUBName);

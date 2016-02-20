@@ -45,16 +45,17 @@ namespace EAE_Engine
 			UniformBlock* _pUniformBlock;
 		};
 
+		class UniformVariable;
 		struct UniformDesc
 		{
-			tUniformHandle _handle;
+			UniformVariable* _pUniformVariable;
 			uint32_t _offsetInValueBuffer;
 			uint32_t _valueBufferSize;
 			uint32_t _offsetInNameBuffer;
 			ShaderTypes _shaderType;
-			UniformDesc() : _handle(0), _offsetInValueBuffer(0), _valueBufferSize(0), 
+			UniformDesc() : _pUniformVariable(nullptr), _offsetInValueBuffer(0), _valueBufferSize(0),
 				_offsetInNameBuffer(0), _shaderType(ShaderTypes::Unknown) {}
-			void SetHanlde(const char* pName, Effect* pEffect);
+			void SetUniformVariable(const char* pName, Effect* pEffect);
 		};
 	}
 }

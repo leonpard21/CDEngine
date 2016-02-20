@@ -7,12 +7,6 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		//////////////////////////////////UniformDesc////////////////////////////////////
-		void UniformDesc::SetHanlde(const char* pName, Effect* pEffect)
-		{
-			_handle = pEffect->GetLocation(pName);
-			//_pUniformVariable = UniformVariableManager::GetInstance().GetUniformVariable(pName);
-		}
 
 		//////////////////////////////////UniformVariable////////////////////////////////////
 		// In OpenGL, beacuse we need to use glUniform### interfaces, we need to recored their type.
@@ -23,8 +17,6 @@ namespace EAE_Engine
 			_name = std::string(pname);
 			_pBuffer = new uint8_t[bufferSize];
 		}
-
-
 
 		////////////////////////////////////////UniformVariableManager//////////////////////////////////////
 		UniformVariable* UniformVariableManager::AddUniformVariable(const char* pUniformVariable, GLsizei bufferSize, UniformType type)
@@ -43,18 +35,5 @@ namespace EAE_Engine
 			return pResult;
 		}
 
-		UniformVariable* UniformVariableManager::GetUniformVariable(const char* pUniformVariable)
-		{
-			UniformVariable* pResult = nullptr;
-			for (std::vector<UniformVariable*>::iterator iter = _uniformVariables.begin(); iter != _uniformVariables.end();)
-			{
-				UniformVariable* pUV = *iter++;
-				if (pUV->GetName() == std::string(pUniformVariable))
-				{
-					return pUV;
-				}
-			}
-			return nullptr;
-		}
 	}
 }

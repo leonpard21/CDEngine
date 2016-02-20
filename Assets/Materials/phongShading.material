@@ -23,14 +23,14 @@ return
 					value = { 0.7, 0.7, 0.7, },
 					shaderType = "fragment",
 				},
-			},
-			Default = 
-			{
 				{
 					name = "specularAlbedo",
 					value = { 0.7, 0.7, 0.7, },
 					shaderType = "fragment",
 				},
+			},
+			Default = 
+			{
 				{
 					name = "_diffuse_albedo",
 					value = { 0.5, 0.2, 0.7, },

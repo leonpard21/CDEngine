@@ -9,11 +9,6 @@ namespace EAE_Engine
 	namespace Graphics
 	{
 
-		void UniformDesc::SetHanlde(const char* pName, Effect* pEffect)
-		{
-			_handle = pEffect->GetHandle(pName, _shaderType);
-		}
-
 		// Because we need to set the UniformVariable via VertexConstantTable or FragmentConstantTable,
 		// so we need to save shadertype in D3D9 UniformVariable
 		UniformVariable::UniformVariable(const char* pname, uint32_t bufferSize, ShaderTypes shadertype) :

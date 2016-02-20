@@ -1,5 +1,6 @@
 #include "UniformVariable.h"
 #include "../Common/Effect.h"
+#include <cassert>
 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 #include <d3dx9shader.h>
@@ -13,11 +14,19 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
+		//////////////////////////////////UniformDesc////////////////////////////////////
+		void UniformDesc::SetUniformVariable(const char* pName, Effect* pEffect)
+		{
+			//_handle = pEffect->GetLocation(pName);
+			_pUniformVariable = UniformVariableManager::GetInstance().GetUniformVariable(pName);
+			assert(_pUniformVariable != nullptr);
+		}
+
+		//////////////////////////////////UniformVariable////////////////////////////////////
 		UniformVariable::~UniformVariable()
 		{
 			SAFE_DELETE_ARRAY(_pBuffer);
 		}
-
 		void UniformVariable::NotifyOwner(Effect* pEffect)
 		{
 			assert(_owner.size() == _location.size());
@@ -105,6 +114,20 @@ namespace EAE_Engine
 					break;
 				}
 			}
+		}
+
+		UniformVariable* UniformVariableManager::GetUniformVariable(const char* pUniformVariable)
+		{
+			UniformVariable* pResult = nullptr;
+			for (std::vector<UniformVariable*>::iterator iter = _uniformVariables.begin(); iter != _uniformVariables.end();)
+			{
+				UniformVariable* pUV = *iter++;
+				if (pUV->GetName() == std::string(pUniformVariable))
+				{
+					return pUV;
+				}
+			}
+			return nullptr;
 		}
 
 ////////////////////////////////static_members/////////////////////////////
