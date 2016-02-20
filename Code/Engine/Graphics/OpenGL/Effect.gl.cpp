@@ -208,36 +208,6 @@ namespace EAE_Engine
 			}
 		}
 
-		void Effect::SetUniform(GLint location, void* pBuffer, size_t bufferSize)
-		{
-			if (location == -1) return;
-			int count = bufferSize / sizeof(float);
-			if (count == 1)
-			{
-				// Set a single 3-dimensional float at that location
-				glUniform1fv(location, 1, (float*)pBuffer);
-			}
-			if (count == 2)
-			{
-				// Set a single 2-dimensional float at that location
-				glUniform2fv(location, count / 2, (float*)pBuffer);
-			}
-			if (count == 3)
-			{
-				// Set a single 3-dimensional float at that location
-				glUniform3fv(location, 1, (float*)pBuffer);
-			}
-			else if (count == 16)
-			{
-				const GLboolean dontTranspose = false; // Matrices are already in the correct format
-				const GLsizei uniformCountToSet = 1;
-				// OpenGL does store matrices as columns, and so in this case we don't want the API to transpose anything.
-				// reinterpret_cast trick is used as in Direct3D. 
-				// This wouldn't work if GLfloat wasn't a float
-				glUniformMatrix4fv(location, uniformCountToSet, dontTranspose, reinterpret_cast<const GLfloat*>(pBuffer));
-			}
-		}
-
 		GLint Effect::GetLocation(const char* pName)
 		{
 			GLint location = glGetUniformLocation(_programId, pName);

@@ -65,10 +65,8 @@ namespace EAE_Engine
 			bool BeginRender();
 			bool EndRender();
 			bool Release();
-			// this interface will be used in the UniformVariable System.
+			// this interface will be used in the UniformVariable/UniformDesc System.
 			void SetUniform(UniformType type, GLint location, void* pBuffer, size_t bufferSize);
-			// this interface will be used in the UniformDesc System.
-			void SetUniform(GLint location, void* pBuffer, size_t bufferSize);
 			GLuint GetProgram() { return _programId; }
 			uint32_t GetRenderState() { return _renderState; }
 			GLint GetLocation(const char* pName);

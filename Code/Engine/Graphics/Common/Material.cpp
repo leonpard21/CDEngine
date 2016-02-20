@@ -41,33 +41,20 @@ namespace EAE_Engine
 						uint32_t bufferSize = pUD->_valueBufferSize;
 						pUD->_pUniformVariable->SetValue(pValue, bufferSize);
 						pUD->_pUniformVariable->NotifyOwner(_pEffect);
+						//We can also call the pEffect to change the uniform directly.
+						/*
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 						//_pEffect->SetUniform(pUD->_handle, pValue, bufferSize, pUD->_shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )
 						//_pEffect->SetUniform(pUD->_handle, pValue, bufferSize);
 #endif
+						*/
 					}
 				}
-				
 				else
 				{
-#if defined( EAEENGINE_PLATFORM_D3D9 )
-					// Set each UniformDesc of this MaterialDesc
-					for (size_t index = startIndex; index <= endIndex; ++index)
-					{
-						UniformDesc* pUD = &pUniformDescBuffer[index];
-						uint8_t* pValue = pUniformVariableValueBuffer + pUD->_offsetInValueBuffer;
-						uint32_t bufferSize = pUD->_valueBufferSize;
-						if (pUD->_pUniformVariable)
-						{
-							pUD->_pUniformVariable->SetValue(pValue, bufferSize);
-							pUD->_pUniformVariable->NotifyOwner(_pEffect);
-						}
-					}
-#elif defined( EAEENGINE_PLATFORM_GL )
-					UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock(pUBName);
-
-#endif
+					//UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock(pUBName);
+					//.......
 				}
 			}
 		}
