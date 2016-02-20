@@ -13,12 +13,13 @@ namespace EAE_Engine
 			Camera(Common::ITransform* pTrans);
 			void Init(const float i_fieldOfView_y, const float i_aspectRatio, const float i_z_nearPlane, const float i_z_farPlane);
 			void SetWindowSize(float windowWidth, float windowHeight);
+			void Update();
+
 			Common::ITransform* GetTransform() { return _pTransform; }
 			Math::ColMatrix44 GetWroldToViewMatrix();
 			Math::ColMatrix44 GetProjClipMatrix();
 			Math::Vector3 ConvertWorldToViewport(const Math::Vector3& i_worldPos);
 			Math::Vector3 ConvertViewportToWorld(Math::Vector3& i_portPos);
-
 		private:
 			static Math::ColMatrix44 CreateWorldToViewMatrix(
 			const Math::Quaternion& i_cameraOrientation, const Math::Vector3& i_cameraPosition );

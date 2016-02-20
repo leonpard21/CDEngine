@@ -6,6 +6,8 @@
 #include "Screen.h"
 #include "Device.h"
 #include <cassert>
+#include "UniformBlock.h"
+#include "UniformVariable.h"
 
 namespace EAE_Engine
 {
@@ -29,6 +31,30 @@ namespace EAE_Engine
 			_aspectRatio = i_aspectRatio;
 			_z_nearPlane = i_z_nearPlane;
 			_z_farPlane = i_z_farPlane;
+		}
+
+		void Camera::Update()
+		{
+			CameraMatrices viewprojmatrices;
+			//Set the camera materices for D3D or GL
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+			const char* pCamBlockName = "g_CameraMatrices";
+			viewprojmatrices._worldViewMatrix = GetWroldToViewMatrix().GetTranspose();
+			viewprojmatrices._viewProjMatrix = GetProjClipMatrix().GetTranspose();
+#elif defined( EAEENGINE_PLATFORM_GL )
+			const char* pCamBlockName = "CameraMatrices";
+			viewprojmatrices._worldViewMatrix = pCamera->GetWroldToViewMatrix();
+			viewprojmatrices._viewProjMatrix = pCamera->GetProjClipMatrix();
+#endif
+			UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock(pCamBlockName);
+			UniformBlockData data[] = { { 0, &(viewprojmatrices._worldViewMatrix), sizeof(viewprojmatrices._worldViewMatrix) },
+			{ 0 + sizeof(viewprojmatrices._worldViewMatrix), &(viewprojmatrices._viewProjMatrix), sizeof(viewprojmatrices._viewProjMatrix) } };
+			pUB->SetBlockData(data, 2);
+			UniformBlockManager::GetInstance()->NotifyOwners(pCamBlockName);
+			// Set the CameraPos
+			Math::Vector3 camPos = _pTransform->GetPos();
+			UniformVariableManager::GetInstance().ChangeValue<Math::Vector3>("_camera_pos", &camPos, 1);
+			UniformVariableManager::GetInstance().NotifyOwners("_camera_pos");
 		}
 
 		Math::ColMatrix44 Camera::GetWroldToViewMatrix() 

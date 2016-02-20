@@ -62,27 +62,7 @@ void EAE_Engine::Graphics::PreRender()
 
 void EAE_Engine::Graphics::SetCameraParameters(Camera* pCamera)
 {
-	CameraMatrices viewprojmatrices;
-	//Set the camera materices for D3D or GL
-#if defined( EAEENGINE_PLATFORM_D3D9 )
-	const char* pCamBlockName = "g_CameraMatrices";
-	viewprojmatrices._worldViewMatrix = pCamera->GetWroldToViewMatrix().GetTranspose();
-	viewprojmatrices._viewProjMatrix = pCamera->GetProjClipMatrix().GetTranspose();
-#elif defined( EAEENGINE_PLATFORM_GL )
-	const char* pCamBlockName = "CameraMatrices";
-	viewprojmatrices._worldViewMatrix = pCamera->GetWroldToViewMatrix();
-	viewprojmatrices._viewProjMatrix = pCamera->GetProjClipMatrix();
-#endif
-	UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock(pCamBlockName);
-	UniformBlockData data[] = { {0, &(viewprojmatrices._worldViewMatrix), sizeof(viewprojmatrices._worldViewMatrix)}, 
-	{ 0 + sizeof(viewprojmatrices._worldViewMatrix), &(viewprojmatrices._viewProjMatrix), sizeof(viewprojmatrices._viewProjMatrix) } };
-	pUB->SetBlockData(data, 2);
-	UniformBlockManager::GetInstance()->NotifyOwners(pCamBlockName);
-
-	// Set the CameraPos
-	Math::Vector3 camPos = pCamera->GetTransform()->GetPos();
-	UniformVariableManager::GetInstance().ChangeValue<Math::Vector3>("_camera_pos", &camPos, 1);
-	UniformVariableManager::GetInstance().NotifyOwners("_camera_pos");
+	pCamera->Update();
 }
 
 void EAE_Engine::Graphics::SetLightParameters()
