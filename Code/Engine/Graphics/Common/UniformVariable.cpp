@@ -34,6 +34,7 @@ namespace EAE_Engine
 			{
 				if (pEffect != _owner[i])
 					continue;
+				// Here we need to find the correct location for this uniform in the Effect.
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 				_owner[i]->SetUniform( _location[i], _pBuffer, _bufferSize, _shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )
