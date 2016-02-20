@@ -43,8 +43,8 @@ namespace EAE_Engine
 			viewprojmatrices._viewProjMatrix = GetProjClipMatrix().GetTranspose();
 #elif defined( EAEENGINE_PLATFORM_GL )
 			const char* pCamBlockName = "CameraMatrices";
-			viewprojmatrices._worldViewMatrix = pCamera->GetWroldToViewMatrix();
-			viewprojmatrices._viewProjMatrix = pCamera->GetProjClipMatrix();
+			viewprojmatrices._worldViewMatrix = GetWroldToViewMatrix();
+			viewprojmatrices._viewProjMatrix = GetProjClipMatrix();
 #endif
 			UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock(pCamBlockName);
 			UniformBlockData data[] = { { 0, &(viewprojmatrices._worldViewMatrix), sizeof(viewprojmatrices._worldViewMatrix) },

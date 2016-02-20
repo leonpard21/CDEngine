@@ -18,14 +18,13 @@ namespace EAE_Engine
 			mat4,
 		};
 
-#if defined( EAEENGINE_PLATFORM_D3D9 )
 		struct CameraMatrices
 		{
 			Math::ColMatrix44 _worldViewMatrix;
 			Math::ColMatrix44 _viewProjMatrix;
 		};
 
-
+#if defined( EAEENGINE_PLATFORM_D3D9 )
 		class UniformVariable
 		{
 		public:
