@@ -60,7 +60,7 @@ namespace EAE_Engine
 		void UniformBlock::UpdateUniformBlockBuffer()
 		{
 			glBindBuffer(GL_UNIFORM_BUFFER, _uboId);
-			glBufferSubData(GL_UNIFORM_BUFFER, 0.0f, _blockSize, _pBuffer);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, _blockSize, _pBuffer);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
 
@@ -120,6 +120,7 @@ namespace EAE_Engine
 					return index;
 				}
 			}
+			return index;
 		}
 
 		UniformBlock* UniformBlockManager::GetUniformBlock(const char* pBlockName)

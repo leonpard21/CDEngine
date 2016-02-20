@@ -36,14 +36,10 @@ namespace EAE_Engine
 					return iter->second;
 				}
 			}
-			TextureInfo textureHandle = TextureManager::GetInstance()->LoadTexture(pImagePathName);
-			Image* pImage = new Image(textureHandle._texture);
-			// First, we need to clip the sprite into rows and heights based on its size.
+			TextureInfo* textureHandle = TextureManager::GetInstance()->LoadTexture(pImagePathName);
+			Image* pImage = new Image(textureHandle);
 			pImage->_rows = rows;
 			pImage->_cols = cols;
-			// Second, we scale the sprite based on the window size.
-			pImage->_width = textureHandle._width;
-			pImage->_height = textureHandle._height;
 			_images.insert(std::pair<const char*, Image*>(_strdup(key.c_str()), pImage));
 			return pImage;
 		}

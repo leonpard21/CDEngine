@@ -634,14 +634,14 @@ namespace EAE_Engine
 					Graphics::TextureDesc* pTexDesc = (Graphics::TextureDesc*)(reinterpret_cast<uint8_t*>(o_pBuffer) + offset);
 					// Set the Texture Path Buffer
 					{
-						*reinterpret_cast<size_t*>(&(pTexDesc->_texture)) = offsetInPathBuffer;
+						pTexDesc->_offsetInTexPathBuffer = offsetInPathBuffer;
 						uint32_t sizeOfPathBufferToCopy = (uint32_t)strlen(pMaterialData->_pTexInfo[i]._pTexPath);
 						CopyMem((uint8_t*)pMaterialData->_pTexInfo[i]._pTexPath, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfTexturePathBuffer + offsetInPathBuffer, sizeOfPathBufferToCopy);
 						offsetInPathBuffer += sizeOfPathBufferToCopy + 1;
 					}
 					// Set the Texture Sampler UniformVariable Buffer
 					{
-						pTexDesc->_offsetInTexturePathBuffer = offsetInSamplerBuffer;
+						pTexDesc->_offsetInSamplerNameBuffer = offsetInSamplerBuffer;
 						uint32_t sizeOfSamplerNameToCopy = (uint32_t)strlen(pMaterialData->_pTexInfo[i]._pName);
 						CopyMem((uint8_t*)pMaterialData->_pTexInfo[i]._pName, reinterpret_cast<uint8_t*>(o_pBuffer) + totalOffsetOfTextureSamplerBuffer + offsetInSamplerBuffer, sizeOfSamplerNameToCopy);
 						offsetInSamplerBuffer += sizeOfSamplerNameToCopy + 1;

@@ -298,19 +298,20 @@ namespace EAE_Engine
 			// We need three things to setup the texture:
 			// The texture, the samplerID, and the textureUnit number.
 			glActiveTexture(GL_TEXTURE0 + textureUnit);
-			glBindTexture(GL_TEXTURE_2D, _texture);
+			tTexture textureId = _pTextureInfo ? _pTextureInfo->_texture : 0;
+			glBindTexture(GL_TEXTURE_2D, textureId);
 			glUniform1i(_samplerID, textureUnit);
 		}
 
 ////////////////////////////////////////////////Member Functions////////////////////////////////////////////
-		TextureInfo TextureManager::LoadTexture(const char* pTexturePath)
+		TextureInfo* TextureManager::LoadTexture(const char* pTexturePath)
 		{
 			std::string key = GetFileNameWithoutExtension(pTexturePath);
 			for (std::map<const char*, TextureInfo>::const_iterator iter = _textures.begin(); iter != _textures.end(); ++iter)
 			{
 				if (strcmp(iter->first, key.c_str()) == 0)
 				{
-					return iter->second;
+					return (TextureInfo*)&iter->second;
 				}
 			}
 			TextureInfo o_textureInfo;
@@ -319,7 +320,14 @@ namespace EAE_Engine
 			glBindTexture(GL_TEXTURE_2D, 0);
 			if(result)
 				_textures.insert(std::pair<const char*, TextureInfo>(_strdup(key.c_str()), o_textureInfo));
-			return o_textureInfo;
+			for (std::map<const char*, TextureInfo>::const_iterator iter = _textures.begin(); iter != _textures.end(); ++iter)
+			{
+				if (strcmp(iter->first, key.c_str()) == 0)
+				{
+					return (TextureInfo*)&iter->second;
+				}
+			}
+			return nullptr;
 		}
 
 		void TextureManager::Clean()

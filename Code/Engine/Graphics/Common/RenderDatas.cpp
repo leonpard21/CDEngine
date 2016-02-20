@@ -113,7 +113,7 @@ namespace EAE_Engine
 			BindCurrentEffect(s_pCurrentEffect);
 			ChangeEffectRenderState(s_pCurrentEffect->GetRenderState());
 			s_pCurrentMaterial->SetUniformForEffect();
-			s_pCurrentMaterial->ChangeTexture(0, pImageRender->GetImage()->_texture);
+			s_pCurrentMaterial->ChangeTexture(0, pImageRender->GetImage()->_pTextureInfo);
 			s_pCurrentMaterial->SetTexturesForEffect();
 			// updated the parameters for the material
 			ChangeEffectVariables();

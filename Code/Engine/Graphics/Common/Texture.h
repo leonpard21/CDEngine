@@ -8,21 +8,6 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-
-		struct TextureDesc 
-		{
-			tSamplerID _samplerID;
-			tTexture _texture;
-			ShaderTypes _shaderType;
-			uint32_t _offsetInTexturePathBuffer;
-			TextureDesc() : _samplerID(0), _texture(0), _shaderType(ShaderTypes::Fragment), _offsetInTexturePathBuffer(0){}
-#if defined( EAEENGINE_PLATFORM_D3D9 )
-			void SetTexture();
-#elif defined( EAEENGINE_PLATFORM_GL )
-			void SetTexture(uint32_t textureUnit);
-#endif
-		};
-
 		struct TextureInfo
 		{
 			TextureInfo() = default;
@@ -31,11 +16,27 @@ namespace EAE_Engine
 			tTexture _texture;
 		};
 
+		struct TextureDesc 
+		{
+			tSamplerID _samplerID;
+			TextureInfo* _pTextureInfo;
+			ShaderTypes _shaderType;
+			uint32_t _offsetInTexPathBuffer;
+			uint32_t _offsetInSamplerNameBuffer;
+			TextureDesc() : _samplerID(0), _pTextureInfo(nullptr), _shaderType(ShaderTypes::Fragment), 
+				_offsetInTexPathBuffer(0), _offsetInSamplerNameBuffer(0){}
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+			void SetTexture();
+#elif defined( EAEENGINE_PLATFORM_GL )
+			void SetTexture(uint32_t textureUnit);
+#endif
+		};
+
 		class TextureManager
 		{
 		public:
 			void Clean();
-			TextureInfo LoadTexture(const char* texturePath);
+			TextureInfo* LoadTexture(const char* texturePath);
 		public:
 			static TextureManager* GetInstance();
 			static void CleanInstance();

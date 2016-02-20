@@ -107,14 +107,14 @@ namespace EAE_Engine
 			return (TextureDesc*)((uint8_t*)this + sizeof(MaterialDesc) + sizeof(UniformBlockDesc) * _uniformBlockCount + sizeof(UniformDesc) * _uniformCount);
 		}
 
-		void MaterialDesc::ChangeTexture(uint32_t index, tTexture texture)
+		void MaterialDesc::ChangeTexture(uint32_t index, TextureInfo* pTextureInfo)
 		{
 			if (index >= _textureCount)
 				return;
 			TextureDesc* pTexDescBuffer = GetTextureDesc();
 			if (pTexDescBuffer == nullptr)
 				return;
-			(pTexDescBuffer + index)->_texture = texture;
+			(pTexDescBuffer + index)->_pTextureInfo = pTextureInfo;
 		}
 
 ////////////////////////MaterialManager static members//////////////////

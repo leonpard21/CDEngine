@@ -44,20 +44,20 @@ namespace EAE_Engine
 			if (_samplerID == UINT_MAX)
 				return;
 			//Set the Texture
-			IDirect3DBaseTexture9* pTexture = (IDirect3DBaseTexture9*)_texture;
+			IDirect3DBaseTexture9* pTexture = _pTextureInfo? (IDirect3DBaseTexture9*)_pTextureInfo->_texture : NULL;
 			HRESULT result = pD3DDevice->SetTexture(_samplerID, pTexture);
 			assert(SUCCEEDED(result));
 		}
 
 		/////////////////////////////////////TextureManager///////////////////////////////////
-		TextureInfo TextureManager::LoadTexture(const char* pTexturePath)
+		TextureInfo* TextureManager::LoadTexture(const char* pTexturePath)
 		{
 			std::string key = GetFileNameWithoutExtension(pTexturePath);
 			for (std::map<const char*, TextureInfo>::const_iterator iter = _textures.begin(); iter != _textures.end(); ++iter)
 			{
 				if (strcmp(iter->first, key.c_str()) == 0)
 				{
-					return iter->second;
+					return (TextureInfo*)&iter->second;
 				}
 			}
 			TextureInfo textureInfo = {0.0f, 0.0f, 0};
@@ -67,10 +67,10 @@ namespace EAE_Engine
 			{
 				if (strcmp(iter->first, key.c_str()) == 0)
 				{
-					return iter->second;
+					return (TextureInfo*)&iter->second;
 				}
 			}
-			return textureInfo;
+			return nullptr;
 		}
 
 		void TextureManager::Clean()

@@ -3,7 +3,7 @@
 
 #include <map>
 #include "Engine/General/Singleton.hpp"
-#include "CommonDeclare.h"
+#include "Texture.h"
 
 
 namespace EAE_Engine
@@ -13,9 +13,8 @@ namespace EAE_Engine
 		struct Image 
 		{
 			Image() = default;
-			Image(tTexture texture) : _texture(texture), _width(100.0f), _height(100.0f), _rows(0), _cols(0){}
-			tTexture _texture;
-			float _width, _height;
+			Image(TextureInfo* pTextureInfo) : _pTextureInfo(pTextureInfo), _rows(0), _cols(0){}
+			TextureInfo* _pTextureInfo;
 			uint32_t _rows, _cols;
 		};
 
