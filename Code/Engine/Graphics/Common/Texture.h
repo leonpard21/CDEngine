@@ -37,6 +37,7 @@ namespace EAE_Engine
 		public:
 			void Clean();
 			TextureInfo* LoadTexture(const char* texturePath);
+			int GetIndex(TextureInfo* pTextureInfo);
 		public:
 			static TextureManager* GetInstance();
 			static void CleanInstance();

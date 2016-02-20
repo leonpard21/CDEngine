@@ -12,10 +12,10 @@ struct SpecularLight
 	float3 _specular_albedo;
 	float _specular_power;
 };
-uniform SpecularLight g_SpecularLight;
+uniform SpecularLight gSpecularLight;
 
-#define specularAlbedo g_SpecularLight._specular_albedo 
-#define specularPower g_SpecularLight._specular_power 
+#define specularAlbedo gSpecularLight._specular_albedo 
+#define specularPower gSpecularLight._specular_power 
 
 #elif defined( EAEENGINE_PLATFORM_GL )
 

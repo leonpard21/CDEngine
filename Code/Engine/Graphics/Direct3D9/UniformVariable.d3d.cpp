@@ -37,12 +37,6 @@ namespace EAE_Engine
 				_pElements = new Math::ColMatrix44();
 				_elementCount = 1;
 				break;
-			case UniformType::CameraMatricesStruct:
-				_pElements = new CameraMatrices;
-				((CameraMatrices*)_pElements)->_worldViewMatrix = Math::ColMatrix44::Identity;
-				((CameraMatrices*)_pElements)->_viewProjMatrix = Math::ColMatrix44::Identity;
-				_elementCount = 1;
-				break;
 			}
 		}
 
@@ -63,7 +57,6 @@ namespace EAE_Engine
 		{
 			for (size_t i = 0; i < _owner.size(); ++i)
 			{
-				//_owner[i]->SetUniform(_type, _location[i], _pElements, _elementCount);
 				_owner[i]->OnNotify(this, _location[i]);
 			}
 		}

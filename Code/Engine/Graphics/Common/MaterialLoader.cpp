@@ -132,23 +132,11 @@ namespace EAE_Engine
 				// Add the undefault block members to be Uniform Blocks
 				else 
 				{
-#if defined( EAEENGINE_PLATFORM_D3D9 )
-					for (uint32_t uIndex = startIndex; uIndex <= endIndex; ++uIndex)
-					{
-						UniformDesc* pUD = &pUniformDescBuffer[uIndex];
-
-						size_t offsetInNameBuffer = pUD->_offsetInNameBuffer;
-						const char* pUniformName = (char*)(pUniformVariableNameBuffer + offsetInNameBuffer);
-						pUD->SetHanlde(pUniformName, pMaterialDesc->_pEffect);
-						size_t t = 0;
-					}
-#elif defined( EAEENGINE_PLATFORM_GL )
 					// For the UniformBlock, We should get the instance of it,
 					// Since we have scaned the Uniform Blocks when we were creating Effect,
 					// We should be able to get their reference.
 					UniformBlock* pUniformBlock = UniformBlockManager::GetInstance()->GetUniformBlock(pUBName);
 					pUBD->_pUniformBlock = pUniformBlock;
-#endif
 				}
 			}
 			// Forth, Set each TextureDesc of this MaterialDesc

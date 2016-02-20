@@ -255,11 +255,6 @@ namespace EAE_Engine
 			_updateVariableList[location] = pVariable;
 		}
 
-		void Effect::OnNotify(UniformBlock* pBlock)
-		{
-			_updateBlockList[pBlock->GetName()] = pBlock;
-		}
-
 		void Effect::Update()
 		{
 			// for the changed uniform variables, we should update them for the graphic cards.

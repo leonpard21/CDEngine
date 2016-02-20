@@ -3,7 +3,9 @@
 
 #include "../GraphicsInclude.h"
 #include "Engine/Windows/WindowsIncludes.h"
-#if defined( EAEENGINE_PLATFORM_GL )
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+
+#elif defined( EAEENGINE_PLATFORM_GL )
 #include <gl/GL.h>
 #endif
 

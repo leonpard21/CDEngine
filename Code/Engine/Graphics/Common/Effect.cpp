@@ -58,6 +58,11 @@ namespace EAE_Engine
 			return pEffect;
 		}
 
+		void Effect::OnNotify(UniformBlock* pBlock)
+		{
+			_updateBlockList[pBlock->GetName()] = pBlock;
+		}
+
 	}
 }
 

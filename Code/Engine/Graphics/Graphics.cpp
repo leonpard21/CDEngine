@@ -65,19 +65,20 @@ void EAE_Engine::Graphics::SetCameraParameters(Camera* pCamera)
 	CameraMatrices viewprojmatrices;
 	//Set the camera materices for D3D or GL
 #if defined( EAEENGINE_PLATFORM_D3D9 )
+	const char* pCamBlockName = "g_CameraMatrices";
 	viewprojmatrices._worldViewMatrix = pCamera->GetWroldToViewMatrix().GetTranspose();
 	viewprojmatrices._viewProjMatrix = pCamera->GetProjClipMatrix().GetTranspose();
-	UniformVariableManager::GetInstance().ChangeValue<CameraMatrices>("g_CameraMatrices", &viewprojmatrices, 1);
-	UniformVariableManager::GetInstance().NotifyOwners("g_CameraMatrices");
 #elif defined( EAEENGINE_PLATFORM_GL )
+	const char* pCamBlockName = "CameraMatrices";
 	viewprojmatrices._worldViewMatrix = pCamera->GetWroldToViewMatrix();
 	viewprojmatrices._viewProjMatrix = pCamera->GetProjClipMatrix();
-	UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock("CameraMatrices");
+#endif
+	UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock(pCamBlockName);
 	UniformBlockData data[] = { {0, &(viewprojmatrices._worldViewMatrix), sizeof(viewprojmatrices._worldViewMatrix)}, 
 	{ 0 + sizeof(viewprojmatrices._worldViewMatrix), &(viewprojmatrices._viewProjMatrix), sizeof(viewprojmatrices._viewProjMatrix) } };
 	pUB->SetBlockData(data, 2);
-	UniformBlockManager::GetInstance()->NotifyOwners("CameraMatrices");
-#endif
+	UniformBlockManager::GetInstance()->NotifyOwners(pCamBlockName);
+
 	// Set the CameraPos
 	Math::Vector3 camPos = pCamera->GetTransform()->GetPos();
 	UniformVariableManager::GetInstance().ChangeValue<Math::Vector3>("_camera_pos", &camPos, 1);
@@ -86,15 +87,18 @@ void EAE_Engine::Graphics::SetCameraParameters(Camera* pCamera)
 
 void EAE_Engine::Graphics::SetLightParameters()
 {
-#if defined( EAEENGINE_PLATFORM_GL )
-	UniformBlock* pSLUB = UniformBlockManager::GetInstance()->GetUniformBlock("SpecularLight");
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+	const char* pLightBlockName = "gSpecularLight";
+#elif defined( EAEENGINE_PLATFORM_GL )
+	const char* pLightBlockName = "SpecularLight";
+#endif
+	UniformBlock* pSLUB = UniformBlockManager::GetInstance()->GetUniformBlock(pLightBlockName);
 	Math::Vector3 specularAlbedo(1.0f, 1.0f, 1.0f);
 	float specularPower = 128.0f;
 	UniformBlockData sldata[] = { { 0, &specularAlbedo, sizeof(Math::Vector3) },
 	{ 0 + sizeof(Math::Vector3), &specularPower, sizeof(float) } };
 	pSLUB->SetBlockData(sldata, 2);
-	UniformBlockManager::GetInstance()->NotifyOwners("SpecularLight");
-#endif
+	UniformBlockManager::GetInstance()->NotifyOwners(pLightBlockName);
 }
 
 void EAE_Engine::Graphics::Render()

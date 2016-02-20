@@ -16,7 +16,6 @@ namespace EAE_Engine
 			float3,
 			float4,
 			mat4,
-			CameraMatricesStruct,
 		};
 
 #if defined( EAEENGINE_PLATFORM_D3D9 )

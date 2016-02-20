@@ -30,7 +30,16 @@ namespace EAE_Engine
 			SAFE_DELETE(s_pTextureManager);
 		}
 
-		////////////////////////////////////member function//////////////////////////////////////
+		int TextureManager::GetIndex(TextureInfo* pTextureInfo)
+		{
+			int index = 0;
+			for (std::map<const char*, TextureInfo>::const_iterator iter = _textures.begin(); iter != _textures.end(); ++iter, ++index)
+			{
+				if (&iter->second == pTextureInfo)
+					return index;
+			}
+			return -1;
+		}
 
 	}
 }

@@ -2,9 +2,12 @@
 #include "GraphicsOp.h"
 #include "Effect.h"
 #include "General/MemoryOp.h"
+#include "Device.h"
 
-
-#if defined( EAEENGINE_PLATFORM_GL )
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+#include <d3d9.h>
+#include <d3dx9shader.h>
+#elif defined( EAEENGINE_PLATFORM_GL )
 #include "../../../External/OpenGlExtensions/OpenGlExtensions.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
@@ -14,8 +17,29 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+		UniformBlock::UniformBlock(const char* pName, const int blockSize, D3DXHANDLE handle, ShaderTypes shaderType) :
+			_pBlockName(_strdup(pName)), _blockSize(blockSize), 
+			_handle(handle), _shaderType(shaderType)
+		{
+			_pBuffer = new uint8_t[_blockSize];
+		}
 
-#if defined( EAEENGINE_PLATFORM_GL )
+		UniformBlock::~UniformBlock()
+		{
+			SAFE_DELETE_ARRAY(_pBlockName);
+			SAFE_DELETE_ARRAY(_pBuffer);
+		}
+
+		void UniformBlock::UpdateUniformBlockBuffer(ID3DXConstantTable* pConstantTable)
+		{
+			//Get devices context of D3D
+			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
+			if (!pD3DDevice) return;
+			HRESULT result = pConstantTable->SetValue(pD3DDevice, _handle, _pBuffer, _blockSize);
+		}
+
+#elif defined( EAEENGINE_PLATFORM_GL )
 
 		UniformBlock::UniformBlock(const char* pName, const GLint blockSize) :
 			_pBlockName(_strdup(pName)), _blockSize(blockSize)
@@ -35,6 +59,17 @@ namespace EAE_Engine
 			SAFE_DELETE_ARRAY(_pBuffer);
 			DeleteBufferObj(_uboId);
 		}
+
+		void UniformBlock::UpdateUniformBlockBuffer()
+		{
+			glBindBuffer(GL_UNIFORM_BUFFER, _uboId);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, _blockSize, _pBuffer);
+			glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		}
+
+
+#endif 
+		/////////////////////////////////Common Member Functions///////////////////////////
 
 		void UniformBlock::AddOwner(Effect* pEffect)
 		{
@@ -56,14 +91,6 @@ namespace EAE_Engine
 				CopyMem((uint8_t*)pUBD[index]._pMemberBuffer, (uint8_t*)_pBuffer + pUBD[index]._offset, pUBD[index]._sizeOfMemberBuffer);
 			}
 		}
-
-		void UniformBlock::UpdateUniformBlockBuffer()
-		{
-			glBindBuffer(GL_UNIFORM_BUFFER, _uboId);
-			glBufferSubData(GL_UNIFORM_BUFFER, 0, _blockSize, _pBuffer);
-			glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		}
-
 
 		////////////////////////UniformBlocksManager////////////////////////////
 
@@ -109,9 +136,9 @@ namespace EAE_Engine
 			return  false;
 		}
 
-		GLuint UniformBlockManager::GetIndexOfUniformBlock(const char* pBlockName)
+		uint32_t UniformBlockManager::GetIndexOfUniformBlock(const char* pBlockName)
 		{
-			GLuint index = 0;
+			uint32_t index = 0;
 			for (std::vector<UniformBlock*>::iterator iter = _uniformBlocks.begin(); iter != _uniformBlocks.end(); iter++, index++)
 			{
 				UniformBlock* pUB = *iter;
@@ -148,9 +175,6 @@ namespace EAE_Engine
 				}
 			}
 		}
-
-
-#endif 
 
 	}
 }

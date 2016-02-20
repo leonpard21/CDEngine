@@ -1,6 +1,7 @@
 #include "../Common/Effect.h"
 #include "../Common/Device.h"
 #include "../Common/UniformVariable.h"
+#include "../Common/UniformBlock.h"
 #include "../Common/ShaderContent.h"
 #include "../Common/BinaryFileLoader.h"
 #include <sstream>
@@ -20,7 +21,7 @@ namespace EAE_Engine
 				SAFE_DELETE(pVS);
 				return false;
 			}
-			ExtratVSUniforms();
+			ExtratUniformsFromTable(_pVSConstantTable, ShaderTypes::Vertex);
 			SAFE_DELETE(pVS);
 			ShaderContent* pFS = LoadShader(i_pFSfilePath);
 			if (!LoadFragmentShader(pFS->GetBufferPtr()))
@@ -29,7 +30,7 @@ namespace EAE_Engine
 				SAFE_DELETE(pFS);
 				return false;
 			}
-			ExtratFSUniforms();
+			ExtratUniformsFromTable(_pFSConstantTable, ShaderTypes::Fragment);
 			SAFE_DELETE(pFS);
 			_renderState = renderState;
 			return true;
@@ -117,60 +118,45 @@ namespace EAE_Engine
 			return SUCCEEDED(result);
 		}
 
-		void Effect::ExtratVSUniforms()
+		void Effect::ExtratUniformsFromTable(ID3DXConstantTable* pConstantTable, ShaderTypes shaderType)
 		{
 			D3DXCONSTANTTABLE_DESC pContantTableDesc;
-			_pVSConstantTable->GetDesc(&pContantTableDesc);
+			pConstantTable->GetDesc(&pContantTableDesc);
 			UINT count = pContantTableDesc.Constants;
 			if (count == 0)
 				return;
 			for (size_t i = 0; i < count; ++i)
 			{
 				D3DXHANDLE handle = NULL;
-				handle = _pVSConstantTable->GetConstant(NULL, (UINT)i);
+				handle = pConstantTable->GetConstant(NULL, (UINT)i);
 				if (handle == NULL) continue;
 				D3DXCONSTANT_DESC constDesc;
 				UINT countToGet = 1;
-				_pVSConstantTable->GetConstantDesc(handle, &constDesc, &countToGet);
+				pConstantTable->GetConstantDesc(handle, &constDesc, &countToGet);
 				if (handle == NULL) continue;
+				UniformVariable* pUV = nullptr;
 				if (constDesc.Class == D3DXPC_VECTOR)
 				{
-					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(constDesc.Name, UniformType::float3, ShaderTypes::Vertex);
-					pUV->AddOwner(this, handle);
+					pUV = UniformVariableManager::GetInstance().GetUniformVariable(constDesc.Name, UniformType::float3, shaderType);
 				}
 				else if (constDesc.Class == D3DXPC_MATRIX_COLUMNS)
 				{
-					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(constDesc.Name, UniformType::mat4, ShaderTypes::Vertex);
-					pUV->AddOwner(this, handle);
+					pUV = UniformVariableManager::GetInstance().GetUniformVariable(constDesc.Name, UniformType::mat4, shaderType);
 				}
-				else if (strcmp(constDesc.Name, "g_CameraMatrices") == 0)
+				if (pUV)
+					pUV->AddOwner(this, handle);
+				if (constDesc.Class == D3DXPC_STRUCT)
 				{
-					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(constDesc.Name, UniformType::CameraMatricesStruct, ShaderTypes::Vertex);
-					pUV->AddOwner(this, handle);
+					const char* pName = constDesc.Name;
+					if (!UniformBlockManager::GetInstance()->Contains(pName))
+					{
+						uint32_t blockSize = constDesc.Bytes;
+						UniformBlock* pUB = new UniformBlock(pName, blockSize, handle, shaderType);
+						pUB->AddOwner(this);
+						UniformBlockManager::GetInstance()->AddUniformBlock(pUB);
+					}
 				}
 			}
-		}
-
-		void Effect::ExtratFSUniforms() 
-		{
-			/*
-			D3DXCONSTANTTABLE_DESC pContantTableDesc;
-			_pFSConstantTable->GetDesc(&pContantTableDesc);
-			UINT count = pContantTableDesc.Constants;
-			if (count == 0)
-				return;
-			for (size_t i = 0; i < count; ++i)
-			{
-				D3DXHANDLE handle = NULL;
-				handle = _pFSConstantTable->GetConstant(NULL, (UINT)i);
-				if (handle == NULL) continue;
-				D3DXCONSTANT_DESC constDesc;
-				UINT countToGet = 1;
-				_pFSConstantTable->GetConstantDesc(handle, &constDesc, &countToGet);
-				if (handle == NULL) 
-					continue;
-			}
-			*/
 		}
 
 		void Effect::SetUniform(UniformType type, D3DXHANDLE handle, void* pArray, size_t count, ShaderTypes shaderType)
@@ -203,11 +189,6 @@ namespace EAE_Engine
 				HRESULT result = pConstantTable->SetMatrixTranspose(pD3DDevice, handle, reinterpret_cast<const D3DXMATRIX*>(pArray));
 				// If we use the bottom one, we should use Transpose Matrix of ColMatrix44
 				//HRESULT result = pConstantTable->SetValue(pD3DDevice, handle, (void*)pArray, sizeof(D3DXMATRIX));
-			}
-			else if (type == UniformType::CameraMatricesStruct)
-			{
-				// set the camera matrices
-				HRESULT result = pConstantTable->SetValue(pD3DDevice, handle, pArray, sizeof(CameraMatrices));
 			}
 		}
 
@@ -290,6 +271,21 @@ namespace EAE_Engine
 				SetUniform(pValue->GetUniformType(), location, pValue->GetElements(), pValue->GetElementCount(), pValue->GetShaderType());
 			}
 			_updateVariableList.clear();
+			for (std::map<const char*, UniformBlock*>::iterator iter = _updateBlockList.begin(); iter != _updateBlockList.end(); ++iter)
+			{
+				UniformBlock* pBlock = iter->second;
+				ID3DXConstantTable* pConstantTable = nullptr;
+				if (pBlock->GetType() == ShaderTypes::Vertex) 
+				{
+					pConstantTable = _pVSConstantTable;
+				}
+				else
+				{
+					pConstantTable = _pFSConstantTable;
+				}
+				pBlock->UpdateUniformBlockBuffer(pConstantTable);
+			}
+			_updateBlockList.clear();
 		}
 
 /////////////////////////////////////////////////////////////////////////////////

@@ -42,12 +42,12 @@ namespace EAE_Engine
 			tUniformHandle GetHandle(const char* pName, ShaderTypes shaderType);
 			tSamplerID GetSamplerID(const char* pName, ShaderTypes shaderType);
 			void OnNotify(UniformVariable* pVariable, D3DXHANDLE location);
+			void OnNotify(UniformBlock* pBlock);
 			void Update();
 		private:
 			bool LoadFragmentShader(uint8_t* pFSBuffer);
 			bool LoadVertexShader(uint8_t* pVSBuffer);
-			void ExtratVSUniforms();
-			void ExtratFSUniforms();
+			void ExtratUniformsFromTable(ID3DXConstantTable* pConstantTable, ShaderTypes shaderType);
 		private:
 			IDirect3DVertexShader9* _pVertexShader;
 			IDirect3DPixelShader9* _pFragmentShader;
@@ -56,6 +56,7 @@ namespace EAE_Engine
 			uint32_t _renderState;
 			// when we have a new uniform variable to update, we add it to the list.
 			std::map<D3DXHANDLE, UniformVariable*> _updateVariableList;
+			std::map<const char*, UniformBlock*> _updateBlockList;
 		};
 #elif defined( EAEENGINE_PLATFORM_GL )
 		class Effect
