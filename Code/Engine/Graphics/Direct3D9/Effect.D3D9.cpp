@@ -145,9 +145,17 @@ namespace EAE_Engine
 				}
 				if (constDesc.Class == D3DXPC_STRUCT)
 				{
+					uint32_t blockSize = constDesc.Bytes;
+					pUV = UniformVariableManager::GetInstance().GetUniformVariable(constDesc.Name, blockSize, shaderType);
 				}
 				if (pUV)
 					pUV->AddOwner(this, handle);
+				// Now I'm using struct to handle some feature like Uniform Block.
+				// Since in D3D9 we don't have Uniform Block, nor Constant Buffer.
+				// So for the strucutre, we will have 2 copys,
+				// one is UniformVariable, the other one is UniformBlock.
+				// So we can handle different requirement to set the variable.
+				// I think it's OK for now.
 				if (constDesc.Class == D3DXPC_STRUCT)
 				{
 					const char* pName = constDesc.Name;
