@@ -154,22 +154,22 @@ namespace EAE_Engine
 					continue;
 				if (type == GL_FLOAT_MAT4)
 				{
-					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, bufSize, UniformType::mat4);
+					UniformVariable* pUV = UniformVariableManager::GetInstance().AddUniformVariable(name, bufSize, UniformType::mat4);
 					pUV->AddOwner(this, location);
 				}
 				else if (type == GL_FLOAT_VEC4)
 				{
-					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, bufSize, UniformType::float4);
+					UniformVariable* pUV = UniformVariableManager::GetInstance().AddUniformVariable(name, bufSize, UniformType::float4);
 					pUV->AddOwner(this, location);
 				}
 				else if (type == GL_FLOAT_VEC3)
 				{
-					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, bufSize, UniformType::float3);
+					UniformVariable* pUV = UniformVariableManager::GetInstance().AddUniformVariable(name, bufSize, UniformType::float3);
 					pUV->AddOwner(this, location);
 				}
 				else if (type == GL_FLOAT)
 				{
-					UniformVariable* pUV = UniformVariableManager::GetInstance().GetUniformVariable(name, bufSize, UniformType::float1);
+					UniformVariable* pUV = UniformVariableManager::GetInstance().AddUniformVariable(name, bufSize, UniformType::float1);
 					pUV->AddOwner(this, location);
 				}
 			}

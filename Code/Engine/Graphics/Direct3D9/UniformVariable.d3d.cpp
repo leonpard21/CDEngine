@@ -14,6 +14,8 @@ namespace EAE_Engine
 			_handle = pEffect->GetHandle(pName, _shaderType);
 		}
 
+		// Because we need to set the UniformVariable via VertexConstantTable or FragmentConstantTable,
+		// so we need to save shadertype in D3D9 UniformVariable
 		UniformVariable::UniformVariable(const char* pname, uint32_t bufferSize, ShaderTypes shadertype) :
 			_bufferSize(bufferSize), _shaderType(shadertype)
 		{
@@ -21,29 +23,8 @@ namespace EAE_Engine
 			_pBuffer = new uint8_t[bufferSize];
 		}
 
-		bool UniformVariable::operator == (const UniformVariable& i_other)
-		{
-			bool nameEqual = _name == i_other._name;
-			bool typeEqual = _bufferSize == i_other._bufferSize;
-			return nameEqual && typeEqual;
-		}
-
-		void UniformVariable::AddOwner(Effect* pShader, tUniformHandle location)
-		{
-			_owner.push_back(pShader);
-			_location.push_back(location);
-		}
-
-		void UniformVariable::NotifyOwners()
-		{
-			for (size_t i = 0; i < _owner.size(); ++i)
-			{
-				_owner[i]->OnNotify(this, _location[i]);
-			}
-		}
-
 		////////////////////////////////////////UniformVariableManager//////////////////////////////////////
-		UniformVariable* UniformVariableManager::GetUniformVariable(const char* pUniformVariable, uint32_t bufferSize, ShaderTypes shaderType)
+		UniformVariable* UniformVariableManager::AddUniformVariable(const char* pUniformVariable, uint32_t bufferSize, ShaderTypes shaderType)
 		{
 			UniformVariable* pResult = nullptr;
 			for (std::vector<UniformVariable*>::iterator iter = _uniformVariables.begin(); iter != _uniformVariables.end();)

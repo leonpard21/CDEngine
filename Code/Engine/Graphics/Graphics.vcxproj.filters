@@ -116,9 +116,6 @@
     <ClCompile Include="Direct3D9\GraphicsOp.d3d9.cpp">
       <Filter>Direct3D9</Filter>
     </ClCompile>
-    <ClCompile Include="Common\UniformBlock.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\Font.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -136,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="Common\Device.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UniformBlock.cpp">
+      <Filter>Common\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -219,9 +219,6 @@
     <ClInclude Include="Common\GraphicsOp.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\UniformBlock.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\Font.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -233,6 +230,9 @@
     </ClInclude>
     <ClInclude Include="Common\Text.h">
       <Filter>Common\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UniformBlock.h">
+      <Filter>Common\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

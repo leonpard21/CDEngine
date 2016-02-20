@@ -91,10 +91,11 @@ namespace EAE_Engine
 			// This is the interface to communicate with the Grphics itself.
 			// The Graphics, we need to know 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-			UniformVariable* GetUniformVariable(const char* pUniformVariable, uint32_t bufferSize, ShaderTypes shaderType);
+			UniformVariable* AddUniformVariable(const char* pUniformVariable, uint32_t bufferSize, ShaderTypes shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )
-			UniformVariable* GetUniformVariable(const char* pUniformVariable, GLsizei bufferSize, UniformType type);
+			UniformVariable* AddUniformVariable(const char* pUniformVariable, GLsizei bufferSize, UniformType type);
 #endif 
+			UniformVariable* GetUniformVariable(const char* pUniformVariable);
 			void Clean();
 			// This is the interface to communicate with the Engine/Core.
 			// The Engine/Core just need to take care the variable name and its value.  

@@ -28,10 +28,33 @@ namespace EAE_Engine
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 				_owner[i]->SetUniform( _location[i], _pBuffer, _bufferSize, _shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )
-				_owner[i]->SetUniform(_location[i], _pBuffer, _bufferSize);
+				_owner[i]->SetUniform(_uniformType, _location[i], _pBuffer, _bufferSize);
 #endif
 			}
 		}
+
+		bool UniformVariable::operator == (const UniformVariable& i_other)
+		{
+			bool nameEqual = _name == i_other._name;
+			bool typeEqual = _bufferSize == i_other._bufferSize;
+			return nameEqual && typeEqual;
+		}
+
+		void UniformVariable::AddOwner(Effect* pEffect, tUniformHandle location)
+		{
+			_owner.push_back(pEffect);
+			_location.push_back(location);
+		}
+
+		void UniformVariable::NotifyOwners()
+		{
+			assert(_owner.size() == _location.size());
+			for (size_t i = 0; i < _owner.size(); ++i)
+			{
+				_owner[i]->OnNotify(this, _location[i]);
+			}
+		}
+
 
 ////////////////////////////////////UniformVariableManager////////////////////////////
 		UniformVariableManager::~UniformVariableManager()

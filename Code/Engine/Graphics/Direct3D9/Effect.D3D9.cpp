@@ -137,16 +137,16 @@ namespace EAE_Engine
 				UniformVariable* pUV = nullptr;
 				if (constDesc.Class == D3DXPC_VECTOR)
 				{
-					pUV = UniformVariableManager::GetInstance().GetUniformVariable(constDesc.Name, sizeof(Math::Vector3), shaderType);
+					pUV = UniformVariableManager::GetInstance().AddUniformVariable(constDesc.Name, sizeof(Math::Vector3), shaderType);
 				}
 				else if (constDesc.Class == D3DXPC_MATRIX_COLUMNS)
 				{
-					pUV = UniformVariableManager::GetInstance().GetUniformVariable(constDesc.Name, sizeof(Math::ColMatrix44), shaderType);
+					pUV = UniformVariableManager::GetInstance().AddUniformVariable(constDesc.Name, sizeof(Math::ColMatrix44), shaderType);
 				}
 				if (constDesc.Class == D3DXPC_STRUCT)
 				{
 					uint32_t blockSize = constDesc.Bytes;
-					pUV = UniformVariableManager::GetInstance().GetUniformVariable(constDesc.Name, blockSize, shaderType);
+					pUV = UniformVariableManager::GetInstance().AddUniformVariable(constDesc.Name, blockSize, shaderType);
 				}
 				if (pUV)
 					pUV->AddOwner(this, handle);
