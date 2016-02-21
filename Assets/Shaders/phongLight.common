@@ -57,7 +57,7 @@ void CalculateSpecularLighting(const in float3 i_normal_world, const in float3 i
 		float dotProduct;
 		{
 			// Direction of the reflected light
-			float3 reflectedDirection = reflect(i_light_direction, i_normal_world);
+			float3 reflectedDirection = reflect(-i_light_direction, i_normal_world);
 			// How close (parallel) the view ray is to the reflected light
 			dotProduct = dot(reflectedDirection, i_viewDirection);
 			// See the diffuse function for why this is clamped (the reasoning is similar)

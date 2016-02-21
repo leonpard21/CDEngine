@@ -71,8 +71,8 @@ void main()
 	o_texcoords = i_texcoords;
 	// Pass the input color to the fragment shader unchanged:
 	o_color = i_color;
-	// Calculate the light Dir (inverse)
-	o_lightDir =  position_world.xyz - _light_pos;
+	// Calculate the light Dir
+	o_lightDir = position_world.xyz - _light_pos;
 	// output the View Dir
-	o_viewDir = _camera_pos - position_world.xyz;
+	o_viewDir = position_world.xyz - _camera_pos;
 }

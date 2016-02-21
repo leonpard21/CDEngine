@@ -39,16 +39,17 @@ namespace EAE_Engine
 						UniformDesc* pUD = &pUniformDescBuffer[index];
 						uint8_t* pValue = pUniformVariableValueBuffer + pUD->_offsetInValueBuffer;
 						uint32_t bufferSize = pUD->_valueBufferSize;
-						pUD->_pUniformVariable->SetValue(pValue, bufferSize);
-						pUD->_pUniformVariable->NotifyOwner(_pEffect);
-						//We can also call the pEffect to change the uniform directly.
-						/*
+						// We can use the _pUniformVariable to set it,
+						// But I think this way is slower because it updates the UniformVariable.
+						// pUD->_pUniformVariable->SetValue(pValue, bufferSize);
+						// pUD->_pUniformVariable->NotifyOwner(_pEffect);
+						// Or We can also call the pEffect to change the uniform directly.
+						// I think this will be faster because it set the Uniform via Effect directly.
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-						//_pEffect->SetUniform(pUD->_handle, pValue, bufferSize, pUD->_shaderType);
+						_pEffect->SetUniform(pUD->_handle, pValue, bufferSize, pUD->_shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )
-						//_pEffect->SetUniform(pUD->_handle, pValue, bufferSize);
+						_pEffect->SetUniform(pUD->_pUniformVariable->GetUniformType(), pUD->_handle, pValue, bufferSize);
 #endif
-						*/
 					}
 				}
 				else

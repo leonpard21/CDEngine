@@ -49,6 +49,7 @@ namespace EAE_Engine
 		struct UniformDesc
 		{
 			UniformVariable* _pUniformVariable;
+			tUniformHandle _handle;
 			uint32_t _offsetInValueBuffer;
 			uint32_t _valueBufferSize;
 			uint32_t _offsetInNameBuffer;

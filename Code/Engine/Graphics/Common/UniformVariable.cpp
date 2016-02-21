@@ -16,8 +16,12 @@ namespace EAE_Engine
 	{
 		//////////////////////////////////UniformDesc////////////////////////////////////
 		void UniformDesc::SetUniformVariable(const char* pName, Effect* pEffect)
-		{
-			//_handle = pEffect->GetLocation(pName);
+		{			
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+			_handle = pEffect->GetHandle(pName, _shaderType);
+#elif defined( EAEENGINE_PLATFORM_GL )
+			_handle = pEffect->GetLocation(pName);
+#endif
 			_pUniformVariable = UniformVariableManager::GetInstance().GetUniformVariable(pName);
 			assert(_pUniformVariable != nullptr);
 		}
