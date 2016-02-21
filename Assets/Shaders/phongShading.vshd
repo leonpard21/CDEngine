@@ -6,7 +6,7 @@
 /* Uniform varibales (platform-independent) */
 uniform mat4 g_local_world_matrix;
 // Position of light
-uniform vec3 _light_pos = vec3(0.0, 50.0, 0.0);
+uniform vec3 _light_pos = vec3(0.0, 100.0, 0.0);
 // Position of Camera
 uniform vec3 _camera_pos = vec3(0.0, 0.0, 0.0);
 

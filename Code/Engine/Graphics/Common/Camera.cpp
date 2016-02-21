@@ -41,7 +41,8 @@ namespace EAE_Engine
 			const char* pCamBlockName = "g_CameraMatrices";
 			// The standard Direct3D stores matrices as rows but we are storing them as columns. 
 			// (Confusingly, standard Direct3D interprets matrices as being stored in columns on the GPU
-			// Since we're using Right Hand Matrices in the Engine, we need to offer the Transpose of the matrices.
+			// Since we're copying ColMatrices in the Engine to RowMatrices in the D3D, 
+			// we need to offer the Transpose of the matrices.
 			viewprojmatrices._worldViewMatrix = GetWroldToViewMatrix().GetTranspose();
 			viewprojmatrices._viewProjMatrix = GetProjClipMatrix().GetTranspose();
 #elif defined( EAEENGINE_PLATFORM_GL )
@@ -149,8 +150,8 @@ namespace EAE_Engine
 			return Math::ColMatrix44(
 				1.0f, 0.0f, 0.0f, 0.0f,
 				0.0f, 1.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 1.0f, 0.0f,
-				0.0f, 0.0f, -1.0f, 0.0f);
+				0.0f, 0.0f, 1.0f, -1.0f,
+				0.0f, 0.0f, 0.0f, 0.0f);
 		}
 
 		Math::ColMatrix44 Camera::CreateProjectClipMatrix(
@@ -171,9 +172,9 @@ namespace EAE_Engine
 #elif defined( EAEENGINE_PLATFORM_GL )
 			const float zDistanceScale = 1.0f / (i_z_nearPlane - i_z_farPlane);
 			return Math::ColMatrix44(
-				xZoom, 0.0f, 0.0f, 0.0f, 
-				0.0f, yZoom, 0.0f, 0.0f, 
-				0.0f, 0.0f, (i_z_nearPlane + i_z_farPlane) * zDistanceScale, -1.0f, 
+				xZoom, 0.0f, 0.0f, 0.0f,
+				0.0f, yZoom, 0.0f, 0.0f,
+				0.0f, 0.0f, (i_z_nearPlane + i_z_farPlane) * zDistanceScale, -1.0f,
 				0.0f, 0.0f, (2.0f * i_z_nearPlane * i_z_farPlane) * zDistanceScale, 0.0f);
 #endif
 			// From here, the vertices will be in the Clip Volume Space.

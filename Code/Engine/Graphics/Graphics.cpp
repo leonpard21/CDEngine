@@ -67,6 +67,11 @@ void EAE_Engine::Graphics::SetCameraParameters(Camera* pCamera)
 
 void EAE_Engine::Graphics::SetLightParameters()
 {
+	// Set light position
+	Math::Vector3 lightPos(0.0f, 50.0f, 0.0f);
+	UniformVariableManager::GetInstance().ChangeValue("_light_pos", &lightPos, sizeof(Math::Vector3));
+	UniformVariableManager::GetInstance().NotifyOwners("_light_pos");
+	// Set specular information
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 	const char* pLightBlockName = "gSpecularLight";
 #elif defined( EAEENGINE_PLATFORM_GL )
