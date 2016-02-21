@@ -17,6 +17,10 @@ namespace EAE_Engine
 		//////////////////////////////////UniformDesc////////////////////////////////////
 		void UniformDesc::SetUniformVariable(const char* pName, Effect* pEffect)
 		{			
+			// We still use the _handle to setup the Uniform of Effect for the material,
+			// because it can be used to set the Effect's uniform directly, instead of using the UniformVariable.
+			// But we can get the UniformType of the UniformVariable for OpenGL,
+			// so we still save the _pUniformVariable for the UniformType info.
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 			_handle = pEffect->GetHandle(pName, _shaderType);
 #elif defined( EAEENGINE_PLATFORM_GL )

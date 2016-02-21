@@ -54,7 +54,7 @@ namespace EAE_Engine
 			uint32_t _valueBufferSize;
 			uint32_t _offsetInNameBuffer;
 			ShaderTypes _shaderType;
-			UniformDesc() : _pUniformVariable(nullptr), _offsetInValueBuffer(0), _valueBufferSize(0),
+			UniformDesc() : _pUniformVariable(nullptr), _handle(0), _offsetInValueBuffer(0), _valueBufferSize(0),
 				_offsetInNameBuffer(0), _shaderType(ShaderTypes::Unknown) {}
 			void SetUniformVariable(const char* pName, Effect* pEffect);
 		};
