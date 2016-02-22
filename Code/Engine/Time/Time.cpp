@@ -2,7 +2,7 @@
 //=============
 
 #include "Time.h"
-
+#include <cmath>
 #include <cassert>
 #include "Engine/Windows/WindowsIncludes.h"
 #include "Engine/Windows/WindowsFunctions.h"
@@ -102,6 +102,7 @@ void EAE_Engine::Time::OnNewFrame()
 		// Clean the FixedUpdateRunTimes and FixedUpdateBlendAlpha on last frame
 		s_fixedUpdateRunTimesOnThisFrame = 0;
 		s_fixedUpdateBlendAlphaOnThisFrame = 0.0f;
+		s_fixedUpdateAccumulatTime = 0.0f;
 #endif
 		// Calculate the FixedUpdateRunTimes and FixedUpdateBlendAlpha on this frame
 		float elpasedTimeFromLastFrame = GetSecondsElapsedThisFrame();
@@ -110,7 +111,7 @@ void EAE_Engine::Time::OnNewFrame()
 			s_fixedUpdateAccumulatTime = 0.2f;
 		float fixedTimeStep = GetFixedTimeStep();
 		// calculate how many times we need to run the FixedUpdate functions on this frame
-		s_fixedUpdateRunTimesOnThisFrame = s_fixedUpdateAccumulatTime / fixedTimeStep;
+		s_fixedUpdateRunTimesOnThisFrame = std::ceil(s_fixedUpdateAccumulatTime / fixedTimeStep);
 		// change the accumulated time for the next frame.
 		s_fixedUpdateAccumulatTime -= s_fixedUpdateRunTimesOnThisFrame * fixedTimeStep;
 		// calculate the BlendAlpha for Synchronizing Transofrm  on this frame

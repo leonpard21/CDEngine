@@ -55,12 +55,13 @@ namespace EAE_Engine
 
 		void FixedUpdate()
 		{
+			Physics::Physics::GetInstance()->FixedUpdateBegin();
 			int fixedUpdateRunTime = Time::GetFixedUpdateRunTimesOnThisFrame();
 			for (int i = 0; i < fixedUpdateRunTime; ++i)
 			{
 				Physics::Physics::GetInstance()->FixedUpdate();
 			}
-			Physics::Physics::GetInstance()->Synchronize();
+			Physics::Physics::GetInstance()->FixedUpdateEnd();
 		}
 
 		void EngineUpdate() 

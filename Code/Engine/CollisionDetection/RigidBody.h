@@ -19,8 +19,9 @@ namespace EAE_Engine
 			Physics();
 			~Physics();
 			void Init();
+			void FixedUpdateBegin();
 			void FixedUpdate();
-			void Synchronize();
+			void FixedUpdateEnd();
 			RigidBody* AddRigidBody(Common::ITransform* pTransform);
 			Math::Vector3 GetGravity() { return _gravity; }
 
@@ -37,10 +38,10 @@ namespace EAE_Engine
 			RigidBody(Common::ITransform* pTransform);
 			~RigidBody();
 			Common::ITransform* GetTransform() { return _pTransform; }
-			Math::Vector3 GetVelocity() const { return _velocity; }
-			void SetVelocity(Math::Vector3& velocity) { _velocity = velocity; }
-			Math::Vector3 GetPos() const { return _baryCenter; }
-			void SetPos(Math::Vector3& pos) { _baryCenter = pos; }
+			Math::Vector3 GetVelocity() const { return _currentVelocity; }
+			void SetVelocity(Math::Vector3& velocity) { _currentVelocity = velocity; }
+			Math::Vector3 GetPos() const { return _currentPos; }
+			void SetPos(Math::Vector3& pos) { _currentPos = pos; }
 			//Math::Quaternion GetRotation();
 			//void SetRotation(Math::Quaternion& rotation);
 			float GetMass() const { return _mass; }
@@ -58,9 +59,11 @@ namespace EAE_Engine
 			// for RigidBody's Pos and Rotation, they only have world value.
 			Math::Quaternion _spin;
 			Math::Vector3 _angularVelocity;
-			Math::Vector3 _baryCenter;
-			Math::Vector3 _velocity;
-			Math::Vector3 _lastBaryCenter;
+			Math::Vector3 _currentPos;
+			Math::Vector3 _currentVelocity;
+
+			Math::Vector3 _lastPos;
+			Math::Vector3 _lastVelocity;
 
 			float _mass;
 			Common::CollisionDetectionMode _mode;
@@ -76,8 +79,9 @@ namespace EAE_Engine
 			~RigidBodyManager();
 			RigidBody* AddRigidBody(Common::ITransform* pTransform);
 			RigidBody* GetRigidBody(Common::ITransform* pTransform);
+			void FixedUpdateBegin();
 			void FixedUpdate();
-			void UpdateTransform(float blendAlpha);
+			void FixedUpdateEnd();
 
 
 		private:

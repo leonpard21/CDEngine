@@ -23,15 +23,19 @@ namespace EAE_Engine
 			_pRigidBodyManager = new RigidBodyManager();
 		}
 
+		void Physics::FixedUpdateBegin()
+		{
+			_pRigidBodyManager->FixedUpdateBegin();
+		}
+
 		void Physics::FixedUpdate()
 		{
 			_pRigidBodyManager->FixedUpdate();
 		}
 
-		void Physics::Synchronize()
+		void Physics::FixedUpdateEnd()
 		{
-			float timeBlendAlpha = Time::GetFixedUpdateBlendAlphaOnThisFrame();
-			_pRigidBodyManager->UpdateTransform(timeBlendAlpha);
+			_pRigidBodyManager->FixedUpdateEnd();
 		}
 
 		RigidBody* Physics::AddRigidBody(Common::ITransform* pTransform)
@@ -44,11 +48,12 @@ namespace EAE_Engine
 		/////////////////////////////////RigidBody/////////////////////////////////////
 		RigidBody::RigidBody(Common::ITransform* pTransform) :
 			_pTransform(pTransform), _mode(Common::CollisionDetectionMode::Discrete),
-			_velocity(Math::Vector3::Zero), _angularVelocity(Math::Vector3::Zero),
-			_mass(1.0f), _useGravity(true), _forceWorkingOn(Math::Vector3::Zero)
+			_currentVelocity(Math::Vector3::Zero), _angularVelocity(Math::Vector3::Zero),
+			_mass(1.0f), _useGravity(true), _forceWorkingOn(Math::Vector3::Zero),
+			_lastVelocity(Math::Vector3::Zero)
 		{
-			_baryCenter = pTransform->GetPos();
-			_lastBaryCenter = _baryCenter;
+			_currentPos = pTransform->GetPos();
+			_lastPos = _currentPos;
 			_spin = _pTransform->GetRotation();
 		}
 
@@ -81,13 +86,14 @@ namespace EAE_Engine
 		void RigidBody::Advance(float timeStep)
 		{
 			// Update the previous state
-			_lastBaryCenter = _baryCenter;
+			_lastPos = _currentPos;
+			_lastVelocity = _currentVelocity;
 			// Update the current state
 			if(_useGravity)
 				_forceWorkingOn += Physics::GetInstance()->GetGravity();
 			Math::Vector3 acceleration = _forceWorkingOn * (1.0f / _mass);
-			_baryCenter += _velocity * timeStep + acceleration * (0.5f * timeStep * timeStep);
-			_velocity += acceleration * timeStep;
+			_currentPos += _currentVelocity * timeStep + acceleration * (0.5f * timeStep * timeStep);
+			_currentVelocity += acceleration * timeStep;
 			// before exit, we need to clean the _forceWorkingOn because the force is an instant value.
 			_forceWorkingOn = Math::Vector3::Zero;
 		}
@@ -101,7 +107,9 @@ namespace EAE_Engine
 		 */
 		void RigidBody::BlendForTimeGap(float blendAlpha)
 		{
-			_pTransform->SetPos(_lastBaryCenter * (1.0f - blendAlpha) + _baryCenter * blendAlpha);
+			_currentVelocity = _lastVelocity * (1.0f - blendAlpha) + _currentVelocity * blendAlpha;
+			_currentPos = _lastPos * (1.0f - blendAlpha) + _currentPos * blendAlpha;
+			_pTransform->SetPos(_currentPos);
 		}
 
 
@@ -136,6 +144,15 @@ namespace EAE_Engine
 			return nullptr;
 		}
 
+		void RigidBodyManager::FixedUpdateBegin()
+		{
+			for (std::vector<RigidBody*>::iterator it = _rigidBodys.begin(); it != _rigidBodys.end(); ++it)
+			{
+				RigidBody* pRB = (*it);
+				pRB->SetPos(pRB->GetTransform()->GetPos());
+			}
+		}
+
 		void RigidBodyManager::FixedUpdate()
 		{
 			float fixedTimeStep = Time::GetFixedTimeStep();
@@ -148,11 +165,12 @@ namespace EAE_Engine
 		/*
 		 * Update the Transofrm so that the Rendering system will get the new reference
 		 */
-		void RigidBodyManager::UpdateTransform(float blendAlpha)
+		void RigidBodyManager::FixedUpdateEnd()
 		{
+			float timeBlendAlpha = Time::GetFixedUpdateBlendAlphaOnThisFrame();
 			for (std::vector<RigidBody*>::iterator it = _rigidBodys.begin(); it != _rigidBodys.end(); ++it)
 			{
-				(*it)->BlendForTimeGap(blendAlpha);
+				(*it)->BlendForTimeGap(timeBlendAlpha);
 			}
 		}
 
