@@ -85,7 +85,7 @@ namespace EAE_Engine
 				_localRotation = i_other;
 			else 
 			{
-				Math::Quaternion result = _pParent->GetRotation().CreateInverse() * i_other;
+				Math::Quaternion result = i_other * _pParent->GetRotation().CreateInverse();
 				_localRotation = result;
 			}
 		}
@@ -135,8 +135,8 @@ namespace EAE_Engine
 		// Transform Matrices
 		Math::ColMatrix44 Transform::GetRotateTransformMatrix() { 
 			Math::ColMatrix44 result;
-			if(_pParent)
-				result = _pParent->GetRotateTransformMatrix() * Math::ColMatrix44(_localRotation, _localPosition);
+			if (_pParent) 
+				result = Math::ColMatrix44(GetRotation(), GetPos());
 			else 
 				result = Math::ColMatrix44(_localRotation, _localPosition);
 			return result;
@@ -159,7 +159,7 @@ namespace EAE_Engine
 			if (!_pParent)
 				return localTransformMatrix;
 			else
-				return _pParent->GetLocalToWorldMatrix() * localTransformMatrix;
+				return localTransformMatrix * _pParent->GetLocalToWorldMatrix();
 		}
 		Math::Vector3 Transform::GetForward()
 		{

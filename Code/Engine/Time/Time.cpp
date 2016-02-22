@@ -98,9 +98,11 @@ void EAE_Engine::Time::OnNewFrame()
 	}
 	// Update the fixedUpdate Info
 	{
+#ifdef _DEBUG
 		// Clean the FixedUpdateRunTimes and FixedUpdateBlendAlpha on last frame
 		s_fixedUpdateRunTimesOnThisFrame = 0;
 		s_fixedUpdateBlendAlphaOnThisFrame = 0.0f;
+#endif
 		// Calculate the FixedUpdateRunTimes and FixedUpdateBlendAlpha on this frame
 		float elpasedTimeFromLastFrame = GetSecondsElapsedThisFrame();
 		s_fixedUpdateAccumulatTime += elpasedTimeFromLastFrame;
