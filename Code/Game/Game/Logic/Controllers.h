@@ -115,6 +115,7 @@ public:
 		if (!EAE_Engine::Graphics::CameraManager::Valid())
 			return;
 		_pTransform->SetPos(newPos);
+
 		float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		_cdRemain -= elpasedTime;
 		if (_cdRemain > 0.0001f)
@@ -124,6 +125,11 @@ public:
 			_resetLevelController = true;
 			_cdRemain = 0.5f;
 		}
+	}
+
+	void FixedUpdate()
+	{
+
 	}
 
 private:

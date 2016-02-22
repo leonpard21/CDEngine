@@ -22,10 +22,12 @@
     <ClInclude Include="ColliderBase.h" />
     <ClInclude Include="ICollisionCallback.h" />
     <ClInclude Include="OBBCollider.h" />
+    <ClInclude Include="RigidBody.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ColliderBase.cpp" />
     <ClCompile Include="OBBCollider.cpp" />
+    <ClCompile Include="RigidBody.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ColliderBase.inl" />

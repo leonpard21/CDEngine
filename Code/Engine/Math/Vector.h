@@ -75,6 +75,7 @@ namespace EAE_Engine
 			inline void z(const T tz){ _z = tz; }
 
 			inline TVector3 Normalize();
+			inline TVector3 GetNormalize();
 			inline T Dot(const TVector3<T>& right) const;
 			inline TVector3 Cross(const TVector3<T>& right);
 			inline T Magnitude() const { return sqrt(_x * _x + _y*_y + _z*_z); }
@@ -161,6 +162,41 @@ namespace EAE_Engine
 			this->_y = _y / length;
 			this->_z = _z / length;
 			return *this;
+		}
+
+		template <typename T>
+		inline TVector3<T> TVector3<T>::GetNormalize()
+		{
+			TVector3<T> result = *this;
+			T length = Magnitude();
+			if (length == 0)
+			{
+				result->_x = (T)INT_MAX;
+				result->_y = (T)INT_MAX;
+				result->_z = (T)INT_MAX;
+				return result;
+			}
+			result->_x = result->_x / length;
+			result->_y = result->_y / length;
+			result->_z = result->_z / length;
+			return result;
+		}
+		inline TVector3<float> TVector3<float>::GetNormalize()
+		{
+			TVector3<float> result = *this;
+			float length = Magnitude();
+			//MessagedAssert(!Engine::Implements::AlmostEqual2sComplement(length, 0.0f, 5), "opps, length should not be 0.0f!");
+			if (Implements::AlmostEqual2sComplement(length, 0.0f, 5))
+			{
+				result._x = FLT_MAX - 1.0f;
+				result._y = FLT_MAX - 1.0f;
+				result._z = FLT_MAX - 1.0f;
+				return *this;
+			}
+			result._x = result._x / length;
+			result._y = result._y / length;
+			result._z = result._z / length;
+			return result;
 		}
 
 		template <typename T>

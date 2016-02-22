@@ -4,6 +4,7 @@
 #include "Engine/General/HashString/HashedString.h"
 #include "Engine/Containers/LinkedList.h"
 #include "Engine/Math/Vector.h"
+#include "Engine/Time/Time.h"
 #include <vector>
 
 namespace EAE_Engine
@@ -98,8 +99,9 @@ namespace EAE_Engine
 		};
 
 		Collider* CreateOBBCollider(Common::ITransform* pTrans, const Math::Vector3& size, const Math::Vector3& offset = Math::Vector3::Zero);
-		inline void Update(float fElpasedTime)
+		inline void Update()
 		{
+			float fElpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 			ColliderManager::GetInstance()->Update(fElpasedTime);
 		}
 		inline void RemoveCollider(Common::ITransform* pTrans)

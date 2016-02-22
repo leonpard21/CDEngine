@@ -31,7 +31,7 @@ namespace EAE_Engine
 			_controllers.clear();
 		}
 		
-		void ControllerManager::UpdateAll()
+		void ControllerManager::Update()
 		{
 			// Because we will use the Controller to add Actor, in which case we will add Controller,
 			// so here I just get the size at first, then I will not access the _controllers directly,
@@ -43,6 +43,17 @@ namespace EAE_Engine
 				Common::IController* pController = _controllers[i];
 				if (pController)
 					pController->Update();
+			}
+		}
+
+		void ControllerManager::FixedUpdate()
+		{
+			size_t size = _controllers.size();
+			for (size_t i = 0; i < size; ++i)
+			{
+				Common::IController* pController = _controllers[i];
+				if (pController)
+					pController->FixedUpdate();
 			}
 		}
 

@@ -13,6 +13,7 @@ namespace EAE_Engine
 			Controller(Common::ITransform* pTrans);
 			virtual ~Controller() { _pTransform = nullptr; }
 			virtual void Update();
+			virtual void FixedUpdate() {}
 			virtual Common::ITransform* GetTransform() { return _pTransform; }
 
 		protected:
@@ -24,7 +25,8 @@ namespace EAE_Engine
 		public:
 			void Clean();
 			void AddController(Controller* pController) { _controllers.push_back(pController); }
-			void UpdateAll();
+			void Update();
+			void FixedUpdate();
 			void Remove(Common::ITransform* pTrans);
 
 			std::vector<Controller*> _controllers;

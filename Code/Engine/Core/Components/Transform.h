@@ -18,6 +18,7 @@ namespace EAE_Engine
 		public:
 			Transform(Common::IGameObj* pGamObj);
 			virtual ~Transform();
+			ITransform* GetTransform() { return this; }
 			// Inherted
 			virtual Common::IGameObj* GetGameObj();
 			virtual Common::ICompo* GetComponent(typeid_t type);

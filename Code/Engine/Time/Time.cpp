@@ -18,6 +18,11 @@ namespace
 	LARGE_INTEGER s_totalCountsElapsed_atInitializion = { 0 };
 	LARGE_INTEGER s_totalCountsElapsed_duringRun = { 0 };
 	LARGE_INTEGER s_totalCountsElapsed_previousFrame = { 0 };
+
+	// Variables for FixedUpdate
+	float s_fixedUpdateAccumulatTime = 0.0f;
+	int s_fixedUpdateRunTimesOnThisFrame = 0;
+	float s_fixedUpdateBlendAlphaOnThisFrame = 0.0f;
 }
 
 // Helper Function Declarations
@@ -33,6 +38,23 @@ namespace
 
 // Time
 //-----
+
+const float physicsFPS = 100.0f;
+
+float EAE_Engine::Time::GetFixedTimeStep()
+{
+	return 1.0f / physicsFPS;
+}
+
+float EAE_Engine::Time::GetFixedUpdateRunTimesOnThisFrame()
+{
+	return s_fixedUpdateRunTimesOnThisFrame;
+}
+
+float EAE_Engine::Time::GetFixedUpdateBlendAlphaOnThisFrame()
+{
+	return s_fixedUpdateBlendAlphaOnThisFrame;
+}
 
 float EAE_Engine::Time::GetTotalSecondsElapsed()
 {
@@ -73,6 +95,23 @@ void EAE_Engine::Time::OnNewFrame()
 		const BOOL result = QueryPerformanceCounter( &totalCountsElapsed );
 		assert( result != FALSE );
 		s_totalCountsElapsed_duringRun.QuadPart = totalCountsElapsed.QuadPart - s_totalCountsElapsed_atInitializion.QuadPart;
+	}
+	// Update the fixedUpdate Info
+	{
+		// Clean the FixedUpdateRunTimes and FixedUpdateBlendAlpha on last frame
+		s_fixedUpdateRunTimesOnThisFrame = 0;
+		s_fixedUpdateBlendAlphaOnThisFrame = 0.0f;
+		// Calculate the FixedUpdateRunTimes and FixedUpdateBlendAlpha on this frame
+		float elpasedTimeFromLastFrame = GetSecondsElapsedThisFrame();
+		s_fixedUpdateAccumulatTime += elpasedTimeFromLastFrame;
+		if (s_fixedUpdateAccumulatTime > 0.2f)
+			s_fixedUpdateAccumulatTime = 0.2f;
+		float fixedTimeStep = GetFixedTimeStep();
+		s_fixedUpdateRunTimesOnThisFrame = s_fixedUpdateAccumulatTime / fixedTimeStep;
+		// change the accumulated time for next frame.
+		s_fixedUpdateAccumulatTime -= s_fixedUpdateRunTimesOnThisFrame * fixedTimeStep;
+		// calculate the BlendAlpha for Synchronizing Transofrm 
+		s_fixedUpdateBlendAlphaOnThisFrame = s_fixedUpdateAccumulatTime / fixedTimeStep;
 	}
 }
 
@@ -122,8 +161,12 @@ bool EAE_Engine::Time::Initialize( std::string* o_errorMessage )
 		}
 		goto OnExit;
 	}
-
 	s_isInitialized = true;
+	
+	// We also need to init the s_fixedUpdateAccumulatTime
+	s_fixedUpdateAccumulatTime = 0.0f;
+	s_fixedUpdateRunTimesOnThisFrame = 0;
+	s_fixedUpdateBlendAlphaOnThisFrame = 0.0f;
 
 OnExit:
 

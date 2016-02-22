@@ -20,9 +20,12 @@ namespace EAE_Engine
 		// Time
 		//-----
 
+		float GetFixedTimeStep();
+		float GetFixedUpdateRunTimesOnThisFrame();
+		float GetFixedUpdateBlendAlphaOnThisFrame();
+
 		float GetTotalSecondsElapsed();
 		float GetSecondsElapsedThisFrame();
-
 		void OnNewFrame();
 
 		// Initialization / Shut Down

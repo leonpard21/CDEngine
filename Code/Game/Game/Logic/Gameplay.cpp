@@ -20,6 +20,7 @@
 #include "Engine/Graphics/Common/Text.h"
 #include "Engine/Graphics/Common/RectTransform.h"
 #include "Engine/Graphics/Common/GUI.h"
+#include "Engine/CollisionDetection/RigidBody.h"
 
 namespace 
 {
@@ -41,6 +42,7 @@ const char* const pathGround = "data/Meshes/warehouse.aosmesh";
 const char* const pathPlayer = "data/Meshes/sphere.aosmesh";
 
 EAE_Engine::Collider::Collider* pPlayerCollider = nullptr;
+EAE_Engine::Physics::RigidBody* pRigidBody = nullptr;
 
 EAE_Engine::Graphics::MeshRender* pRenderGround = nullptr;
 EAE_Engine::Common::IGameObj* pActorGround = nullptr;
@@ -211,11 +213,12 @@ namespace
 	{
 		// Player
 		{
-			EAE_Engine::Math::Vector3 zero = EAE_Engine::Math::Vector3::Zero;
-			pPlayerObj = EAE_Engine::Core::World::GetInstance().AddGameObj("player", zero);
+			EAE_Engine::Math::Vector3 playerinitPos(0.0f, 200.0f, 0.0f);
+			pPlayerObj = EAE_Engine::Core::World::GetInstance().AddGameObj("player", playerinitPos);
 			std::vector<std::string> materialList;
 			materialList.push_back("phongShading");
 			EAE_Engine::Graphics::AddMeshRender(pathPlayer, materialList, pPlayerObj->GetTransform());
+			pRigidBody = EAE_Engine::Physics::Physics::GetInstance()->AddRigidBody(pPlayerObj->GetTransform());
 			//Set Collider
 			//EAE_Engine::Math::Vector3 playerSize = EAE_Engine::Math::Vector3(0.3f, 1.0f, 0.3f);
 			//pPlayerCollider = EAE_Engine::Collider::CreateOBBCollider(pPlayerObj->GetTransform(), playerSize);

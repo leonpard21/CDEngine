@@ -54,13 +54,14 @@ namespace EAE_Engine
 		{
 		public:
 			virtual ~ICompo() {}
-			virtual IGameObj* GetGameObj() = 0;
+			virtual ITransform* GetTransform() = 0;
 		};
 
 		class ITransform : public ICompo
 		{
 		public:
 			virtual ~ITransform() {}
+			virtual IGameObj* GetGameObj() = 0;
 			// global transform
 			virtual Math::Vector3 GetPos() = 0;
 			virtual void SetPos(const Math::Vector3&) = 0;
@@ -102,6 +103,38 @@ namespace EAE_Engine
 			virtual Rectangle GetRect() = 0;
 		};
 
+		enum ForceMode 
+		{
+			Force,
+			Momentum,
+
+		};
+
+		enum CollisionDetectionMode 
+		{
+			Discrete = 0x0,
+			Continuous = 0x1, // Continuous collision detection is on for colliding with static mesh geometry.
+			ContinuousDynamic = 0x2,// Continuous collision detection is on for colliding with static and dynamic geometry.
+		};
+
+		class IRigidBody //: public ICompo
+		{
+		public:
+			virtual ~IRigidBody() {}
+			virtual ITransform* GetTransform() = 0;
+			virtual Math::Vector3 GetVelocity() const = 0;
+			virtual void SetVelocity(Math::Vector3&) = 0;
+			virtual Math::Vector3 GetPos() const = 0;
+			virtual void SetPos(Math::Vector3&) = 0;
+			//virtual Math::Quaternion GetRotation() = 0;
+			//virtual void SetRotation(Math::Quaternion& rotation) = 0;
+			virtual float GetMass() const = 0;
+			virtual void SetMass(float) = 0;
+			virtual void SetCollisionDetectionMode(CollisionDetectionMode mode) = 0;
+			virtual CollisionDetectionMode GetCollisionDetectionMode() const = 0;
+			virtual void AddForce(Math::Vector3& force, ForceMode mode = ForceMode::Force) = 0;
+		};
+
 		class ICamera // : public ICompo
 		{
 		public:
@@ -118,6 +151,7 @@ namespace EAE_Engine
 		public:
 			virtual ~IController() {}
 			virtual void Update() = 0;
+			virtual void FixedUpdate() = 0;
 			virtual ITransform* GetTransform() = 0;
 		};
 

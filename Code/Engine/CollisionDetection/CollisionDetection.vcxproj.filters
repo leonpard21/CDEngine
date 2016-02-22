@@ -15,12 +15,18 @@
     <ClInclude Include="ColliderBase.h">
       <Filter>Collider</Filter>
     </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OBBCollider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
     <ClCompile Include="ColliderBase.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
   </ItemGroup>

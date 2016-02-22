@@ -6,9 +6,11 @@
 #include "Engine/Graphics/Common/Camera.h"
 #include "Engine/CollisionDetection/OBBCollider.h"
 #include "Engine/CollisionDetection/ColliderBase.h"
+#include "Engine/CollisionDetection/RigidBody.h"
 #include "Engine/Common/Interfaces.h"
 #include "Engine/DebugShape/DebugShape.h"
 #include "Engine/UserInput/UserInput.h"
+
 #include <vector>
 
 namespace EAE_Engine
@@ -40,22 +42,34 @@ namespace EAE_Engine
 {
 	namespace Engine
 	{
+
 		bool EngineBegin(const HWND i_renderingWindow)
 		{
 			Time::Initialize();
 			_pRemoveList = new std::vector<EAE_Engine::Common::ITransform*>();
 			UserInput::Input::GetInstance()->Init();
+			Physics::Physics::GetInstance()->Init();
 			bool result = Graphics::Initialize(i_renderingWindow);
 			return result;
+		}
+
+		void FixedUpdate()
+		{
+			int fixedUpdateRunTime = Time::GetFixedUpdateRunTimesOnThisFrame();
+			for (int i = 0; i < fixedUpdateRunTime; ++i)
+			{
+				Physics::Physics::GetInstance()->FixedUpdate();
+			}
+			Physics::Physics::GetInstance()->Synchronize();
 		}
 
 		void EngineUpdate() 
 		{
 			EAE_Engine::Time::OnNewFrame();
-			float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
-			Collider::Update(elpasedTime); 
 			UserInput::Input::GetInstance()->Update();
-			EAE_Engine::Controller::ControllerManager::GetInstance().UpdateAll();
+			EAE_Engine::Controller::ControllerManager::GetInstance().Update();
+			Collider::Update();
+			FixedUpdate();
 			RemoveAllActorsInList();
 		}
 
@@ -68,6 +82,7 @@ namespace EAE_Engine
 		{
 			UserInput::Input::Destroy();
 			Controller::ControllerManager::CleanInstance();
+			Physics::Physics::Destroy();
 			Collider::ColliderManager::CleanInstance();
 			Graphics::ShutDown();
 			Debug::DebugShapes::CleanInstance();
