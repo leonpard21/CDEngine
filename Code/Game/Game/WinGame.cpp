@@ -532,6 +532,7 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 			//	someGameClass.OnNewFrame();
 			// or similar, though.)
 			GameplayUpdate();
+			EAE_Engine::Engine::EngineUpdate();
 			EAE_Engine::Engine::EngineRender();
 		}
 		else

@@ -2,6 +2,7 @@
 #include <cmath>
 #include "Math/ColMatrix.h"
 #include "Math/Quaternion.h"
+#include "RigidBody.h"
 
 namespace EAE_Engine
 {
@@ -75,159 +76,6 @@ namespace EAE_Engine
 			return false;
 		}
 
-		
-		/*
-		OverlapAndSepTime OBBCollider::CalculateOverlapSepTimeForSAT(
-			Engine::Math::Vector4 boxASize, const Math::Vector4& i_movementPerFrameA, const Math::Matrix44& i_ObjAtoWorld,
-			Engine::Math::Vector4 boxBSize, const Math::Vector4& i_movementPerFrameB, const Math::Matrix44& i_ObjBtoWorld,
-			Engine::Math::Vector3& axle)
-		{
-			//here, we should get the matrix of convert BoxA's local coordinate to BoxB's local coordinate.
-			Engine::Math::Matrix44 boxBTransInvert;
-			bool inverTest = i_ObjBtoWorld.GetInvert(boxBTransInvert);
-			assert(inverTest);
-			assert(i_ObjBtoWorld * boxBTransInvert == Engine::Math::Matrix44::Identity);
-			Engine::Math::Matrix44 boxAtoBMatrix = i_ObjAtoWorld * boxBTransInvert;
-
-			//In boxA's local coordinate, it's location is (0.0f, 0.0f, 0.0f, 1.0f)
-			//We will move the center of boxA into boxB's local coordinate.
-			Engine::Math::Vector4 boxACenter = Engine::Math::Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-			Engine::Math::Vector4 boxBCenter = Engine::Math::Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-
-			//calculate the projection of boxA's size project on the axle in boxB's local coordinate system.
-			Engine::Math::Vector4 boxAWidthVec = Math::Vector4(boxASize.x() / 2.0f, 0, 0.0f, 0.0f);
-			Engine::Math::Vector4 boxAHeightVec = Math::Vector4(0.0f, boxASize.y() / 2.0f, 0.0f, 0.0f);
-			Engine::Math::Vector4 boxADepthVec = Math::Vector4(0.0f, 0.0f, boxASize.z() / 2.0f, 0.0f);
-			float boxASizeProjectOnAxleInB = fabsf((boxAWidthVec * boxAtoBMatrix).Dot(axle)) + fabsf((boxAHeightVec * boxAtoBMatrix).Dot(axle)) + fabsf((boxADepthVec * boxAtoBMatrix).Dot(axle));
-			//calculate the projection of boxB's size project on the axle in boxB's local coordinate system.
-			Engine::Math::Vector4 boxBWidthVec = Math::Vector4(boxBSize.x() / 2.0f, 0, 0.0f, 0.0f);
-			Engine::Math::Vector4 boxBHeightVec = Math::Vector4(0.0f, boxBSize.y() / 2.0f, 0.0f, 0.0f);
-			Engine::Math::Vector4 boxBDepthVec = Math::Vector4(0.0f, 0.0f, boxBSize.z() / 2.0f, 0.0f);
-			float boxBSizeProjectOnAxleInB = fabsf((boxBWidthVec).Dot(axle)) + fabsf((boxBHeightVec).Dot(axle)) + fabsf((boxBDepthVec).Dot(axle));
-			//project the center of boxA into the axle in boxB's local coordinate system.
-			float boxACenterProjInB = (boxACenter * boxAtoBMatrix).Dot(axle);
-			
-			//so the range of boxB's proejction on the axle should be:
-			//remember that, we expand the boxB's projection
-			//by boxA's size projected on the axle in boxB's coordinate system
-			//So we can just treat boxA as a single point projected on the axle in B's coordinate system, too.
-			float boxBLeftProjOnAxle = (boxBCenter).Dot(axle) - boxBSizeProjectOnAxleInB - boxASizeProjectOnAxleInB; //center of B in B's local coordinate is (0, 0, 0, 1)
-			float boxBrightProjOnAxle = (boxBCenter).Dot(axle) + boxBSizeProjectOnAxleInB + boxASizeProjectOnAxleInB; //center of B in B's local coordinate is (0, 0, 0, 1)
-
-			//Because we suppose there is no previous collision,
-			//so boxA's center can only be on the left or right side of the boxB's range
-			//What's more, we should also calculate the distance based on the right and left side.
-			float distanceOverlapWithBoxB = 0.0f;//the distance boxA will collide with boxB
-			float distanceSepWithBoxB = 0.0f;//the distance boxA will seperate with boxB
-			//calculate the speed on the axle
-			Engine::Math::Vector3 relative_movement_InB = (i_movementPerFrameA - i_movementPerFrameB) * boxBTransInvert;
-			float relativeMoveOnAxle = relative_movement_InB.Dot(axle);
-			//if A's movement is larger than B's movement, 
-			//and the relatedmovement's projection on the axle is positive, 
-			//then A to B's related_speed is positive, to the >0 direction of the axle.
-			if (relativeMoveOnAxle > 0) //boxA is moving to right related to boxB
-			{
-				distanceOverlapWithBoxB = (boxBLeftProjOnAxle - boxACenterProjInB);
-				distanceSepWithBoxB = (boxBrightProjOnAxle - boxACenterProjInB);
-			}
-			else //boxA is moving to left related to boxB
-			{
-				distanceOverlapWithBoxB = (boxBrightProjOnAxle - boxACenterProjInB);
-				distanceSepWithBoxB = (boxBLeftProjOnAxle - boxACenterProjInB);
-			}
-
-			OverlapAndSepTime result;
-
-			//we should deal with the static cases:
-			if (relativeMoveOnAxle == 0.0f)
-			{
-				if (boxACenterProjInB > boxBLeftProjOnAxle && boxACenterProjInB > boxBrightProjOnAxle)
-				{
-					result._overlapTime = FLT_MAX;
-					result._sepTime = FLT_MAX;
-					result._collisionAxle = Math::Vector3::Zero;
-				}
-				else if (boxACenterProjInB < boxBLeftProjOnAxle && boxACenterProjInB < boxBrightProjOnAxle)
-				{
-					result._overlapTime = FLT_MAX;
-					result._sepTime = FLT_MAX;
-					result._collisionAxle = Math::Vector3::Zero;
-				}
-				else
-				{
-					result._overlapTime = -FLT_MAX;
-					result._sepTime = FLT_MAX;
-					result._collisionAxle = Math::Vector3::Zero;
-				}
-				return result;
-			}
-			assert(relativeMoveOnAxle != 0.0f);
-			result._overlapTime = distanceOverlapWithBoxB / relativeMoveOnAxle;
-			result._sepTime = distanceSepWithBoxB / relativeMoveOnAxle;
-			//because the axle is in the BoxB's local coordinate system,
-			//so we move it to the world.
-			result._collisionAxle = axle * i_ObjBtoWorld;
-			assert(result._overlapTime <= result._sepTime);
-			return result;
-		}
-
-		//Check two bounding boxes, if they has collided, return true.
-		//else return false;
-		bool OBBCollider::DetectCollisionIn2OBBbySAT(OBBCollider& i_boxA, OBBCollider& i_boxB, float fElpasedTime, OverlapAndSepTime& collisionInfo)
-		{
-			Engine::Math::Vector3 xAxle = Engine::Math::Vector3(1.0f, 0.0f, 0.0f);
-			Engine::Math::Vector3 yAxle = Engine::Math::Vector3(0.0f, 1.0f, 0.0f);
-			Engine::Math::Vector3 zAxle = Engine::Math::Vector3(0.0f, 0.0f, 1.0f);
-
-			//get the matrix of the boxA
-			Engine::Math::Matrix44 boxAMoveMatrix = Math::Matrix44::GetTranformLH(i_boxA._pGameObject->GetPosition());
-			float angleA = (i_boxA._pGameObject->GetAngle() * 3.14159265359f) / 180.0f;
-			Engine::Math::Matrix44 boxARotateMatrix = Math::Matrix44::GetRotateAroundZLH(angleA);
-			Engine::Math::Matrix44 boxATransMatrix = boxARotateMatrix * boxAMoveMatrix;
-			//get the matrix of the boxB
-			Engine::Math::Matrix44 boxBMoveMatrix = Math::Matrix44::GetTranformLH(i_boxB._pGameObject->GetPosition());
-			float angleB = (i_boxB._pGameObject->GetAngle() * 3.14159265359f) / 180.0f;
-			Engine::Math::Matrix44 boxBRotateMatrix = Math::Matrix44::GetRotateAroundZLH(angleB);
-			Engine::Math::Matrix44 boxBTransMatrix = boxBRotateMatrix * boxBMoveMatrix;
-			//Calculate the movement in this frame.
-			Engine::Math::Vector4 movementPerFrameA = i_boxA._pGameObject->GetVelocity() * fElpasedTime;// * deltaTime
-			Engine::Math::Vector4 movementPerFrameB = i_boxB._pGameObject->GetVelocity() * fElpasedTime;// * deltaTime
-
-			OverlapAndSepTime resultOnAxles[15];
-			//We should check boxA collide boxB on both X axle, Y axle, and Z axle.
-			resultOnAxles[0] = CalculateOverlapSepTimeForSAT(i_boxA._size, movementPerFrameA, boxATransMatrix,
-				i_boxB._size, movementPerFrameB, boxBTransMatrix, xAxle);//resultOnX 
-			resultOnAxles[1] = CalculateOverlapSepTimeForSAT(i_boxA._size, movementPerFrameA, boxATransMatrix,
-				i_boxB._size, movementPerFrameB, boxBTransMatrix, yAxle);//resultOnY
-			resultOnAxles[2] = CalculateOverlapSepTimeForSAT(i_boxA._size, movementPerFrameA, boxATransMatrix,
-				i_boxB._size, movementPerFrameB, boxBTransMatrix, zAxle);//resultOnZ
-			//Now let's should check boxB collide boxA on both X axle, Y axle, and Z axle.
-			resultOnAxles[3] = CalculateOverlapSepTimeForSAT(i_boxB._size, movementPerFrameB, boxBTransMatrix,
-				i_boxA._size, movementPerFrameA, boxATransMatrix, xAxle);//resultOnX 
-			resultOnAxles[4] = CalculateOverlapSepTimeForSAT(i_boxB._size, movementPerFrameB, boxBTransMatrix,
-				i_boxA._size, movementPerFrameA, boxATransMatrix, yAxle);//resultOnY
-			resultOnAxles[5] = CalculateOverlapSepTimeForSAT(i_boxB._size, movementPerFrameB, boxBTransMatrix,
-				i_boxA._size, movementPerFrameA, boxATransMatrix, zAxle);//resultOnZ
-
-			collisionInfo._overlapTime = -FLT_MAX;
-			collisionInfo._sepTime = FLT_MAX;
-			collisionInfo._collisionAxle = Math::Vector3::Zero;
-			for (size_t index = 0; index < 6; ++index)
-			{
-				if (resultOnAxles[index]._overlapTime > collisionInfo._overlapTime)
-				{
-					collisionInfo._overlapTime = resultOnAxles[index]._overlapTime;
-					collisionInfo._collisionAxle = resultOnAxles[index]._collisionAxle;//should be changed to store the collision point, but the axle.
-				}
-				if (resultOnAxles[index]._sepTime < collisionInfo._sepTime)
-				{
-					collisionInfo._sepTime = resultOnAxles[index]._sepTime;
-				}
-			}
-			return CheckContacting(collisionInfo);//check if there is collision
-		}
-		*/
-		
 		bool OBBCollider::CalculateOverlapSepTimeForSAT(OBBCollider& i_boxA, OBBCollider& i_boxB, Math::Vector3 relative_movementInASpace, const Math::Vector3& axle, OverlapAndSepTime& o_result)
 		{
 			float rangeOfBoxA = fabsf(i_boxA._size.x() * axle.x()) + fabsf(i_boxA._size.y()*axle.y()) + fabsf(i_boxA._size.z()*axle.z());
@@ -285,8 +133,10 @@ namespace EAE_Engine
 			Math::ColMatrix44 boxATransMatrix = i_boxA._pTransform->GetRotateTransformMatrix();
 			Math::ColMatrix44 boxBTransMatrix = i_boxB._pTransform->GetRotateTransformMatrix();
 			//Calculate the movement in this frame.
-			Math::Vector4 movementPerFrameA = i_boxA._pTransform->GetVelocity() * fElpasedTime;
-			Math::Vector4 movementPerFrameB = i_boxB._pTransform->GetVelocity() * fElpasedTime;
+			Physics::RigidBody* pRBA = reinterpret_cast<Physics::RigidBody*>( i_boxA._pTransform->GetComponent(getTypeID<Physics::RigidBody>()) );
+			Math::Vector4 movementPerFrameA = pRBA->GetVelocity() * fElpasedTime;
+			Physics::RigidBody* pRBB = reinterpret_cast<Physics::RigidBody*>(i_boxB._pTransform->GetComponent(getTypeID<Physics::RigidBody>()) );
+			Math::Vector4 movementPerFrameB = pRBB->GetVelocity()  * fElpasedTime;
 			Math::Vector3 relative_movementInA = (movementPerFrameB - movementPerFrameA);
 			//Get the local coordinate axes of the two OBB boxes.
 			Math::Vector3 uofA[3] = { boxARotateMatrix.GetCol(0), boxARotateMatrix.GetCol(1), boxARotateMatrix.GetCol(2) };

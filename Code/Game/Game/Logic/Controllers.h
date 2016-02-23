@@ -110,11 +110,8 @@ public:
 		EAE_Engine::Math::Quaternion rotationOffset = RotateAroundY();
 		_pTransform->Rotate(rotationOffset);
 		// set position
-		EAE_Engine::Math::Vector3 offset = GetInput();
-		EAE_Engine::Math::Vector3 newPos = _pTransform->GetPos() + offset;
-		if (!EAE_Engine::Graphics::CameraManager::Valid())
-			return;
-		_pTransform->SetPos(newPos);
+		EAE_Engine::Math::Vector3 offset = GetInput();// _pTransform->GetTransform()->GetForward() * EAE_Engine::Time::GetSecondsElapsedThisFrame() * 50.0f;// GetInput();
+		_pTransform->Move(offset);
 
 		float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		_cdRemain -= elpasedTime;
@@ -125,6 +122,7 @@ public:
 			_resetLevelController = true;
 			_cdRemain = 0.5f;
 		}
+
 	}
 
 	void FixedUpdate()

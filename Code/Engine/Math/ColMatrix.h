@@ -116,7 +116,6 @@ namespace EAE_Engine
 				const float i_02, const float i_12, const float i_22, const float i_32,
 				const float i_03, const float i_13, const float i_23, const float i_33);
 			ColMatrix44( const Quaternion& i_rotation, const Vector3& i_translation );
-			ColMatrix44( const Vector3& i_scale);
 			ColMatrix44(const ColMatrix44& i_other);
 			ColMatrix44& operator=(const ColMatrix44& i_other);
 			ColMatrix44& operator*=(float i_other);
@@ -132,6 +131,10 @@ namespace EAE_Engine
 			Vector4 GetRow(size_t index) const;
 			float GetRowCol(size_t row, size_t col) const;
 			void SetRowCol(size_t row, size_t col, float value);
+
+			static ColMatrix44 CreateMovementMatrix(const Vector3& i_position);
+			static ColMatrix44 CreateRotationMatrix(const Quaternion& i_rotation);
+			static ColMatrix44 CreateScaleMatrix(const Vector3& i_scale);
 
 		private:
 			ColMatrix33 GetCofactorMatrix(size_t row, size_t col) const;

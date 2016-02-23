@@ -40,6 +40,13 @@ namespace EAE_Engine
 			//virtual IComponent* GetComponentInParent() = 0;
 		};
 
+		struct Compo
+		{
+			Compo() = default;
+			Common::ICompo* _pCompo;
+			typeid_t _typeId;
+		};
+
 		class ITransform;
 		class IGameObj : public IGetCompo
 		{
@@ -47,7 +54,7 @@ namespace EAE_Engine
 			virtual ~IGameObj() {}
 			virtual ITransform* GetTransform() = 0;
 			virtual const char* GetName() = 0;
-		//	virtual void AddComponent(IComponent*) = 0;
+			virtual void AddComponent(Compo) = 0;
 		};
 
 		class ICompo : public IGetCompo
@@ -72,21 +79,20 @@ namespace EAE_Engine
 			// local transform
 			virtual Math::Vector3& GetLocalPos() = 0;
 			virtual void SetLocalPos(const Math::Vector3&) = 0;
-			virtual void Rotate(const Math::Quaternion&) = 0;
 			virtual Math::Quaternion& GetLocalRotation() = 0;
 			virtual void SetLocalRotation(const Math::Quaternion&) = 0;
 			virtual void SetLocalScale(const Math::Vector3&) = 0;
 			virtual Math::Vector3 LocalScale() = 0;
-			// Velocity
-			virtual Math::Vector3& GetVelocity() = 0;
-			virtual void SetVelocity(Math::Vector3& velocity) = 0;
+			virtual void Move(const Math::Vector3&) = 0;
+			virtual void Rotate(const Math::Quaternion&) = 0;
 			// Matrix
 			virtual Math::ColMatrix44 GetRotateTransformMatrix() = 0;
 			virtual Math::ColMatrix44 GetLocalToWorldMatrix() = 0;
 			virtual Math::Vector3 GetForward() = 0;
 			// Children
 			virtual uint32_t GetChildCount() = 0;
-			virtual ITransform* pGetChildren(uint32_t index = 0) = 0;
+			virtual ITransform* GetChild(uint32_t index = 0) = 0;
+			virtual void AddChild(ITransform*) = 0;
 			// Parent
 			virtual void SetParent(ITransform* pParent) = 0;
 			virtual ITransform* GetParent() = 0;
@@ -117,7 +123,7 @@ namespace EAE_Engine
 			ContinuousDynamic = 0x2,// Continuous collision detection is on for colliding with static and dynamic geometry.
 		};
 
-		class IRigidBody //: public ICompo
+		class IRigidBody : public ICompo
 		{
 		public:
 			virtual ~IRigidBody() {}

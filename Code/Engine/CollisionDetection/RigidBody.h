@@ -5,6 +5,7 @@
 #include "Engine/Math/Vector.h"
 #include "Engine/Math/Quaternion.h"
 #include "Engine/General/Singleton.hpp"
+#include "Engine/General/EngineObj.h"
 #include <vector>
 
 namespace EAE_Engine 
@@ -32,11 +33,12 @@ namespace EAE_Engine
 		};
 
 
-		class RigidBody : public Common::IRigidBody
+		class RigidBody : public Reflection<RigidBody>, public Common::IRigidBody
 		{
 		public:
 			RigidBody(Common::ITransform* pTransform);
 			~RigidBody();
+			Common::ICompo* GetComponent(typeid_t type) { return _pTransform->GetComponent(type); }
 			Common::ITransform* GetTransform() { return _pTransform; }
 			Math::Vector3 GetVelocity() const { return _currentVelocity; }
 			void SetVelocity(Math::Vector3& velocity) { _currentVelocity = velocity; }
@@ -73,6 +75,7 @@ namespace EAE_Engine
 			Math::Vector3 _forceWorkingOn;
 		};
 
+
 		class RigidBodyManager
 		{
 		public:
@@ -91,4 +94,5 @@ namespace EAE_Engine
 	}
 }
 
+RTTI_DECLARE_META_TYPE(EAE_Engine::Physics::RigidBody)
 #endif//EAE_ENGINE_PHYSICS_RIGIDBODY

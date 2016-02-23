@@ -93,7 +93,7 @@
 	// A handy macro for adding type ID info to a class
 #define ADD_TYPEID() \
 public: \
-	virtual typeid_t _getTypeID() const { return getTypeIDFromInstance( this ); } \
+	virtual typeid_t GetTypeID() const { return getTypeIDFromInstance( this ); } \
 private:
 
 

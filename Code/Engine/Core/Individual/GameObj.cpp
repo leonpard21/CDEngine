@@ -18,8 +18,18 @@ namespace EAE_Engine
 
 		Common::ICompo* GameObj::GetComponent(typeid_t type)
 		{
-			
+			for (std::vector<Common::Compo>::iterator it = _components.begin(); it!= _components.end(); ++it)
+			{
+				Common::Compo compo = *it;
+				if(compo._typeId == type)
+					return compo._pCompo;
+			}
 			return nullptr;
+		}
+
+		void GameObj::AddComponent(Common::Compo compo)
+		{
+			_components.push_back(compo);
 		}
 
 		Common::ITransform* GameObj::GetTransform()
@@ -27,11 +37,5 @@ namespace EAE_Engine
 			return _pTransform;
 		}
 
-		/*
-		void GameObj::AddComponent(Common::ICompo* pCompo)
-		{
-			_compoList.Push(pCompo);
-		}
-		*/
 	}
 }

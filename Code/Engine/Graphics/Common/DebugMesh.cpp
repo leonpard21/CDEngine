@@ -172,7 +172,7 @@ namespace EAE_Engine
 
 			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
 			// Get the TransformMatrix
-			RenderData3D renderData = {_pSegmentsMeshRender, 0, Math::ColMatrix44::Identity };
+			RenderData3D renderData = {_pSegmentsMeshRender, 0, nullptr };
 			renderDataList.push_back(renderData);
 		}
 
@@ -194,8 +194,7 @@ namespace EAE_Engine
 			{
 				Debug::DebugBox debugbox = debugboxes[boxIndex];
 				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(debugbox._rotation, debugbox._pos);
-				Math::ColMatrix44 scaleMatrix = Math::ColMatrix44(debugbox._extents);
-				tranformsMatrix = scaleMatrix * tranformsMatrix;
+				tranformsMatrix = tranformsMatrix * Math::ColMatrix44::CreateScaleMatrix(debugbox._extents);
 				// Set the Vertices Information.
 				for (uint32_t verticesIndex = 0; verticesIndex < standardBox._vertices.size(); ++verticesIndex)
 				{
@@ -227,7 +226,7 @@ namespace EAE_Engine
 			SAFE_DELETE_ARRAY(pIndices);
 			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
 			// Get the TransformMatrix
-			RenderData3D renderData = { _pBoxesMeshRender, 0, Math::ColMatrix44::Identity };
+			RenderData3D renderData = { _pBoxesMeshRender, 0, nullptr };
 			renderDataList.push_back(renderData);
 			/*
 			uint32_t vertexCount = standardBox._vertices.size();
@@ -315,8 +314,8 @@ namespace EAE_Engine
 				Math::Quaternion identityRotation = Math::Quaternion::Identity;
 				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(identityRotation, debugSphere._pos);
 				{
-					Math::ColMatrix44 scaleMatrix = Math::ColMatrix44(Math::Vector3(debugSphere._radius, debugSphere._radius, debugSphere._radius));
-					tranformsMatrix = scaleMatrix * tranformsMatrix;
+					Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(Math::Vector3(debugSphere._radius, debugSphere._radius, debugSphere._radius));
+					tranformsMatrix = tranformsMatrix * scaleMatrix;
 				}
 				// Set the Vertices Information.
 				for (uint32_t verticesIndex = 0; verticesIndex < verticesOfThisBox; ++verticesIndex)
@@ -350,7 +349,7 @@ namespace EAE_Engine
 			SAFE_DELETE_ARRAY(pIndices);
 			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
 			// Get the TransformMatrix
-			RenderData3D renderData = {_pShperesMeshRender, 0, Math::ColMatrix44::Identity };
+			RenderData3D renderData = {_pShperesMeshRender, 0, nullptr };
 			renderDataList.push_back(renderData);
 		}
 

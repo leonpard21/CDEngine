@@ -8,8 +8,7 @@ namespace EAE_Engine
 	{
 		Transform::Transform(Common::IGameObj* pGamObj) : _pGamObj(pGamObj), _pParent(nullptr), 
 			_localPosition(Math::Vector3::Zero), _localRotation(Math::Quaternion::Identity), 
-			_localScale(Math::Vector3(1.0f, 1.0f, 1.0f)), _velocity(Math::Vector3::Zero), 
-			_ppChildren(nullptr), _childCount(0)
+			_localScale(Math::Vector3(1.0f, 1.0f, 1.0f))
 		{
 		}
 
@@ -23,7 +22,7 @@ namespace EAE_Engine
 		}
 		Common::ICompo* Transform::GetComponent(typeid_t type)
 		{
-			return nullptr;
+			return _pGamObj ? _pGamObj->GetComponent(type) : nullptr;
 		}
 
 		// Parent
@@ -34,8 +33,9 @@ namespace EAE_Engine
 				return;
 			}
 			_pParent = parent;
+			parent->AddChild(this);
 		}
-		Common::ITransform* Transform::_root() 
+		Common::ITransform* Transform::Root() 
 		{
 			ITransform* pRoot = this;
 			while (pRoot->GetParent())
@@ -50,10 +50,10 @@ namespace EAE_Engine
 		{ 
 			if (_pParent == nullptr)
 				return _localPosition;
-			else 
+			else
 			{
 				Math::Vector4 localPos(_localPosition._x, _localPosition._y, _localPosition._z, 1.0f);
-				Math::Vector3 result =  _pParent->GetLocalToWorldMatrix() * localPos;
+				Math::Vector4 result = _pParent->GetLocalToWorldMatrix() * localPos;
 				return result;
 			}
 		}
@@ -63,9 +63,7 @@ namespace EAE_Engine
 			if (_pParent == nullptr)
 				_localPosition = pos;
 			else
-			{
 				_localPosition = pos - _pParent->GetPos();
-			}
 		}
 
 		Math::Quaternion Transform::GetRotation() 
@@ -85,7 +83,7 @@ namespace EAE_Engine
 				_localRotation = i_other;
 			else 
 			{
-				Math::Quaternion result = i_other * _pParent->GetRotation().CreateInverse();
+				Math::Quaternion result = _pParent->GetRotation().CreateInverse() * i_other;
 				_localRotation = result;
 			}
 		}
@@ -126,12 +124,10 @@ namespace EAE_Engine
 		void Transform::SetLocalPos(const Math::Vector3& pos) { _localPosition = pos; }
 		Math::Quaternion& Transform::GetLocalRotation() { return _localRotation; }
 		void Transform::SetLocalRotation(const Math::Quaternion& i_other) { _localRotation = i_other; }
-		void Transform::Rotate(const Math::Quaternion& i_other) { _localRotation = _localRotation * i_other; }
 		void Transform::SetLocalScale(const Math::Vector3& localScale) { _localScale = localScale; }
 		Math::Vector3 Transform::LocalScale() { return _localScale; }
-		// Velocity
-		Math::Vector3& Transform::GetVelocity() { return _velocity; }
-		void Transform::SetVelocity(Math::Vector3& velocity) { _velocity = velocity; }
+		void Transform::Move(const Math::Vector3& i_movement) { _localPosition = _localPosition + i_movement; }
+		void Transform::Rotate(const Math::Quaternion& i_other) { _localRotation = _localRotation * i_other; }
 		// Transform Matrices
 		Math::ColMatrix44 Transform::GetRotateTransformMatrix() { 
 			Math::ColMatrix44 result;
@@ -148,18 +144,14 @@ namespace EAE_Engine
 			// we should use the Global Rotaion and Global Position,
 			// so we don't need to care the local position and how many parents it has.
 			Math::ColMatrix44 rotateTransMat = Math::ColMatrix44(_localRotation, _localPosition);
-			Math::ColMatrix44 scaleMat = Math::ColMatrix44::Identity;
-			{
-				Math::Vector3 scale = _localScale;
-				scaleMat._m00 = scale.x();
-				scaleMat._m11 = scale.y();
-				scaleMat._m22 = scale.z();
-			}
-			Math::ColMatrix44 localTransformMatrix = rotateTransMat * scaleMat;
+
+			Math::ColMatrix44 moveMat = Math::ColMatrix44::CreateMovementMatrix(_localPosition);
+			Math::ColMatrix44 rotateMat = Math::ColMatrix44::CreateRotationMatrix(_localRotation);
+			Math::ColMatrix44 localTransformMatrix = moveMat * rotateMat * Math::ColMatrix44::CreateScaleMatrix(_localScale);
 			if (!_pParent)
 				return localTransformMatrix;
 			else
-				return localTransformMatrix * _pParent->GetLocalToWorldMatrix();
+				return _pParent->GetLocalToWorldMatrix() * localTransformMatrix;
 		}
 		Math::Vector3 Transform::GetForward()
 		{
@@ -169,7 +161,6 @@ namespace EAE_Engine
 			Math::Vector3 forward = rotationMat.GetCol(2) * -1.0f;
 			return forward.Normalize();
 		}
-
 
 	}
 }

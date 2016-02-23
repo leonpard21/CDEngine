@@ -18,6 +18,9 @@
     <ClInclude Include="RigidBody.h">
       <Filter>Collider</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionDetectionFunctions.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OBBCollider.cpp">

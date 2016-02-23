@@ -112,7 +112,6 @@ namespace EAE_Engine
 			_pTransform->SetPos(_currentPos);
 		}
 
-
 		////////////////////////////////////////RigidBodyManager////////////////////////////////////////
 
 		RigidBodyManager::~RigidBodyManager() 

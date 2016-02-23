@@ -113,7 +113,6 @@ void GameplayUpdate()
 	{
 		_resetLevelController = false;
 		_resetLevel = false;
-		EAE_Engine::Engine::EngineUpdate();
 		float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		_resetCDRemain -= elpasedTime;
 		//DebugInformations
@@ -149,6 +148,11 @@ void GameplayUpdate()
 			}
 		}
 		*/
+		EAE_Engine::Math::Vector3 camPos = EAE_Engine::Graphics::CameraManager::GetInstance().GetCam()->GetTransform()->GetPos();
+		EAE_Engine::Math::Vector3 playerPos = pPlayerObj->GetTransform()->GetPos();
+		EAE_Engine::Math::Vector3 offset = camPos - playerPos;
+		EAE_Engine::Math::Vector3 offsetInit(0.0f, 2.0f, 5.0f);
+	//	assert((offset - offsetInit).Magnitude() < 0.1f);
 
 		char text[20];
 		float fps = 1.0f / elpasedTime;
@@ -213,12 +217,16 @@ namespace
 	{
 		// Player
 		{
-			EAE_Engine::Math::Vector3 playerinitPos(0.0f, 200.0f, 0.0f);
+			EAE_Engine::Math::Vector3 playerinitPos(0.0f, 0.0f, 0.0f);
 			pPlayerObj = EAE_Engine::Core::World::GetInstance().AddGameObj("player", playerinitPos);
 			std::vector<std::string> materialList;
 			materialList.push_back("phongShading");
 			EAE_Engine::Graphics::AddMeshRender(pathPlayer, materialList, pPlayerObj->GetTransform());
-			pRigidBody = EAE_Engine::Physics::Physics::GetInstance()->AddRigidBody(pPlayerObj->GetTransform());
+			//pRigidBody = EAE_Engine::Physics::Physics::GetInstance()->AddRigidBody(pPlayerObj->GetTransform());
+			//pPlayerObj->AddComponent({ pRigidBody, pRigidBody->GetTypeID() });
+			//EAE_Engine::Common::ICompo* pCompo = pPlayerObj->GetTransform()->GetComponent(getTypeID<EAE_Engine::Physics::RigidBody>());
+			//EAE_Engine::Physics::RigidBody* pRBA = dynamic_cast<EAE_Engine::Physics::RigidBody*>(pCompo);
+			
 			//Set Collider
 			//EAE_Engine::Math::Vector3 playerSize = EAE_Engine::Math::Vector3(0.3f, 1.0f, 0.3f);
 			//pPlayerCollider = EAE_Engine::Collider::CreateOBBCollider(pPlayerObj->GetTransform(), playerSize);

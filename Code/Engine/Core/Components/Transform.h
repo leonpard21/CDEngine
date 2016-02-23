@@ -5,12 +5,13 @@
 #include "Math/Vector.h"
 #include "Math/Quaternion.h"
 #include "Math/ColMatrix.h"
+#include <vector>
 
 namespace EAE_Engine
 {
 	namespace Core
 	{
-		class Transform : public Common::ITransform, public EngineObj
+		class Transform : public Common::ITransform, public Reflection<Transform>
 		{
 			Transform() = delete;
 			Transform(const Transform& i_other) = delete;
@@ -34,36 +35,33 @@ namespace EAE_Engine
 			void SetLocalPos(const Math::Vector3&);
 			Math::Quaternion& GetLocalRotation();
 			void SetLocalRotation(const Math::Quaternion& i_other);
-			void Rotate(const Math::Quaternion& i_other);
 			void SetLocalScale(const Math::Vector3& localScale);
 			Math::Vector3 LocalScale();
-			// Velocity
-			Math::Vector3& GetVelocity();
-			void SetVelocity(Math::Vector3& velocity);
+			void Move(const Math::Vector3& i_movement);
+			void Rotate(const Math::Quaternion& i_other);
 			// Matrix && Direction
 			Math::ColMatrix44 GetRotateTransformMatrix();
 			Math::ColMatrix44 GetLocalToWorldMatrix();//read only, so return value
 			Math::Vector3 GetForward();
 			// Children
-			uint32_t GetChildCount() { return _childCount; }
-			Common::ITransform* pGetChildren(uint32_t index = 0) { return _ppChildren[index]; }
+			void AddChild(Common::ITransform* pChild) { _children.push_back(pChild); }
+			uint32_t GetChildCount() { return _children.size(); }
+			Common::ITransform* GetChild(uint32_t index = 0) { return _children[index]; }
 			// Parent
 			void SetParent(Common::ITransform* parent);
 			Common::ITransform* GetParent() { return _pParent; }
-			Common::ITransform* _root();
+			Common::ITransform* Root();
 
 		protected:
 			Common::IGameObj* _pGamObj;//The game object this component is attached to. A component is always attached to a game object.
 
 		private:
-			uint32_t _childCount;
-			Transform** _ppChildren;
-			ITransform* _pParent;
+			std::vector<Common::ITransform*> _children;
+			Common::ITransform* _pParent;
 
 			Math::Vector3 _localScale;
 			Math::Quaternion _localRotation;
 			Math::Vector3 _localPosition;
-			Math::Vector3 _velocity;
 		};
 	}
 }

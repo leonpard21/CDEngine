@@ -69,8 +69,7 @@ namespace EAE_Engine
 				for (uint32_t submeshindex = 0; submeshindex < pAOSMesh->GetSubMeshCount(); ++submeshindex)
 				{
 					Common::ITransform* pTrans = (*it)->GetTransform();
-					Math::ColMatrix44 colMat = pTrans? pTrans->GetLocalToWorldMatrix() : Math::ColMatrix44::Identity ;
-					RenderData3D renderData = { (*it), submeshindex, colMat };
+					RenderData3D renderData = { (*it), submeshindex, pTrans };
 					renderDataList.push_back(renderData);
 				}
 			}

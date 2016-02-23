@@ -29,7 +29,6 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		void SetCameraParameters(Camera* pCamera);
 		void SetLightParameters();
 		void PreRender();
 		void PostRender();
@@ -60,11 +59,6 @@ void EAE_Engine::Graphics::PreRender()
 	CleanBuffer(ClearFlag::COLOR | ClearFlag::DEPTH);
 }
 
-void EAE_Engine::Graphics::SetCameraParameters(Camera* pCamera)
-{
-	pCamera->Update();
-}
-
 void EAE_Engine::Graphics::SetLightParameters()
 {
 	// Set light position
@@ -88,7 +82,7 @@ void EAE_Engine::Graphics::SetLightParameters()
 
 void EAE_Engine::Graphics::Render()
 {
-	SetCameraParameters(CameraManager::GetInstance().GetCam());
+	CameraManager::GetInstance().GetCam()->Update();
 	SetLightParameters();
 	PreRender();
 	// The actual function calls that draw geometry

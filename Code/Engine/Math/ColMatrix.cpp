@@ -145,8 +145,8 @@ namespace EAE_Engine
 		}
 
 		ColMatrix44::ColMatrix44(const Quaternion& i_rotation, const Vector3& i_translation):
-			_m03(i_translation._x), _m13(i_translation._y), _m23(i_translation._z),
-			_m30(0.0f), _m31(0.0f), _m32(0.0f), _m33(1.0f)
+			_m03(i_translation._x), _m13(i_translation._y), _m23(i_translation._z), _m33(1.0f), 
+			_m30(0.0f), _m31(0.0f), _m32(0.0f)
 		{
 			const float _2x = i_rotation._x + i_rotation._x;
 			const float _2y = i_rotation._y + i_rotation._y;
@@ -172,14 +172,6 @@ namespace EAE_Engine
 			_m02 = _2xz - _2yw;
 			_m12 = _2yz + _2xw;
 			_m22 = 1.0f - _2xx - _2yy;
-		}
-
-		ColMatrix44::ColMatrix44(const Vector3& i_scale):
-			_m00(i_scale.x()), _m10(0.0f), _m20(0.0f), _m30(0.0f),
-			_m01(0.0f), _m11(i_scale.y()), _m21(0.0f), _m31(0.0f),
-			_m02(0.0f), _m12(0.0f), _m22(i_scale.z()), _m32(0.0f),
-			_m03(0.0f), _m13(0.0f), _m23(0.0f), _m33(1.0f)
-		{
 		}
 
 ////////////////////////Code about InverseMatrix/////////////////////// 
@@ -261,8 +253,64 @@ namespace EAE_Engine
 			}
 			return result;
 		}
+
 ////////////////////////End code of InverseMatrix/////////////////////// 
 
+
+
+		////////////////////////////////static functions///////////////////////////////////////////
+
+		ColMatrix44 ColMatrix44::CreateMovementMatrix(const Vector3& i_position)
+		{
+			ColMatrix44 result;
+			result._m03 = i_position.x();
+			result._m13 = i_position.y();
+			result._m23 = i_position.z();
+			return result;
+		}
+
+		ColMatrix44 ColMatrix44::CreateRotationMatrix(const Quaternion& i_rotation)
+		{
+			ColMatrix44 result;
+			const float _2x = i_rotation._x + i_rotation._x;
+			const float _2y = i_rotation._y + i_rotation._y;
+			const float _2z = i_rotation._z + i_rotation._z;
+			const float _2xx = i_rotation._x * _2x;
+			const float _2xy = _2x * i_rotation._y;
+			const float _2xz = _2x * i_rotation._z;
+			const float _2xw = _2x * i_rotation._w;
+			const float _2yy = _2y * i_rotation._y;
+			const float _2yz = _2y * i_rotation._z;
+			const float _2yw = _2y * i_rotation._w;
+			const float _2zz = _2z * i_rotation._z;
+			const float _2zw = _2z * i_rotation._w;
+			result._m00 = 1.0f - _2yy - _2zz;
+			result._m10 = _2xy - _2zw;
+			result._m20 = _2xz + _2yw;
+			result._m01 = _2xy + _2zw;
+			result._m11 = 1.0f - _2xx - _2zz;
+			result._m21 = _2yz - _2xw;
+			result._m02 = _2xz - _2yw;
+			result._m12 = _2yz + _2xw;
+			result._m22 = 1.0f - _2xx - _2yy;
+			return result;
+		}
+
+		ColMatrix44 ColMatrix44::CreateScaleMatrix(const Vector3& i_scale)
+		{
+			ColMatrix44 result;
+			result._m00 = i_scale.x();
+			result._m11 = i_scale.y();
+			result._m22 = i_scale.z();
+			return result;
+		}
+
+
+
+
+
+
+		////////////////////////////////////Global Functions////////////////////////////////////////////////
 		ColMatrix44 operator*(const ColMatrix44& i_lhs, const ColMatrix44& i_rhs)
 		{
 			ColMatrix44 result = ColMatrix44::Identity;

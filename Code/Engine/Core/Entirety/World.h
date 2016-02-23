@@ -15,7 +15,7 @@ namespace EAE_Engine
 		{
 		public:
 			~World();
-			Common::IGameObj* AddGameObj(const char* pName, Math::Vector3& pos);
+			Common::IGameObj* AddGameObj(const char* pName, Math::Vector3& localpos);
 			Common::IGameObj* GetGameObj(const char* pName);
 			void Remove(Common::ITransform* pTransform);
 			void Clean();

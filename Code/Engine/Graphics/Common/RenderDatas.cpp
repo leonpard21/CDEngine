@@ -32,10 +32,11 @@ namespace EAE_Engine
 		{
 			// Leo: I think for the transform matrix, I should set the uniform variable through the Effect directly.
 			// Set the Transform
+			Math::ColMatrix44 colMat = _pTrans ? _pTrans->GetLocalToWorldMatrix() : Math::ColMatrix44::Identity;
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-			UniformVariableManager::GetInstance().ChangeValue("g_local_world_matrix", &_localToWorld.GetTranspose(), sizeof(Math::ColMatrix44));
+			UniformVariableManager::GetInstance().ChangeValue("g_local_world_matrix", &colMat.GetTranspose(), sizeof(Math::ColMatrix44));
 #elif defined( EAEENGINE_PLATFORM_GL )
-			UniformVariableManager::GetInstance().ChangeValue("g_local_world_matrix", &_localToWorld, sizeof(Math::ColMatrix44));
+			UniformVariableManager::GetInstance().ChangeValue("g_local_world_matrix", &colMat, sizeof(Math::ColMatrix44));
 #endif
 			UniformVariableManager::GetInstance().NotifyOwners("g_local_world_matrix");
 

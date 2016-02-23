@@ -21,7 +21,7 @@ namespace EAE_Engine
 		//-----
 
 		float GetFixedTimeStep();
-		float GetFixedUpdateRunTimesOnThisFrame();
+		int GetFixedUpdateRunTimesOnThisFrame();
 		float GetFixedUpdateBlendAlphaOnThisFrame();
 
 		float GetTotalSecondsElapsed();

@@ -78,7 +78,7 @@ namespace EAE_Engine
 			Collider* AddToColliderList(Collider* pCollider);
 			//Collider* CreateCollider(Common::ITransform* pTrans, const Math::Vector3& size, const Math::Vector3& offset);
 			//void AdvanceAllObjs(float fTargetTime);
-			float Update(float fElpasedTime);
+			float Update();
 			void Remove(Collider* pCollider);
 			void Remove(Common::ITransform* pTrans);
 			void InstallCollsionFeedbackByType(HashedString type, bool OnCollideCallback(Collider* pSelf, CollisionInfo& collisionInfo));
@@ -99,11 +99,8 @@ namespace EAE_Engine
 		};
 
 		Collider* CreateOBBCollider(Common::ITransform* pTrans, const Math::Vector3& size, const Math::Vector3& offset = Math::Vector3::Zero);
-		inline void Update()
-		{
-			float fElpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
-			ColliderManager::GetInstance()->Update(fElpasedTime);
-		}
+			
+
 		inline void RemoveCollider(Common::ITransform* pTrans)
 		{
 			ColliderManager::GetInstance()->Remove(pTrans);

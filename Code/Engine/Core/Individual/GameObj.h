@@ -3,26 +3,29 @@
 #include "Common/Interfaces.h"
 #include "Containers/LinkedList.h"
 #include "Engine/General/EngineObj.h"
+#include <vector>
 
 namespace EAE_Engine 
 {
 	namespace Core 
 	{
-		class GameObj : public Common::IGameObj, public EngineObj
+		class GameObj : public Common::IGameObj, public Reflection<GameObj>
 		{
 			GameObj() = delete;
 			GameObj(const GameObj& i_other) = delete;
 			GameObj& operator=(const GameObj& i_other) = delete;
+			//ADD_TYPEID()
 		public:
 			GameObj(const char* pName);
 			virtual ~GameObj();
 			Common::ICompo* GetComponent(typeid_t type);
+			void AddComponent(Common::Compo compo);
 			Common::ITransform* GetTransform(); 
 			void SetTransform(Common::ITransform* pTrans) { _pTransform = pTrans; }
 			const char* GetName() { return _pName; }
 		private:
 			Common::ITransform* _pTransform;
-			Container::LinkedList<Common::ICompo*> _compoList;
+			std::vector<Common::Compo> _components;
 			char* _pName;
 			//     _tag
 			//     _layer

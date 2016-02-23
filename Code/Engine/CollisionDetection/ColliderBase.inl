@@ -24,8 +24,8 @@ namespace EAE_Engine
 			if (_pTransform != nullptr)
 			{
 				//Now we don't consider the accerelation. Just for simple.
-				Math::Vector3 newPos = _pTransform->GetPos() + _pTransform->GetVelocity() * fElpasedTime;
-				_pTransform->SetPos(newPos);
+				//Math::Vector3 newPos = _pTransform->GetPos() + _pTransform->GetVelocity() * fElpasedTime;
+				//_pTransform->SetPos(newPos);
 			}
 		}
 

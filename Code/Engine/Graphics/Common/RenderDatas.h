@@ -19,7 +19,7 @@ namespace EAE_Engine
 		{
 			MeshRender* _pMeshRender;// which MeshRender we will render.
 			uint32_t _subMeshIndex;  // which subMesh of the MeshRender we will render.
-			Math::ColMatrix44 _localToWorld;
+			Common::ITransform* _pTrans;
 
 			RenderData3D() = default;
 			MaterialDesc* GetMaterial();

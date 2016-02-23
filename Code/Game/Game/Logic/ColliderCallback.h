@@ -19,8 +19,8 @@ bool OnCollideStop(EAE_Engine::Collider::Collider* pSelf, EAE_Engine::Collider::
 	if (pSelf == nullptr)
 		return false;
 	EAE_Engine::Common::ITransform* pTrans = pSelf->GetTransform();
-	EAE_Engine::Math::Vector3 newVelocity = pTrans->GetVelocity() * 0.0f;//EAE_Engine::Math::Vector3::Zero;
-	pTrans->SetVelocity(newVelocity);
+//	EAE_Engine::Math::Vector3 newVelocity = pTrans->GetVelocity() * 0.0f;//EAE_Engine::Math::Vector3::Zero;
+//	pTrans->SetVelocity(newVelocity);
 	return true;
 }
 

@@ -10,11 +10,11 @@ namespace EAE_Engine
 		{
 		}
 
-		Common::IGameObj* World::AddGameObj(const char* pName, Math::Vector3& pos)
+		Common::IGameObj* World::AddGameObj(const char* pName, Math::Vector3& localpos)
 		{
 			GameObj* pObj = new GameObj(pName);
 			Transform* pTrans = new Transform(pObj);
-			pTrans->SetPos(pos);
+			pTrans->SetLocalPos(localpos);
 			pObj->SetTransform(pTrans);
 			_gameObjList.push_back(pObj);
 			return pObj;
