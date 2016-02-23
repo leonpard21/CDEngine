@@ -52,9 +52,11 @@ namespace EAE_Engine
 				return _localPosition;
 			else
 			{
-				Math::Vector4 localPos(_localPosition._x, _localPosition._y, _localPosition._z, 1.0f);
-				Math::Vector4 result = _pParent->GetLocalToWorldMatrix() * localPos;
-				return result;
+			//	Math::Vector4 localPos(_localPosition._x, _localPosition._y, _localPosition._z, 1.0f);
+			//	Math::Vector4 result = _pParent->GetLocalToWorldMatrix() * localPos;
+			//	return result;
+				Math::Vector3 offset = Math::Quaternion::RotateVector(_pParent->GetRotation(), _pParent->GetPos());
+				return offset + _localPosition;
 			}
 		}
 
@@ -144,10 +146,7 @@ namespace EAE_Engine
 			// we should use the Global Rotaion and Global Position,
 			// so we don't need to care the local position and how many parents it has.
 			Math::ColMatrix44 rotateTransMat = Math::ColMatrix44(_localRotation, _localPosition);
-
-			Math::ColMatrix44 moveMat = Math::ColMatrix44::CreateMovementMatrix(_localPosition);
-			Math::ColMatrix44 rotateMat = Math::ColMatrix44::CreateRotationMatrix(_localRotation);
-			Math::ColMatrix44 localTransformMatrix = moveMat * rotateMat * Math::ColMatrix44::CreateScaleMatrix(_localScale);
+			Math::ColMatrix44 localTransformMatrix = rotateTransMat * Math::ColMatrix44::CreateScaleMatrix(_localScale);
 			if (!_pParent)
 				return localTransformMatrix;
 			else

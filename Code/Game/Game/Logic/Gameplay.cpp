@@ -191,7 +191,7 @@ namespace
 		materialList.push_back("metal");
 		materialList.push_back("cement");
 		materialList.push_back("walls");
-		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
+	//	pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
 
 		CreatePlayer();
 		CreateCamera();
@@ -247,7 +247,7 @@ namespace
 		pCamera = EAE_Engine::Engine::CreateCamera("mainCamera", camera_pos, camera_rotation,
 			_windowWidth, _windowHeight);
 		pCameraObj = pCamera->GetTransform()->GetGameObj();
-		pCamera->GetTransform()->SetParent(pPlayerObj->GetTransform());
+		//pCamera->GetTransform()->SetParent(pPlayerObj->GetTransform());
 		//Camera Controller
 		//pCamController = new CameraController(pCamera);
 		//pCamController->SetTarget(pPlayerObj->GetTransform());

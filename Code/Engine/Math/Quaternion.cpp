@@ -135,6 +135,19 @@ namespace EAE_Engine
 			return result;
 		}
 
+		Vector3 Quaternion::RotateVector(const Quaternion& i_rotation, const Math::Vector3& i_vec)
+		{
+			// Extract the vector part of the quaternion
+			Vector3 u(i_rotation._x, i_rotation._y, i_rotation._z);
+			// Extract the scalar part of the quaternion
+			float s = i_rotation._w;
+			// Do the math
+			Vector3 result = u * 2.0f * Vector3::Dot(u, i_vec)
+				+ i_vec * (s*s - Vector3::Dot(u, u))
+				+ Vector3::Cross(u, i_vec) * 2.0f * s;
+			return result;
+		}
+
 		// Products
 		float Dot(const Quaternion& i_lhs, const Quaternion& i_rhs)
 		{

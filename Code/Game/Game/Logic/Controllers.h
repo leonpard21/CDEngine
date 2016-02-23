@@ -110,8 +110,13 @@ public:
 		EAE_Engine::Math::Quaternion rotationOffset = RotateAroundY();
 		_pTransform->Rotate(rotationOffset);
 		// set position
-		EAE_Engine::Math::Vector3 offset = GetInput();// _pTransform->GetTransform()->GetForward() * EAE_Engine::Time::GetSecondsElapsedThisFrame() * 50.0f;// GetInput();
+		static float value = 0.0f;
+		value += 0.1f;
+		EAE_Engine::Math::Vector3 offset = _pTransform->GetTransform()->GetForward() * value;// GetInput();// _pTransform->GetTransform()->GetForward() * EAE_Engine::Time::GetSecondsElapsedThisFrame() * 50.0f;// GetInput();
 		_pTransform->Move(offset);
+
+		EAE_Engine::Math::Vector3 back(0.0f, 0.0f, 5.0f);
+		EAE_Engine::Graphics::CameraManager::GetInstance().GetCam()->GetTransform()->Move(offset);
 
 		float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		_cdRemain -= elpasedTime;

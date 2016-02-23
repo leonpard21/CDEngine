@@ -114,13 +114,13 @@ namespace EAE_Engine
 		};
 
 		template <typename T>
-		static float TVector3<T>::Dot(const TVector3<T>& left, const TVector3<T>& right)
+		float TVector3<T>::Dot(const TVector3<T>& left, const TVector3<T>& right)
 		{
 			return left._x * right._x + left._y * right._y + left._z * right._z;
 		}
 
 		template <typename T>
-		static TVector3<T> TVector3<T>::Cross(const TVector3<T>& left, const TVector3<T>& right)
+		TVector3<T> TVector3<T>::Cross(const TVector3<T>& left, const TVector3<T>& right)
 		{
 			//left.x,y,z can be u1, u2, u3
 			//right.xy,z can be v1, v2, v3
@@ -365,6 +365,7 @@ namespace EAE_Engine
 			TVector4(const T x, const T y, const T z, const T w);
 			TVector4(const TVector4& i_other);
 			TVector4(const TVector3<T>& i_other);
+			TVector4(const TVector3<T>& i_other, T w);
 			inline TVector4<T>& operator=(const TVector4& i_other);
 			inline TVector4<T>& operator=(const TVector3<T>& i_other);
 			inline TVector4 operator* (T f);
@@ -412,6 +413,10 @@ namespace EAE_Engine
 			_x(i_other._x), _y(i_other._y), _z(i_other._z), _w(T(0))
 		{}
 
+		template <typename T>
+		TVector4<T>::TVector4(const TVector3<T>& i_other, T w) :
+			_x(i_other._x), _y(i_other._y), _z(i_other._z), _w(w)
+		{}
 
 		template <typename T>
 		TVector4<T>& TVector4<T>::operator=(const TVector4<T>& i_other)

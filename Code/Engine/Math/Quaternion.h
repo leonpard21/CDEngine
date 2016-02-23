@@ -36,7 +36,8 @@ namespace EAE_Engine
 			// Static member functions
 			// Create Matrix for a quaternion
 			static ColMatrix44 CreateColMatrix(const Quaternion& i_rotation);
-
+			// rotate vector
+			static Vector3 RotateVector(const Quaternion& i_rotation, const Vector3& i_vec);
 			// Data
 			//=====
 			static Quaternion Identity;
@@ -58,6 +59,8 @@ namespace EAE_Engine
 
 		// Products
 		float Dot(const Quaternion& i_lhs, const Quaternion& i_rhs);
+		Vector3 RotateVector(const Quaternion& i_rotation, const Math::Vector3& i_vec);
+	
 	}
 }
 
