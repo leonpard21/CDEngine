@@ -152,7 +152,7 @@ void GameplayUpdate()
 		EAE_Engine::Math::Vector3 playerPos = pPlayerObj->GetTransform()->GetPos();
 		EAE_Engine::Math::Vector3 offset = camPos - playerPos;
 		EAE_Engine::Math::Vector3 offsetInit(0.0f, 2.0f, 5.0f);
-	//	assert((offset - offsetInit).Magnitude() < 0.1f);
+		//assert((offset - offsetInit).Magnitude() < 0.5f);
 
 		char text[20];
 		float fps = 1.0f / elpasedTime;
@@ -191,7 +191,7 @@ namespace
 		materialList.push_back("metal");
 		materialList.push_back("cement");
 		materialList.push_back("walls");
-	//	pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
+		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
 
 		CreatePlayer();
 		CreateCamera();
@@ -240,14 +240,14 @@ namespace
 	void CreateCamera() 
 	{
 		EAE_Engine::Math::Vector3 camera_pos = EAE_Engine::Math::Vector3(0.0f, 2.0f, 5.0f);
-		EAE_Engine::Math::Vector3 axis(1.0f, 0.0f, 0.0f);
-		float radian = EAE_Engine::Math::ConvertDegreesToRadians(20.0f);
+		EAE_Engine::Math::Vector3 axis(0.0f, 1.0f, 0.0f);
+		float radian = EAE_Engine::Math::ConvertDegreesToRadians(0.0f);
 		EAE_Engine::Math::Quaternion camera_rotation(radian, axis);
 		//EAE_Engine::Math::Quaternion camera_rotation = EAE_Engine::Math::Quaternion::Identity;
 		pCamera = EAE_Engine::Engine::CreateCamera("mainCamera", camera_pos, camera_rotation,
 			_windowWidth, _windowHeight);
 		pCameraObj = pCamera->GetTransform()->GetGameObj();
-		//pCamera->GetTransform()->SetParent(pPlayerObj->GetTransform());
+		pCamera->GetTransform()->SetParent(pPlayerObj->GetTransform());
 		//Camera Controller
 		//pCamController = new CameraController(pCamera);
 		//pCamController->SetTarget(pPlayerObj->GetTransform());

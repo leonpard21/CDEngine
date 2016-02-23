@@ -10,6 +10,7 @@
 #include "ImageRender.h"
 #include "CanvasRender.h"
 #include "Font.h"
+#include "Camera.h"
 
 namespace EAE_Engine
 {
@@ -39,7 +40,6 @@ namespace EAE_Engine
 			UniformVariableManager::GetInstance().ChangeValue("g_local_world_matrix", &colMat, sizeof(Math::ColMatrix44));
 #endif
 			UniformVariableManager::GetInstance().NotifyOwners("g_local_world_matrix");
-
 
 			// Update all of the uniform variables changed so far for the effect.
 			if (s_pCurrentEffect)

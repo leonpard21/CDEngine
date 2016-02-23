@@ -11,6 +11,7 @@
 #include "Engine/Graphics/Common/Camera.h"
 #include "Engine/Core/Entirety/World.h"
 #include <cmath>
+#include <cassert>
 
 namespace 
 {
@@ -110,13 +111,18 @@ public:
 		EAE_Engine::Math::Quaternion rotationOffset = RotateAroundY();
 		_pTransform->Rotate(rotationOffset);
 		// set position
-		static float value = 0.0f;
+		static float value = 1.0f;
 		value += 0.1f;
-		EAE_Engine::Math::Vector3 offset = _pTransform->GetTransform()->GetForward() * value;// GetInput();// _pTransform->GetTransform()->GetForward() * EAE_Engine::Time::GetSecondsElapsedThisFrame() * 50.0f;// GetInput();
+		EAE_Engine::Math::Vector3 offset = GetInput();// _pTransform->GetTransform()->GetForward() * EAE_Engine::Time::GetSecondsElapsedThisFrame() * 50.0f;// GetInput();
 		_pTransform->Move(offset);
 
-		EAE_Engine::Math::Vector3 back(0.0f, 0.0f, 5.0f);
-		EAE_Engine::Graphics::CameraManager::GetInstance().GetCam()->GetTransform()->Move(offset);
+	//	EAE_Engine::Math::Vector3 back(0.0f, 0.0f, 5.0f);
+	//	EAE_Engine::Graphics::CameraManager::GetInstance().GetCam()->GetTransform()->SetLocalPos(_pTransform->GetTransform()->GetLocalPos());
+		//EAE_Engine::Graphics::CameraManager::GetInstance().GetCam()->GetTransform()->Move(offset);
+
+		//EAE_Engine::Math::Vector3 pos1 = EAE_Engine::Graphics::CameraManager::GetInstance().GetCam()->GetTransform()->GetPos();
+		//EAE_Engine::Math::Vector3 pos2 = _pTransform->GetPos();
+		//assert((pos1 - pos2).Magnitude() <6.1f);
 
 		float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		_cdRemain -= elpasedTime;
