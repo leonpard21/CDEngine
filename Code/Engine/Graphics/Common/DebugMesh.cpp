@@ -87,7 +87,7 @@ namespace EAE_Engine
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, {sizeof(DebugVertex), D3DPT_LINELIST, Default } };
 #elif defined( EAEENGINE_PLATFORM_GL )
-				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, {sizeof(DebugVertex), GL_LINES, GL_DYNAMIC_DRAW } };
+				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, {sizeof(DebugVertex), GL_LINES, GL_STREAM_COPY } };
 #endif
 				_pSegmentsMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, nullptr, 0, nullptr, 0);
 				_pSegmentsMeshRender->SetMesh(_pSegmentsMesh);
@@ -97,7 +97,7 @@ namespace EAE_Engine
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, { sizeof(DebugVertex), D3DPT_TRIANGLELIST, Default } };
 #elif defined( EAEENGINE_PLATFORM_GL )
-				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, { sizeof(DebugVertex), GL_TRIANGLES, GL_DYNAMIC_DRAW } };
+				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, { sizeof(DebugVertex), GL_TRIANGLES, GL_STREAM_COPY } };
 #endif
 				_pBoxesMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, &indices, 1, &subMesh, 1);
 				_pBoxesMeshRender->SetMesh(_pBoxesMesh);
@@ -107,7 +107,7 @@ namespace EAE_Engine
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, { sizeof(DebugVertex), D3DPT_TRIANGLELIST, Default } };
 #elif defined( EAEENGINE_PLATFORM_GL )
-				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, { sizeof(DebugVertex), GL_TRIANGLES, GL_DYNAMIC_DRAW } };
+				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, { sizeof(DebugVertex), GL_TRIANGLES, GL_STREAM_COPY } };
 #endif
 				_pShperesMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, &indices, 1, &subMesh, 1);
 				_pShperesMeshRender->SetMesh(_pShperesMesh);

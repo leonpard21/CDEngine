@@ -240,8 +240,8 @@ namespace
 	void CreateCamera() 
 	{
 		EAE_Engine::Math::Vector3 camera_pos = EAE_Engine::Math::Vector3(0.0f, 2.0f, 5.0f);
-		EAE_Engine::Math::Vector3 axis(0.0f, 1.0f, 0.0f);
-		float radian = EAE_Engine::Math::ConvertDegreesToRadians(0.0f);
+		EAE_Engine::Math::Vector3 axis(1.0f, 0.0f, 0.0f);
+		float radian = EAE_Engine::Math::ConvertDegreesToRadians(20.0f);
 		EAE_Engine::Math::Quaternion camera_rotation(radian, axis);
 		//EAE_Engine::Math::Quaternion camera_rotation = EAE_Engine::Math::Quaternion::Identity;
 		pCamera = EAE_Engine::Engine::CreateCamera("mainCamera", camera_pos, camera_rotation,

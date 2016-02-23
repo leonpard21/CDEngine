@@ -55,8 +55,6 @@ namespace EAE_Engine
 				Math::Vector4 localPos(_localPosition._x, _localPosition._y, _localPosition._z, 1.0f);
 				Math::Vector4 result = _pParent->GetLocalToWorldMatrix() * localPos;
 				return result;
-			//	Math::Vector3 offset = Math::Quaternion::RotateVector(_pParent->GetRotation(), _pParent->GetPos());
-			//	return offset + _localPosition;
 			}
 		}
 
@@ -74,7 +72,7 @@ namespace EAE_Engine
 				return _localRotation; 
 			else 
 			{
-				Math::Quaternion result = _pParent->GetRotation() * _localRotation;
+				Math::Quaternion result = _localRotation * _pParent->GetRotation();
 				return result;
 			}
 		}

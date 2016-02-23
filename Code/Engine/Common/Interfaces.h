@@ -55,6 +55,8 @@ namespace EAE_Engine
 			virtual ITransform* GetTransform() = 0;
 			virtual const char* GetName() = 0;
 			virtual void AddComponent(Compo) = 0;
+			template<typename T>
+			void AddComponent(T* pCompo) = 0;
 		};
 
 		class ICompo : public IGetCompo
