@@ -54,7 +54,7 @@ namespace EAE_Engine
 		}
 
 
-		float ColliderManager::Update()
+		float ColliderManager::FixedUpdate()
 		{
 			float fElpasedTime = Time::GetSecondsElapsedThisFrame();
 			//Iterate advance all of the Colliders.

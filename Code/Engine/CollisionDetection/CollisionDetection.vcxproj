@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BinaryMeshFileLoader.h" />
     <ClInclude Include="ColliderBase.h" />
     <ClInclude Include="CollisionDetectionFunctions.h" />
     <ClInclude Include="ICollisionCallback.h" />
@@ -26,6 +27,7 @@
     <ClInclude Include="RigidBody.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BinaryMeshFileLoader.cpp" />
     <ClCompile Include="ColliderBase.cpp" />
     <ClCompile Include="OBBCollider.cpp" />
     <ClCompile Include="RigidBody.cpp" />

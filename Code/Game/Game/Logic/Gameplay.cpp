@@ -222,10 +222,10 @@ namespace
 			std::vector<std::string> materialList;
 			materialList.push_back("phongShading");
 			EAE_Engine::Graphics::AddMeshRender(pathPlayer, materialList, pPlayerObj->GetTransform());
-			//pRigidBody = EAE_Engine::Physics::Physics::GetInstance()->AddRigidBody(pPlayerObj->GetTransform());
-			//pPlayerObj->AddComponent({ pRigidBody, pRigidBody->GetTypeID() });
-			//EAE_Engine::Common::ICompo* pCompo = pPlayerObj->GetTransform()->GetComponent(getTypeID<EAE_Engine::Physics::RigidBody>());
-			//EAE_Engine::Physics::RigidBody* pRBA = dynamic_cast<EAE_Engine::Physics::RigidBody*>(pCompo);
+			pRigidBody = EAE_Engine::Physics::Physics::GetInstance()->AddRigidBody(pPlayerObj->GetTransform());
+			pPlayerObj->AddComponent({ pRigidBody, pRigidBody->GetTypeID() });
+			EAE_Engine::Common::ICompo* pCompo = pPlayerObj->GetTransform()->GetComponent(getTypeID<EAE_Engine::Physics::RigidBody>());
+			EAE_Engine::Physics::RigidBody* pRBA = dynamic_cast<EAE_Engine::Physics::RigidBody*>(pCompo);
 			
 			//Set Collider
 			//EAE_Engine::Math::Vector3 playerSize = EAE_Engine::Math::Vector3(0.3f, 1.0f, 0.3f);

@@ -78,7 +78,7 @@ namespace EAE_Engine
 			Collider* AddToColliderList(Collider* pCollider);
 			//Collider* CreateCollider(Common::ITransform* pTrans, const Math::Vector3& size, const Math::Vector3& offset);
 			//void AdvanceAllObjs(float fTargetTime);
-			float Update();
+			float FixedUpdate();
 			void Remove(Collider* pCollider);
 			void Remove(Common::ITransform* pTrans);
 			void InstallCollsionFeedbackByType(HashedString type, bool OnCollideCallback(Collider* pSelf, CollisionInfo& collisionInfo));

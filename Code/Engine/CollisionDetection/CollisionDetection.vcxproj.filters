@@ -21,6 +21,7 @@
     <ClInclude Include="CollisionDetectionFunctions.h">
       <Filter>Collider</Filter>
     </ClInclude>
+    <ClInclude Include="BinaryMeshFileLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OBBCollider.cpp">
@@ -32,6 +33,7 @@
     <ClCompile Include="RigidBody.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
+    <ClCompile Include="BinaryMeshFileLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ColliderBase.inl">

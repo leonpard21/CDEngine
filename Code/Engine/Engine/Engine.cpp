@@ -69,8 +69,8 @@ namespace EAE_Engine
 			EAE_Engine::Time::OnNewFrame();
 			UserInput::Input::GetInstance()->Update();
 			Controller::ControllerManager::GetInstance().Update();
-		//	Collider::ColliderManager::GetInstance()->Update();
-		//	FixedUpdate();
+			Collider::ColliderManager::GetInstance()->FixedUpdate();
+			FixedUpdate();
 			Graphics::Render();
 			RemoveAllActorsInList();
 		}
