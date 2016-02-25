@@ -12,7 +12,7 @@ namespace EAE_Engine
 		class MeshManager
 		{
 		public:
-			void AddAosMesh(const char* pMeshKey, AOSMesh* pAOSMesh);
+			void AddAOSMesh(const char* pMeshKey, AOSMesh* pAOSMesh);
 			void CleanList();
 			const std::map<const char*, AOSMesh*>& GetAOSMeshes() const;
 			AOSMesh* GetMesh(const char* pKeyName);

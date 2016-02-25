@@ -6,7 +6,7 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		void MeshManager::AddAosMesh(const char* pMeshKey, AOSMesh* pAOSMesh)
+		void MeshManager::AddAOSMesh(const char* pMeshKey, AOSMesh* pAOSMesh)
 		{
 			if(pAOSMesh)
 				_meshMap.insert(std::pair<const char*, AOSMesh*>(pMeshKey, pAOSMesh));

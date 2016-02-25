@@ -22,12 +22,10 @@ namespace EAE_Engine
 			// Compute triangle normal. Can be precalculated or cached if
 			// intersecting multiple segments against the same triangle
 			Math::Vector3 n = Math::Vector3::Cross(ab, ac);
-
 			// Compute denominator d. If d <= 0, segment is parallel to or points
 			// away from triangle, so exit early
 			float d = Math::Vector3::Dot(qp, n);
 			if (d <= 0.0f) return 0;
-
 			// Compute intersection t value of pq with plane of triangle. A ray
 			// intersects if 0 <= t. Segment intersects if 0 <= t <= 1. Delay
 			// dividing by d until intersection has been found to pierce triangle
@@ -36,7 +34,7 @@ namespace EAE_Engine
 			if (t < 0.0f) return 0;
 			if (t > d) return 0; // For segment; exclude this code line for a ray test
 
-			 // Compute barycentric coordinate components and test if within bounds
+			// Compute barycentric coordinate components and test if within bounds
 			Math::Vector3 e = Math::Vector3::Cross(qp, ap);
 			v = Math::Vector3::Dot(ac, e);
 			if (v < 0.0f || v > d) return 0;

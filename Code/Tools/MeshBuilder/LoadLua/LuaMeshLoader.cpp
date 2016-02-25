@@ -6,6 +6,7 @@
 #include "Engine/Math/MathTool.h"
 #include "Engine/General/MemoryOp.h"
 #include "Engine/Graphics/GraphicsInclude.h"
+#include "Engine/Mesh/MeshLoader.h"
 #include "Tools/BuilderHelper/cbBuilder.h"
 
 // Helper Function Declarations
@@ -13,15 +14,18 @@
 
 namespace
 {
-	bool LoadTableValues(lua_State& io_luaState, EAE_Engine::Graphics::sVertex*& o_pVertices, uint32_t& o_vertexCount, 
+	bool LoadVertexFormat(lua_State& io_luaState, EAE_Engine::Mesh::VertexFormat*& o_pVertexFormat);
+	bool LoadEachVertexElement(lua_State& io_luaState, EAE_Engine::Mesh::VertexElement& o_vertexElement);
+
+	bool LoadTableVertices(lua_State& io_luaState, EAE_Engine::Mesh::sVertex*& o_pVertices, uint32_t& o_vertexCount,
 		uint32_t*& o_pIndices, uint32_t& o_indexCount, 
 		EAE_Engine::Graphics::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount);
-	bool LoadTableValues_vertices(lua_State& io_luaState, EAE_Engine::Graphics::sVertex*& o_pVertices, uint32_t& o_vertexCount);
-	bool LoadTableValues_vertex(lua_State& io_luaState, EAE_Engine::Graphics::sVertex& o_vertex);
+	bool LoadTableValues_vertices(lua_State& io_luaState, EAE_Engine::Mesh::sVertex*& o_pVertices, uint32_t& o_vertexCount);
+	bool LoadTableValues_vertex(lua_State& io_luaState, EAE_Engine::Mesh::sVertex& o_vertex);
 	bool LoadTableValues_indices(lua_State& io_luaState, uint32_t*& o_pIndices, uint32_t& o_indexCount);
 	bool LoadTableValues_subMeshes(lua_State& io_luaState, EAE_Engine::Graphics::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount);
-
-	bool LoadMeshInfo(const char* const i_path, EAE_Engine::Graphics::sVertex*& pVertices, uint32_t& o_vertexCount, 
+	bool LoadMeshInfo(const char* const i_path, EAE_Engine::Mesh::VertexFormat*& o_pVertexFormat, 
+		EAE_Engine::Mesh::sVertex*& pVertices, uint32_t& o_vertexCount,
 		uint32_t*& o_pIndices, uint32_t& o_indexCount, 
 		EAE_Engine::Graphics::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount);
 }
@@ -31,7 +35,104 @@ namespace
 
 namespace
 {
-	bool LoadTableValues(lua_State& io_luaState, EAE_Engine::Graphics::sVertex*& o_pVertices, uint32_t& o_vertexCount, 
+	bool LoadVertexFormat(lua_State& io_luaState, EAE_Engine::Mesh::VertexFormat*& o_pVertexFormat)
+	{
+		o_pVertexFormat = nullptr;
+		// Right now the mesh table is at -1.
+		// After the following table operation it will be at -2.
+		// and the "vertices" table will be at -1:
+		const char* const key = "vertexFormat";
+		lua_pushstring(&io_luaState, key);
+		lua_gettable(&io_luaState, -2);
+		bool wereThereErrors = false;
+		if (lua_istable(&io_luaState, -1))
+		{
+			o_pVertexFormat = new EAE_Engine::Mesh::VertexFormat();
+			int arrayLength = luaL_len(&io_luaState, -1);
+			if (arrayLength > 0)
+			{
+				EAE_Engine::Mesh::VertexElement* pVertexElements = new EAE_Engine::Mesh::VertexElement[arrayLength];
+				o_pVertexFormat->_pElements = pVertexElements;
+				o_pVertexFormat->_vertexCount = (uint32_t)arrayLength;
+				// Remember that Lua arrays are 1-based and not 0-based!
+				for (int i = 1; i <= arrayLength; ++i)
+				{
+					lua_pushinteger(&io_luaState, i);
+					lua_gettable(&io_luaState, -2);
+					if (!LoadEachVertexElement(io_luaState, pVertexElements[i - 1]) || !lua_istable(&io_luaState, -1))
+					{
+						wereThereErrors = true;
+						lua_pop(&io_luaState, 1);//this pop works for the vertex itself
+						SAFE_DELETE_ARRAY(pVertexElements);
+						SAFE_DELETE(o_pVertexFormat);
+						goto OnExit;
+					}
+					lua_pop(&io_luaState, 1);//this pop works for the vertex itself
+				}
+			}
+			else 
+			{
+				o_pVertexFormat->_pElements = nullptr;
+				o_pVertexFormat->_vertexCount = (uint32_t)0;
+			}
+		}
+
+	OnExit:
+		// Pop the vertices table
+		lua_pop(&io_luaState, 1);
+		return !wereThereErrors;
+	}
+
+	bool LoadEachVertexElement(lua_State& io_luaState, EAE_Engine::Mesh::VertexElement& o_vertexElement)
+	{
+		bool wereThereErrors = false;
+		int arrayLength = luaL_len(&io_luaState, -2);
+		assert(arrayLength == 4); 
+		// load count
+		{
+			lua_pushinteger(&io_luaState, 1);
+			lua_gettable(&io_luaState, -2);
+			o_vertexElement._elementCount = (uint32_t)lua_tointeger(&io_luaState, -1);
+			lua_pop(&io_luaState, 1);
+		}
+		// load type
+		{
+			lua_pushinteger(&io_luaState, 2);
+			lua_gettable(&io_luaState, -2);
+			const char* pTypeStr= lua_tostring(&io_luaState, -1);
+			if (strcmp(pTypeStr, "FLOAT") == 0) 
+				o_vertexElement._type = EAE_Engine::Mesh::FLOAT;
+			else if (strcmp(pTypeStr, "BYTE") == 0)
+				o_vertexElement._type = EAE_Engine::Mesh::BYTE;
+			lua_pop(&io_luaState, 1);
+		}
+		// load NORMALIZED
+		{
+			lua_pushinteger(&io_luaState, 3);
+			lua_gettable(&io_luaState, -2);
+			int normolized = lua_toboolean(&io_luaState, -1);
+			o_vertexElement._normalized = normolized == 0 ? false : true;
+			lua_pop(&io_luaState, 1);
+		}
+		// load Syntax
+		{
+			lua_pushinteger(&io_luaState, 4);
+			lua_gettable(&io_luaState, -2);
+			const char* pStr = lua_tostring(&io_luaState, -1);
+			if (strcmp(pStr, "POSITION") == 0)
+				o_vertexElement._syntax = EAE_Engine::Mesh::POSITION;
+			else if (strcmp(pStr, "NORMAL") == 0)
+				o_vertexElement._syntax = EAE_Engine::Mesh::NORMAL;
+			else if (strcmp(pStr, "TEXTCOORD") == 0)
+				o_vertexElement._syntax = EAE_Engine::Mesh::TEXTCOORD;
+			else if (strcmp(pStr, "COLOR") == 0)
+				o_vertexElement._syntax = EAE_Engine::Mesh::COLOR;
+			lua_pop(&io_luaState, 1);
+		}
+		return !wereThereErrors;
+	}
+
+	bool LoadTableVertices(lua_State& io_luaState, EAE_Engine::Mesh::sVertex*& o_pVertices, uint32_t& o_vertexCount, 
 		uint32_t*& o_pIndices, uint32_t& o_indexCount, 
 		EAE_Engine::Graphics::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount)
 	{
@@ -50,7 +151,7 @@ namespace
 		return true;
 	}
 
-	bool LoadTableValues_vertices(lua_State& io_luaState, EAE_Engine::Graphics::sVertex*& o_pVertices, uint32_t& o_vertexCount)
+	bool LoadTableValues_vertices(lua_State& io_luaState, EAE_Engine::Mesh::sVertex*& o_pVertices, uint32_t& o_vertexCount)
 	{
 		bool wereThereErrors = false;
 
@@ -67,7 +168,7 @@ namespace
 			if (arrayLength > 0)
 			{
 				o_vertexCount = arrayLength;
-				o_pVertices = new EAE_Engine::Graphics::sVertex[arrayLength];
+				o_pVertices = new EAE_Engine::Mesh::sVertex[arrayLength];
 
 				// Remember that Lua arrays are 1-based and not 0-based!
 				for (int i = 1; i <= arrayLength; ++i)
@@ -92,7 +193,7 @@ namespace
 		return !wereThereErrors;
 	}
 
-	bool LoadTableValues_vertex(lua_State& io_luaState, EAE_Engine::Graphics::sVertex& o_vertex)
+	bool LoadTableValues_vertex(lua_State& io_luaState, EAE_Engine::Mesh::sVertex& o_vertex)
 	{
 		bool wereThereErrors = false;
 		// Get the value of "position"
@@ -308,7 +409,8 @@ namespace
 		return !wereThereErrors;
 	}
 
-	bool LoadMeshInfo(const char* const i_path, EAE_Engine::Graphics::sVertex*& o_pVertices, uint32_t& o_vertexCount, 
+	bool LoadMeshInfo(const char* const i_path, EAE_Engine::Mesh::VertexFormat*& o_pVertexFormat, 
+		EAE_Engine::Mesh::sVertex*& o_pVertices, uint32_t& o_vertexCount,
 		uint32_t*& o_pIndices, uint32_t& o_indexCount, 
 		EAE_Engine::Graphics::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount)
 	{
@@ -397,16 +499,18 @@ namespace
 
 		// If this code is reached the asset file was loaded successfully,
 		// and its table is now at index -1
-		if (!LoadTableValues(*luaState, o_pVertices, o_vertexCount, o_pIndices, o_indexCount, o_pSubMeshes, o_subMeshCount))
+		if (!LoadVertexFormat(*luaState, o_pVertexFormat))
 		{
 			wereThereErrors = true;
 		}
-
+		if (!LoadTableVertices(*luaState, o_pVertices, o_vertexCount, o_pIndices, o_indexCount, o_pSubMeshes, o_subMeshCount))
+		{
+			wereThereErrors = true;
+		}
 		// Pop the table
 		lua_pop(luaState, 1);
 
 	OnExit:
-
 		if (luaState)
 		{
 			// If I haven't made any mistakes
@@ -417,7 +521,6 @@ namespace
 			lua_close(luaState);
 			luaState = NULL;
 		}
-
 		return !wereThereErrors;
 	}
 }
@@ -431,13 +534,15 @@ namespace EAE_Engine
 	{
 		bool GenerateBinaryMeshData(const char* i_luaMeshFile, char*& o_pBuffer, uint32_t& sizeOfBuffer)
 		{
-			EAE_Engine::Graphics::sVertex* pVertices = nullptr;
+			EAE_Engine::Mesh::VertexFormat* pVertexFormat = nullptr;
+			EAE_Engine::Mesh::sVertex* pVertices = nullptr;
 			uint32_t vertexCount = 0;
 			uint32_t* pIndices = nullptr;
 			uint32_t indexCount = 0;
 			Graphics::sSubMesh* pSubMeshes = nullptr;
 			uint32_t subMeshCount = 0;
-			if (!LoadMeshInfo(i_luaMeshFile, pVertices, vertexCount, pIndices, indexCount, pSubMeshes, subMeshCount))
+			if (!LoadMeshInfo(i_luaMeshFile, pVertexFormat, 
+				pVertices, vertexCount, pIndices, indexCount, pSubMeshes, subMeshCount))
 			{
 				return false;
 			}
@@ -448,12 +553,13 @@ namespace EAE_Engine
 			// So we will convert the v value to 1.0f- v; for the binary mesh file.
 			for (uint32_t vertexIndex = 0; vertexIndex < vertexCount; ++vertexIndex)
 			{
-				EAE_Engine::Graphics::sVertex& pVertex = pVertices[vertexIndex];
+				EAE_Engine::Mesh::sVertex& pVertex = pVertices[vertexIndex];
 				pVertex.v = 1.0f - pVertex.v;
 			}
-
-			sizeOfBuffer = sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + // Count of Vertices, Count of Indices, Count of SubMeshes
-				sizeof(EAE_Engine::Graphics::sVertex) * vertexCount +  // Vertices Buffer
+			uint32_t vertexElementCount = pVertexFormat ? pVertexFormat->_vertexCount : 0;
+			sizeOfBuffer = sizeof(uint32_t) + sizeof(Mesh::VertexElement) * vertexElementCount + // VertexElement Count, VertexFormat,
+				sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + // Count of Vertices, Count of Indices, Count of SubMeshes
+				sizeof(EAE_Engine::Mesh::sVertex) * vertexCount +  // Vertices Buffer
 				sizeof (uint32_t) * indexCount +                       // Indices Buffer
 				sizeof(EAE_Engine::Graphics::sSubMesh) * subMeshCount; // SubMeshes Buffer
 
@@ -461,6 +567,14 @@ namespace EAE_Engine
 			o_pBuffer = new char[sizeOfBuffer];
 			SetMem((uint8_t*)o_pBuffer, sizeOfBuffer, 0);
 			uint32_t offset = 0;
+			// Write VertexElement Count
+			CopyMem(reinterpret_cast<uint8_t*>(&vertexElementCount), reinterpret_cast<uint8_t*>(o_pBuffer) + offset, sizeof(uint32_t));
+			offset += sizeof(uint32_t);
+			// Write VertexElements(Vertex Format)
+			CopyMem(reinterpret_cast<uint8_t*>(pVertexFormat->_pElements), reinterpret_cast<uint8_t*>(o_pBuffer) + offset, sizeof(Mesh::VertexElement) * vertexElementCount);
+			offset += sizeof(Mesh::VertexElement) * vertexElementCount;
+			SAFE_DELETE_ARRAY(pVertexFormat->_pElements);
+			SAFE_DELETE(pVertexFormat);
 			// Write VertexCount
 			CopyMem(reinterpret_cast<uint8_t*>(&vertexCount), reinterpret_cast<uint8_t*>(o_pBuffer) + offset, sizeof(uint32_t));
 			offset += sizeof(uint32_t);
@@ -471,8 +585,8 @@ namespace EAE_Engine
 			CopyMem(reinterpret_cast<uint8_t*>(&subMeshCount), reinterpret_cast<uint8_t*>(o_pBuffer) + offset, sizeof(uint32_t));
 			offset += sizeof(uint32_t);
 			// Write Vertices
-			CopyMem(reinterpret_cast<uint8_t*>(pVertices), reinterpret_cast<uint8_t*>(o_pBuffer) + offset, sizeof(EAE_Engine::Graphics::sVertex) * vertexCount);
-			offset += sizeof(EAE_Engine::Graphics::sVertex) * vertexCount;
+			CopyMem(reinterpret_cast<uint8_t*>(pVertices), reinterpret_cast<uint8_t*>(o_pBuffer) + offset, sizeof(EAE_Engine::Mesh::sVertex) * vertexCount);
+			offset += sizeof(EAE_Engine::Mesh::sVertex) * vertexCount;
 			// Before write the indices, we need to convert it for D3D since it uses clockwise indices.
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 			// Convert the counterclockwise indices to to clockwise

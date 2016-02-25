@@ -1,5 +1,17 @@
 return
 {
+	vertexInfo = 
+	{
+		VertexMode = TriangleList,
+	},
+	vertexFormat = 
+	{
+		--count, type, normalize, Syntax
+		{ 3, "FLOAT", FALSE, "POSITION"},
+		{ 3, "FLOAT", TRUE, "NORMAL"}, 
+		{ 2, "FLOAT", FALSE, "TEXTURECOORD"}, 
+		{ 4, "BYTE", TRUE, "COLOR"},
+	},
 	vertices = 
 	{
 		{

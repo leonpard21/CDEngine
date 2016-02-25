@@ -738,6 +738,16 @@ namespace
 			fout << "return\n"
 				"{\n";
 			{
+				// output vertexFormat
+				fout << "\tvertexFormat = \n""\t{\n";
+				{
+					fout << "\t\t--count, type, normalize, Syntax\n";
+					fout << "\t\t{ 3, \"FLOAT\", 0, \"POSITION\", },\n";
+					fout << "\t\t{ 3, \"FLOAT\", 1, \"NORMAL\", },\n";
+					fout << "\t\t{ 2, \"FLOAT\", 0, \"TEXTURECOORD\", },\n";
+					fout << "\t\t{ 4, \"BYTE\", 1, \"COLOR\", }, \n";
+				}
+				fout << "\t},\n";
 				// output vertices
 				fout << "\tvertices = \n""\t{\n";
 				{

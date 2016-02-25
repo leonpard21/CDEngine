@@ -1,13 +1,10 @@
 #ifndef EAE_ENGINE_GRAPHICS_MESHHEADER
 #define EAE_ENGINE_GRAPHICS_MESHHEADER
 
-#include <cstdint>
-
 #include "../Graphics.h"
-#include "../GraphicsInclude.h"
+#include "Engine/Graphics/GraphicsInclude.h"
 #include "Engine/General/MemoryOp.h"
 #include <vector>
-
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 #include <d3d9.h>
 #elif defined( EAEENGINE_PLATFORM_GL )
@@ -30,7 +27,6 @@ namespace EAE_Engine
 		*/
 		class AOSMesh;//whatever the platform is, we must have an implemented AOSMesh.
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-
 		enum UsageInfo
 		{
 			Default = 0x0L,
@@ -143,7 +139,8 @@ namespace EAE_Engine
 				uint32_t* pIndexData, uint32_t indexCount, 
 				sSubMesh* pSubMeshes, uint32_t subMeshCount);
 			void Release();
-			void ChangeWholeBuffers(void* pVertices, uint32_t vertexCount, uint32_t* pIndexData, uint32_t indexCount, sSubMesh* pSubMeshes, uint32_t subMeshCount);
+			void ChangeWholeBuffers(void* pVertices, uint32_t vertexCount, 
+				uint32_t* pIndexData, uint32_t indexCount, sSubMesh* pSubMeshes, uint32_t subMeshCount);
 			inline GLuint GetVertexArrayID() const { return _vertexArrayId; }
 			inline GLuint GetVertexCount() const { return _vertexCount; }
 			inline GLuint GetIndexCount() const { return _indexCount; }

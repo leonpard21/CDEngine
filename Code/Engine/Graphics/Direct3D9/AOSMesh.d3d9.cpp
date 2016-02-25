@@ -163,7 +163,7 @@ namespace EAE_Engine
 			_subMeshes.clear();
 		}
 
-		void AOSMesh::ChangeWholeBuffers(void* pVertices, uint32_t vertexDataCount, uint32_t* pIndeices, uint32_t indexCount, sSubMesh* pSubMeshes, uint32_t subMeshCount)
+		void AOSMesh::ChangeWholeBuffers(void* pVertices, uint32_t vertexDataCount, uint32_t* pIndeices, uint32_t indexCount,Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount)
 		{
 			IDirect3DDevice9* pDevice = GetD3DDevice();
 			if (_pVertexBuffer)
