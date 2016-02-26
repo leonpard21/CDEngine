@@ -538,7 +538,7 @@ namespace EAE_Engine
 			uint32_t vertexCount = 0;
 			uint32_t* pIndices = nullptr;
 			uint32_t indexCount = 0;
-			Graphics::sSubMesh* pSubMeshes = nullptr;
+			Mesh::sSubMesh* pSubMeshes = nullptr;
 			uint32_t subMeshCount = 0;
 			if (!LoadMeshInfo(i_luaMeshFile, pVertexFormat, 
 				pVertices, vertexCount, pIndices, indexCount, pSubMeshes, subMeshCount))

@@ -9,17 +9,20 @@ namespace EAE_Engine
 		{
 			for (std::map<const char*, AOSMeshData*>::iterator iter = _aosMeshDatas.begin(); iter != _aosMeshDatas.end(); )
 			{
+				char* pKey = const_cast<char*>(iter->first);
+				SAFE_DELETE(pKey);
 				AOSMeshData* pData = iter++->second;
 				SAFE_DELETE(pData);
 			}
+			_aosMeshDatas.clear();
 		}
 
 		bool AOSMeshDataManager::AddAOSMeshData(const char* i_pKey, AOSMeshData* pData)
 		{
-			for (std::map<const char*, AOSMeshData*>::iterator iter = _aosMeshDatas.begin(); iter != _aosMeshDatas.end(); )
+			for (std::map<const char*, AOSMeshData*>::iterator iter = _aosMeshDatas.begin(); iter != _aosMeshDatas.end(); ++iter)
 			{
 				const char* pKey = iter->first;
-				AOSMeshData* pData = iter++->second;
+				AOSMeshData* pData = iter->second;
 				if (strcmp(pKey, i_pKey) == 0)
 					return false;
 			}
@@ -29,10 +32,10 @@ namespace EAE_Engine
 
 		AOSMeshData* AOSMeshDataManager::GetAOSMeshData(const char* i_pKey)
 		{
-			for (std::map<const char*, AOSMeshData*>::iterator iter = _aosMeshDatas.begin(); iter != _aosMeshDatas.end(); )
+			for (std::map<const char*, AOSMeshData*>::iterator iter = _aosMeshDatas.begin(); iter != _aosMeshDatas.end(); ++iter)
 			{
 				const char* pKey = iter->first;
-				AOSMeshData* pData = iter++->second;
+				AOSMeshData* pData = iter->second;
 				if (strcmp(pKey, i_pKey) == 0)
 					return pData;
 			}

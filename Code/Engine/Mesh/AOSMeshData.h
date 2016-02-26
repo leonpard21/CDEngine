@@ -10,6 +10,7 @@ namespace EAE_Engine
 {
 	namespace Mesh
 	{	
+		struct sVertex;
 		struct AOSMeshData 
 		{
 			std::vector<sVertex> _vertices;

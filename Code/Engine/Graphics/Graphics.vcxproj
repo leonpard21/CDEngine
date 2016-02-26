@@ -284,7 +284,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(LibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Windows_$(Platform)_$(Configuration).lib;UserOutput_$(Platform)_$(Configuration).lib;General_$(Platform)_$(Configuration).lib;Math_$(Platform)_$(Configuration).lib;DebugShape_$(Platform)_$(Configuration).lib;OpenGLExtensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Windows_$(Platform)_$(Configuration).lib;UserOutput_$(Platform)_$(Configuration).lib;General_$(Platform)_$(Configuration).lib;Math_$(Platform)_$(Configuration).lib;DebugShape_$(Platform)_$(Configuration).lib;Mesh_$(Platform)_$(Configuration).lib;OpenGLExtensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4221 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
@@ -303,7 +303,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x64\;$(LibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Windows_$(Platform)_$(Configuration).lib;UserOutput_$(Platform)_$(Configuration).lib;General_$(Platform)_$(Configuration).lib;Math_$(Platform)_$(Configuration).lib;DebugShape_$(Platform)_$(Configuration).lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Windows_$(Platform)_$(Configuration).lib;UserOutput_$(Platform)_$(Configuration).lib;General_$(Platform)_$(Configuration).lib;Math_$(Platform)_$(Configuration).lib;DebugShape_$(Platform)_$(Configuration).lib;Mesh_$(Platform)_$(Configuration).lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4221 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
@@ -326,7 +326,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(LibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Windows_$(Platform)_$(Configuration).lib;UserOutput_$(Platform)_$(Configuration).lib;General_$(Platform)_$(Configuration).lib;Math_$(Platform)_$(Configuration).lib;DebugShape_$(Platform)_$(Configuration).lib;OpenGLExtensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Windows_$(Platform)_$(Configuration).lib;UserOutput_$(Platform)_$(Configuration).lib;General_$(Platform)_$(Configuration).lib;Math_$(Platform)_$(Configuration).lib;DebugShape_$(Platform)_$(Configuration).lib;Mesh_$(Platform)_$(Configuration).lib;OpenGLExtensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4221 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
@@ -349,7 +349,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x64\;$(LibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Windows_$(Platform)_$(Configuration).lib;UserOutput_$(Platform)_$(Configuration).lib;General_$(Platform)_$(Configuration).lib;Math_$(Platform)_$(Configuration).lib;DebugShape_$(Platform)_$(Configuration).lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Windows_$(Platform)_$(Configuration).lib;UserOutput_$(Platform)_$(Configuration).lib;General_$(Platform)_$(Configuration).lib;Math_$(Platform)_$(Configuration).lib;DebugShape_$(Platform)_$(Configuration).lib;Mesh_$(Platform)_$(Configuration).lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4221 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>

@@ -7,9 +7,11 @@
 #include "Engine/CollisionDetection/OBBCollider.h"
 #include "Engine/CollisionDetection/ColliderBase.h"
 #include "Engine/CollisionDetection/RigidBody.h"
+#include "Engine/Mesh/AOSMeshData.h"
 #include "Engine/Common/Interfaces.h"
 #include "Engine/DebugShape/DebugShape.h"
 #include "Engine/UserInput/UserInput.h"
+
 
 #include <vector>
 
@@ -59,6 +61,7 @@ namespace EAE_Engine
 			int fixedUpdateRunTime = Time::GetFixedUpdateRunTimesOnThisFrame();
 			for (int i = 0; i < fixedUpdateRunTime; ++i)
 			{
+				Collider::ColliderManager::GetInstance()->FixedUpdate();
 				Physics::Physics::GetInstance()->FixedUpdate();
 			}
 			Physics::Physics::GetInstance()->FixedUpdateEnd();
@@ -69,7 +72,6 @@ namespace EAE_Engine
 			EAE_Engine::Time::OnNewFrame();
 			UserInput::Input::GetInstance()->Update();
 			Controller::ControllerManager::GetInstance().Update();
-			Collider::ColliderManager::GetInstance()->FixedUpdate();
 			FixedUpdate();
 			Graphics::Render();
 			RemoveAllActorsInList();
@@ -88,6 +90,7 @@ namespace EAE_Engine
 			Collider::ColliderManager::CleanInstance();
 			Graphics::ShutDown();
 			Debug::DebugShapes::CleanInstance();
+			Mesh::AOSMeshDataManager::Destroy();
 			Core::World::CleanInstance();
 			SAFE_DELETE(_pRemoveList);
 		}

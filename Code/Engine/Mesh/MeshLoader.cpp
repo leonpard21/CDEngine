@@ -96,24 +96,28 @@ namespace EAE_Engine
 			uint8_t* pBuffer = LoadMeshInfo(i_binaryMeshFile, vertexElementCount, pVertexElement,
 				vertexOffset, vertexCount, indexOffset, indexCount, subMeshOffset, subMeshCount);
 			AOSMeshData* pAOSMeshData = new AOSMeshData();
+			sVertex* pVertices = (sVertex*)(pBuffer + vertexOffset);
 			for (uint32_t vertexIndex = 0; vertexIndex < vertexCount; ++vertexIndex)
 			{
-				sVertex* pVertex = (sVertex*)(pBuffer + vertexOffset);
-				pAOSMeshData->_vertices.push_back(*pVertex);
+				sVertex& vertex = pVertices[vertexIndex];
+				pAOSMeshData->_vertices.push_back(vertex);
 			}
 			for (uint32_t index = 0; index < indexCount; ++index)
 			{
-				uint32_t* pIndex = (uint32_t*)(pBuffer + indexOffset);
-				pAOSMeshData->_indices.push_back(*pIndex);
+				uint32_t& indexValue = ((uint32_t*)(pBuffer + indexOffset))[index];
+				pAOSMeshData->_indices.push_back(indexValue);
 			}
+			sSubMesh* pSubMeshes = (sSubMesh*)(pBuffer + subMeshOffset);
 			for (uint32_t subMeshIndex = 0; subMeshIndex < subMeshCount; ++subMeshIndex)
 			{
-				sSubMesh* pSubMesh = (sSubMesh*)(pBuffer + subMeshOffset);
+				sSubMesh* pSubMesh = pSubMeshes + subMeshIndex;
 				pAOSMeshData->_subMeshes.push_back(*pSubMesh);
 			}
 			std::string mesh_path(i_binaryMeshFile);
 			std::string key = GetFileNameWithoutExtension(mesh_path.c_str());
-			return AOSMeshDataManager::GetInstance()->AddAOSMeshData(key.c_str(), pAOSMeshData);
+			SAFE_DELETE_ARRAY(pBuffer);
+			bool result = AOSMeshDataManager::GetInstance()->AddAOSMeshData(key.c_str(), pAOSMeshData);
+			return result;
 		}
 
 

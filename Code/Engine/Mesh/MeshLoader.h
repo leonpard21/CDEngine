@@ -93,6 +93,8 @@ namespace EAE_Engine
 			VertexElement* _pElements;
 			uint32_t _vertexCount;
 		};
+
+		bool LoadMeshData(const char* i_binaryMeshFile);
 	}
 }
 
