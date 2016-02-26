@@ -69,7 +69,7 @@ namespace EAE_Engine
 #endif
 			DebugVertex vertices;
 			uint32_t indices = 0;
-			sSubMesh subMesh(0, 0);
+			Mesh::sSubMesh subMesh(0, 0);
 			{
 				{
 					vertices.x = 0.0f;
@@ -219,7 +219,7 @@ namespace EAE_Engine
 				pIndices[index + 2] = temp;
 			}
 #endif
-			sSubMesh subMesh(0, indexCount - 1);
+			Mesh::sSubMesh subMesh(0, indexCount - 1);
 			if (_pBoxesMesh)
 				_pBoxesMesh->ChangeWholeBuffers(pVertices, vertexCount, pIndices, indexCount, &subMesh, 1);
 			SAFE_DELETE_ARRAY(pVertices);
@@ -248,12 +248,12 @@ namespace EAE_Engine
 				standardBox._indices[index + 2] = temp;
 			}
 #endif
-			sSubMesh subMesh(0, indexCount - 1);
+			Mesh::sSubMesh subMesh(0, indexCount - 1);
 			if (_pBoxesMesh)
 			{
 				_pBoxesMesh->ChangeWholeBuffers(&standardBox._vertices[0], vertexCount,
 					&standardBox._indices[0], indexCount, &subMesh, 1);
-				std::vector<sSubMesh> subMeshList;
+				std::vector<Mesh::sSubMesh> subMeshList;
 				subMeshList.push_back(subMesh);
 				_pSegmentsMesh->SetSubMeshes(subMeshList);
 			}
@@ -342,7 +342,7 @@ namespace EAE_Engine
 				pIndices[index + 2] = temp;
 			}
 #endif
-			sSubMesh subMesh(0, indexCount - 1);
+			Mesh::sSubMesh subMesh(0, indexCount - 1);
 			if (_pShperesMesh)
 				_pShperesMesh->ChangeWholeBuffers(pVertices, vertexCount, pIndices, indexCount, &subMesh, 1);
 			SAFE_DELETE_ARRAY(pVertices);

@@ -2,7 +2,7 @@
 #define EAE_ENGINE_GRAPHICS_MESHHEADER
 
 #include "../Graphics.h"
-#include "Engine/Graphics/GraphicsInclude.h"
+#include "Engine/Mesh/MeshLoader.h"
 #include "Engine/General/MemoryOp.h"
 #include <vector>
 #if defined( EAEENGINE_PLATFORM_D3D9 )
@@ -62,9 +62,9 @@ namespace EAE_Engine
 			bool CreateBuffers(IDirect3DDevice9* pDevice, MeshD3DVertexElements vertexElement,
 				void* pVertices, uint32_t vertexDataCount, 
 				uint32_t* pIndeices, uint32_t indexCount, 
-				sSubMesh* pSubMeshes, uint32_t subMeshCount);
+				Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount);
 			void Release();
-			void ChangeWholeBuffers(void* pVertices, uint32_t vertexDataCount, uint32_t* pIndeices, uint32_t indexCount, sSubMesh* pSubMeshes, uint32_t subMeshCount);;
+			void ChangeWholeBuffers(void* pVertices, uint32_t vertexDataCount, uint32_t* pIndeices, uint32_t indexCount, Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount);;
 
 			inline IDirect3DVertexBuffer9* GetVertexBuffer() const { return _pVertexBuffer; };
 			inline uint32_t GetVertexCount() const { return _vertexCount; }
@@ -74,14 +74,14 @@ namespace EAE_Engine
 			inline D3DPRIMITIVETYPE GetPrimitiveType() const { return _bufferInfo._primitiveType; }
 			inline IDirect3DVertexDeclaration9* GetVertexDeclaration() const { return _pVertexDeclaration; }
 			inline uint32_t GetSubMeshCount() const { return (uint32_t)_subMeshes.size(); }
-			sSubMesh* GetSubMesh(uint32_t SubMeshIndex);
-			void SetSubMeshes(std::vector<sSubMesh>& subMeshes);
+			Mesh::sSubMesh* GetSubMesh(uint32_t SubMeshIndex);
+			void SetSubMeshes(std::vector<Mesh::sSubMesh>& subMeshes);
 
 		private:
 			bool InitVertexElements(IDirect3DDevice9* pDevice, MeshD3DVertexElements vertexElement);
 			bool InitVertexBuffer(IDirect3DDevice9* pDevice, void* pVertices, uint32_t vertexCount);
 			bool InitIndexBuffer(IDirect3DDevice9* pDevice, uint32_t* pIndeices, uint32_t indexCount,
-				sSubMesh* pSubMeshes, uint32_t SubMeshCount);
+				Mesh::sSubMesh* pSubMeshes, uint32_t SubMeshCount);
 			bool InitUsage(IDirect3DDevice9* pDevice, UsageInfo usageInfo);
 
 		private:
@@ -91,13 +91,13 @@ namespace EAE_Engine
 			IDirect3DVertexBuffer9* _pVertexBuffer;
 			IDirect3DVertexDeclaration9* _pVertexDeclaration;
 			BufferInfo _bufferInfo;
-			std::vector<sSubMesh> _subMeshes;
+			std::vector<Mesh::sSubMesh> _subMeshes;
 		};
 
 		AOSMesh* CreateAOSMeshInternal(MeshD3DVertexElements elements,
 			void* pVertices, uint32_t vertexCount,
 			uint32_t* pIndices, uint32_t indexCount,
-			sSubMesh* pSubMeshes, uint32_t subMeshCount);
+			Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount);
 
 #elif defined( EAEENGINE_PLATFORM_GL )
 		struct MeshGLVertexElement
@@ -137,21 +137,21 @@ namespace EAE_Engine
 			bool CreateBuffers(MeshGLVertexElements elements,
 				void* pVertices, uint32_t vertexCount,
 				uint32_t* pIndexData, uint32_t indexCount, 
-				sSubMesh* pSubMeshes, uint32_t subMeshCount);
+				Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount);
 			void Release();
 			void ChangeWholeBuffers(void* pVertices, uint32_t vertexCount, 
-				uint32_t* pIndexData, uint32_t indexCount, sSubMesh* pSubMeshes, uint32_t subMeshCount);
+				uint32_t* pIndexData, uint32_t indexCount, Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount);
 			inline GLuint GetVertexArrayID() const { return _vertexArrayId; }
 			inline GLuint GetVertexCount() const { return _vertexCount; }
 			inline GLuint GetIndexCount() const { return _indexCount; }
 			inline GLenum GetPrimitiveMode() const { return _bufferInfo._primitiveMode; }
 			inline uint32_t GetSubMeshCount() const { return (uint32_t)_subMeshes.size(); }
-			sSubMesh* GetSubMesh(uint32_t SubMeshIndex);
-			void SetSubMeshes(std::vector<sSubMesh>& subMeshes);
+			Mesh::sSubMesh* GetSubMesh(uint32_t SubMeshIndex);
+			void SetSubMeshes(std::vector<Mesh::sSubMesh>& subMeshes);
 
 		private:
 			bool CreateVertexBufferElements(MeshGLVertexElements elements, void* pVertices, uint32_t vertexCount);
-			bool CreateIndexBuffer(uint32_t* pIndexData, uint32_t indexCount, sSubMesh* pSubMeshes, uint32_t subMeshCount);
+			bool CreateIndexBuffer(uint32_t* pIndexData, uint32_t indexCount, Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount);
 			////////////////////////////////////Member Variables/////////////////////////
 		private:
 			// A vertex array encapsulates both the vertex and index data as well as the vertex format
@@ -161,13 +161,13 @@ namespace EAE_Engine
 			GLuint _vertexCount;
 			GLuint _indexCount;
 			BufferInfo _bufferInfo;
-			std::vector<sSubMesh> _subMeshes;
+			std::vector<Mesh::sSubMesh> _subMeshes;
 		};
 
 		AOSMesh* CreateAOSMeshInternal(MeshGLVertexElements elements,
 			void* pVertices, uint32_t vertexCount,
 			uint32_t* pIndices, uint32_t indexCount,
-			sSubMesh* pSubMeshes, uint32_t subMeshCount);
+			Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount);
 
 #endif
 		bool RenderAOSMeshInternal(AOSMesh* pAOSMesh, uint32_t submeshindex = 0);

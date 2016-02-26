@@ -22,7 +22,7 @@ namespace EAE_Engine
 		bool AOSMesh::CreateBuffers(MeshGLVertexElements elements,
 			void* pVertices, uint32_t vertexCount,
 			uint32_t* pIndexData, uint32_t indexCount,
-			sSubMesh* pSubMeshes, uint32_t subMeshCount)
+			Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount)
 		{
 			bool wereThereErrors = false;
 			_vertexBufferId = 0;
@@ -103,7 +103,7 @@ namespace EAE_Engine
 			return result;
 		}
 
-		bool AOSMesh::CreateIndexBuffer(uint32_t* pIndexData, uint32_t indexCount, sSubMesh* pSubMeshes, uint32_t subMeshCount)
+		bool AOSMesh::CreateIndexBuffer(uint32_t* pIndexData, uint32_t indexCount, Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount)
 		{
 			bool result = true;
 			if (!CreateBindBufferObj(_indexBufferId, GL_ELEMENT_ARRAY_BUFFER))
@@ -117,7 +117,7 @@ namespace EAE_Engine
 			// Set the SubMeshes Information
 			for (uint32_t subMeshIndex = 0; subMeshIndex < subMeshCount; ++subMeshIndex)
 			{
-				sSubMesh pMesh(pSubMeshes[subMeshIndex]._firstIndex, pSubMeshes[subMeshIndex]._lastIndex);
+				Mesh::sSubMesh pMesh(pSubMeshes[subMeshIndex]._firstIndex, pSubMeshes[subMeshIndex]._lastIndex);
 				_subMeshes.push_back(pMesh);
 			}
 			return result;
@@ -142,7 +142,7 @@ namespace EAE_Engine
 			_subMeshes.clear();
 		}
 
-		void AOSMesh::ChangeWholeBuffers(void* pVertices, uint32_t vertexCount, uint32_t* pIndexData, uint32_t indexCount, sSubMesh* pSubMeshes, uint32_t subMeshCount)
+		void AOSMesh::ChangeWholeBuffers(void* pVertices, uint32_t vertexCount, uint32_t* pIndexData, uint32_t indexCount, Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount)
 		{
 			//clean all of the submeshes.
 			_subMeshes.clear();
@@ -165,7 +165,7 @@ namespace EAE_Engine
 				// Set the SubMeshes Information
 				for (uint32_t subMeshIndex = 0; subMeshIndex < subMeshCount; ++subMeshIndex)
 				{
-					sSubMesh pMesh(pSubMeshes[subMeshIndex]._firstIndex, pSubMeshes[subMeshIndex]._lastIndex);
+					Mesh::sSubMesh pMesh(pSubMeshes[subMeshIndex]._firstIndex, pSubMeshes[subMeshIndex]._lastIndex);
 					_subMeshes.push_back(pMesh);
 				}
 			}
@@ -189,7 +189,7 @@ namespace EAE_Engine
 			}
 		}
 
-		sSubMesh* AOSMesh::GetSubMesh(uint32_t subMeshIndex)
+		Mesh::sSubMesh* AOSMesh::GetSubMesh(uint32_t subMeshIndex)
 		{
 			if (subMeshIndex > _subMeshes.size())
 			{
@@ -198,7 +198,7 @@ namespace EAE_Engine
 			return &_subMeshes[subMeshIndex];
 		};
 
-		void AOSMesh::SetSubMeshes(std::vector<sSubMesh>& subMeshes)
+		void AOSMesh::SetSubMeshes(std::vector<Mesh::sSubMesh>& subMeshes)
 		{
 			_subMeshes.clear();
 			_subMeshes = subMeshes;
@@ -211,7 +211,7 @@ namespace EAE_Engine
 		AOSMesh* CreateAOSMeshInternal(MeshGLVertexElements elements,
 			void* pVertices, uint32_t vertexCount,
 			uint32_t* pIndices, uint32_t indexCount,
-			sSubMesh* pSubMeshes, uint32_t subMeshCount)
+			Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount)
 		{
 			AOSMesh* pMesh = new AOSMesh();
 			pMesh->CreateBuffers(elements,

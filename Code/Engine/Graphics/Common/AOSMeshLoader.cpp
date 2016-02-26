@@ -77,7 +77,7 @@ namespace EAE_Engine
 			offset += sizeof(uint32_t) * indexCount;
 			// Set subMeshOffset
 			o_subMeshOffset = offset;
-			offset += sizeof(Graphics::sSubMesh) * subMeshCount;
+			offset += sizeof(Mesh::sSubMesh) * subMeshCount;
 		}
 		infile.close();
 		return reinterpret_cast<uint8_t*>(pBuffer);
@@ -144,7 +144,7 @@ namespace EAE_Engine
 #endif
 			pAOSMesh = CreateAOSMeshInternal(elements, reinterpret_cast<Mesh::sVertex*>(pBuffer + vertexOffset), vertexCount,
 				reinterpret_cast<uint32_t*>(pBuffer + indexOffset), indexCount,
-				reinterpret_cast<sSubMesh*>(pBuffer + subMeshOffset), subMeshCount);
+				reinterpret_cast<Mesh::sSubMesh*>(pBuffer + subMeshOffset), subMeshCount);
 			SAFE_DELETE_ARRAY(pBuffer);
 			return pAOSMesh;
 		}

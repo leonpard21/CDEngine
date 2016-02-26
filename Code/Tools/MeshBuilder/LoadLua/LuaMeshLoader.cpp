@@ -5,7 +5,6 @@
 #include "Engine/Math/Vector.h"
 #include "Engine/Math/MathTool.h"
 #include "Engine/General/MemoryOp.h"
-#include "Engine/Graphics/GraphicsInclude.h"
 #include "Engine/Mesh/MeshLoader.h"
 #include "Tools/BuilderHelper/cbBuilder.h"
 
@@ -19,15 +18,15 @@ namespace
 
 	bool LoadTableVertices(lua_State& io_luaState, EAE_Engine::Mesh::sVertex*& o_pVertices, uint32_t& o_vertexCount,
 		uint32_t*& o_pIndices, uint32_t& o_indexCount, 
-		EAE_Engine::Graphics::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount);
+		EAE_Engine::Mesh::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount);
 	bool LoadTableValues_vertices(lua_State& io_luaState, EAE_Engine::Mesh::sVertex*& o_pVertices, uint32_t& o_vertexCount);
 	bool LoadTableValues_vertex(lua_State& io_luaState, EAE_Engine::Mesh::sVertex& o_vertex);
 	bool LoadTableValues_indices(lua_State& io_luaState, uint32_t*& o_pIndices, uint32_t& o_indexCount);
-	bool LoadTableValues_subMeshes(lua_State& io_luaState, EAE_Engine::Graphics::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount);
+	bool LoadTableValues_subMeshes(lua_State& io_luaState, EAE_Engine::Mesh::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount);
 	bool LoadMeshInfo(const char* const i_path, EAE_Engine::Mesh::VertexFormat*& o_pVertexFormat, 
 		EAE_Engine::Mesh::sVertex*& pVertices, uint32_t& o_vertexCount,
 		uint32_t*& o_pIndices, uint32_t& o_indexCount, 
-		EAE_Engine::Graphics::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount);
+		EAE_Engine::Mesh::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount);
 }
 
 // Helper Function Definitions
@@ -134,7 +133,7 @@ namespace
 
 	bool LoadTableVertices(lua_State& io_luaState, EAE_Engine::Mesh::sVertex*& o_pVertices, uint32_t& o_vertexCount, 
 		uint32_t*& o_pIndices, uint32_t& o_indexCount, 
-		EAE_Engine::Graphics::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount)
+		EAE_Engine::Mesh::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount)
 	{
 		if (!LoadTableValues_vertices(io_luaState, o_pVertices, o_vertexCount))
 		{
@@ -359,7 +358,7 @@ namespace
 		return !wereThereErrors;
 	}
 
-	bool LoadTableValues_subMeshes(lua_State& io_luaState, EAE_Engine::Graphics::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount)
+	bool LoadTableValues_subMeshes(lua_State& io_luaState, EAE_Engine::Mesh::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount)
 	{
 		bool wereThereErrors = false;
 
@@ -374,7 +373,7 @@ namespace
 			{
 				// record the information of subMeshes and count the Indices.
 				o_subMeshCount = subMeshArrayLength;
-				o_pSubMeshes = new EAE_Engine::Graphics::sSubMesh[o_subMeshCount];
+				o_pSubMeshes = new EAE_Engine::Mesh::sSubMesh[o_subMeshCount];
 				uint32_t subMeshIndex = 0;
 				// iterate all of the SubMesh tables
 				lua_pushnil(&io_luaState);	// This tells lua_next() to return the first key
@@ -412,7 +411,7 @@ namespace
 	bool LoadMeshInfo(const char* const i_path, EAE_Engine::Mesh::VertexFormat*& o_pVertexFormat, 
 		EAE_Engine::Mesh::sVertex*& o_pVertices, uint32_t& o_vertexCount,
 		uint32_t*& o_pIndices, uint32_t& o_indexCount, 
-		EAE_Engine::Graphics::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount)
+		EAE_Engine::Mesh::sSubMesh*& o_pSubMeshes, uint32_t& o_subMeshCount)
 	{
 		bool wereThereErrors = false;
 
@@ -561,7 +560,7 @@ namespace EAE_Engine
 				sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + // Count of Vertices, Count of Indices, Count of SubMeshes
 				sizeof(EAE_Engine::Mesh::sVertex) * vertexCount +  // Vertices Buffer
 				sizeof (uint32_t) * indexCount +                       // Indices Buffer
-				sizeof(EAE_Engine::Graphics::sSubMesh) * subMeshCount; // SubMeshes Buffer
+				sizeof(EAE_Engine::Mesh::sSubMesh) * subMeshCount; // SubMeshes Buffer
 
 			// allocate memory for file content
 			o_pBuffer = new char[sizeOfBuffer];
@@ -601,7 +600,7 @@ namespace EAE_Engine
 			CopyMem(reinterpret_cast<uint8_t*>(pIndices), reinterpret_cast<uint8_t*>(o_pBuffer) + offset, sizeof(uint32_t) * indexCount);
 			offset += sizeof(uint32_t) * indexCount;
 			// Write SubMeshes
-			CopyMem(reinterpret_cast<uint8_t*>(pSubMeshes), reinterpret_cast<uint8_t*>(o_pBuffer) + offset, sizeof(EAE_Engine::Graphics::sSubMesh) * subMeshCount);
+			CopyMem(reinterpret_cast<uint8_t*>(pSubMeshes), reinterpret_cast<uint8_t*>(o_pBuffer) + offset, sizeof(EAE_Engine::Mesh::sSubMesh) * subMeshCount);
 			offset += sizeof(uint32_t) * subMeshCount;
 
 			SAFE_DELETE_ARRAY(pVertices);

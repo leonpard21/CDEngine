@@ -36,7 +36,7 @@
     <ClCompile Include="Common\RenderObj.cpp" />
     <ClCompile Include="Common\Screen.cpp" />
     <ClCompile Include="Common\SOAMesh.cpp" />
-    <ClCompile Include="Common\MeshLoader.cpp" />
+    <ClCompile Include="Common\AOSMeshLoader.cpp" />
     <ClCompile Include="Common\MeshManager.cpp" />
     <ClCompile Include="Common\MeshRender.cpp" />
     <ClCompile Include="Common\ShaderContent.cpp" />

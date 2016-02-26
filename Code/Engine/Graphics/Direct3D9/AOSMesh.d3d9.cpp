@@ -18,7 +18,7 @@ namespace EAE_Engine
 		{
 		}
 
-		sSubMesh* AOSMesh::GetSubMesh(uint32_t subMeshIndex)
+		Mesh::sSubMesh* AOSMesh::GetSubMesh(uint32_t subMeshIndex)
 		{ 
 			if (subMeshIndex > _subMeshes.size())
 			{
@@ -27,7 +27,7 @@ namespace EAE_Engine
 			return &_subMeshes[subMeshIndex];
 		};
 
-		void AOSMesh::SetSubMeshes(std::vector<sSubMesh>& subMeshes)
+		void AOSMesh::SetSubMeshes(std::vector<Mesh::sSubMesh>& subMeshes)
 		{
 			_subMeshes.clear();
 			_subMeshes = subMeshes;
@@ -36,7 +36,7 @@ namespace EAE_Engine
 		bool AOSMesh::CreateBuffers(IDirect3DDevice9* pDevice, MeshD3DVertexElements vertexElement,
 			void* pVertices, uint32_t vertexDataCount,
 			uint32_t* pIndeices, uint32_t indexCount,
-			sSubMesh* pSubMeshes, uint32_t subMeshCount)
+			Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount)
 		{
 			if (!InitVertexElements(pDevice, vertexElement))
 			{
@@ -107,7 +107,7 @@ namespace EAE_Engine
 
 		bool AOSMesh::InitIndexBuffer(IDirect3DDevice9* pDevice,
 			uint32_t* pIndices, uint32_t indexCount, 
-			sSubMesh* pSubMeshes, uint32_t subMeshCount)
+			Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount)
 		{
 			if (pIndices == nullptr)
 				return true;
@@ -133,7 +133,7 @@ namespace EAE_Engine
 			// Set the SubMeshes Information
 			for (uint32_t subMeshIndex = 0; subMeshIndex < subMeshCount; ++subMeshIndex)
 			{
-				sSubMesh subMesh;
+				Mesh::sSubMesh subMesh;
 				subMesh._firstIndex = pSubMeshes[subMeshIndex]._firstIndex;
 				subMesh._lastIndex = pSubMeshes[subMeshIndex]._lastIndex;
 				_subMeshes.push_back(subMesh);
@@ -188,7 +188,7 @@ namespace EAE_Engine
 
 		AOSMesh* CreateAOSMeshInternal(MeshD3DVertexElements elements,
 			void* pVertices, uint32_t vertexCount, uint32_t* pIndices, uint32_t indexCount,
-			sSubMesh* pSubMeshes, uint32_t subMeshCount)
+			Mesh::sSubMesh* pSubMeshes, uint32_t subMeshCount)
 		{
 			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
 			if (!pD3DDevice) return nullptr;

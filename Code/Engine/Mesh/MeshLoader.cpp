@@ -4,18 +4,18 @@
 #include <fstream>
 #include <vector>
 #include "Engine/Math/Vector.h"
-#include "UserOutput/Source/Assert.h"
-#include "UserOutput/UserOutput.h"
 #include "General/MemoryOp.h"
+#include "AOSMeshData.h"
+#include "Windows/WindowsFunctions.h"
 
 // Helper Function Declarations
 //=============================
 namespace EAE_Engine
 {
-	uint8_t* LoadMeshInfo(const char* i_pFile, 
-		uint32_t& o_elementCount, Mesh::VertexElement*& o_pVertexElements, 
-		uint32_t& o_vertexOffset, uint32_t& o_vertexCount, 
-		uint32_t& o_indexOffset, uint32_t& o_indexCount, 
+	uint8_t* LoadMeshInfo(const char* i_pFile,
+		uint32_t& o_vertexElementCount, Mesh::VertexElement*& o_pVertexElements, 
+		uint32_t& o_vertexOffset, uint32_t& o_vertexCount,
+		uint32_t& o_indexOffset, uint32_t& o_indexCount,
 		uint32_t& o_subMeshOffset, uint32_t& o_subMeshCount)
 	{
 		if (!i_pFile)
@@ -39,7 +39,7 @@ namespace EAE_Engine
 		if (!infile)
 		{
 			std::stringstream decoratedErrorMessage;
-			decoratedErrorMessage << "Failed to load all data from: " << i_pFile <<", only " << infile.gcount() << "could be load.";
+			decoratedErrorMessage << "Failed to load all data from: " << i_pFile << ", only " << infile.gcount() << "could be load.";
 			ErrorMessageBox(decoratedErrorMessage.str().c_str());
 			infile.close();
 			delete[] pBuffer;
@@ -47,10 +47,10 @@ namespace EAE_Engine
 		}
 		uint32_t offset = 0;
 		{
-			o_elementCount = *reinterpret_cast<uint32_t*>(pBuffer + offset);
+			o_vertexElementCount = *reinterpret_cast<uint32_t*>(pBuffer + offset);
 			offset += sizeof(uint32_t);
 			o_pVertexElements = reinterpret_cast<EAE_Engine::Mesh::VertexElement*>(pBuffer + offset);
-			offset += sizeof(EAE_Engine::Mesh::VertexFormat) * o_elementCount;
+			offset += sizeof(EAE_Engine::Mesh::VertexElement) * o_vertexElementCount;
 			// Get VertexCount
 			uint32_t vertexCount = *reinterpret_cast<uint32_t*>(pBuffer + offset);
 			o_vertexCount = vertexCount;
@@ -63,7 +63,6 @@ namespace EAE_Engine
 			uint32_t subMeshCount = *reinterpret_cast<uint32_t*>(pBuffer + offset);
 			o_subMeshCount = subMeshCount;
 			offset += sizeof(uint32_t);
-			/*
 			// Set vertexOffset
 			o_vertexOffset = offset;
 			offset += sizeof(Mesh::sVertex) * vertexCount;
@@ -73,7 +72,6 @@ namespace EAE_Engine
 			// Set subMeshOffset
 			o_subMeshOffset = offset;
 			offset += sizeof(Mesh::sSubMesh) * subMeshCount;
-			*/
 		}
 		infile.close();
 		return reinterpret_cast<uint8_t*>(pBuffer);
@@ -83,20 +81,41 @@ namespace EAE_Engine
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 namespace EAE_Engine
 {
-	namespace Graphics
+	namespace Mesh
 	{
-		uint8_t* LoadMeshData(const char* i_binaryMeshFile)
+		bool LoadMeshData(const char* i_binaryMeshFile)
 		{
+			uint32_t vertexElementCount = 0;
+			VertexElement* pVertexElement = nullptr;
 			uint32_t vertexOffset = 0;
 			uint32_t vertexCount = 0;
 			uint32_t indexOffset = 0;
 			uint32_t indexCount = 0;
 			uint32_t subMeshOffset = 0;
 			uint32_t subMeshCount = 0;
-			uint8_t* pBuffer = LoadMeshInfo(i_binaryMeshFile, vertexOffset, vertexCount, 
-				indexOffset, indexCount, subMeshOffset, subMeshCount);
-			return pBuffer;
+			uint8_t* pBuffer = LoadMeshInfo(i_binaryMeshFile, vertexElementCount, pVertexElement,
+				vertexOffset, vertexCount, indexOffset, indexCount, subMeshOffset, subMeshCount);
+			AOSMeshData* pAOSMeshData = new AOSMeshData();
+			for (uint32_t vertexIndex = 0; vertexIndex < vertexCount; ++vertexIndex)
+			{
+				sVertex* pVertex = (sVertex*)(pBuffer + vertexOffset);
+				pAOSMeshData->_vertices.push_back(*pVertex);
+			}
+			for (uint32_t index = 0; index < indexCount; ++index)
+			{
+				uint32_t* pIndex = (uint32_t*)(pBuffer + indexOffset);
+				pAOSMeshData->_indices.push_back(*pIndex);
+			}
+			for (uint32_t subMeshIndex = 0; subMeshIndex < subMeshCount; ++subMeshIndex)
+			{
+				sSubMesh* pSubMesh = (sSubMesh*)(pBuffer + subMeshOffset);
+				pAOSMeshData->_subMeshes.push_back(*pSubMesh);
+			}
+			std::string mesh_path(i_binaryMeshFile);
+			std::string key = GetFileNameWithoutExtension(mesh_path.c_str());
+			return AOSMeshDataManager::GetInstance()->AddAOSMeshData(key.c_str(), pAOSMeshData);
 		}
+
 
 	}
 }

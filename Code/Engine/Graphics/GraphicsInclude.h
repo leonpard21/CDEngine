@@ -16,18 +16,6 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		// The structure represents the subMesh.
-		// _first is the first of the index of the Submesh,
-		// _last is the last of the index of the Submesh.
-		struct sSubMesh
-		{
-			uint32_t _firstIndex;
-			uint32_t _lastIndex;
-			sSubMesh() :_firstIndex(0), _lastIndex(0) {}
-			sSubMesh(uint32_t firstIndex, uint32_t lastIndex) :_firstIndex(firstIndex), _lastIndex(lastIndex) {}
-			inline uint32_t GetIndicesCount() { return _lastIndex + 1 - _firstIndex; }
-		};
-
 		/*
 		* This enum describes the type of the shader so that we can know how to compile it.
 		*/
