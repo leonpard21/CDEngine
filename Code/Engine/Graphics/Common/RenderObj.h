@@ -13,7 +13,7 @@ namespace EAE_Engine
 		class AOSMesh;
 		class Effect;
 		struct MaterialDesc;
-		class MeshRender;
+		class AOSMeshRender;
 		class ImageRender;
 
 		// The design of this structure based on the idea of:

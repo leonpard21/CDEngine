@@ -46,6 +46,7 @@ namespace EAE_Engine
 			Common::ITransform* GetTransform() { return _pTransform; }
 			void SetType(const HashedString& i_type) { _hashtype = i_type; }
 
+			virtual bool TestCollisionDiscrete(Common::ITransform* pTarget) = 0;
 			//only when the return is true, the collision happens, the o_collisionTime and o_collisionAxis have their real means.
 			virtual bool DetectCollision(Collider* i_pOther, float fElpasedTime, float& o_collisionTime, Math::Vector3& o_collisionAxis) = 0;
 			inline bool IsSameType(const HashedString& i_type);

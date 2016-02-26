@@ -62,9 +62,15 @@ namespace EAE_Engine
 
 		void ColliderManager::FixedUpdate()
 		{
+			for (std::vector<Collider*>::iterator it = _colliderList.begin(); it != _colliderList.end(); ++it)
+			{
+				(*it)->TestCollisionDiscrete(nullptr);
+			}
+			/*
 			float fElpasedTime = Time::GetSecondsElapsedThisFrame();
 			//Iterate advance all of the Colliders.
 			IterateAdvanceColliders(&_colliderList, fElpasedTime);
+			*/
 		}
 
 		float ColliderManager::IterateAdvanceColliders(std::vector<Collider*>* pTempColliderList, float fElpasedTime)

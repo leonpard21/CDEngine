@@ -2,7 +2,8 @@
 #define EAE_ENGINE_MESH_AOSMESHDATA_H
 
 #include "MeshLoader.h"
-#include "General/Singleton.hpp"
+#include "Engine/General/Singleton.hpp"
+#include "Engine/Math/Vector.h"
 #include <vector>
 #include <map>
 
@@ -16,6 +17,7 @@ namespace EAE_Engine
 			std::vector<sVertex> _vertices;
 			std::vector<uint32_t> _indices;
 			std::vector<sSubMesh> _subMeshes;
+			Math::Vector3 GetVertex(uint32_t vertexIndex);
 		};
 
 		class AOSMeshDataManager : public Singleton<AOSMeshDataManager>

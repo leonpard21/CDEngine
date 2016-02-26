@@ -43,6 +43,8 @@ namespace EAE_Engine
 			Math::ColMatrix44 GetRotateTransformMatrix();
 			Math::ColMatrix44 GetLocalToWorldMatrix();//read only, so return value
 			Math::Vector3 GetForward();
+			Math::Vector3 GetRight();
+			Math::Vector3 GetUp();
 			// Children
 			void AddChild(Common::ITransform* pChild) { _children.push_back(pChild); }
 			uint32_t GetChildCount() { return _children.size(); }

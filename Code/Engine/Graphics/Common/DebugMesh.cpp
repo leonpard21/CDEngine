@@ -47,11 +47,11 @@ namespace EAE_Engine
 			LoadMaterial("data/Materials/debugPrimitives.material");
 			std::vector<std::string> materialList;
 			materialList.push_back("debugPrimitives");
-			_pSegmentsMeshRender = new MeshRender(); 
+			_pSegmentsMeshRender = new AOSMeshRender(); 
 			_pSegmentsMeshRender->AddMaterial(materialList);
-			_pBoxesMeshRender = new MeshRender();
+			_pBoxesMeshRender = new AOSMeshRender();
 			_pBoxesMeshRender->AddMaterial(materialList);
-			_pShperesMeshRender = new MeshRender();
+			_pShperesMeshRender = new AOSMeshRender();
 			_pShperesMeshRender->AddMaterial(materialList);
 			// Setup vertices format.
 #if defined( EAEENGINE_PLATFORM_D3D9 )

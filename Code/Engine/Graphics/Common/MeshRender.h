@@ -11,7 +11,7 @@ namespace EAE_Engine
 		class AOSMesh;
 		class Effect;
 		struct MaterialDesc;
-		class MeshRender //: public Common::ICompo
+		class AOSMeshRender //: public Common::ICompo
 		{
 		public:
 			MaterialDesc* GetMaterial(uint32_t index = 0);
@@ -22,7 +22,7 @@ namespace EAE_Engine
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
 			Common::ITransform* GetTransform() { return _pTrans; }
 
-			friend class MeshRenderManager;
+			friend class AOSMeshRenderManager;
 		private:
 			Graphics::AOSMesh* _pMesh;
 			std::vector<Graphics::MaterialDesc*> _materials;
@@ -30,31 +30,31 @@ namespace EAE_Engine
 		};
 
 		struct RenderData3D;
-		class MeshRenderManager 
+		class AOSMeshRenderManager 
 		{
 		public:
-			MeshRender* AddMeshRender(const std::vector<std::string>& materialKeys);
-			MeshRender* AddMeshRender(const char* pAOSMesh, const std::vector<std::string>& materialkeys, Common::ITransform* pTransform);
-			std::vector<MeshRender*>& GetMeshRenderList() { return _meshRenders; }
+			AOSMeshRender* AddMeshRender(const std::vector<std::string>& materialKeys);
+			AOSMeshRender* AddMeshRender(const char* pAOSMesh, const std::vector<std::string>& materialkeys, Common::ITransform* pTransform);
+			std::vector<AOSMeshRender*>& GetMeshRenderList() { return _meshRenders; }
 			void UpdateRenderDataList();
 
 			void Clean();
 			void Remove(Common::ITransform* pTransform);
 		private:
-			std::vector<MeshRender*> _meshRenders;
+			std::vector<AOSMeshRender*> _meshRenders;
 
 		/////////////////////static_members////////////////////////////
 		private:
-			MeshRenderManager() {}
-			static MeshRenderManager* s_pInternalInstance;
+			AOSMeshRenderManager() {}
+			static AOSMeshRenderManager* s_pInternalInstance;
 		public:
-			static MeshRenderManager& GetInstance();
+			static AOSMeshRenderManager& GetInstance();
 			static void CleanInstance();
 		};
 
-		inline MeshRender* AddMeshRender(const char* pAOSMesh, const std::vector<std::string>& materialkeys, Common::ITransform* pTransform)
+		inline AOSMeshRender* AddMeshRender(const char* pAOSMesh, const std::vector<std::string>& materialkeys, Common::ITransform* pTransform)
 		{
-			MeshRender* pResult = MeshRenderManager::GetInstance().AddMeshRender(pAOSMesh, materialkeys, pTransform);
+			AOSMeshRender* pResult = AOSMeshRenderManager::GetInstance().AddMeshRender(pAOSMesh, materialkeys, pTransform);
 			return pResult;
 		}
 

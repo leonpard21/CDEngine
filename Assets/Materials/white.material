@@ -12,7 +12,7 @@ return
 	materialData = 
 	{
 		sourcePath = "data/Effects/",
-		effectSource = "transparent.effect",
+		effectSource = "standard.effect",
 		materialCost = 0x00100,
 		uniformData = 
 		{
@@ -29,7 +29,7 @@ return
 		{
 			{
 				name = "g_sampler2D",
-				path = "data/Textures/eae6320.dds",
+				path = "data/Textures/grey.dds",
 				shaderType = "fragment",
 			},
 		},

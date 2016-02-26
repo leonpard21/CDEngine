@@ -24,6 +24,10 @@ return
 				source = "Helix.aosmeshtext",
 				target = "helix.aosmesh",
 			},
+			{
+				source = "CollisionData.aosmeshtext",
+				target = "collisionData.aosmesh",
+			},
         }
     },
 	{

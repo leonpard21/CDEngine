@@ -24,6 +24,8 @@ namespace EAE_Engine
 			OBBCollider();
 			virtual ~OBBCollider();
 			OBBCollider* InitOBBCollider(Common::ITransform* pTrans, const Math::Vector3& size, const Math::Vector3& offset = Math::Vector3::Zero);
+			
+			virtual bool TestCollisionDiscrete(Common::ITransform* pTarget) { return false; }
 			bool DetectCollision(Collider* i_pOther, float fElpasedTime, float& o_collisionTime, Math::Vector3& o_collisionAxis);
 			static bool DetectCollisionIn2OBBbySAT(OBBCollider& i_boxA, OBBCollider& i_boxB, float fElpasedTime, OverlapAndSepTime& collisionInfo);
 		

@@ -90,7 +90,7 @@ void EAE_Engine::Graphics::Render()
 		// Clean the data of the last frame.
 		RenderObjManager::GetInstance().Clean();
 		// Add the MeshRender to the RenderData3D list.
-		MeshRenderManager::GetInstance().UpdateRenderDataList();
+		AOSMeshRenderManager::GetInstance().UpdateRenderDataList();
 		UIElementManager::GetInstance()->Update();
 		CanvasRenderManager::GetInstance()->UpdateRenderDataList();
 #ifdef DRAW_DEBUG_SHAPES
@@ -121,7 +121,7 @@ bool EAE_Engine::Graphics::ShutDown()
 #ifdef DRAW_DEBUG_SHAPES
 	DebugMeshes::CleanInstance();
 #endif
-	MeshRenderManager::CleanInstance();
+	AOSMeshRenderManager::CleanInstance();
 	CanvasRenderManager::Destroy();
 	UIElementManager::Destroy();
 	ImageManager::Destroy();
@@ -141,12 +141,12 @@ bool EAE_Engine::Graphics::ShutDown()
 void EAE_Engine::Graphics::CleanBeforeRestart()
 {
 	CameraManager::CleanInstance();
-	MeshRenderManager::CleanInstance();
+	AOSMeshRenderManager::CleanInstance();
 	RenderObjManager::CleanInstance();
 	CanvasRenderManager::Destroy();
 }
 
 void EAE_Engine::Graphics::RemoveMeshRender(Common::ITransform* pTrans)
 {
-	MeshRenderManager::GetInstance().Remove(pTrans);
+	AOSMeshRenderManager::GetInstance().Remove(pTrans);
 }

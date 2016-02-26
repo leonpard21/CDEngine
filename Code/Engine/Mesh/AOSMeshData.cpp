@@ -5,6 +5,13 @@ namespace EAE_Engine
 {
 	namespace Mesh
 	{	
+		Math::Vector3 AOSMeshData::GetVertex(uint32_t vertexIndex)
+		{
+			uint32_t index = _indices[vertexIndex];
+			return Math::Vector3(_vertices[index].x, _vertices[index].y, _vertices[index].z);
+		}
+
+		/////////////////////////////////////////////AOSMeshDataManager//////////////////////////////////////////////
 		AOSMeshDataManager::~AOSMeshDataManager() 
 		{
 			for (std::map<const char*, AOSMeshData*>::iterator iter = _aosMeshDatas.begin(); iter != _aosMeshDatas.end(); )

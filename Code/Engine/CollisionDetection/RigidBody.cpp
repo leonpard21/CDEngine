@@ -69,6 +69,12 @@ namespace EAE_Engine
 			case Common::ForceMode::Force:
 				_forceWorkingOn += force;
 				break;
+			case Common::ForceMode::Momentum:
+				_currentVelocity += force * (1.0f / _mass);
+				break;
+			case Common::ForceMode::Velocity:
+				_currentVelocity += force;
+				break;
 			}
 			
 		}

@@ -102,10 +102,20 @@ namespace EAE_Engine
 				sVertex& vertex = pVertices[vertexIndex];
 				pAOSMeshData->_vertices.push_back(vertex);
 			}
-			for (uint32_t index = 0; index < indexCount; ++index)
+			uint32_t* pIndices = (uint32_t*)(pBuffer + indexOffset);
+			for (uint32_t index = 0; index < indexCount; index += 3)
 			{
-				uint32_t& indexValue = ((uint32_t*)(pBuffer + indexOffset))[index];
-				pAOSMeshData->_indices.push_back(indexValue);
+				uint32_t& indexValue0 = pIndices[index + 0];
+				uint32_t& indexValue1 = pIndices[index + 1];
+				uint32_t& indexValue2 = pIndices[index + 2];
+				pAOSMeshData->_indices.push_back(indexValue0);
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+				pAOSMeshData->_indices.push_back(indexValue2);
+				pAOSMeshData->_indices.push_back(indexValue1);
+#elif defined( EAEENGINE_PLATFORM_GL )
+				pAOSMeshData->_indices.push_back(indexValue1);
+				pAOSMeshData->_indices.push_back(indexValue2);
+#endif
 			}
 			sSubMesh* pSubMeshes = (sSubMesh*)(pBuffer + subMeshOffset);
 			for (uint32_t subMeshIndex = 0; subMeshIndex < subMeshCount; ++subMeshIndex)

@@ -158,6 +158,18 @@ namespace EAE_Engine
 			Math::Vector3 forward = rotationMat.GetCol(2) * -1.0f;
 			return forward.Normalize();
 		}
+		Math::Vector3 Transform::GetRight() 
+		{
+			Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
+			Math::Vector3 forward = rotationMat.GetCol(0);
+			return forward.Normalize();
+		}
+		Math::Vector3 Transform::GetUp()
+		{
+			Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
+			Math::Vector3 forward = rotationMat.GetCol(1);
+			return forward.Normalize();
+		}
 
 	}
 }

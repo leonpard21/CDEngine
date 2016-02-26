@@ -6,7 +6,7 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		class MeshRender;
+		class AOSMeshRender;
 		class DebugMeshes 
 		{
 		public:
@@ -21,9 +21,9 @@ namespace EAE_Engine
 
 			///////////////////////////Members/////////////////////////////
 		private:
-			MeshRender* _pSegmentsMeshRender;
-			MeshRender* _pBoxesMeshRender;
-			MeshRender* _pShperesMeshRender;
+			AOSMeshRender* _pSegmentsMeshRender;
+			AOSMeshRender* _pBoxesMeshRender;
+			AOSMeshRender* _pShperesMeshRender;
 			// We should Manage the Debug Meshes by ourself, because we need to update them every frame.
 			AOSMesh* _pSegmentsMesh;
 			AOSMesh* _pBoxesMesh;

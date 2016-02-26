@@ -91,6 +91,8 @@ namespace EAE_Engine
 			virtual Math::ColMatrix44 GetRotateTransformMatrix() = 0;
 			virtual Math::ColMatrix44 GetLocalToWorldMatrix() = 0;
 			virtual Math::Vector3 GetForward() = 0;
+			virtual Math::Vector3 GetRight() = 0;
+			virtual Math::Vector3 GetUp() = 0;
 			// Children
 			virtual uint32_t GetChildCount() = 0;
 			virtual ITransform* GetChild(uint32_t index = 0) = 0;
@@ -115,7 +117,7 @@ namespace EAE_Engine
 		{
 			Force,
 			Momentum,
-
+			Velocity,
 		};
 
 		enum CollisionDetectionMode 

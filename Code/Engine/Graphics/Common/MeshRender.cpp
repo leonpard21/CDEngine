@@ -11,7 +11,7 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		Graphics::MaterialDesc* MeshRender::GetMaterial(uint32_t index)
+		Graphics::MaterialDesc* AOSMeshRender::GetMaterial(uint32_t index)
 		{ 
 			if (_materials.size() == 0)
 				return nullptr;
@@ -20,17 +20,17 @@ namespace EAE_Engine
 			return _materials[index];
 		}
 
-		void MeshRender::SetMesh(const char* pMeshName)
+		void AOSMeshRender::SetMesh(const char* pMeshName)
 		{
 			_pMesh = MeshManager::GetMeshManager()->GetMesh(pMeshName);
 		}
 
-		AOSMesh* MeshRender::GetMesh()
+		AOSMesh* AOSMeshRender::GetMesh()
 		{
 			return _pMesh;
 		}
 
-		void MeshRender::AddMaterial(const std::vector<std::string>& materialKeys)
+		void AOSMeshRender::AddMaterial(const std::vector<std::string>& materialKeys)
 		{
 			for (std::vector<std::string>::const_iterator it = materialKeys.begin(); it != materialKeys.end(); ++it)
 			{
@@ -41,27 +41,27 @@ namespace EAE_Engine
 
 
 		//////////////////////////////RenderObjManager///////////////////////////
-		MeshRender* MeshRenderManager::AddMeshRender(const std::vector<std::string>& materialKeys)
+		AOSMeshRender* AOSMeshRenderManager::AddMeshRender(const std::vector<std::string>& materialKeys)
 		{
-			MeshRender* pMeshRender = new MeshRender();
+			AOSMeshRender* pMeshRender = new AOSMeshRender();
 			pMeshRender->AddMaterial(materialKeys);
 			_meshRenders.push_back(pMeshRender);
 			return pMeshRender;
 		}
 
-		MeshRender* MeshRenderManager::AddMeshRender(const char* pAOSMesh, const std::vector<std::string>& materialKeys, Common::ITransform* pTransform)
+		AOSMeshRender* AOSMeshRenderManager::AddMeshRender(const char* pAOSMesh, const std::vector<std::string>& materialKeys, Common::ITransform* pTransform)
 		{
-			MeshRender* pRO = new MeshRender();
+			AOSMeshRender* pRO = new AOSMeshRender();
 			pRO->SetMesh(pAOSMesh);
 			pRO->AddMaterial(materialKeys);
 			pRO->SetTrans(pTransform);
 			_meshRenders.push_back(pRO);
 			return pRO;
 		}
-		void MeshRenderManager::UpdateRenderDataList()
+		void AOSMeshRenderManager::UpdateRenderDataList()
 		{
 			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
-			for (std::vector<MeshRender*>::iterator it = _meshRenders.begin(); it != _meshRenders.end(); ++it)
+			for (std::vector<AOSMeshRender*>::iterator it = _meshRenders.begin(); it != _meshRenders.end(); ++it)
 			{
 				AOSMesh* pAOSMesh = (*it)->GetMesh();
 				if (pAOSMesh == nullptr) 
@@ -75,21 +75,21 @@ namespace EAE_Engine
 			}
 		}
 
-		void MeshRenderManager::Clean() 
+		void AOSMeshRenderManager::Clean() 
 		{
-			for (std::vector<MeshRender*>::iterator iter = _meshRenders.begin(); iter != _meshRenders.end();)
+			for (std::vector<AOSMeshRender*>::iterator iter = _meshRenders.begin(); iter != _meshRenders.end();)
 			{
-				MeshRender* pObj = *iter++;
+				AOSMeshRender* pObj = *iter++;
 				SAFE_DELETE(pObj);
 			}
 			_meshRenders.clear();
 		}
 
-		void MeshRenderManager::Remove(Common::ITransform* pTransform)
+		void AOSMeshRenderManager::Remove(Common::ITransform* pTransform)
 		{
-			for (std::vector<MeshRender*>::iterator iter = _meshRenders.begin(); iter != _meshRenders.end(); ++iter)
+			for (std::vector<AOSMeshRender*>::iterator iter = _meshRenders.begin(); iter != _meshRenders.end(); ++iter)
 			{
-				MeshRender* pObj = *iter;
+				AOSMeshRender* pObj = *iter;
 				if (pObj->GetTransform() == pTransform)
 				{
 					_meshRenders.erase(iter);
@@ -100,16 +100,16 @@ namespace EAE_Engine
 		}
 
 		////////////////////////////////static_members/////////////////////////////////
-		MeshRenderManager* MeshRenderManager::s_pInternalInstance = nullptr;
+		AOSMeshRenderManager* AOSMeshRenderManager::s_pInternalInstance = nullptr;
 
-		MeshRenderManager& MeshRenderManager::GetInstance()
+		AOSMeshRenderManager& AOSMeshRenderManager::GetInstance()
 		{ 
 			if (!s_pInternalInstance)
-				s_pInternalInstance = new MeshRenderManager();
+				s_pInternalInstance = new AOSMeshRenderManager();
 			return *s_pInternalInstance; 
 		}
 
-		void MeshRenderManager::CleanInstance() 
+		void AOSMeshRenderManager::CleanInstance() 
 		{ 
 			if (!s_pInternalInstance) return;
 			s_pInternalInstance->Clean(); 

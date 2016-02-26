@@ -21,6 +21,7 @@
 #include "Engine/Graphics/Common/RectTransform.h"
 #include "Engine/Graphics/Common/GUI.h"
 #include "Engine/CollisionDetection/RigidBody.h"
+#include "Engine/CollisionDetection/MeshCollider.h"
 
 namespace 
 {
@@ -40,11 +41,11 @@ namespace
 
 const char* const pathGround = "data/Meshes/warehouse.aosmesh";
 const char* const pathPlayer = "data/Meshes/sphere.aosmesh";
-
+const char* const pathCollisionData = "data/Meshes/collisionData.aosmesh";
 EAE_Engine::Collider::Collider* pPlayerCollider = nullptr;
 EAE_Engine::Physics::RigidBody* pRigidBody = nullptr;
 
-EAE_Engine::Graphics::MeshRender* pRenderGround = nullptr;
+EAE_Engine::Graphics::AOSMeshRender* pRenderGround = nullptr;
 EAE_Engine::Common::IGameObj* pActorGround = nullptr;
 
 EAE_Engine::Common::IGameObj* pActorBoard = nullptr;
@@ -82,8 +83,12 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	{
 		return false;
 	}
+	result = EAE_Engine::Graphics::LoadMeshFromBinary(pathCollisionData);
+	if (!result)
+	{
+		return false;
+	}
 
-//	EAE_Engine::Graphics::LoadMaterial("data/Materials/white.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/phongShading.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/lambert.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/floor.material");
@@ -92,6 +97,7 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/metal.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/cement.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/walls.material");
+	EAE_Engine::Graphics::LoadMaterial("data/Materials/white.material");
 	_windowWidth = windowWidth;
 	_windowHeight = windowHeight;
 	result = InitLevel();
@@ -191,12 +197,20 @@ namespace
 		materialList.push_back("metal");
 		materialList.push_back("cement");
 		materialList.push_back("walls");
-		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
+	//	pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
 
 		CreatePlayer();
 		CreateCamera();
 		CreateSprite();
 		CreateDebugMenu();
+
+		std::vector<std::string> materialList2;
+		materialList2.push_back("lambert");
+		EAE_Engine::Common::IGameObj* pCollisionDataObj = EAE_Engine::Core::World::GetInstance().AddGameObj("collisionData", zero);
+		EAE_Engine::Graphics::AddMeshRender(pathCollisionData, materialList2, pCollisionDataObj->GetTransform());
+		EAE_Engine::Collider::MeshCollider* pMeshCollider = new EAE_Engine::Collider::MeshCollider(pCollisionDataObj->GetTransform());
+		pMeshCollider->Init(pPlayerObj->GetTransform(), "collisionData");
+		EAE_Engine::Collider::ColliderManager::GetInstance()->AddToColliderList(pMeshCollider);
 		return true;
 	}
 

@@ -13,11 +13,11 @@ namespace EAE_Engine
 		class AOSMesh;
 		class Effect;
 		struct MaterialDesc;
-		class MeshRender;
+		class AOSMeshRender;
 
 		struct RenderData3D
 		{
-			MeshRender* _pMeshRender;// which MeshRender we will render.
+			AOSMeshRender* _pMeshRender;// which MeshRender we will render.
 			uint32_t _subMeshIndex;  // which subMesh of the MeshRender we will render.
 			Common::ITransform* _pTrans;
 
