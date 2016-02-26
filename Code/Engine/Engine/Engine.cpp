@@ -61,6 +61,7 @@ namespace EAE_Engine
 			int fixedUpdateRunTime = Time::GetFixedUpdateRunTimesOnThisFrame();
 			for (int i = 0; i < fixedUpdateRunTime; ++i)
 			{
+				Controller::ControllerManager::GetInstance().FixedUpdate();
 				Collider::ColliderManager::GetInstance()->FixedUpdate();
 				Physics::Physics::GetInstance()->FixedUpdate();
 			}

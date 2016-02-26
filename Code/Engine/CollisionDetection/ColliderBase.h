@@ -9,6 +9,11 @@
 
 namespace EAE_Engine
 {
+	namespace Physics
+	{
+		class RigidBody;
+	}
+
 	namespace Collider
 	{
 
@@ -29,7 +34,7 @@ namespace EAE_Engine
 		};
 		typedef bool OnCollideCallback(Collider* pSelf, CollisionInfo& collisionInfo);
 
-		class Collider //: public Common::ICompo
+		class Collider : public Common::ICompo
 		{
 			Collider(const Collider& i_Collider) = delete;
 			Collider& operator= (const Collider& i_Collider) = delete;
@@ -37,6 +42,7 @@ namespace EAE_Engine
 		public:
 			Collider();
 			virtual ~Collider();
+			virtual Common::ICompo* GetComponent(typeid_t type);
 			Common::ITransform* GetTransform() { return _pTransform; }
 			void SetType(const HashedString& i_type) { _hashtype = i_type; }
 
@@ -78,7 +84,7 @@ namespace EAE_Engine
 			Collider* AddToColliderList(Collider* pCollider);
 			//Collider* CreateCollider(Common::ITransform* pTrans, const Math::Vector3& size, const Math::Vector3& offset);
 			//void AdvanceAllObjs(float fTargetTime);
-			float FixedUpdate();
+			void FixedUpdate();
 			void Remove(Collider* pCollider);
 			void Remove(Common::ITransform* pTrans);
 			void InstallCollsionFeedbackByType(HashedString type, bool OnCollideCallback(Collider* pSelf, CollisionInfo& collisionInfo));

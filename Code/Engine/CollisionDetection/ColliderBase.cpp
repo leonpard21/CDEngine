@@ -2,7 +2,7 @@
 #include <cmath>
 #include <cassert>
 #include "OBBCollider.h"
-
+#include "RigidBody.h"
 
 namespace EAE_Engine
 {
@@ -17,6 +17,11 @@ namespace EAE_Engine
 		{
 			_OnCollidecallbackList.Clear();
  		}
+
+		Common::ICompo* Collider::GetComponent(typeid_t type)
+		{
+			return _pTransform->GetComponent(type);
+		}
 
 		void Collider::IterateCallbackLsit(CollisionInfo collisionInfo)
 		{
@@ -33,7 +38,8 @@ namespace EAE_Engine
 			}
 		}
 
-		//////////////////////////////////
+
+		////////////////////////////////////////ColliderManager/////////////////////////////////////////
 		/*The Manager of Colliders*/
 		ColliderManager::ColliderManager():
 			_numOfColliders(100)
@@ -54,12 +60,11 @@ namespace EAE_Engine
 		}
 
 
-		float ColliderManager::FixedUpdate()
+		void ColliderManager::FixedUpdate()
 		{
 			float fElpasedTime = Time::GetSecondsElapsedThisFrame();
 			//Iterate advance all of the Colliders.
-			float remainTime = IterateAdvanceColliders(&_colliderList, fElpasedTime);
-			return remainTime;
+			IterateAdvanceColliders(&_colliderList, fElpasedTime);
 		}
 
 		float ColliderManager::IterateAdvanceColliders(std::vector<Collider*>* pTempColliderList, float fElpasedTime)
