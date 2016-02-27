@@ -10,7 +10,7 @@ namespace EAE_Engine
 	{
 
 		Controller::Controller(Common::ITransform* pTrans) :
-			_pTransform(pTrans)
+			_pTransform(pTrans), _active(true)
 		{
 			
 		}
@@ -41,7 +41,7 @@ namespace EAE_Engine
 			for (size_t i = 0; i < size; ++i)
 			{
 				Common::IController* pController = _controllers[i];
-				if (pController)
+				if (pController && pController->IsActive())
 					pController->Update();
 			}
 		}
@@ -52,7 +52,7 @@ namespace EAE_Engine
 			for (size_t i = 0; i < size; ++i)
 			{
 				Common::IController* pController = _controllers[i];
-				if (pController)
+				if (pController && pController->IsActive())
 					pController->FixedUpdate();
 			}
 		}

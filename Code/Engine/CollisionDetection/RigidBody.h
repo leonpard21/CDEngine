@@ -41,9 +41,9 @@ namespace EAE_Engine
 			Common::ICompo* GetComponent(typeid_t type) { return _pTransform->GetComponent(type); }
 			Common::ITransform* GetTransform() { return _pTransform; }
 			Math::Vector3 GetVelocity() const { return _currentVelocity; }
-			void SetVelocity(Math::Vector3& velocity) { _currentVelocity = velocity; }
+			void SetVelocity(const Math::Vector3& velocity) { _currentVelocity = velocity; }
 			Math::Vector3 GetPos() const { return _currentPos; }
-			void SetPos(Math::Vector3& pos) { _currentPos = pos; }
+			void SetPos(const Math::Vector3& pos) { _currentPos = pos; }
 			//Math::Quaternion GetRotation();
 			//void SetRotation(Math::Quaternion& rotation);
 			float GetMass() const { return _mass; }

@@ -15,9 +15,12 @@ namespace EAE_Engine
 			virtual void Update();
 			virtual void FixedUpdate() {}
 			virtual Common::ITransform* GetTransform() { return _pTransform; }
+			bool IsActive() { return _active; }
+			void SetActive(bool active) { _active = active; }
 
 		protected:
 			Common::ITransform* _pTransform;
+			bool _active;
 		};
 
 		class ControllerManager 

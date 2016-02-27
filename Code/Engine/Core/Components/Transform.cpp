@@ -25,6 +25,18 @@ namespace EAE_Engine
 			return _pGamObj ? _pGamObj->GetComponent(type) : nullptr;
 		}
 
+		void Transform::RemoveChild(ITransform* pParent)
+		{
+			for (std::vector<Common::ITransform*>::iterator it = _children.begin(); it != _children.end(); ++it)
+			{
+				if (*it == pParent)
+				{
+					_children.erase(it);
+					break;
+				}
+			}
+		}
+
 		// Parent
 		void Transform::SetParent(ITransform* parent)
 		{
@@ -32,8 +44,19 @@ namespace EAE_Engine
 				_pParent = nullptr;
 				return;
 			}
+			if (_pParent && parent == nullptr)
+			{
+				_localPosition = GetPos();
+				_localRotation = GetRotation();
+				_pParent->RemoveChild(this);
+				_pParent = nullptr;
+				return;
+			}
 			_pParent = parent;
-			parent->AddChild(this);
+			if (_pParent)
+			{
+				parent->AddChild(this);
+			}
 		}
 		Common::ITransform* Transform::Root() 
 		{
@@ -161,14 +184,14 @@ namespace EAE_Engine
 		Math::Vector3 Transform::GetRight() 
 		{
 			Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
-			Math::Vector3 forward = rotationMat.GetCol(0);
-			return forward.Normalize();
+			Math::Vector3 right = rotationMat.GetCol(0);
+			return right.Normalize();
 		}
 		Math::Vector3 Transform::GetUp()
 		{
 			Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
-			Math::Vector3 forward = rotationMat.GetCol(1);
-			return forward.Normalize();
+			Math::Vector3 up = rotationMat.GetCol(1);
+			return up.Normalize();
 		}
 
 	}

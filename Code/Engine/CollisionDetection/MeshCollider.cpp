@@ -35,7 +35,7 @@ namespace EAE_Engine
 			}
 			Math::Vector3 velocityRB = pTargetRB->GetVelocity();
 			Math::Vector3 targetStartPoint = pTargetRB->GetPos();
-			Math::Vector3 targetEndPoint = targetStartPoint + velocityRB * io_follisionTimeStep + Math::Vector3(0.0f, -0.5f, 0.0f);
+			Math::Vector3 targetEndPoint = targetStartPoint + velocityRB * io_follisionTimeStep + Math::Vector3(0.0f, -2.5f, 0.0f);
 			Math::Vector3 normalOfFace = Math::Vector3::Zero;
 			for (int index = 0; index < _pAOSMeshData->_indices.size(); index += 3)
 			{
@@ -60,11 +60,29 @@ namespace EAE_Engine
 			float passedTime = io_follisionTimeStep;
 			if (collided)
 			{
+				/*
 				Math::Vector3 velocity = pTargetRB->GetVelocity();
-				//velocity._y = 0.1f;
 				float dotValue = Math::Vector3::Dot(velocity, normalOfFace.GetNormalize());
-				velocity = velocity - normalOfFace.GetNormalize() * dotValue;
-				pTargetRB->SetVelocity(velocity);
+				velocity = velocity + normalOfFace.GetNormalize() * -dotValue;
+				*/
+				
+				{
+					// first, add an inverse force on the RigidBody
+					// based on the surface.
+					Math::Vector3 force = pTargetRB->GetForce();
+					float dotForce = Math::Vector3::Dot(force, normalOfFace.GetNormalize());
+					force = force + normalOfFace.GetNormalize() * -dotForce;
+					pTargetRB->SetForce(force);
+					// second, deal with the velocity based on the collision surface.
+					Math::Vector3 velocity = pTargetRB->GetVelocity();
+					float dotVelocity = Math::Vector3::Dot(velocity, normalOfFace.GetNormalize());
+					Math::Vector3 velocityY = normalOfFace.GetNormalize() * dotVelocity;
+					Math::Vector3 velocityX = velocity - velocityY;
+					// if both of the 2 colliders has rigidBody, 
+					// then we need to calculate their momentum.
+					// Or the speed of the rigidBody will be zero along the direction of the collision normal.
+					pTargetRB->SetVelocity(velocityX);
+				}
 				passedTime = tmin * io_follisionTimeStep;
 			}
 			pTargetRB->Advance(passedTime);

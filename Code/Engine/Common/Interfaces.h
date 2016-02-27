@@ -97,6 +97,7 @@ namespace EAE_Engine
 			virtual uint32_t GetChildCount() = 0;
 			virtual ITransform* GetChild(uint32_t index = 0) = 0;
 			virtual void AddChild(ITransform*) = 0;
+			virtual void RemoveChild(ITransform* pChild) = 0;
 			// Parent
 			virtual void SetParent(ITransform* pParent) = 0;
 			virtual ITransform* GetParent() = 0;
@@ -133,9 +134,9 @@ namespace EAE_Engine
 			virtual ~IRigidBody() {}
 			virtual ITransform* GetTransform() = 0;
 			virtual Math::Vector3 GetVelocity() const = 0;
-			virtual void SetVelocity(Math::Vector3&) = 0;
+			virtual void SetVelocity(const Math::Vector3&) = 0;
 			virtual Math::Vector3 GetPos() const = 0;
-			virtual void SetPos(Math::Vector3&) = 0;
+			virtual void SetPos(const Math::Vector3&) = 0;
 			//virtual Math::Quaternion GetRotation() = 0;
 			//virtual void SetRotation(Math::Quaternion& rotation) = 0;
 			virtual float GetMass() const = 0;
@@ -163,6 +164,8 @@ namespace EAE_Engine
 			virtual void Update() = 0;
 			virtual void FixedUpdate() = 0;
 			virtual ITransform* GetTransform() = 0;
+			virtual bool IsActive() = 0;
+			virtual void SetActive(bool active) = 0;
 		};
 
 	}

@@ -154,11 +154,22 @@ void GameplayUpdate()
 			}
 		}
 		*/
-		EAE_Engine::Math::Vector3 camPos = EAE_Engine::Graphics::CameraManager::GetInstance().GetCam()->GetTransform()->GetPos();
-		EAE_Engine::Math::Vector3 playerPos = pPlayerObj->GetTransform()->GetPos();
-		EAE_Engine::Math::Vector3 offset = camPos - playerPos;
-		EAE_Engine::Math::Vector3 offsetInit(0.0f, 2.0f, 5.0f);
-		//assert((offset - offsetInit).Magnitude() < 0.5f);
+		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('C') == EAE_Engine::UserInput::KeyState::OnPressed)
+		{
+			bool playerControllerState = pPlayerController->IsActive();
+			pPlayerController->SetActive(!playerControllerState);
+			pCamController->SetActive(playerControllerState);
+			if (!playerControllerState)
+			{
+				pCamController->GetTransform()->SetLocalRotation(EAE_Engine::Math::Quaternion::Identity);
+				pCamController->ResetCamera(pPlayerObj->GetTransform());
+				pCamController->GetTransform()->SetParent(pPlayerObj->GetTransform());
+			}
+			else 
+			{
+				pCamController->GetTransform()->SetParent(nullptr);
+			}
+		}
 
 		char text[20];
 		float fps = 1.0f / elpasedTime;
@@ -197,7 +208,7 @@ namespace
 		materialList.push_back("metal");
 		materialList.push_back("cement");
 		materialList.push_back("walls");
-	//	pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
+		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
 
 		CreatePlayer();
 		CreateCamera();
@@ -207,7 +218,7 @@ namespace
 		std::vector<std::string> materialList2;
 		materialList2.push_back("lambert");
 		EAE_Engine::Common::IGameObj* pCollisionDataObj = EAE_Engine::Core::World::GetInstance().AddGameObj("collisionData", zero);
-		EAE_Engine::Graphics::AddMeshRender(pathCollisionData, materialList2, pCollisionDataObj->GetTransform());
+	//	EAE_Engine::Graphics::AddMeshRender(pathCollisionData, materialList2, pCollisionDataObj->GetTransform());
 		EAE_Engine::Collider::MeshCollider* pMeshCollider = new EAE_Engine::Collider::MeshCollider(pCollisionDataObj->GetTransform());
 		pMeshCollider->Init(pPlayerObj->GetTransform(), "collisionData");
 		EAE_Engine::Collider::ColliderManager::GetInstance()->AddToColliderList(pMeshCollider);
@@ -233,8 +244,10 @@ namespace
 		{
 			EAE_Engine::Math::Vector3 playerinitPos(0.0f, 0.0f, 0.0f);
 			pPlayerObj = EAE_Engine::Core::World::GetInstance().AddGameObj("player", playerinitPos);
-			EAE_Engine::Math::Quaternion identity = EAE_Engine::Math::Quaternion::Identity;
-			pPlayerObj->GetTransform()->SetRotation(identity);
+			EAE_Engine::Math::Vector3 axis(0.0f, 1.0f, 0.0f);
+			float radian = EAE_Engine::Math::ConvertDegreesToRadians(20.0f);
+			EAE_Engine::Math::Quaternion player_rotation(radian, axis);
+			pPlayerObj->GetTransform()->SetRotation(player_rotation);
 			std::vector<std::string> materialList;
 			materialList.push_back("phongShading");
 			EAE_Engine::Graphics::AddMeshRender(pathPlayer, materialList, pPlayerObj->GetTransform());
@@ -255,9 +268,9 @@ namespace
 
 	void CreateCamera() 
 	{
-		EAE_Engine::Math::Vector3 camera_pos = EAE_Engine::Math::Vector3(0.0f, 2.0f, 5.0f);
+		EAE_Engine::Math::Vector3 camera_pos = EAE_Engine::Math::Vector3(0.0f, 0.0f, 0.0f);
 		EAE_Engine::Math::Vector3 axis(1.0f, 0.0f, 0.0f);
-		float radian = EAE_Engine::Math::ConvertDegreesToRadians(20.0f);
+		float radian = EAE_Engine::Math::ConvertDegreesToRadians(0.0f);
 		EAE_Engine::Math::Quaternion camera_rotation(radian, axis);
 		//EAE_Engine::Math::Quaternion camera_rotation = EAE_Engine::Math::Quaternion::Identity;
 		pCamera = EAE_Engine::Engine::CreateCamera("mainCamera", camera_pos, camera_rotation,
@@ -265,9 +278,10 @@ namespace
 		pCameraObj = pCamera->GetTransform()->GetGameObj();
 		pCamera->GetTransform()->SetParent(pPlayerObj->GetTransform());
 		//Camera Controller
-		//pCamController = new CameraController(pCamera);
-		//pCamController->SetTarget(pPlayerObj->GetTransform());
-		//EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pCamController);
+		pCamController = new CameraController(pCamera);
+		pCamController->ResetCamera(pPlayerObj->GetTransform());
+		pCamController->SetActive(false);
+		EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pCamController);
 	}
 
 	void CreateSprite() 

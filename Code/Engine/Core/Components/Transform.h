@@ -47,10 +47,11 @@ namespace EAE_Engine
 			Math::Vector3 GetUp();
 			// Children
 			void AddChild(Common::ITransform* pChild) { _children.push_back(pChild); }
+			void RemoveChild(Common::ITransform* pChild);
 			uint32_t GetChildCount() { return _children.size(); }
 			Common::ITransform* GetChild(uint32_t index = 0) { return _children[index]; }
 			// Parent
-			void SetParent(Common::ITransform* parent);
+			void SetParent(Common::ITransform* pParent);
 			Common::ITransform* GetParent() { return _pParent; }
 			Common::ITransform* Root();
 
