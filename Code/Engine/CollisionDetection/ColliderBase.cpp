@@ -48,6 +48,15 @@ namespace EAE_Engine
 		ColliderManager::~ColliderManager()
 		{}
 
+		void ColliderManager::Clean()
+		{
+			for (std::vector<Collider*>::iterator iter = _colliderList.begin(); iter != _colliderList.end();)
+			{
+				Collider* pCollider = *iter++;
+				SAFE_DELETE(pCollider);
+			}
+			_colliderList.clear();
+		}
 
 		Collider* ColliderManager::AddToColliderList(Collider* pCollider)
 		{
@@ -64,14 +73,16 @@ namespace EAE_Engine
 		{
 			for (std::vector<Collider*>::iterator it = _colliderList.begin(); it != _colliderList.end(); ++it)
 			{
+				Collider* pCollider = *it;
 				float timeLeft = Time::GetFixedTimeStep();
+				bool collided = false;
 				for (int i = 0; i < 3; ++i)
 				{
 					Math::Vector3 collisionPoint;
-					bool result = (*it)->TestCollisionDiscrete(nullptr, timeLeft, collisionPoint);
-					if (result) 
+					collided = pCollider->TestCollisionDiscrete(nullptr, timeLeft, collisionPoint);
+					if (!collided)
 						break;
-					if (timeLeft < 0.0001f)
+					if (timeLeft < 0.01f)
 						break;
 				}
 			}

@@ -149,7 +149,7 @@ public:
 		EAE_Engine::Physics::RigidBody* pRB = (EAE_Engine::Physics::RigidBody*)_pTransform->GetComponent(getTypeID<EAE_Engine::Physics::RigidBody>());
 		EAE_Engine::Math::Vector3 offset = GetInput();
 		{
-			pRB->AddForce(offset * 0.1f, EAE_Engine::Common::ForceMode::Velocity);
+			pRB->AddForce(offset * 1.0f, EAE_Engine::Common::ForceMode::Velocity);
 		}
 		EAE_Engine::Math::Vector3 velocity = pRB->GetVelocity();
 		if (offset.Magnitude() < 0.01f) 
@@ -195,7 +195,7 @@ private:
 		// Get the speed
 		const float unitsPerSecond = 50.0f;	// This is arbitrary
 											// This makes the speed frame-rate-independent
-		const float unitsToMove = unitsPerSecond * EAE_Engine::Time::GetSecondsElapsedThisFrame();	// Normalize the offset																	
+		const float unitsToMove = unitsPerSecond * EAE_Engine::Time::GetFixedTimeStep();	// Normalize the offset																	
 		offset *= unitsToMove;
 		return offset;
 	}

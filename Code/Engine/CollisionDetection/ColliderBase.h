@@ -73,15 +73,7 @@ namespace EAE_Engine
 			ColliderManager();
 		public:
 			~ColliderManager();
-			void Clean()
-			{
-				for (std::vector<Collider*>::iterator iter = _colliderList.begin(); iter != _colliderList.end();)
-				{
-					Collider* pCollider = *iter++;
-					SAFE_DELETE(pCollider);
-				}
-				_colliderList.clear();
-			}
+			void Clean();
 			Collider* AddToColliderList(Collider* pCollider);
 			//Collider* CreateCollider(Common::ITransform* pTrans, const Math::Vector3& size, const Math::Vector3& offset);
 			//void AdvanceAllObjs(float fTargetTime);

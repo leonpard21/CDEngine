@@ -60,12 +60,6 @@ namespace EAE_Engine
 			float passedTime = io_follisionTimeStep;
 			if (collided)
 			{
-				/*
-				Math::Vector3 velocity = pTargetRB->GetVelocity();
-				float dotValue = Math::Vector3::Dot(velocity, normalOfFace.GetNormalize());
-				velocity = velocity + normalOfFace.GetNormalize() * -dotValue;
-				*/
-				
 				{
 					// first, add an inverse force on the RigidBody
 					// based on the surface.
