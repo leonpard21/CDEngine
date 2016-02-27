@@ -39,11 +39,9 @@ namespace
 // Time
 //-----
 
-const float physicsFPS = 100.0f;
-
 float EAE_Engine::Time::GetFixedTimeStep()
 {
-	return 1.0f / physicsFPS;
+	return 0.01f;
 }
 
 int EAE_Engine::Time::GetFixedUpdateRunTimesOnThisFrame()
@@ -106,6 +104,7 @@ void EAE_Engine::Time::OnNewFrame()
 #endif
 		// Calculate the FixedUpdateRunTimes and FixedUpdateBlendAlpha on this frame
 		float elpasedTimeFromLastFrame = GetSecondsElapsedThisFrame();
+		s_fixedUpdateAccumulatTime = 0.0f;
 		s_fixedUpdateAccumulatTime += elpasedTimeFromLastFrame;
 		if (s_fixedUpdateAccumulatTime > 0.2f)
 			s_fixedUpdateAccumulatTime = 0.2f;

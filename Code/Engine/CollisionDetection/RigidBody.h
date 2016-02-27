@@ -10,6 +10,11 @@
 
 namespace EAE_Engine 
 {
+	namespace Collider
+	{
+		class Collider;
+	}
+
 	namespace Physics 
 	{
 		class RigidBody;
@@ -41,9 +46,17 @@ namespace EAE_Engine
 			Common::ICompo* GetComponent(typeid_t type) { return _pTransform->GetComponent(type); }
 			Common::ITransform* GetTransform() { return _pTransform; }
 			Math::Vector3 GetVelocity() const { return _currentVelocity; }
-			void SetVelocity(const Math::Vector3& velocity) { _currentVelocity = velocity; }
+			void SetVelocity(const Math::Vector3& velocity) 
+			{
+				_currentVelocity = velocity; 
+				_lastVelocity = velocity;
+			}
 			Math::Vector3 GetPos() const { return _currentPos; }
-			void SetPos(const Math::Vector3& pos) { _currentPos = pos; }
+			void SetPos(const Math::Vector3& pos) 
+			{ 
+				_currentPos = pos; 
+				_lastPos = pos;
+			}
 			//Math::Quaternion GetRotation();
 			//void SetRotation(Math::Quaternion& rotation);
 			float GetMass() const { return _mass; }
@@ -52,13 +65,12 @@ namespace EAE_Engine
 			void SetCollisionDetectionMode(Common::CollisionDetectionMode mode) { _mode = mode; }
 			Common::CollisionDetectionMode GetCollisionDetectionMode() const { return _mode; }
 			void AddForce(Math::Vector3& force, Common::ForceMode mode = Common::ForceMode::Force);
-			Math::Vector3 GetForce() { return _forceWorkingOn; }
-			void SetForce(Math::Vector3 force) { _forceWorkingOn = force; }
-			void Advance(float timeStep);
+			bool DetectCollision(std::vector<Collider::Collider*>& colliderList, float timeStep, int& io_testDepth);
 			void BlendForTimeGap(float blendAlpha);
 
 		private:
-
+			void Response(Math::Vector3& forceWorkingOn, float timeStep);
+			friend class RigidBodyManager;
 		private:
 			Common::ITransform* _pTransform;
 			// for RigidBody's Pos and Rotation, they only have world value.

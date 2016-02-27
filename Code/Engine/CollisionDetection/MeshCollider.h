@@ -12,13 +12,13 @@ namespace EAE_Engine
 		{
 		public:
 			MeshCollider(Common::ITransform* pTransform);
-			void Init(Common::ITransform* pTarget, const char* pMeshKey);
-			bool TestCollisionDiscrete(Common::ITransform* pTarget, float& io_follisionTimeStep, Math::Vector3& o_collisionPoint);
+			void Init(const char* pMeshKey);
+			bool TestCollision(Common::IRigidBody* pTargetRB, float i_follisionTimeStep, float& o_firstCollisionTime,
+				Math::Vector3& o_collisionPoint, Math::Vector3& o_collisionNormal);
 			bool DetectCollision(Collider* i_pOther, float fElpasedTime, float& o_collisionTime, Math::Vector3& o_collisionAxis) 
 			{ return false; }
 		private:
 			Mesh::AOSMeshData* _pAOSMeshData;
-			Common::ITransform* _pTargetTransform;
 		};
 	}
 }

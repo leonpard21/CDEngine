@@ -46,7 +46,8 @@ namespace EAE_Engine
 			Common::ITransform* GetTransform() { return _pTransform; }
 			void SetType(const HashedString& i_type) { _hashtype = i_type; }
 
-			virtual bool TestCollisionDiscrete(Common::ITransform* pTarget, float& io_follisionTimeStep, Math::Vector3& o_collisionPoint) = 0;
+			virtual bool TestCollision(Common::IRigidBody* pTargetRB, float i_follisionTimeStep, float& o_firstCollisionTime,
+				Math::Vector3& o_collisionPoint, Math::Vector3& o_collisionNormal) = 0;
 			//only when the return is true, the collision happens, the o_collisionTime and o_collisionAxis have their real means.
 			virtual bool DetectCollision(Collider* i_pOther, float fElpasedTime, float& o_collisionTime, Math::Vector3& o_collisionAxis) = 0;
 			inline bool IsSameType(const HashedString& i_type);
@@ -77,11 +78,12 @@ namespace EAE_Engine
 			Collider* AddToColliderList(Collider* pCollider);
 			//Collider* CreateCollider(Common::ITransform* pTrans, const Math::Vector3& size, const Math::Vector3& offset);
 			//void AdvanceAllObjs(float fTargetTime);
-			void FixedUpdate();
+			void Update();
 			void Remove(Collider* pCollider);
 			void Remove(Common::ITransform* pTrans);
 			void InstallCollsionFeedbackByType(HashedString type, bool OnCollideCallback(Collider* pSelf, CollisionInfo& collisionInfo));
-			
+			std::vector<Collider*>& GetColliderList() { return _colliderList; }
+
 		private:
 			bool GetFirstCollisionInfo(std::vector<Collider*>* pColliderList, float fElpasedTime, CollisionInfo& o_collisInfo);
 			float AdvanceToFirstCollisionTime(std::vector<Collider*>* pColliderList, float fAdvanceTime);

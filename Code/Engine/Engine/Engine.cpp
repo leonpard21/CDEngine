@@ -62,8 +62,7 @@ namespace EAE_Engine
 			for (int i = 0; i < fixedUpdateRunTime; ++i)
 			{
 				Controller::ControllerManager::GetInstance().FixedUpdate();
-				Collider::ColliderManager::GetInstance()->FixedUpdate();
-				//Physics::Physics::GetInstance()->FixedUpdate();
+				Physics::Physics::GetInstance()->FixedUpdate();
 			}
 			Physics::Physics::GetInstance()->FixedUpdateEnd();
 		}
@@ -73,6 +72,7 @@ namespace EAE_Engine
 			EAE_Engine::Time::OnNewFrame();
 			UserInput::Input::GetInstance()->Update();
 			Controller::ControllerManager::GetInstance().Update();
+			Collider::ColliderManager::GetInstance()->Update();
 			FixedUpdate();
 			Graphics::Render();
 			RemoveAllActorsInList();

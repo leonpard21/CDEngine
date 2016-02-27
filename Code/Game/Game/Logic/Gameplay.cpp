@@ -220,7 +220,7 @@ namespace
 		EAE_Engine::Common::IGameObj* pCollisionDataObj = EAE_Engine::Core::World::GetInstance().AddGameObj("collisionData", zero);
 	//	EAE_Engine::Graphics::AddMeshRender(pathCollisionData, materialList2, pCollisionDataObj->GetTransform());
 		EAE_Engine::Collider::MeshCollider* pMeshCollider = new EAE_Engine::Collider::MeshCollider(pCollisionDataObj->GetTransform());
-		pMeshCollider->Init(pPlayerObj->GetTransform(), "collisionData");
+		pMeshCollider->Init("collisionData");
 		EAE_Engine::Collider::ColliderManager::GetInstance()->AddToColliderList(pMeshCollider);
 		return true;
 	}

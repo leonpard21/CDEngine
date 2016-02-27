@@ -69,22 +69,10 @@ namespace EAE_Engine
 		}
 
 
-		void ColliderManager::FixedUpdate()
+		void ColliderManager::Update()
 		{
 			for (std::vector<Collider*>::iterator it = _colliderList.begin(); it != _colliderList.end(); ++it)
 			{
-				Collider* pCollider = *it;
-				float timeLeft = Time::GetFixedTimeStep();
-				bool collided = false;
-				for (int i = 0; i < 3; ++i)
-				{
-					Math::Vector3 collisionPoint;
-					collided = pCollider->TestCollisionDiscrete(nullptr, timeLeft, collisionPoint);
-					if (!collided)
-						break;
-					if (timeLeft < 0.01f)
-						break;
-				}
 			}
 			/*
 			float fElpasedTime = Time::GetSecondsElapsedThisFrame();
