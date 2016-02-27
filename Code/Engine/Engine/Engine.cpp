@@ -63,7 +63,7 @@ namespace EAE_Engine
 			{
 				Controller::ControllerManager::GetInstance().FixedUpdate();
 				Collider::ColliderManager::GetInstance()->FixedUpdate();
-				Physics::Physics::GetInstance()->FixedUpdate();
+				//Physics::Physics::GetInstance()->FixedUpdate();
 			}
 			Physics::Physics::GetInstance()->FixedUpdateEnd();
 		}

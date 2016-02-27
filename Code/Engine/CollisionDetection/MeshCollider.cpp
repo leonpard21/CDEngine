@@ -57,13 +57,18 @@ namespace EAE_Engine
 					normalOfFace = Math::Vector3::Cross((vertex1 - vertex0), (vertex2 - vertex1));
 				}
 			}
-			io_follisionTimeStep = (1.0f - tmin) * io_follisionTimeStep;
+			float passedTime = io_follisionTimeStep;
 			if (collided)
 			{
-				EAE_Engine::Math::Vector3 velocity = pTargetRB->GetVelocity();
-				velocity._y = 1.0f;
+				Math::Vector3 velocity = pTargetRB->GetVelocity();
+				//velocity._y = 0.1f;
+				float dotValue = Math::Vector3::Dot(velocity, normalOfFace.GetNormalize());
+				velocity = velocity - normalOfFace.GetNormalize() * dotValue;
 				pTargetRB->SetVelocity(velocity);
+				passedTime = tmin * io_follisionTimeStep;
 			}
+			pTargetRB->Advance(passedTime);
+			io_follisionTimeStep = io_follisionTimeStep - passedTime;
 			return collided;
 		}
 
