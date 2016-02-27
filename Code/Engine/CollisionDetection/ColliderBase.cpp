@@ -64,7 +64,16 @@ namespace EAE_Engine
 		{
 			for (std::vector<Collider*>::iterator it = _colliderList.begin(); it != _colliderList.end(); ++it)
 			{
-				(*it)->TestCollisionDiscrete(nullptr);
+				float timeLeft = Time::GetFixedTimeStep();
+				for (int i = 0; i < 3; ++i)
+				{
+					Math::Vector3 collisionPoint;
+					bool result = (*it)->TestCollisionDiscrete(nullptr, timeLeft, collisionPoint);
+					if (result) 
+						break;
+					if (timeLeft < 0.0001f)
+						break;
+				}
 			}
 			/*
 			float fElpasedTime = Time::GetSecondsElapsedThisFrame();

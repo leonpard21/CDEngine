@@ -13,7 +13,7 @@ namespace EAE_Engine
 		public:
 			MeshCollider(Common::ITransform* pTransform);
 			void Init(Common::ITransform* pTarget, const char* pMeshKey);
-			bool TestCollisionDiscrete(Common::ITransform* pTarget);
+			bool TestCollisionDiscrete(Common::ITransform* pTarget, float& io_follisionTimeStep, Math::Vector3& o_collisionPoint);
 			bool DetectCollision(Collider* i_pOther, float fElpasedTime, float& o_collisionTime, Math::Vector3& o_collisionAxis) 
 			{ return false; }
 		private:

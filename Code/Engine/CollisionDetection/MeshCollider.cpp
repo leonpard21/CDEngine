@@ -20,19 +20,23 @@ namespace EAE_Engine
 			_pAOSMeshData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData(pMeshKey);
 		}
 
-		bool MeshCollider::TestCollisionDiscrete(Common::ITransform* pTarget)
+		bool MeshCollider::TestCollisionDiscrete(Common::ITransform* pTarget, float& io_follisionTimeStep, Math::Vector3& o_collisionPoint)
 		{
 			pTarget = _pTargetTransform;
-			Math::Vector3 o_collisionPoint = Math::Vector3::Zero;
 			if (_pAOSMeshData == nullptr)
 				return false;
 			bool collided = false;
 			float tmin = FLT_MAX;
 			Math::ColMatrix44& transformMat = _pTransform->GetLocalToWorldMatrix();
 			Physics::RigidBody* pTargetRB = (Physics::RigidBody*)pTarget->GetComponent(getTypeID<Physics::RigidBody>());
+			{
+				if (pTargetRB->useGravity())
+					pTargetRB->AddForce(Physics::Physics::GetInstance()->GetGravity() * pTargetRB->GetMass());
+			}
 			Math::Vector3 velocityRB = pTargetRB->GetVelocity();
 			Math::Vector3 targetStartPoint = pTargetRB->GetPos();
-			Math::Vector3 targetEndPoint = targetStartPoint + velocityRB * (Time::GetFixedTimeStep() + 0.5f);
+			Math::Vector3 targetEndPoint = targetStartPoint + velocityRB * io_follisionTimeStep + Math::Vector3(0.0f, -0.5f, 0.0f);
+			Math::Vector3 normalOfFace = Math::Vector3::Zero;
 			for (int index = 0; index < _pAOSMeshData->_indices.size(); index += 3)
 			{
 				Math::Vector3& vertex0 = _pAOSMeshData->GetVertex(index + 0);
@@ -50,11 +54,16 @@ namespace EAE_Engine
 					collided = true;
 					tmin = t;
 					o_collisionPoint = vertex0 * u + vertex1 * v + vertex2 * w;
+					normalOfFace = Math::Vector3::Cross((vertex1 - vertex0), (vertex2 - vertex1));
 				}
 			}
-			Math::Vector3 velocity = Math::Vector3::Zero;
+			io_follisionTimeStep = (1.0f - tmin) * io_follisionTimeStep;
 			if (collided)
-				pTargetRB->AddForce(velocityRB * -1.0f, Common::ForceMode::Velocity);
+			{
+				EAE_Engine::Math::Vector3 velocity = pTargetRB->GetVelocity();
+				velocity._y = 1.0f;
+				pTargetRB->SetVelocity(velocity);
+			}
 			return collided;
 		}
 

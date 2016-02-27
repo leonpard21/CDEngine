@@ -233,6 +233,8 @@ namespace
 		{
 			EAE_Engine::Math::Vector3 playerinitPos(0.0f, 0.0f, 0.0f);
 			pPlayerObj = EAE_Engine::Core::World::GetInstance().AddGameObj("player", playerinitPos);
+			EAE_Engine::Math::Quaternion identity = EAE_Engine::Math::Quaternion::Identity;
+			pPlayerObj->GetTransform()->SetRotation(identity);
 			std::vector<std::string> materialList;
 			materialList.push_back("phongShading");
 			EAE_Engine::Graphics::AddMeshRender(pathPlayer, materialList, pPlayerObj->GetTransform());

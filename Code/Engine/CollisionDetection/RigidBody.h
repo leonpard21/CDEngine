@@ -48,9 +48,12 @@ namespace EAE_Engine
 			//void SetRotation(Math::Quaternion& rotation);
 			float GetMass() const { return _mass; }
 			void SetMass(float mass) { _mass = mass; }
+			bool useGravity() { return _useGravity; }
 			void SetCollisionDetectionMode(Common::CollisionDetectionMode mode) { _mode = mode; }
 			Common::CollisionDetectionMode GetCollisionDetectionMode() const { return _mode; }
 			void AddForce(Math::Vector3& force, Common::ForceMode mode = Common::ForceMode::Force);
+			Math::Vector3 GetForce() { return _forceWorkingOn; }
+			void SetForce(Math::Vector3 force) { _forceWorkingOn = force; }
 			void Advance(float timeStep);
 			void BlendForTimeGap(float blendAlpha);
 

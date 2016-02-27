@@ -94,9 +94,6 @@ namespace EAE_Engine
 			// Update the previous state
 			_lastPos = _currentPos;
 			_lastVelocity = _currentVelocity;
-			// Update the current state
-			if(_useGravity)
-				_forceWorkingOn += Physics::GetInstance()->GetGravity();
 			Math::Vector3 acceleration = _forceWorkingOn * (1.0f / _mass);
 			_currentPos += _currentVelocity * timeStep + acceleration * (0.5f * timeStep * timeStep);
 			_currentVelocity += acceleration * timeStep;
