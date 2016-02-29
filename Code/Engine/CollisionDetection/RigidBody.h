@@ -65,11 +65,12 @@ namespace EAE_Engine
 			void SetCollisionDetectionMode(Common::CollisionDetectionMode mode) { _mode = mode; }
 			Common::CollisionDetectionMode GetCollisionDetectionMode() const { return _mode; }
 			void AddForce(Math::Vector3& force, Common::ForceMode mode = Common::ForceMode::Force);
-			bool DetectCollision(std::vector<Collider::Collider*>& colliderList, float timeStep, int& io_testDepth);
+			bool DetectCollision(std::vector<Collider::Collider*>& i_colliderList, float i_timeStep, int& io_testDepth);
 			void BlendForTimeGap(float blendAlpha);
+			Math::Vector3 PredictPosAfter(float timeStep);
 
 		private:
-			void Response(Math::Vector3& forceWorkingOn, float timeStep);
+			void Response(Math::Vector3 force, float timeStep);
 			friend class RigidBodyManager;
 		private:
 			Common::ITransform* _pTransform;
@@ -87,7 +88,8 @@ namespace EAE_Engine
 			bool _useGravity;
 			
 
-			Math::Vector3 _forceWorkingOn;
+			Math::Vector3 _outForceWorkingOn;
+			Math::Vector3 _totalForceWorkingOn;
 		};
 
 

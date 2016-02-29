@@ -175,6 +175,7 @@ private:
 		// Get the direction
 		{
 			EAE_Engine::Math::Vector3 forward = _pTransform->GetForward();
+			forward._y = 0.0f;
 			if (EAE_Engine::UserInput::IsKeyPressed('W'))
 			{
 				offset = forward;

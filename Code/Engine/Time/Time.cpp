@@ -39,9 +39,11 @@ namespace
 // Time
 //-----
 
+float physicsFrameRate = 100.0f;
+
 float EAE_Engine::Time::GetFixedTimeStep()
 {
-	return 0.01f;
+	return 1.0f / physicsFrameRate;
 }
 
 int EAE_Engine::Time::GetFixedUpdateRunTimesOnThisFrame()
@@ -104,13 +106,12 @@ void EAE_Engine::Time::OnNewFrame()
 #endif
 		// Calculate the FixedUpdateRunTimes and FixedUpdateBlendAlpha on this frame
 		float elpasedTimeFromLastFrame = GetSecondsElapsedThisFrame();
-		s_fixedUpdateAccumulatTime = 0.0f;
 		s_fixedUpdateAccumulatTime += elpasedTimeFromLastFrame;
 		if (s_fixedUpdateAccumulatTime > 0.2f)
 			s_fixedUpdateAccumulatTime = 0.2f;
 		float fixedTimeStep = GetFixedTimeStep();
 		// calculate how many times we need to run the FixedUpdate functions on this frame
-		s_fixedUpdateRunTimesOnThisFrame = (int)std::ceil(s_fixedUpdateAccumulatTime / fixedTimeStep);
+		s_fixedUpdateRunTimesOnThisFrame = (int)(s_fixedUpdateAccumulatTime / fixedTimeStep);
 		// change the accumulated time for the next frame.
 		s_fixedUpdateAccumulatTime -= s_fixedUpdateRunTimesOnThisFrame * fixedTimeStep;
 		// calculate the BlendAlpha for Synchronizing Transofrm  on this frame

@@ -144,6 +144,7 @@ namespace EAE_Engine
 			virtual void SetCollisionDetectionMode(CollisionDetectionMode mode) = 0;
 			virtual CollisionDetectionMode GetCollisionDetectionMode() const = 0;
 			virtual void AddForce(Math::Vector3& force, ForceMode mode = ForceMode::Force) = 0;
+			virtual Math::Vector3 PredictPosAfter(float timeStep) = 0;
 		};
 
 		class ICamera // : public ICompo
