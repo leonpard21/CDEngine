@@ -81,65 +81,75 @@ namespace EAE_Engine
 			
 		}
 
-		bool RigidBody::DetectCollision(std::vector<Collider::Collider*>& colliderList, float timeStep, int& io_testDepth)
+		bool RigidBody::DetectionCollision(std::vector<Collider::Collider*>& colliderList, float timeStep, CollisionInfo& o_collisionInfo)
+		{
+			bool collided = false;
+			for (std::vector<Collider::Collider*>::iterator itCollider = colliderList.begin(); itCollider != colliderList.end(); ++itCollider)
+			{
+				Collider::Collider* pCollider = *itCollider;
+				collided = pCollider->TestCollision(this, timeStep, o_collisionInfo._mint, o_collisionInfo._collisionPoint, o_collisionInfo._collisionNormal);
+			}
+			return collided;
+		}
+
+		bool RigidBody::Advance(std::vector<Collider::Collider*>& colliderList, float timeStep, int& io_testDepth)
 		{
 			if (io_testDepth == 0)
 			{
 				_totalForceWorkingOn = _outForceWorkingOn;
 			}
-			// Detect Collision with All of the Colliders.
-			bool collided = false;
-			float mint = FLT_MAX;
-			Math::Vector3 collisionPoint = Math::Vector3::Zero;
-			Math::Vector3 collisionNormal = Math::Vector3::Zero;
-			for (std::vector<Collider::Collider*>::iterator itCollider = colliderList.begin(); itCollider != colliderList.end(); ++itCollider)
-			{
-				Collider::Collider* pCollider = *itCollider;
-				collided = pCollider->TestCollision(this, timeStep, mint, collisionPoint, collisionNormal);
-			}
-			if (!collided) 
-			{
-				Response(_totalForceWorkingOn, timeStep);
-				return true;
-			}
-			//else if the collision happens
-			float passedTime = timeStep * mint - FLT_EPSILON;
-			Response(_totalForceWorkingOn, passedTime);
-			// calculate the removement 
-			collisionNormal.Normalize();
-			float distanceToCollider = Math::Vector3::Dot(collisionPoint - _currentPos, collisionNormal) - 0.5f - FLT_EPSILON;
-			{
-				// first, add an inverse force on the RigidBody
-				// based on the surface.normal
-				float dotForce = Math::Vector3::Dot(_outForceWorkingOn, collisionNormal);
-				_totalForceWorkingOn = _outForceWorkingOn - collisionNormal * dotForce;
-				// second, deal with the velocity based on the collision surface.
-				float dotVelocity = Math::Vector3::Dot(_currentVelocity, collisionNormal);
-				Math::Vector3 velocityY = collisionNormal * dotVelocity;
-				Math::Vector3 velocityX = _currentVelocity - velocityY;
-				float newSpeed = velocityX.Magnitude();
-				// if both of the 2 colliders has rigidBody, 
-				// then we need to calculate their momentum.
-				// Or the speed of the rigidBody will be zero along the direction of the collision normal.
-				_currentVelocity = velocityX;
-			}
 			const float epsilon = 0.001f;
-			if (_totalForceWorkingOn.Magnitude() < epsilon && _currentVelocity.Magnitude() < epsilon)
+			bool hasSolutionForCollision = false;
+			// Detect Collision with All of the Colliders.
+			for (int depth = 0; depth < 3; ++depth)
 			{
-			//	Response(_totalForceWorkingOn, passedTime);
-				return true;
+				CollisionInfo o_collisionInfo;
+				if (timeStep < 0.0001f)
+					break;
+				bool collided = DetectionCollision(colliderList, timeStep, o_collisionInfo);
+				if (!collided)
+				{
+					Response(_totalForceWorkingOn, timeStep);
+					hasSolutionForCollision = true;
+					break;
+				}
+				else 
+				{
+					float mint = o_collisionInfo._mint;
+					Math::Vector3 collisionPoint = o_collisionInfo._collisionPoint;
+					Math::Vector3 collisionNormal = o_collisionInfo._collisionNormal;
+					//else if the collision happens
+					float passedTime = timeStep * mint - FLT_EPSILON;
+					timeStep = timeStep - passedTime;
+					Response(_totalForceWorkingOn, passedTime);
+					// calculate the removement 
+					collisionNormal.Normalize();
+					float distanceToCollider = Math::Vector3::Dot(collisionPoint - _currentPos, collisionNormal) - FLT_EPSILON;
+					{
+						// first, add an inverse force on the RigidBody
+						// based on the surface.normal
+						float dotForce = Math::Vector3::Dot(_outForceWorkingOn, collisionNormal);
+						_totalForceWorkingOn = _outForceWorkingOn - collisionNormal * dotForce;
+						// second, deal with the velocity based on the collision surface.
+						float dotVelocity = Math::Vector3::Dot(_currentVelocity, collisionNormal);
+						Math::Vector3 velocityY = collisionNormal * dotVelocity;
+						Math::Vector3 velocityX = _currentVelocity - velocityY;
+						float newSpeed = velocityX.Magnitude();
+						// if both of the 2 colliders has rigidBody, 
+						// then we need to calculate their momentum.
+						// Or the speed of the rigidBody will be zero along the direction of the collision normal.
+						_currentVelocity = velocityX;
+					}
+				}
 			}
-			timeStep = timeStep - passedTime;
-			if (timeStep < epsilon)
-			{
-			//	Response(_totalForceWorkingOn, passedTime);
-				return true;
-			}
-			if (++io_testDepth >= 3)
-				return false;
-			return DetectCollision(colliderList, timeStep, io_testDepth);
+			return hasSolutionForCollision;
 		}
 
+		/*
+		 * Here I'm assuming the collision with face keep happening during this fixedUpdate.
+		 * So whenever the collision happened, 
+		 * I get rid the force has been absorbed by the collider it collided with.
+		 */
 		Math::Vector3 RigidBody::PredictPosAfter(float timeStep)
 		{
 			Math::Vector3 acceleration = _totalForceWorkingOn * (1.0f / _mass);
@@ -160,7 +170,7 @@ namespace EAE_Engine
 		{
 			Math::Vector3 acceleration = force * (1.0f / _mass);
 			Math::Vector3 movement = _currentVelocity * timeStep + acceleration * (0.5f * timeStep * timeStep);;
-			_currentPos = _currentPos + movement + Math::Vector3(0.0f, 0.5f * timeStep, 0.0f);
+			_currentPos = _currentPos + movement;
 			_currentVelocity = _currentVelocity + acceleration * timeStep;
 		}
 
@@ -233,7 +243,7 @@ namespace EAE_Engine
 					pRB->_outForceWorkingOn = pRB->_outForceWorkingOn + Physics::GetInstance()->GetGravity() * pRB->_mass;
 				// Detection the collision 
 				int io_testDepth = 0;
-				bool hasCollisionSolution = pRB->DetectCollision(colliderList, fixedTimeStep, io_testDepth);
+				bool hasCollisionSolution = pRB->Advance(colliderList, fixedTimeStep, io_testDepth);
 				if (!hasCollisionSolution) 
 				{
 					pRB->SetPos(pRB->_lastPos);

@@ -22,7 +22,7 @@ namespace EAE_Engine
 		bool MeshCollider::TestCollision(Common::IRigidBody* pTargetRB, float i_follisionTimeStep, float& o_tmin,
 			Math::Vector3& o_collisionPoint, Math::Vector3& o_collisionNormal)
 		{
-		//	o_tmin = FLT_MAX;
+			//o_tmin = FLT_MAX;
 			if (_pAOSMeshData == nullptr)
 				return false;
 			bool collided = false;

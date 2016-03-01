@@ -39,7 +39,7 @@ namespace
 // Time
 //-----
 
-float physicsFrameRate = 100.0f;
+float physicsFrameRate = 60.0f;
 
 float EAE_Engine::Time::GetFixedTimeStep()
 {
