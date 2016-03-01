@@ -22,14 +22,13 @@ namespace EAE_Engine
 		bool MeshCollider::TestCollision(Common::IRigidBody* pTargetRB, float i_follisionTimeStep, float& o_tmin,
 			Math::Vector3& o_collisionPoint, Math::Vector3& o_collisionNormal)
 		{
-			o_tmin = FLT_MAX;
+		//	o_tmin = FLT_MAX;
 			if (_pAOSMeshData == nullptr)
 				return false;
 			bool collided = false;
 			Math::ColMatrix44& transformMat = _pTransform->GetLocalToWorldMatrix();
 			Math::Vector3 targetStartPoint = transformMat * pTargetRB->GetPos();
 			Math::Vector3 targetEndPoint = transformMat * pTargetRB->PredictPosAfter(i_follisionTimeStep);
-			targetEndPoint = targetEndPoint +Math::Vector3(0.0f, -0.5f, 0.0f);
 			for (int index = 0; index < _pAOSMeshData->_indices.size(); index += 3)
 			{
 				Math::Vector3& vertex0 = _pAOSMeshData->GetVertex(index + 0);

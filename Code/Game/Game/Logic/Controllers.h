@@ -149,7 +149,7 @@ public:
 		EAE_Engine::Physics::RigidBody* pRB = (EAE_Engine::Physics::RigidBody*)_pTransform->GetComponent(getTypeID<EAE_Engine::Physics::RigidBody>());
 		EAE_Engine::Math::Vector3 offset = GetInput();
 		{
-			pRB->AddForce(offset * 1.0f, EAE_Engine::Common::ForceMode::Velocity);
+			pRB->AddForce(offset * 2.0f, EAE_Engine::Common::ForceMode::Velocity);
 		}
 		EAE_Engine::Math::Vector3 velocity = pRB->GetVelocity();
 		if (offset.Magnitude() < 0.01f) 

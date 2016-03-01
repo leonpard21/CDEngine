@@ -103,8 +103,11 @@ namespace EAE_Engine
 				return true;
 			}
 			//else if the collision happens
-			float passedTime = timeStep * mint * (1.0f - FLT_EPSILON);
+			float passedTime = timeStep * mint - FLT_EPSILON;
+			Response(_totalForceWorkingOn, passedTime);
+			// calculate the removement 
 			collisionNormal.Normalize();
+			float distanceToCollider = Math::Vector3::Dot(collisionPoint - _currentPos, collisionNormal) - 0.5f - FLT_EPSILON;
 			{
 				// first, add an inverse force on the RigidBody
 				// based on the surface.normal
@@ -123,13 +126,13 @@ namespace EAE_Engine
 			const float epsilon = 0.001f;
 			if (_totalForceWorkingOn.Magnitude() < epsilon && _currentVelocity.Magnitude() < epsilon)
 			{
-				Response(_totalForceWorkingOn, passedTime);
+			//	Response(_totalForceWorkingOn, passedTime);
 				return true;
 			}
 			timeStep = timeStep - passedTime;
 			if (timeStep < epsilon)
 			{
-				Response(_totalForceWorkingOn, passedTime);
+			//	Response(_totalForceWorkingOn, passedTime);
 				return true;
 			}
 			if (++io_testDepth >= 3)
@@ -156,7 +159,8 @@ namespace EAE_Engine
 		void RigidBody::Response(Math::Vector3 force, float timeStep)
 		{
 			Math::Vector3 acceleration = force * (1.0f / _mass);
-			_currentPos = _currentPos + _currentVelocity * timeStep + acceleration * (0.5f * timeStep * timeStep);
+			Math::Vector3 movement = _currentVelocity * timeStep + acceleration * (0.5f * timeStep * timeStep);;
+			_currentPos = _currentPos + movement + Math::Vector3(0.0f, 0.5f * timeStep, 0.0f);
 			_currentVelocity = _currentVelocity + acceleration * timeStep;
 		}
 
