@@ -161,7 +161,7 @@ namespace EAE_Engine
 		 * if the rate of change is constant over the timestep.
 		 * Since we get the _forceWorkingOn during each FixedUpdate, 
 		 * we can assume the acceleration is not changing.
-		 * If the Acceleration is changing, 
+		 * If the Acceleration is changing during the fixed deltaTime, 
 		 * we need to use other integration like "Runge Kutta order 4".
 		 * For more: http://gafferongames.com/game-physics/integration-basics/
 		 */
