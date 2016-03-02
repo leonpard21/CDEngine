@@ -208,7 +208,7 @@ namespace
 		materialList.push_back("metal");
 		materialList.push_back("cement");
 		materialList.push_back("walls");
-	//	pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
+		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
 
 		CreatePlayer();
 		CreateCamera();
@@ -218,7 +218,7 @@ namespace
 		std::vector<std::string> materialList2;
 		materialList2.push_back("lambert");
 		EAE_Engine::Common::IGameObj* pCollisionDataObj = EAE_Engine::Core::World::GetInstance().AddGameObj("collisionData", zero);
-		EAE_Engine::Graphics::AddMeshRender(pathCollisionData, materialList2, pCollisionDataObj->GetTransform());
+	//	EAE_Engine::Graphics::AddMeshRender(pathCollisionData, materialList2, pCollisionDataObj->GetTransform());
 		EAE_Engine::Collider::MeshCollider* pMeshCollider = new EAE_Engine::Collider::MeshCollider(pCollisionDataObj->GetTransform());
 		pMeshCollider->Init("collisionData");
 		EAE_Engine::Collider::ColliderManager::GetInstance()->AddToColliderList(pMeshCollider);

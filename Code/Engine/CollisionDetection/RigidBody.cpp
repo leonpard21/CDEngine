@@ -104,7 +104,7 @@ namespace EAE_Engine
 			for (int depth = 0; depth < 3; ++depth)
 			{
 				CollisionInfo o_collisionInfo;
-				if (timeStep < 0.0001f)
+				if (timeStep < 0.00001f)
 					break;
 				bool collided = DetectionCollision(colliderList, timeStep, o_collisionInfo);
 				if (!collided)
@@ -113,26 +113,25 @@ namespace EAE_Engine
 					hasSolutionForCollision = true;
 					break;
 				}
-				else 
+				else //else if the collision happens
 				{
 					float mint = o_collisionInfo._mint;
 					Math::Vector3 collisionPoint = o_collisionInfo._collisionPoint;
 					Math::Vector3 collisionNormal = o_collisionInfo._collisionNormal;
-					//else if the collision happens
-					float passedTime = timeStep * mint - FLT_EPSILON;
-					timeStep = timeStep - passedTime;
-					Response(_totalForceWorkingOn, passedTime);
 					// calculate the removement 
 					collisionNormal.Normalize();
-					float distanceToCollider = Math::Vector3::Dot(collisionPoint - _currentPos, collisionNormal) - FLT_EPSILON;
+					float passedTime = timeStep * mint - FLT_EPSILON;
+					Response(_totalForceWorkingOn, passedTime);
+					_currentPos += collisionNormal * 0.001f;
+					timeStep = timeStep - passedTime;
 					{
 						// first, add an inverse force on the RigidBody
 						// based on the surface.normal
-						float dotForce = Math::Vector3::Dot(_outForceWorkingOn, collisionNormal);
+						float dotForce = Math::Vector3::Dot(_totalForceWorkingOn, collisionNormal);
 						_totalForceWorkingOn = _outForceWorkingOn - collisionNormal * dotForce;
 						// second, deal with the velocity based on the collision surface.
-						float dotVelocity = Math::Vector3::Dot(_currentVelocity, collisionNormal);
-						Math::Vector3 velocityY = collisionNormal * dotVelocity;
+						float currentSpeedY = Math::Vector3::Dot(_currentVelocity, collisionNormal);
+						Math::Vector3 velocityY = collisionNormal * currentSpeedY;
 						Math::Vector3 velocityX = _currentVelocity - velocityY;
 						float newSpeed = velocityX.Magnitude();
 						// if both of the 2 colliders has rigidBody, 
@@ -238,7 +237,6 @@ namespace EAE_Engine
 				// Update the previous state
 				pRB->_lastPos = pRB->_currentPos;
 				pRB->_lastVelocity = pRB->_currentVelocity;
-				//
 				if (pRB->_useGravity)
 					pRB->_outForceWorkingOn = pRB->_outForceWorkingOn + Physics::GetInstance()->GetGravity() * pRB->_mass;
 				// Detection the collision 

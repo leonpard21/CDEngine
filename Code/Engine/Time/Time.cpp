@@ -112,6 +112,7 @@ void EAE_Engine::Time::OnNewFrame()
 		float fixedTimeStep = GetFixedTimeStep();
 		// calculate how many times we need to run the FixedUpdate functions on this frame
 		s_fixedUpdateRunTimesOnThisFrame = (int)(s_fixedUpdateAccumulatTime / fixedTimeStep);
+		s_fixedUpdateRunTimesOnThisFrame = s_fixedUpdateRunTimesOnThisFrame > 0 ? s_fixedUpdateRunTimesOnThisFrame : 1;
 		// change the accumulated time for the next frame.
 		s_fixedUpdateAccumulatTime -= s_fixedUpdateRunTimesOnThisFrame * fixedTimeStep;
 		// calculate the BlendAlpha for Synchronizing Transofrm  on this frame
