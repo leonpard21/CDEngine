@@ -84,6 +84,54 @@ namespace EAE_Engine
 			assert(renderMeshResult);
 			s_pCurrentMaterial->_pEffect->EndRender();
 		}
+		///////////////////////////////////////////RenderRawData3D////////////////////////////////////
+		Effect* RenderRawData3D::s_pCurrentEffect = nullptr;
+		//MeshRender* RenderObj::s_pCurrentMeshRender = nullptr;
+
+
+		void RenderRawData3D::ChangeEffectVariables()
+		{
+			// Leo: I think for the transform matrix, I should set the uniform variable through the Effect directly.
+			// Set the Transformx() : Math::ColMatrix44::Identity;
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+			UniformVariableManager::GetInstance().ChangeValue("g_local_world_matrix", &_transMat.GetTranspose(), sizeof(Math::ColMatrix44));
+#elif defined( EAEENGINE_PLATFORM_GL )
+			UniformVariableManager::GetInstance().ChangeValue("g_local_world_matrix", &_transMat, sizeof(Math::ColMatrix44));
+#endif
+			UniformVariableManager::GetInstance().NotifyOwners("g_local_world_matrix");
+			UniformVariableManager::GetInstance().ChangeValue("g_DebugMeshColor", &_meshColor, sizeof(Math::Vector3));
+			UniformVariableManager::GetInstance().NotifyOwners("g_DebugMeshColor");
+			// Update all of the uniform variables changed so far for the effect.
+			if (s_pCurrentEffect)
+				s_pCurrentEffect->Update();
+		}
+
+		void RenderRawData3D::Render()
+		{
+			//If we need to change material, change the material
+			MaterialDesc* pMaterial = _pMeshRender->GetMaterial(0);
+			//If we need to change effect, change the effect
+			Effect* pEffect = pMaterial->_pEffect;
+			if (s_pCurrentEffect != pEffect)
+			{
+				s_pCurrentEffect = pEffect;
+				BindCurrentEffect(s_pCurrentEffect);
+				ChangeEffectRenderState(s_pCurrentEffect->GetRenderState());
+			}
+			// updated the parameters for the material
+			ChangeEffectVariables();
+			//If we need to change mesh, change mesh
+			AOSMesh* pAOSMesh = _pMeshRender->GetMesh();
+			SetCurrentRenderMesh(pAOSMesh);
+			// Before rendering, we need to make sure that the effect and material exists.
+			if (!pMaterial || !pMaterial->_pEffect)
+				return;
+			// now start the rendering:
+			pMaterial->_pEffect->BeginRender();
+			bool renderMeshResult = RenderAOSMeshInternal(pAOSMesh);
+			assert(renderMeshResult);
+			pMaterial->_pEffect->EndRender();
+		}
 
 		///////////////////////////////////////////RenderData2D////////////////////////////////////
 		MaterialDesc* RenderDataUI::s_pCurrentMaterial = nullptr;

@@ -35,6 +35,22 @@ namespace EAE_Engine
 			//static MeshRender* s_pCurrentMeshRender;
 		};
 
+		struct RenderRawData3D
+		{
+			AOSMeshRender* _pMeshRender;// which MeshRender we will render.
+			Math::Vector3 _meshColor;
+			Math::ColMatrix44 _transMat;
+
+			RenderRawData3D() = default;
+			void ChangeEffectVariables();
+			void Render();
+
+			// we will save the current Mesh, Effect and Material and compare it with the new one.
+			// if the new one is still the same,
+			// then we don't need to switch the context when rendering.
+			static Effect* s_pCurrentEffect;
+			//static MeshRender* s_pCurrentMeshRender;
+		};
 
 		struct CanvasRenderData;
 		struct TextRender;

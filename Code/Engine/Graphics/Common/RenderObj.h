@@ -55,6 +55,7 @@ namespace EAE_Engine
 		enum RenderDataLayer 
 		{
 			Object3D = 0,
+			DebugMesh = 1,
 			UIElement = 2, 
 		};
 
@@ -80,6 +81,7 @@ namespace EAE_Engine
 		 * At last, we just need to sort the RenderObjList by the RenderWeight.
 		 */
 		struct RenderData3D;
+		struct RenderRawData3D;
 		struct RenderDataUI;
 		struct RenderObj
 		{
@@ -101,11 +103,13 @@ namespace EAE_Engine
 				}
 			};
 			std::vector<RenderObj>& GetRenderObjList() { return _renderObjs; }
+			std::vector<RenderRawData3D>& GetRenderRawData3DList() { return _renderRawData3Ds; }
 			std::vector<RenderData3D>& GetRenderData3DList() { return _renderData3Ds; }
 			std::vector<RenderDataUI>& GetRenderData2DList() { return _renderDataUIs; }
 			void Clean();
 			void UpdateRenderObjList();
 		private:
+			std::vector<RenderRawData3D> _renderRawData3Ds;
 			std::vector<RenderData3D> _renderData3Ds;
 			std::vector<RenderDataUI> _renderDataUIs;
 			std::vector<RenderObj> _renderObjs;
