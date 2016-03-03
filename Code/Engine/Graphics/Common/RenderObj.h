@@ -35,13 +35,13 @@ namespace EAE_Engine
 					 * (typically for opaque geometry, as we want to reduce state settings as much as possible)
 					 * so this bottom area should be used base on the real cases.
 					 */
-					uint64_t _material : 24; // sort by Material
+					uint64_t _material : 22; // sort by Material
 					uint64_t _depth : 24; // sort by Depth
 					/* Here are some more important sorting aspects*/
 					uint64_t _translucency : 2; // whether the RenderObj is transparent or not.
 					uint64_t _viewportLayer : 3;//Each viewport could have their own skybox layer, world layer, effects layer, HUD layer.
 					uint64_t _viewport : 3; // multiplayer splitscreen, for mirrors or portals in the scene, etc.
-					uint64_t _layer : 2;    // sort by Background, Scene, HUD...
+					uint64_t _layer : 4;    // sort by Background, Scene, HUD...
 				};
 			};
 			bool operator < (RenderWeight& i_other)

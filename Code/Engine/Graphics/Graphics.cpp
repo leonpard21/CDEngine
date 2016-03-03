@@ -102,6 +102,7 @@ void EAE_Engine::Graphics::Render()
 		RenderData3D::s_pCurrentAOSMesh = nullptr;
 		RenderData3D::s_pCurrentEffect = nullptr;
 		RenderData3D::s_pCurrentMaterial = nullptr;
+		RenderRawData3D::s_pCurrentEffect = nullptr;
 		for (std::vector<RenderObj>::iterator it = renderObjList.begin(); it != renderObjList.end(); ++it)
 		{
 			it->Render();
