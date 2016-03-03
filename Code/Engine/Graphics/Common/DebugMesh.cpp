@@ -99,7 +99,36 @@ namespace EAE_Engine
 #elif defined( EAEENGINE_PLATFORM_GL )
 				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, { sizeof(DebugVertex), GL_TRIANGLES, GL_STREAM_COPY } };
 #endif
-				_pBoxesMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, &indices, 1, &subMesh, 1);
+				BoxMesh standardBox;
+				uint32_t vertexCount = (uint32_t)standardBox._vertices.size();
+				uint32_t indexCount = (uint32_t)standardBox._indices.size();
+				// alloc memory for vertices and indices buffers
+				DebugVertex* pVertices = new DebugVertex[vertexCount];
+				uint32_t* pIndices = new uint32_t[indexCount];
+				{
+					// Set the Vertices Information.
+					for (uint32_t verticesIndex = 0; verticesIndex < standardBox._vertices.size(); ++verticesIndex)
+					{
+						pVertices[verticesIndex] = DebugVertex(standardBox._vertices[verticesIndex], Math::Vector3::Up);
+						pVertices[verticesIndex].a = (uint8_t)100;
+					}
+					// Set the Indices Information.
+					for (uint32_t indicesIndex = 0; indicesIndex < standardBox._indices.size(); indicesIndex += 3)
+					{
+						pIndices[indicesIndex + 0] = standardBox._indices[indicesIndex + 0];
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+						pIndices[indicesIndex + 2] = standardBox._indices[indicesIndex + 1];
+						pIndices[indicesIndex + 1] = standardBox._indices[indicesIndex + 2];
+#elif defined( EAEENGINE_PLATFORM_GL )
+						pIndices[indicesIndex + 1] = standardBox._indices[indicesIndex + 1];
+						pIndices[indicesIndex + 2] = standardBox._indices[indicesIndex + 2];
+#endif
+					}
+				}
+				Mesh::sSubMesh subMesh(0, indexCount - 1);
+				_pBoxesMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, pVertices, vertexCount, pIndices, indexCount, &subMesh, 1);
+				SAFE_DELETE_ARRAY(pVertices);
+				SAFE_DELETE_ARRAY(pIndices);
 				_pBoxesMeshRender->SetMesh(_pBoxesMesh);
 			}
 
@@ -109,7 +138,37 @@ namespace EAE_Engine
 #elif defined( EAEENGINE_PLATFORM_GL )
 				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, { sizeof(DebugVertex), GL_TRIANGLES, GL_STREAM_COPY } };
 #endif
-				_pShperesMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, &indices, 1, &subMesh, 1);
+				// alloc memory for buffers
+				SphereMesh standardSphere(6, 6);
+				uint32_t vertexCount = (uint32_t)standardSphere._vertices.size();
+				uint32_t indexCount = (uint32_t)standardSphere._indices.size();
+				DebugVertex* pVertices = new DebugVertex[vertexCount];
+				uint32_t* pIndices = new uint32_t[indexCount];
+				{
+					// Set the Vertices Information.
+					for (uint32_t verticesIndex = 0; verticesIndex < vertexCount; ++verticesIndex)
+					{
+						Math::Vector3 currentVertex = standardSphere._vertices[verticesIndex];
+						pVertices[verticesIndex] = DebugVertex(currentVertex, Math::Vector3::Up);
+						pVertices[verticesIndex].a = (uint8_t)100;
+					}
+					// Set the Indices Information.
+					for (uint32_t indicesIndex = 0; indicesIndex < indexCount; indicesIndex += 3)
+					{
+						pIndices[indicesIndex + 0] = standardSphere._indices[indicesIndex + 0];
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+						pIndices[indicesIndex + 2] = standardSphere._indices[indicesIndex + 1];
+						pIndices[indicesIndex + 1] = standardSphere._indices[indicesIndex + 2];
+#elif defined( EAEENGINE_PLATFORM_GL )
+						pIndices[indicesIndex + 1] = standardSphere._indices[indicesIndex + 1];
+						pIndices[indicesIndex + 2] = standardSphere._indices[indicesIndex + 2];
+#endif
+					}
+				}
+				Mesh::sSubMesh subMesh(0, indexCount - 1);
+				_pShperesMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, pVertices, vertexCount, pIndices, indexCount, &subMesh, 1);
+				SAFE_DELETE_ARRAY(pVertices);
+				SAFE_DELETE_ARRAY(pIndices);		
 				_pShperesMeshRender->SetMesh(_pShperesMesh);
 			}
 
@@ -181,107 +240,17 @@ namespace EAE_Engine
 			std::vector<Debug::DebugBox>& debugboxes = Debug::DebugShapes::GetInstance().GetBoxes();
 			//  Make sure that the debugSegments has primitives to draw
 			if (debugboxes.size() == 0) return;
-			BoxMesh standardBox;
-			uint32_t verticesPerBox = (uint32_t)standardBox._vertices.size();
-			uint32_t indicesPerBox = (uint32_t)standardBox._indices.size();
-			// alloc memory for vertices and indices buffers
-			DebugVertex* pVertices = new DebugVertex[debugboxes.size() * verticesPerBox];
-			uint32_t* pIndices = new uint32_t[debugboxes.size() * indicesPerBox];
-			// Get vertices and indices information for all of the debug meshes
-			uint32_t vertexCount = 0;
-			uint32_t indexCount = 0;
+			// Set the vertex color
+			std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
 			for (uint32_t boxIndex = 0; boxIndex < debugboxes.size(); ++boxIndex)
 			{
 				Debug::DebugBox debugbox = debugboxes[boxIndex];
 				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(debugbox._rotation, debugbox._pos);
 				tranformsMatrix = tranformsMatrix * Math::ColMatrix44::CreateScaleMatrix(debugbox._extents);
-				// Set the Vertices Information.
-				for (uint32_t verticesIndex = 0; verticesIndex < standardBox._vertices.size(); ++verticesIndex)
-				{
-					Math::Vector4 tempPos = Math::Vector4(standardBox._vertices[verticesIndex].x(), standardBox._vertices[verticesIndex].y(), standardBox._vertices[verticesIndex].z(), 1.0f);
-					pVertices[vertexCount] = DebugVertex(tempPos * tranformsMatrix, debugbox._color);
-					pVertices[vertexCount].a = (uint8_t)100;
-					++vertexCount;
-				}
-				// Set the Indices Information.
-				uint32_t currentIndexCount = boxIndex * verticesPerBox;
-				for (uint32_t indicesIndex = 0; indicesIndex < standardBox._indices.size(); ++indicesIndex)
-				{
-					pIndices[indexCount] = standardBox._indices[indicesIndex] + currentIndexCount;
-					++indexCount;
-				}
+				// Get the TransformMatri
+				RenderRawData3D renderData = { _pBoxesMeshRender, debugboxes[boxIndex]._color, tranformsMatrix };
+				renderDataList.push_back(renderData);
 			}
-#if defined( EAEENGINE_PLATFORM_D3D9 )
-			for (uint32_t index = 0; index < indexCount; index += 3)
-			{
-				uint32_t temp = pIndices[index + 1];
-				pIndices[index + 1] = pIndices[index + 2];
-				pIndices[index + 2] = temp;
-			}
-#endif
-			Mesh::sSubMesh subMesh(0, indexCount - 1);
-			if (_pBoxesMesh)
-				_pBoxesMesh->ChangeWholeBuffers(pVertices, vertexCount, pIndices, indexCount, &subMesh, 1);
-			SAFE_DELETE_ARRAY(pVertices);
-			SAFE_DELETE_ARRAY(pIndices);
-			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
-			// Get the TransformMatrix
-			RenderData3D renderData = { _pBoxesMeshRender, 0, nullptr };
-			renderDataList.push_back(renderData);
-			/*
-			uint32_t vertexCount = standardBox._vertices.size();
-			uint32_t indexCount = standardBox._indices.size();
-			std::vector<DebugVertex> vertices;
-			// Set the Vertices Information.
-			for (uint32_t verticesIndex = 0; verticesIndex < standardBox._vertices.size(); ++verticesIndex)
-			{
-				Math::Vector3 color(1.0f, 1.0f, 1.0f);
-				DebugVertex debugVertex = DebugVertex(standardBox._vertices[verticesIndex], color);
-				debugVertex.a = (uint8_t)100;
-				vertices[verticesIndex] = debugVertex;
-			}
-#if defined( EAEENGINE_PLATFORM_D3D9 )
-			for (uint32_t index = 0; index < indexCount; index += 3)
-			{
-				uint32_t temp = standardBox._indices[index + 1];
-				standardBox._indices[index + 1] = standardBox._indices[index + 2];
-				standardBox._indices[index + 2] = temp;
-			}
-#endif
-			Mesh::sSubMesh subMesh(0, indexCount - 1);
-			if (_pBoxesMesh)
-			{
-				_pBoxesMesh->ChangeWholeBuffers(&standardBox._vertices[0], vertexCount,
-					&standardBox._indices[0], indexCount, &subMesh, 1);
-				std::vector<Mesh::sSubMesh> subMeshList;
-				subMeshList.push_back(subMesh);
-				_pSegmentsMesh->SetSubMeshes(subMeshList);
-			}
-			std::vector<RenderObj>& renderObjList = RenderObjManager::GetInstance().GetRenderObjList();
-			for (uint32_t boxIndex = 0; boxIndex < debugboxes.size(); ++boxIndex)
-			{
-				// Get the TransformMatrix
-				DebugShape::DebugBox debugbox = debugboxes[boxIndex];
-				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(debugbox._rotation, debugbox._pos);
-				Math::ColMatrix44 scaleMatrix = Math::ColMatrix44(debugbox._extents);
-				tranformsMatrix = Math::ColMatrix44::Identity;// tranformsMatrix * scaleMatrix;
-				// Reset the color.
-				for (uint32_t verticesIndex = 0; verticesIndex < standardBox._vertices.size(); ++verticesIndex)
-				{
-					vertices[verticesIndex].r = debugbox._color.x();
-					vertices[verticesIndex].g = debugbox._color.y();
-					vertices[verticesIndex].b = debugbox._color.z();
-				}
-
-				// Get Material
-				MaterialDesc* pMaterial = _pBoxesMeshRender->GetMaterial(0);
-				RenderWeight weight;
-				weight._material = pMaterial ? pMaterial->_materialCost._cost : 0;
-				// Add renderObj
-				RenderObj renderObj = { weight, _pBoxesMeshRender, 0, tranformsMatrix };
-				renderObjList.push_back(renderObj);
-			}
-			*/
 		}
 
 		void DebugMeshes::GenerateDebugSpheres()
@@ -289,68 +258,18 @@ namespace EAE_Engine
 			std::vector<Debug::DebugSphere>& debugSpheres = Debug::DebugShapes::GetInstance().GetSpheres();
 			//  Make sure that the debugSegments has primitives to draw
 			if (debugSpheres.size() == 0) return;
-			// alloc memory for buffers
-			uint32_t vertexCount = 0;
-			uint32_t indexCount = 0;
-			for (uint32_t sphereIndex = 0; sphereIndex < debugSpheres.size(); ++sphereIndex)
-			{
-				SphereMesh standardSphere(6, 6);
-				vertexCount += (uint32_t)standardSphere._vertices.size();
-				indexCount += (uint32_t)standardSphere._indices.size();
-			}
-			DebugVertex* pVertices = new DebugVertex[vertexCount];
-			uint32_t* pIndices = new uint32_t[indexCount];
-			// Now let's fill in the Datas
-			vertexCount = 0;
-			indexCount = 0;
-			uint32_t currentIndexOffset = 0;
+			std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
 			// Get vertices and indices information for all of the debug meshes
 			for (uint32_t sphereIndex = 0; sphereIndex < debugSpheres.size(); ++sphereIndex)
 			{
-				Debug::DebugSphere debugSphere = debugSpheres[sphereIndex];
-				SphereMesh standardSphere(6, 6);
-				uint32_t verticesOfThisBox = (uint32_t)standardSphere._vertices.size();
-				uint32_t indicesOfThisBox = (uint32_t)standardSphere._indices.size();
-				Math::Quaternion identityRotation = Math::Quaternion::Identity;
-				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(identityRotation, debugSphere._pos);
-				{
-					Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(Math::Vector3(debugSphere._radius, debugSphere._radius, debugSphere._radius));
-					tranformsMatrix = tranformsMatrix * scaleMatrix;
-				}
-				// Set the Vertices Information.
-				for (uint32_t verticesIndex = 0; verticesIndex < verticesOfThisBox; ++verticesIndex)
-				{
-					Math::Vector3 currentVertex = standardSphere._vertices[verticesIndex];
-					Math::Vector4 tempPos = Math::Vector4(currentVertex.x(), currentVertex.y(), currentVertex.z(), 1.0f);
-					pVertices[vertexCount] = DebugVertex( tempPos * tranformsMatrix, debugSphere._color);
-					pVertices[vertexCount].a = (uint8_t)100;
-					++vertexCount;
-				}
-				// Set the Indices Information.
-				for (uint32_t indicesIndex = 0; indicesIndex < indicesOfThisBox; ++indicesIndex)
-				{
-					pIndices[indexCount] = standardSphere._indices[indicesIndex] + currentIndexOffset;
-					++indexCount;
-				}
-				currentIndexOffset += verticesOfThisBox;
+				Math::Quaternion rotation = Math::Quaternion::Identity;
+				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44::Identity;// (rotation, debugSpheres[sphereIndex]._pos);
+				//Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(Math::Vector3(debugSpheres[sphereIndex]._radius, debugSpheres[sphereIndex]._radius, debugSpheres[sphereIndex]._radius));
+				//tranformsMatrix = tranformsMatrix * scaleMatrix;
+				// Get the TransformMatrix
+				RenderRawData3D renderData = { _pShperesMeshRender, debugSpheres[sphereIndex]._color, tranformsMatrix };
+				renderDataList.push_back(renderData);
 			}
-#if defined( EAEENGINE_PLATFORM_D3D9 )
-			for (uint32_t index = 0; index < indexCount; index += 3)
-			{
-				uint32_t temp = pIndices[index + 1];
-				pIndices[index + 1] = pIndices[index + 2];
-				pIndices[index + 2] = temp;
-			}
-#endif
-			Mesh::sSubMesh subMesh(0, indexCount - 1);
-			if (_pShperesMesh)
-				_pShperesMesh->ChangeWholeBuffers(pVertices, vertexCount, pIndices, indexCount, &subMesh, 1);
-			SAFE_DELETE_ARRAY(pVertices);
-			SAFE_DELETE_ARRAY(pIndices);
-			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
-			// Get the TransformMatrix
-			RenderData3D renderData = {_pShperesMeshRender, 0, nullptr };
-			renderDataList.push_back(renderData);
 		}
 
 		////////////////////////////////static_members/////////////////////////////////

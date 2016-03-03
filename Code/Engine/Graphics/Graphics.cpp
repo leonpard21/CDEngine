@@ -20,7 +20,7 @@
 
 
 #ifdef _DEBUG
-//#define DRAW_DEBUG_SHAPES
+#define DRAW_DEBUG_SHAPES
 #endif
 
 // Interface

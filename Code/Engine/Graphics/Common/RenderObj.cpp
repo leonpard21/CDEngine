@@ -28,6 +28,11 @@ namespace EAE_Engine
 				RenderData3D* pRenderData = reinterpret_cast<RenderData3D*>(_pRenderData);
 				pRenderData->Render();
 			}
+			if (_renderWeight._layer == RenderDataLayer::DebugMesh)
+			{
+				RenderRawData3D* pRenderData = reinterpret_cast<RenderRawData3D*>(_pRenderData);
+				pRenderData->Render();
+			}
 			if (_renderWeight._layer == RenderDataLayer::UIElement)
 			{
 				RenderDataUI* pRenderData = reinterpret_cast<RenderDataUI*>(_pRenderData);
@@ -56,6 +61,16 @@ namespace EAE_Engine
 				_renderObjs.push_back(obj);
 			}
 			_renderData3Ds.clear();
+			for (std::vector<RenderRawData3D>::iterator it = _renderRawData3Ds.begin(); it != _renderRawData3Ds.end(); ++it)
+			{
+				MaterialDesc* pMaterial = it->_pMeshRender->GetMaterial();
+				RenderWeight weight;
+				weight._layer = RenderDataLayer::DebugMesh;
+				weight._material = pMaterial ? pMaterial->_materialCost._cost : 0;
+				RenderObj obj = { weight, &(*it) };
+				_renderObjs.push_back(obj);
+			}
+			_renderRawData3Ds.clear();
 			for (std::vector<RenderDataUI>::iterator it = _renderDataUIs.begin(); it != _renderDataUIs.end(); ++it)
 			{
 				CanvasRenderData* pCanvasRenderData = (it)->_pCanvasRenderData;

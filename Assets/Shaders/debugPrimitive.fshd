@@ -1,5 +1,6 @@
 /* #include statement (platform - independent) */
 #include "shaders.common"
+uniform vec3 g_DebugMeshColor;
 
 /* Input/Output variables (platform-specific) */
 #if defined( EAEENGINE_PLATFORM_D3D9 )
@@ -39,7 +40,8 @@
 /* main() function definition (platform-independent) */
 	{
 		{
-			o_color = i_color;
+			o_color.rgb = i_color.rgb * g_DebugMeshColor;
+			o_color.a = i_color.a;
 		}
 	}
 
