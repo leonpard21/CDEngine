@@ -263,9 +263,9 @@ namespace EAE_Engine
 			for (uint32_t sphereIndex = 0; sphereIndex < debugSpheres.size(); ++sphereIndex)
 			{
 				Math::Quaternion rotation = Math::Quaternion::Identity;
-				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44::Identity;// (rotation, debugSpheres[sphereIndex]._pos);
-				//Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(Math::Vector3(debugSpheres[sphereIndex]._radius, debugSpheres[sphereIndex]._radius, debugSpheres[sphereIndex]._radius));
-				//tranformsMatrix = tranformsMatrix * scaleMatrix;
+				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(rotation, debugSpheres[sphereIndex]._pos);
+				Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(Math::Vector3(debugSpheres[sphereIndex]._radius, debugSpheres[sphereIndex]._radius, debugSpheres[sphereIndex]._radius));
+				tranformsMatrix = tranformsMatrix * scaleMatrix;
 				// Get the TransformMatrix
 				RenderRawData3D renderData = { _pShperesMeshRender, debugSpheres[sphereIndex]._color, tranformsMatrix };
 				renderDataList.push_back(renderData);
