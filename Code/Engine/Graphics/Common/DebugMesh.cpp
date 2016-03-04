@@ -67,10 +67,16 @@ namespace EAE_Engine
 				{ 1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(GLubyte) }  // Color
 			};
 #endif
-			DebugVertex vertices;
-			uint32_t indices = 0;
-			Mesh::sSubMesh subMesh(0, 0);
+			// For Segments
 			{
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, {sizeof(DebugVertex), D3DPT_LINELIST, Default } };
+#elif defined( EAEENGINE_PLATFORM_GL )
+				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, {sizeof(DebugVertex), GL_LINES, GL_STREAM_COPY } };
+#endif
+				DebugVertex vertices;
+				uint32_t indices = 0;
+				Mesh::sSubMesh subMesh(0, 0);
 				{
 					vertices.x = 0.0f;
 					vertices.y = 0.0f;
@@ -81,14 +87,6 @@ namespace EAE_Engine
 					vertices.a = (uint8_t)255;
 					indices = 0;
 				}
-			}
-			// For Segments
-			{
-#if defined( EAEENGINE_PLATFORM_D3D9 )
-				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, {sizeof(DebugVertex), D3DPT_LINELIST, Default } };
-#elif defined( EAEENGINE_PLATFORM_GL )
-				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, {sizeof(DebugVertex), GL_LINES, GL_STREAM_COPY } };
-#endif
 				_pSegmentsMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, nullptr, 0, nullptr, 0);
 				_pSegmentsMeshRender->SetMesh(_pSegmentsMesh);
 			}
@@ -240,14 +238,13 @@ namespace EAE_Engine
 			std::vector<Debug::DebugBox>& debugboxes = Debug::DebugShapes::GetInstance().GetBoxes();
 			//  Make sure that the debugSegments has primitives to draw
 			if (debugboxes.size() == 0) return;
-			// Set the vertex color
 			std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
 			for (uint32_t boxIndex = 0; boxIndex < debugboxes.size(); ++boxIndex)
 			{
-				Debug::DebugBox debugbox = debugboxes[boxIndex];
-				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(debugbox._rotation, debugbox._pos);
-				tranformsMatrix = tranformsMatrix * Math::ColMatrix44::CreateScaleMatrix(debugbox._extents);
-				// Get the TransformMatri
+				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(debugboxes[boxIndex]._rotation, debugboxes[boxIndex]._pos);
+				Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(debugboxes[boxIndex]._extents);
+				tranformsMatrix = tranformsMatrix * scaleMatrix;
+				// Get the TransformMatrix
 				RenderRawData3D renderData = { _pBoxesMeshRender, debugboxes[boxIndex]._color, tranformsMatrix };
 				renderDataList.push_back(renderData);
 			}

@@ -122,7 +122,7 @@ void GameplayUpdate()
 		float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		_resetCDRemain -= elpasedTime;
 		//DebugInformations
-		/*
+		
 		EAE_Engine::Debug::CleanDebugShapes();
 		EAE_Engine::Math::Vector3 yellow(1.0f, 1.0f, 0.0f);
 		EAE_Engine::Math::Vector3 red(1.0f, 0.0f, 0.0f);
@@ -140,20 +140,20 @@ void GameplayUpdate()
 				EAE_Engine::Math::Vector3 externs(5.0f, 5.0f, 5.0f);
 				EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
 				EAE_Engine::Math::Vector3 boxPos0 = EAE_Engine::Math::Vector3(0.0f, 0.0f, 0.0f);
-				EAE_Engine::Debug::AddBox(externs, boxPos0, rotation, red);
+				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(externs, boxPos0, rotation, red);
 				EAE_Engine::Math::Vector3 externs1(10.0f, 10.0f, 10.0f);
 				EAE_Engine::Math::Vector3 boxPos1 = EAE_Engine::Math::Vector3(25.0f, 5.0f, 0.0f);
-				EAE_Engine::Debug::AddBox(externs1, boxPos1, rotation, yellow);
+				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(externs1, boxPos1, rotation, yellow);
 			}
 			// DebugSpheres
 			{
-				EAE_Engine::Math::Vector3 start1 = EAE_Engine::Math::Vector3(-5.0f, 0.0f, 0.0f);
-				EAE_Engine::Debug::AddSphere(start1, 10.0f, green);
-				EAE_Engine::Math::Vector3 start2 = EAE_Engine::Math::Vector3(0.0f, 1.0f, 0.0f);
-				EAE_Engine::Debug::AddSphere(start2, 10.0f, blue);
+				//EAE_Engine::Math::Vector3 start1 = EAE_Engine::Math::Vector3(-5.0f, 0.0f, 0.0f);
+				//EAE_Engine::Debug::AddSphere(start1, 10.0f, green);
+				//EAE_Engine::Math::Vector3 start2 = EAE_Engine::Math::Vector3(0.0f, 1.0f, 0.0f);
+				//EAE_Engine::Debug::AddSphere(start2, 10.0f, blue);
 			}
 		}
-		*/
+		
 		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('C') == EAE_Engine::UserInput::KeyState::OnPressed)
 		{
 			bool playerControllerState = pPlayerController->IsActive();
@@ -177,7 +177,7 @@ void GameplayUpdate()
 		pFrameText->_value = text;
 		static float radisu = 1.0f;
 		pDebugSphere->_radius = pSlider->_handleValue / 10.0f;
-		EAE_Engine::Debug::CleanDebugShapes();
+		//EAE_Engine::Debug::CleanDebugShapes();
 		if (pToggle->_checked)
 		{
 			EAE_Engine::Debug::DebugShapes::GetInstance().GetSpheres().push_back(*pDebugSphere);

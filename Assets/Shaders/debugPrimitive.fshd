@@ -40,7 +40,7 @@ uniform vec3 g_DebugMeshColor;
 /* main() function definition (platform-independent) */
 	{
 		{
-			o_color.rgb = i_color.rgb * g_DebugMeshColor;
+			o_color.rgb = g_DebugMeshColor;
 			o_color.a = i_color.a;
 		}
 	}
