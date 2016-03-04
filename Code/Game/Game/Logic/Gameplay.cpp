@@ -22,6 +22,7 @@
 #include "Engine/Graphics/Common/GUI.h"
 #include "Engine/CollisionDetection/RigidBody.h"
 #include "Engine/CollisionDetection/MeshCollider.h"
+#include "Engine/SpatialPartition/Octree.h"
 
 namespace 
 {
@@ -68,6 +69,8 @@ void btnCallBack(void*)
 		pSlider->_handleValue = 20.0f;
 }
 
+EAE_Engine::Core::CompleteOctree* g_pCompleteOctree = nullptr;
+
 ///////////////////////////////////////////////////////////////////////////////
 
 bool GameplayInit(float windowWidth, float windowHeight)
@@ -102,7 +105,10 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	_windowHeight = windowHeight;
 	result = InitLevel();
 
-
+	EAE_Engine::Math::Vector3 minPos(-200.0f, -200.0f, -200.0f);
+	EAE_Engine::Math::Vector3 maxPos(200.0f, 200.0f, 200.0f);
+	g_pCompleteOctree = new EAE_Engine::Core::CompleteOctree();
+	g_pCompleteOctree->Init(minPos, maxPos);
 	return true;
 }
  
@@ -137,13 +143,14 @@ void GameplayUpdate()
 			EAE_Engine::Debug::AddSegment(start, end2, red);
 			// DebugBoxes
 			{
-				EAE_Engine::Math::Vector3 externs(5.0f, 5.0f, 5.0f);
 				EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
-				EAE_Engine::Math::Vector3 boxPos0 = EAE_Engine::Math::Vector3(0.0f, 0.0f, 0.0f);
-				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(externs, boxPos0, rotation, red);
-				EAE_Engine::Math::Vector3 externs1(10.0f, 10.0f, 10.0f);
-				EAE_Engine::Math::Vector3 boxPos1 = EAE_Engine::Math::Vector3(25.0f, 5.0f, 0.0f);
-				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(externs1, boxPos1, rotation, yellow);
+				uint32_t levelIndex = 1;
+				uint32_t countOfNodes = g_pCompleteOctree->GetCountOfNodesInLevel(levelIndex);
+				EAE_Engine::Core::OctreeNode* pNodes = g_pCompleteOctree->GetNodesInLevel(levelIndex);
+				for (uint32_t index = 0; index < countOfNodes; ++index)
+				{
+					EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(pNodes[index]._extent, pNodes[index]._pos, rotation, red);
+				}
 			}
 			// DebugSpheres
 			{
@@ -187,7 +194,7 @@ void GameplayUpdate()
 
 void GameplayExit()
 {
-	
+	SAFE_DELETE(g_pCompleteOctree);
 }
 
 namespace
@@ -208,7 +215,7 @@ namespace
 		materialList.push_back("metal");
 		materialList.push_back("cement");
 		materialList.push_back("walls");
-		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
+//		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
 
 		CreatePlayer();
 		CreateCamera();

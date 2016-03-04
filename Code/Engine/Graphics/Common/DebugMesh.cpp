@@ -242,7 +242,7 @@ namespace EAE_Engine
 			for (uint32_t boxIndex = 0; boxIndex < debugboxes.size(); ++boxIndex)
 			{
 				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(debugboxes[boxIndex]._rotation, debugboxes[boxIndex]._pos);
-				Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(debugboxes[boxIndex]._extents);
+				Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(debugboxes[boxIndex]._extents * 2.0f);
 				tranformsMatrix = tranformsMatrix * scaleMatrix;
 				// Get the TransformMatrix
 				RenderRawData3D renderData = { _pBoxesMeshRender, debugboxes[boxIndex]._color, tranformsMatrix };
@@ -261,7 +261,7 @@ namespace EAE_Engine
 			{
 				Math::Quaternion rotation = Math::Quaternion::Identity;
 				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(rotation, debugSpheres[sphereIndex]._pos);
-				Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(Math::Vector3(debugSpheres[sphereIndex]._radius, debugSpheres[sphereIndex]._radius, debugSpheres[sphereIndex]._radius));
+				Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(Math::Vector3(debugSpheres[sphereIndex]._radius *2.0f, debugSpheres[sphereIndex]._radius * 2.0f, debugSpheres[sphereIndex]._radius * 2.0f));
 				tranformsMatrix = tranformsMatrix * scaleMatrix;
 				// Get the TransformMatrix
 				RenderRawData3D renderData = { _pShperesMeshRender, debugSpheres[sphereIndex]._color, tranformsMatrix };

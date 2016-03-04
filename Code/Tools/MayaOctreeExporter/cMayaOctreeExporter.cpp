@@ -26,6 +26,8 @@
 #include <string>
 #include <vector>
 
+#include "Engine/SpatialPartition/Octree.h"
+
 // Vertex Definition
 //==================
 
@@ -157,7 +159,7 @@ namespace
 	MStatus ProcessSingleDagNode( const MDagPath& i_dagPath,
 		std::map<std::string, sVertex_maya>& io_uniqueVertices, std::vector<sTriangle>& io_triangles,
 		std::vector<MObject>& io_shadingGroups, std::map<std::string, size_t>& io_map_shadingGroupNamesToIndices );
-	MStatus WriteMeshToFile( const MString& i_fileName, const std::vector<sVertex_maya>& i_vertexBuffer, const std::vector<size_t>& i_indexBuffer,
+	MStatus WriteOctreeToFile( const MString& i_fileName, const std::vector<sVertex_maya>& i_vertexBuffer, const std::vector<size_t>& i_indexBuffer,
 		const std::vector<sMaterialInfo>& i_materialInfo );
 }
 
@@ -212,7 +214,7 @@ MStatus EAE_Engine::Tools::cMayaOctreeExporter::writer( const MFileObject& i_fil
 	// Write the mesh to the requested file
 	{
 		const MString filePath = i_file.fullName();
-		return WriteMeshToFile( filePath, vertexBuffer, indexBuffer, materialInfo );
+		return WriteOctreeToFile( filePath, vertexBuffer, indexBuffer, materialInfo );
 	}
 }
 
@@ -715,81 +717,39 @@ namespace
 		return MStatus::kSuccess;
 	}
 
-	MStatus WriteMeshToFile( const MString& i_fileName, const std::vector<sVertex_maya>& i_vertexBuffer, const std::vector<size_t>& i_indexBuffer,
+	MStatus WriteOctreeToFile( const MString& i_fileName, const std::vector<sVertex_maya>& i_vertexBuffer, const std::vector<size_t>& i_indexBuffer,
 		const std::vector<sMaterialInfo>& i_materialInfo )
 	{
-		// Maya's coordinate system is different than the default Direct3D behavior
-		// (it is right handed and UVs have (0,0) at the lower left corner).
-		// For our class I advised keeping things the Maya way (which matches the default OpenGL behavior),
-		// but if you wanted to convert everything in the exported file to match the standard Direct3D behavior
-		// one way to do it would be to make the following conversions:
-		//	* POSITION	-> x, y, -z
-		//	* NORMAL	-> nx, ny, -nz
-		//	* TANGENT	-> tx, ty, -tz
-		//	* BITANGENT	-> -btx, -bty, btz
-		//	* TEXCOORD	-> u, 1 - v
-		//
-		//	* triangle index order	-> index_0, index_2, index_1
-
 		std::ofstream fout( i_fileName.asChar() );
 		if ( fout.is_open() )
 		{
+			EAE_Engine::Math::Vector3 minPos(FLT_MAX, FLT_MAX, FLT_MAX);
+			EAE_Engine::Math::Vector3 maxPos(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+			for (std::vector<sVertex_maya>::const_iterator it = i_vertexBuffer.begin(); it != i_vertexBuffer.end(); ++it)
+			{
+				sVertex_maya vertex = *it;
+				// Init X
+				if (vertex.x < minPos._x)
+					minPos._x = vertex.x;
+				if (vertex.x > maxPos._x)
+					maxPos._x = vertex.x;
+				// Init Y
+				if (vertex.y < minPos._y)
+					minPos._y = vertex.y;
+				if (vertex.y > maxPos._y)
+					maxPos._y = vertex.y;
+				// Init Z
+				if (vertex.z < minPos._z)
+					minPos._z = vertex.z;
+				if (vertex.x > maxPos._z)
+					maxPos._z = vertex.z;
+			}
 			// Open table
 			fout << "return\n"
 				"{\n";
 			{
-				// output vertexFormat
-				fout << "\tvertexFormat = \n""\t{\n";
-				{
-					fout << "\t\t--count, type, normalize, Syntax\n";
-					fout << "\t\t{ 3, \"FLOAT\", 0, \"POSITION\", },\n";
-					fout << "\t\t{ 3, \"FLOAT\", 1, \"NORMAL\", },\n";
-					fout << "\t\t{ 2, \"FLOAT\", 0, \"TEXTURECOORD\", },\n";
-					fout << "\t\t{ 4, \"BYTE\", 1, \"COLOR\", }, \n";
-				}
-				fout << "\t},\n";
-				// output vertices
-				fout << "\tvertices = \n""\t{\n";
-				{
-					//Write out i_vertexBuffer to the human-readable mesh format
-					for each (sVertex_maya vertex in i_vertexBuffer)
-					{
-						fout << "\t\t{\n";
-						{
-							fout << "\t\t\tposition = { " << vertex.x << ", " << vertex.y << ", " << vertex.z << " },\n";
-							fout << "\t\t\tnormal = { " << vertex.nx << ", " << vertex.ny << ", " << vertex.nz <<" },\n";
-							fout << "\t\t\ttextureCoordinate = {" << vertex.u << ", " << vertex.v << "},\n";
-							fout << "\t\t\tcolor = { " << vertex.r << ", " << vertex.g << ", " << vertex.b << ", " << vertex.a << " },\n";
-						}
-						fout << "\t\t},\n";
-					}
-				}
-				fout << "\t},\n";
-				// output triangleIndices
-				fout << "\ttriangleIndices = \n""\t{\n";
-				{
-					//Write out i_indexBuffer to the human-readable mesh format
-					for (size_t index = 0; index < i_indexBuffer.size(); index += 3)
-					{
-						fout << "\t\t{ " << i_indexBuffer[index] << ", " << i_indexBuffer[index + 1] << ", " << i_indexBuffer[index + 2] << ", },\n";
-					}
-				}
-				fout << "\t},\n";
-				// output subMeshes
-				fout << "\tsubMeshes = \n""\t{\n";
-				for (size_t submeshIndex = 0; submeshIndex < i_materialInfo.size(); ++submeshIndex)
-				{
-					size_t firstIndex = i_materialInfo[submeshIndex].indexRange.first;
-					size_t lastIndex = i_materialInfo[submeshIndex].indexRange.last;
-					if (firstIndex > lastIndex)
-						continue;
-					fout << "\t\t--SubMesh"<< submeshIndex << "\n";
-					fout << "\t\t{ ";
-					fout << firstIndex << ", " << lastIndex << ", " <<
-						i_materialInfo[submeshIndex].nodeName << ", ";
-					fout << "},\n";
-				}
-				fout << "\t},\n";
+				EAE_Engine::Core::CompleteOctree completeOctree;
+				completeOctree.Init(minPos, maxPos);
 			}
 			// Close table
 			fout << "}\n";

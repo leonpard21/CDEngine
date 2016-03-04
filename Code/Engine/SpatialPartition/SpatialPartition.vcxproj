@@ -19,44 +19,43 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cMayaOctreeExporter.cpp" />
-    <ClCompile Include="EntryPoint.cpp" />
+    <ClInclude Include="Octree.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cMayaOctreeExporter.h" />
+    <None Include="Octree.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1C7AC0A9-89BC-4D6D-965B-01B08DC3C877}</ProjectGuid>
+    <ProjectGuid>{EF347137-45A5-4E8D-BD0D-26B524C31E30}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>MayaMeshExporter</RootNamespace>
+    <RootNamespace>EngineCore</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -67,75 +66,44 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\SolutionMacros.props" />
     <Import Project="..\..\DefaultLocations.props" />
-    <Import Project="..\..\OpenGL.props" />
+    <Import Project="..\..\EngineSpecial.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\SolutionMacros.props" />
     <Import Project="..\..\DefaultLocations.props" />
-    <Import Project="..\..\OpenGL.props" />
+    <Import Project="..\..\EngineSpecial.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\SolutionMacros.props" />
     <Import Project="..\..\DefaultLocations.props" />
-    <Import Project="..\..\Direct3D.props" />
+    <Import Project="..\..\EngineSpecial.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\SolutionMacros.props" />
     <Import Project="..\..\DefaultLocations.props" />
-    <Import Project="..\..\Direct3D.props" />
+    <Import Project="..\..\EngineSpecial.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <TargetName>eae6320_li_yang_$(Configuration)</TargetName>
-    <TargetExt>.mll</TargetExt>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-    <TargetName>EAEOctreeExporter_$(Configuration)</TargetName>
-    <TargetExt>.mll</TargetExt>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <TargetName>eae6320_li_yang_$(Configuration)</TargetName>
-    <TargetExt>.mll</TargetExt>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <TargetName>eae6320_li_yang_$(Configuration)</TargetName>
-    <TargetExt>.mll</TargetExt>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NT_PLUGIN;REQUIRE_IOSTREAM;WIN32;WIN32;_DEBUG;_WINDOWS;_USRDLL;MAYAMESHEXPORTER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(CodePath);$(MAYA_LOCATION)\include\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(MAYA_LOCATION)\lib\;$(LibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Foundation.lib;OpenMaya.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
-    <CustomBuildStep>
-      <Command>copy "$(TargetPath)" "$(MAYA_PLUG_IN_PATH)/$(TargetFileName)" /y</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying Maya Exporter</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>$(MAYA_PLUG_IN_PATH)/$(TargetFileName)</Outputs>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Inputs>$(TargetPath)</Inputs>
-    </CustomBuildStep>
+    <Lib>
+      <AdditionalDependencies>Controller_$(Platform)_$(Configuration).lib;Graphics_$(Platform)_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006,4221 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -143,28 +111,16 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NT_PLUGIN;REQUIRE_IOSTREAM;WIN32;_DEBUG;_WINDOWS;_USRDLL;MAYAMESHEXPORTER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(CodePath);$(MAYA_LOCATION)\include\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(MAYA_LOCATION)\lib\;$(LibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Foundation.lib;OpenMaya.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
-    <CustomBuildStep>
-      <Command>copy "$(TargetPath)" "$(MAYA_PLUG_IN_PATH)/$(TargetFileName)" /y</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying Maya Exporter</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>$(MAYA_PLUG_IN_PATH)/$(TargetFileName)</Outputs>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Inputs>$(TargetPath)</Inputs>
-    </CustomBuildStep>
+    <Lib>
+      <AdditionalDependencies>General_$(Platform)_$(Configuration).lib;Mesh_$(Platform)_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006,4221 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -174,30 +130,18 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NT_PLUGIN;REQUIRE_IOSTREAM;WIN32;WIN32;NDEBUG;_WINDOWS;_USRDLL;MAYAMESHEXPORTER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(CodePath);$(MAYA_LOCATION)\include\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(MAYA_LOCATION)\lib\;$(LibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Foundation.lib;OpenMaya.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
-    <CustomBuildStep>
-      <Command>copy "$(TargetPath)" "$(MAYA_PLUG_IN_PATH)/$(TargetFileName)" /y</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying Maya Exporter</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>$(MAYA_PLUG_IN_PATH)/$(TargetFileName)</Outputs>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Inputs>$(TargetPath)</Inputs>
-    </CustomBuildStep>
+    <Lib>
+      <AdditionalDependencies>Controller_$(Platform)_$(Configuration).lib;Graphics_$(Platform)_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006,4221 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -207,30 +151,18 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NT_PLUGIN;REQUIRE_IOSTREAM;WIN32;NDEBUG;_WINDOWS;_USRDLL;MAYAMESHEXPORTER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(CodePath);$(MAYA_LOCATION)\include\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(MAYA_LOCATION)\lib\;$(LibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Foundation.lib;OpenMaya.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
-    <CustomBuildStep>
-      <Command>copy "$(TargetPath)" "$(MAYA_PLUG_IN_PATH)/$(TargetFileName)" /y</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying Maya Exporter</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>$(MAYA_PLUG_IN_PATH)/$(TargetFileName)</Outputs>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Inputs>$(TargetPath)</Inputs>
-    </CustomBuildStep>
+    <Lib>
+      <AdditionalDependencies>Controller_$(Platform)_$(Configuration).lib;Graphics_$(Platform)_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006,4221 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
