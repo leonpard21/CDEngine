@@ -10,7 +10,7 @@
 #include <maya/MObject.h>
 #include <maya/MStatus.h>
 
-#include "cMayaMeshExporter.h"
+#include "cMayaOctreeExporter.h"
 
 // Static Data Initialization
 //===========================
@@ -18,7 +18,7 @@
 namespace
 {
 	// This will be displayed in Maya's dropdown list of available export formats
-	const char* s_pluginName = "CDEngine Mesh Format";
+	const char* s_pluginName = "CDEngine Octree Format";
 }
 
 // Entry Point
@@ -35,7 +35,7 @@ __declspec(dllexport) MStatus initializePlugin( MObject io_object )
 		char* noIcon = "none";
 		status = plugin.registerFileTranslator( s_pluginName, noIcon,
 			// This function is what Maya should call to create a new instance of the mesh exporter
-			EAE_Engine::Tools::cMayaMeshExporter::Create );
+			EAE_Engine::Tools::cMayaOctreeExporter::Create );
 		if ( !status )
 		{
 			MGlobal::displayError( MString( "Failed to register mesh exporter: " ) + status.errorString() );
