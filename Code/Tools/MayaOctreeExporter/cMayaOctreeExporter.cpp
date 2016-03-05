@@ -161,6 +161,19 @@ namespace
 		std::vector<MObject>& io_shadingGroups, std::map<std::string, size_t>& io_map_shadingGroupNamesToIndices );
 	MStatus WriteOctreeToFile( const MString& i_fileName, const std::vector<sVertex_maya>& i_vertexBuffer, const std::vector<size_t>& i_indexBuffer,
 		const std::vector<sMaterialInfo>& i_materialInfo );
+
+	bool PointInAABB(const EAE_Engine::Math::Vector3& min, const EAE_Engine::Math::Vector3& max, const EAE_Engine::Math::Vector3& vecPoint)
+	{
+		//Check if the point is less than max and greater than min
+		if (vecPoint._x > min._x && vecPoint._x < max._x &&
+			vecPoint._y > min._y && vecPoint._y < max._y &&
+			vecPoint._z > min._z && vecPoint._z < max._z)
+		{
+			return true;
+		}
+		//If not, then return false
+		return false;
+	}
 }
 
 // Inherited Interface
@@ -720,7 +733,7 @@ namespace
 	MStatus WriteOctreeToFile( const MString& i_fileName, const std::vector<sVertex_maya>& i_vertexBuffer, const std::vector<size_t>& i_indexBuffer,
 		const std::vector<sMaterialInfo>& i_materialInfo )
 	{
-		std::ofstream fout( i_fileName.asChar() );
+		std::ofstream fout( i_fileName.asChar(), std::ofstream::binary);
 		if ( fout.is_open() )
 		{
 			EAE_Engine::Math::Vector3 minPos(FLT_MAX, FLT_MAX, FLT_MAX);
@@ -745,15 +758,58 @@ namespace
 					maxPos._z = vertex.z;
 			}
 			// Open table
-			fout << "return\n"
-				"{\n";
+			EAE_Engine::Core::CompleteOctree completeOctree;
+			completeOctree.InitFromRange(4, minPos, maxPos);
+			// Set triangle values for Octree
+			uint32_t coutOfLeaves = completeOctree.GetCountOfNodesInLevel(completeOctree.Level());
+			EAE_Engine::Core::OctreeNode* pLeaveNodes = completeOctree.GetNodesInLevel(completeOctree.Level());
+			for (uint32_t leafIndex = 0; leafIndex < coutOfLeaves; ++leafIndex)
 			{
-				EAE_Engine::Core::CompleteOctree completeOctree;
-				completeOctree.Init(minPos, maxPos);
+				for (size_t index = 0; index < i_indexBuffer.size(); index += 3)
+				{
+					uint32_t index0 = (uint32_t)i_indexBuffer[index + 0];
+					uint32_t index1 = (uint32_t)i_indexBuffer[index + 1];
+					uint32_t index2 = (uint32_t)i_indexBuffer[index + 2];
+					EAE_Engine::Core::TriangleIndex triangle = { index0, index1, index2 };
+					bool contains = false;
+					for (uint32_t t = 0; t < 3; ++t)
+					{
+						sVertex_maya vertex_maya = i_vertexBuffer[i_indexBuffer[index + t]];
+						EAE_Engine::Math::Vector3 vertex(vertex_maya.x, vertex_maya.y, vertex_maya.z);
+						if (PointInAABB(pLeaveNodes[leafIndex].GetMin(), pLeaveNodes[leafIndex].GetMax(), vertex))
+						{
+							contains = true;
+							break;
+						}
+					}
+					if(contains)
+						pLeaveNodes[leafIndex]._triangles.push_back(triangle);
+				}
 			}
+			// Write Octree information to files
+			uint32_t nodesCount = completeOctree.GetNodeCount();
+			uint32_t sizeOfBuffer = sizeof(uint32_t) + sizeof(uint32_t) + sizeof(EAE_Engine::Math::Vector3) + sizeof(EAE_Engine::Math::Vector3) + 1;
+			EAE_Engine::Math::Vector3 min = completeOctree.GetMin();
+			EAE_Engine::Math::Vector3 max = completeOctree.GetMax();
+			EAE_Engine::Core::OctreeNode* pNodes = completeOctree.GetNodes();
+			char* pBuffer = new char[sizeOfBuffer];
+			EAE_Engine::SetMem((uint8_t*)pBuffer, sizeOfBuffer, 0);
+			{
+				uint32_t offset = 0;
+				uint32_t level = completeOctree.Level();
+				EAE_Engine::CopyMem((uint8_t*)&level, (uint8_t*)(pBuffer)+offset, sizeof(uint32_t));
+				offset += sizeof(uint32_t);
+				EAE_Engine::CopyMem((uint8_t*)&nodesCount, (uint8_t*)(pBuffer)+offset, sizeof(uint32_t));
+				offset += sizeof(uint32_t);
+				EAE_Engine::CopyMem((uint8_t*)&min, (uint8_t*)(pBuffer) + offset, sizeof(EAE_Engine::Math::Vector3));
+				offset += sizeof(EAE_Engine::Math::Vector3);
+				EAE_Engine::CopyMem((uint8_t*)&max, (uint8_t*)(pBuffer)+offset, sizeof(EAE_Engine::Math::Vector3));
+				offset += sizeof(EAE_Engine::Math::Vector3);
+			}
+			fout.write(pBuffer, sizeOfBuffer);
 			// Close table
-			fout << "}\n";
 			fout.close();
+			SAFE_DELETE_ARRAY(pBuffer);
 			return MStatus::kSuccess;
 		}
 		else

@@ -17,7 +17,7 @@ return
 		Alpha = true,
 	 	DepthTesting = true,
 		DepthWriting = true,
-		FaceCulling = true,
+		FaceCulling = false,
 	},
 }
 

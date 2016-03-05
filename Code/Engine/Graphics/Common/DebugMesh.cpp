@@ -75,7 +75,6 @@ namespace EAE_Engine
 				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, {sizeof(DebugVertex), GL_LINES, GL_STREAM_COPY } };
 #endif
 				DebugVertex vertices;
-				uint32_t indices = 0;
 				Mesh::sSubMesh subMesh(0, 0);
 				{
 					vertices.x = 0.0f;
@@ -85,7 +84,6 @@ namespace EAE_Engine
 					vertices.g = (uint8_t)255;
 					vertices.b = (uint8_t)255;
 					vertices.a = (uint8_t)255;
-					indices = 0;
 				}
 				_pSegmentsMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, nullptr, 0, nullptr, 0);
 				_pSegmentsMeshRender->SetMesh(_pSegmentsMesh);
@@ -207,7 +205,7 @@ namespace EAE_Engine
 			// Setup the Vertices Information
 			DebugVertex* pVertices = new DebugVertex[debugSegments.size() * 2];
 			uint32_t vertexCount = 0;
-			for (uint32_t segmentIndex = 0; segmentIndex<debugSegments.size(); ++segmentIndex)
+			for (uint32_t segmentIndex = 0; segmentIndex < debugSegments.size(); ++segmentIndex)
 			{
 				// Vertex 
 				{

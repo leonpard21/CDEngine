@@ -28,12 +28,12 @@ namespace EAE_Engine
 				RenderData3D* pRenderData = reinterpret_cast<RenderData3D*>(_pRenderData);
 				pRenderData->Render();
 			}
-			if (_renderWeight._layer == RenderDataLayer::DebugMesh)
+			else if (_renderWeight._layer == RenderDataLayer::DebugMesh)
 			{
 				RenderRawData3D* pRenderData = reinterpret_cast<RenderRawData3D*>(_pRenderData);
 				pRenderData->Render();
 			}
-			if (_renderWeight._layer == RenderDataLayer::UIElement)
+			else if (_renderWeight._layer == RenderDataLayer::UIElement)
 			{
 				RenderDataUI* pRenderData = reinterpret_cast<RenderDataUI*>(_pRenderData);
 				pRenderData->Render();
@@ -61,13 +61,13 @@ namespace EAE_Engine
 				_renderObjs.push_back(obj);
 			}
 			_renderData3Ds.clear();
-			for (std::vector<RenderRawData3D>::iterator it = _renderRawData3Ds.begin(); it != _renderRawData3Ds.end(); ++it)
+			for (std::vector<RenderRawData3D>::iterator itRaw = _renderRawData3Ds.begin(); itRaw != _renderRawData3Ds.end(); ++itRaw)
 			{
-				MaterialDesc* pMaterial = it->_pMeshRender->GetMaterial();
+				MaterialDesc* pMaterial = itRaw->_pMeshRender->GetMaterial();
 				RenderWeight weight;
 				weight._layer = RenderDataLayer::DebugMesh;
 				weight._material = pMaterial ? pMaterial->_materialCost._cost : 0;
-				RenderObj obj = { weight, &(*it) };
+				RenderObj obj = { weight, &(*itRaw) };
 				_renderObjs.push_back(obj);
 			}
 			_renderRawData3Ds.clear();

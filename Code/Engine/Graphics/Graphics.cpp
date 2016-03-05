@@ -41,13 +41,13 @@ bool EAE_Engine::Graphics::Initialize( const HWND i_renderingWindow )
 	{
 		goto OnError;
 	}
-#ifdef DRAW_DEBUG_SHAPES
-	DebugMeshes::GetInstance().Init();
-#endif
 	//ImageManager::GetInstance()->Init();
 	CanvasRenderManager::GetInstance()->Init();
 	FontManager::GetInstance()->Init();
 	UIElementManager::GetInstance()->Init();
+#ifdef DRAW_DEBUG_SHAPES
+	DebugMeshes::GetInstance().Init();
+#endif
 	return true;
 OnError:
 	ShutDown();

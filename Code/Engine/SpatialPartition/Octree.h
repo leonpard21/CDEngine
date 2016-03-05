@@ -5,6 +5,7 @@
 #include "Engine/Mesh/AOSMeshData.h"
 #include "Engine/General/MemoryOp.h"
 #include <vector>
+#include <fstream>
 
 namespace EAE_Engine 
 {
@@ -12,6 +13,7 @@ namespace EAE_Engine
 	{
 		struct TriangleIndex
 		{
+			TriangleIndex() = default;
 			union
 			{
 				uint32_t _indices[3];
@@ -29,20 +31,31 @@ namespace EAE_Engine
 			Math::Vector3 _pos;
 			Math::Vector3 _extent;
 			std::vector<TriangleIndex> _triangles;
+			Math::Vector3 GetMin() { return _pos - _extent; }
+			Math::Vector3 GetMax() { return _pos + _extent; }
 		};
 
 
 		class CompleteOctree
 		{
-		public:  
-			enum { _level = 4 };
+		public: 
 			CompleteOctree();
 			~CompleteOctree();
-			inline void Init(Math::Vector3 min, Math::Vector3 max);
+			inline void InitFromRange(uint32_t level, Math::Vector3 min, Math::Vector3 max);
+			inline void InitFromFile(const char* pFile);
 			inline OctreeNode* GetNodesInLevel(uint32_t levelIndex);
 			inline uint32_t GetCountOfNodesInLevel(uint32_t levelIndex) { return (uint32_t)std::pow(8.0f, levelIndex); }
+			inline uint32_t GetNodeCount() { return _countOfNode; }
+			inline OctreeNode* GetNodes() { return _pNodes; }
+			inline Math::Vector3 GetMin() { return _min; }
+			inline Math::Vector3 GetMax() { return _max; }
+			inline uint32_t Level() { return _level; }
+
+			inline void SetBuffer(OctreeNode* pNodes, uint32_t countOfNode);
+			inline void LoadFromFile();
 
 		private:
+			uint32_t _level;
 			OctreeNode* _pNodes;
 			uint32_t _countOfNode;
 			Math::Vector3 _min;
@@ -50,11 +63,9 @@ namespace EAE_Engine
 		};
 
 		CompleteOctree::CompleteOctree() :
-			_min(Math::Vector3::Zero), _max(Math::Vector3::Zero)
-		{ 
-			_countOfNode = (uint32_t)((std::pow(8.0f, _level) - 1) / (8 - 1));
-			_pNodes = new OctreeNode[_countOfNode];
-		}
+			_min(Math::Vector3::Zero), _max(Math::Vector3::Zero), 
+			_level(0), _countOfNode(0), _pNodes(nullptr)
+		{}
 
 		CompleteOctree::~CompleteOctree()
 		{
@@ -68,8 +79,11 @@ namespace EAE_Engine
 			return &_pNodes[baseOfNodesInLevel];
 		}
 
-		inline void CompleteOctree::Init(Math::Vector3 min, Math::Vector3 max)
+		inline void CompleteOctree::InitFromRange(uint32_t level, Math::Vector3 min, Math::Vector3 max)
 		{
+			_level = level;
+			_countOfNode = (uint32_t)((std::pow(8.0f, _level) - 1) / (8 - 1));
+			_pNodes = new OctreeNode[_countOfNode];
 			_min = min;
 			_max = max;
 			_pNodes[0]._pos = (_min + _max) * 0.5f;
@@ -98,6 +112,40 @@ namespace EAE_Engine
 					}
 				}
 			}
+		}
+
+		inline void CompleteOctree::InitFromFile(const char* pFile)
+		{
+			std::ifstream infile(pFile, std::ifstream::binary);
+			// get size of file
+			infile.seekg(0, infile.end);
+			std::streamoff size = infile.tellg();
+			infile.seekg(0);
+			// allocate memory for file content
+			char* pBuffer = new char[size];
+			// read content of infile
+			infile.read(pBuffer, size);
+			{
+				uint32_t offset = 0;
+				EAE_Engine::CopyMem((uint8_t*)(pBuffer + offset), (uint8_t*)&_level, sizeof(uint32_t));
+				offset += sizeof(uint32_t);
+				EAE_Engine::CopyMem((uint8_t*)(pBuffer + offset), (uint8_t*)&_countOfNode, sizeof(uint32_t));
+				offset += sizeof(uint32_t);
+				EAE_Engine::CopyMem((uint8_t*)(pBuffer + offset), (uint8_t*)&_min, sizeof(EAE_Engine::Math::Vector3));
+				offset += sizeof(EAE_Engine::Math::Vector3);
+				EAE_Engine::CopyMem((uint8_t*)(pBuffer + offset), (uint8_t*)&_max, sizeof(EAE_Engine::Math::Vector3));
+				offset += sizeof(EAE_Engine::Math::Vector3);
+				InitFromRange(_level, _min, _max);
+			}
+			// release dynamically-allocated memory
+			delete[] pBuffer;
+			infile.close();
+		}
+
+		inline void CompleteOctree::SetBuffer(OctreeNode* pNodes, uint32_t countOfNode)
+		{
+			_countOfNode = countOfNode;
+			EAE_Engine::CopyMem((uint8_t*)pNodes, (uint8_t*)_pNodes, sizeof(EAE_Engine::Core::OctreeNode) * countOfNode);
 		}
 
 	}

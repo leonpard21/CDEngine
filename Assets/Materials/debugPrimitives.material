@@ -13,6 +13,6 @@ return
 	{
 		sourcePath = "data/Effects/",
 		effectSource = "debugPrimitive.effect",
-		materialCost = 0x11111111,
+		materialCost = 0x1111,
 	},
 }

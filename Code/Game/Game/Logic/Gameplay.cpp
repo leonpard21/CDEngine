@@ -62,7 +62,6 @@ EAE_Engine::Graphics::Text* pFrameText = nullptr;
 EAE_Engine::Graphics::Button* pControlBtn = nullptr;
 EAE_Engine::Graphics::Slider* pSlider = nullptr;
 EAE_Engine::Graphics::Toggle* pToggle = nullptr;
-EAE_Engine::Debug::DebugSphere* pDebugSphere = nullptr;
 void btnCallBack(void*) 
 {
 	if (pSlider)
@@ -91,7 +90,7 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	{
 		return false;
 	}
-
+	EAE_Engine::Graphics::LoadMaterial("data/Materials/white.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/phongShading.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/lambert.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/floor.material");
@@ -100,15 +99,13 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/metal.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/cement.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/walls.material");
-	EAE_Engine::Graphics::LoadMaterial("data/Materials/white.material");
+
 	_windowWidth = windowWidth;
 	_windowHeight = windowHeight;
 	result = InitLevel();
 
-	EAE_Engine::Math::Vector3 minPos(-150.0f, -150.0f, -150.0f);
-	EAE_Engine::Math::Vector3 maxPos(150.0f, 150.0f, 150.0f);
 	g_pCompleteOctree = new EAE_Engine::Core::CompleteOctree();
-	g_pCompleteOctree->Init(minPos, maxPos);
+	g_pCompleteOctree->InitFromFile("data/Scene/CollisionOctree.octree");
 	return true;
 }
  
@@ -141,17 +138,6 @@ void GameplayUpdate()
 			EAE_Engine::Math::Vector3 end2(100.0f, 0.0f, -10.0f);
 			EAE_Engine::Debug::AddSegment(start, end, yellow);
 			EAE_Engine::Debug::AddSegment(start, end2, red);
-			// DebugBoxes
-			{
-				EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
-				uint32_t levelIndex = 1;
-				uint32_t countOfNodes = g_pCompleteOctree->GetCountOfNodesInLevel(levelIndex);
-				EAE_Engine::Core::OctreeNode* pNodes = g_pCompleteOctree->GetNodesInLevel(levelIndex);
-				for (uint32_t index = 0; index < countOfNodes; ++index)
-				{
-					EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(pNodes[index]._extent, pNodes[index]._pos, rotation, red);
-				}
-			}
 			// DebugSpheres
 			{
 				//EAE_Engine::Math::Vector3 start1 = EAE_Engine::Math::Vector3(-5.0f, 0.0f, 0.0f);
@@ -183,11 +169,17 @@ void GameplayUpdate()
 		sprintf_s(text, "FPS:%.2f", fps);
 		pFrameText->_value = text;
 		static float radisu = 1.0f;
-		pDebugSphere->_radius = pSlider->_handleValue / 10.0f;
 		//EAE_Engine::Debug::CleanDebugShapes();
 		if (pToggle->_checked)
 		{
-			EAE_Engine::Debug::DebugShapes::GetInstance().GetSpheres().push_back(*pDebugSphere);
+			EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
+			uint32_t levelIndex = 3;
+			uint32_t countOfNodes = g_pCompleteOctree->GetCountOfNodesInLevel(levelIndex);
+			EAE_Engine::Core::OctreeNode* pNodes = g_pCompleteOctree->GetNodesInLevel(levelIndex);
+			for (uint32_t index = 0; index < countOfNodes; ++index)
+			{
+				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(pNodes[index]._extent, pNodes[index]._pos, rotation, red);
+			}
 		}
 	}
 }
@@ -297,10 +289,6 @@ namespace
 
 	void CreateDebugMenu()
 	{
-		// Add debugSphere.
-		EAE_Engine::Math::Vector3 green(0.0f, 1.0f, 0.0f);
-		EAE_Engine::Math::Vector3 start1 = EAE_Engine::Math::Vector3(-5.0f, 0.0f, 0.0f);
-		pDebugSphere = EAE_Engine::Debug::AddSphere(start1, 10.0f, green);
 		// Add widgets
 		EAE_Engine::Math::Vector3 textPos = EAE_Engine::Math::Vector3::Zero;
 		EAE_Engine::Common::IGameObj* pTextObj = EAE_Engine::Core::World::GetInstance().AddGameObj("textObj", textPos);

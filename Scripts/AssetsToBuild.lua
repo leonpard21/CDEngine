@@ -214,4 +214,15 @@ return
             },
 		 },
 	},
+	{
+         buildTool = "GenericBuilder.exe",
+		 relativePath = "Scene/",		 
+         assets =
+         {
+		    {
+                source = "CollisionOctree.octree",
+                target = "CollisionOctree.octree",
+            },
+		 },
+	},
 }
