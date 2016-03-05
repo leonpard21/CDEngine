@@ -135,7 +135,11 @@ namespace EAE_Engine
 				offset += sizeof(EAE_Engine::Math::Vector3);
 				EAE_Engine::CopyMem((uint8_t*)(pBuffer + offset), (uint8_t*)&_max, sizeof(EAE_Engine::Math::Vector3));
 				offset += sizeof(EAE_Engine::Math::Vector3);
-				InitFromRange(_level, _min, _max);
+
+
+				EAE_Engine::Math::Vector3 min(-100.0f, -25.0f, -100.0f);
+				EAE_Engine::Math::Vector3 max(100.0f, 25.0f, 100.0f);
+				InitFromRange(_level, min, max);
 			}
 			// release dynamically-allocated memory
 			delete[] pBuffer;

@@ -761,8 +761,9 @@ namespace
 			EAE_Engine::Core::CompleteOctree completeOctree;
 			completeOctree.InitFromRange(4, minPos, maxPos);
 			// Set triangle values for Octree
-			uint32_t coutOfLeaves = completeOctree.GetCountOfNodesInLevel(completeOctree.Level());
-			EAE_Engine::Core::OctreeNode* pLeaveNodes = completeOctree.GetNodesInLevel(completeOctree.Level());
+			uint32_t levelIndex = completeOctree.Level() - 1;
+			uint32_t coutOfLeaves = completeOctree.GetCountOfNodesInLevel(levelIndex);
+			EAE_Engine::Core::OctreeNode* pLeaveNodes = completeOctree.GetNodesInLevel(levelIndex);
 			for (uint32_t leafIndex = 0; leafIndex < coutOfLeaves; ++leafIndex)
 			{
 				for (size_t index = 0; index < i_indexBuffer.size(); index += 3)
