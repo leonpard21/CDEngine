@@ -39,8 +39,8 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		DebugMeshes::DebugMeshes():_pSegmentsMeshRender(nullptr), _pSegmentsMesh(nullptr), 
-		_pBoxesMeshRender(nullptr), _pBoxesMesh(nullptr) {}
+		DebugMeshes::DebugMeshes():_pSegmentsMeshRender(nullptr), _pBoxesMeshRender(nullptr), _pShperesMeshRender(nullptr), 
+			_pSegmentsMesh(nullptr), _pBoxesMesh(nullptr), _pShperesMesh(nullptr) {}
 
 		void DebugMeshes::Init()
 		{

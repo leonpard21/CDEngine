@@ -105,8 +105,8 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	_windowHeight = windowHeight;
 	result = InitLevel();
 
-	EAE_Engine::Math::Vector3 minPos(-200.0f, -200.0f, -200.0f);
-	EAE_Engine::Math::Vector3 maxPos(200.0f, 200.0f, 200.0f);
+	EAE_Engine::Math::Vector3 minPos(-150.0f, -150.0f, -150.0f);
+	EAE_Engine::Math::Vector3 maxPos(150.0f, 150.0f, 150.0f);
 	g_pCompleteOctree = new EAE_Engine::Core::CompleteOctree();
 	g_pCompleteOctree->Init(minPos, maxPos);
 	return true;
@@ -215,7 +215,7 @@ namespace
 		materialList.push_back("metal");
 		materialList.push_back("cement");
 		materialList.push_back("walls");
-//		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
+		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
 
 		CreatePlayer();
 		CreateCamera();
