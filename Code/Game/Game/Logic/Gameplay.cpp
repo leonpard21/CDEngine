@@ -164,6 +164,19 @@ void GameplayUpdate()
 			}
 		}
 
+		static int octreeLevel = 0;
+		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('1') == EAE_Engine::UserInput::KeyState::OnPressed)
+		{
+			octreeLevel = 1;
+		}
+		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('2') == EAE_Engine::UserInput::KeyState::OnPressed)
+		{
+			octreeLevel = 2;
+		}
+		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('3') == EAE_Engine::UserInput::KeyState::OnPressed)
+		{
+			octreeLevel = 3;
+		}
 		char text[20];
 		float fps = 1.0f / elpasedTime;
 		sprintf_s(text, "FPS:%.2f", fps);
@@ -173,9 +186,8 @@ void GameplayUpdate()
 		if (pToggle->_checked)
 		{
 			EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
-			uint32_t levelIndex = 3;
-			uint32_t countOfNodes = g_pCompleteOctree->GetCountOfNodesInLevel(levelIndex);
-			EAE_Engine::Core::OctreeNode* pNodes = g_pCompleteOctree->GetNodesInLevel(levelIndex);
+			uint32_t countOfNodes = g_pCompleteOctree->GetCountOfNodesInLevel(octreeLevel);
+			EAE_Engine::Core::OctreeNode* pNodes = g_pCompleteOctree->GetNodesInLevel(octreeLevel);
 			for (uint32_t index = 0; index < countOfNodes; ++index)
 			{
 				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(pNodes[index]._extent, pNodes[index]._pos, rotation, red);
