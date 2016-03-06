@@ -122,7 +122,7 @@ namespace EAE_Engine
 					collisionNormal.Normalize();
 					float passedTime = timeStep * mint - FLT_EPSILON;
 					Response(_totalForceWorkingOn, passedTime);
-					_currentPos += collisionNormal * 0.001f;
+					_currentPos += collisionNormal * 0.01f;
 					timeStep = timeStep - passedTime;
 					{
 						// first, add an inverse force on the RigidBody

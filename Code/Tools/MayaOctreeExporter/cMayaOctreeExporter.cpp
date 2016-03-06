@@ -761,9 +761,10 @@ namespace
 			EAE_Engine::Core::CompleteOctree completeOctree;
 			completeOctree.InitFromRange(4, minPos, maxPos);
 			// Set triangle values for Octree
-			uint32_t levelIndex = completeOctree.Level() - 1;
-			uint32_t coutOfLeaves = completeOctree.GetCountOfNodesInLevel(levelIndex);
-			EAE_Engine::Core::OctreeNode* pLeaveNodes = completeOctree.GetNodesInLevel(levelIndex);
+			uint32_t leafLevelIndex = completeOctree.Level() - 1;
+			uint32_t coutOfLeaves = completeOctree.GetCountOfNodesInLevel(leafLevelIndex);
+			EAE_Engine::Core::OctreeNode* pLeaveNodes = completeOctree.GetNodesInLevel(leafLevelIndex);
+			uint32_t countOfTrianglesAdded = 0;
 			for (uint32_t leafIndex = 0; leafIndex < coutOfLeaves; ++leafIndex)
 			{
 				for (size_t index = 0; index < i_indexBuffer.size(); index += 3)
@@ -784,12 +785,17 @@ namespace
 						}
 					}
 					if(contains)
+					{
 						pLeaveNodes[leafIndex]._triangles.push_back(triangle);
+						++countOfTrianglesAdded;
+					}
 				}
 			}
 			// Write Octree information to files
 			uint32_t nodesCount = completeOctree.GetNodeCount();
-			uint32_t sizeOfBuffer = sizeof(uint32_t) + sizeof(uint32_t) + sizeof(EAE_Engine::Math::Vector3) + sizeof(EAE_Engine::Math::Vector3) + 1;
+			// information we need are _Level, _NodeCount, _min, _max, triangles we added to each leaf.
+			uint32_t sizeOfBuffer = sizeof(uint32_t) + sizeof(uint32_t) + sizeof(EAE_Engine::Math::Vector3) + sizeof(EAE_Engine::Math::Vector3) + 
+				+countOfTrianglesAdded * sizeof(uint32_t) + countOfTrianglesAdded * sizeof(EAE_Engine::Core::TriangleIndex) + 1;
 			EAE_Engine::Math::Vector3 min = completeOctree.GetMin();
 			EAE_Engine::Math::Vector3 max = completeOctree.GetMax();
 			EAE_Engine::Core::OctreeNode* pNodes = completeOctree.GetNodes();
@@ -806,6 +812,23 @@ namespace
 				offset += sizeof(EAE_Engine::Math::Vector3);
 				EAE_Engine::CopyMem((uint8_t*)&max, (uint8_t*)(pBuffer)+offset, sizeof(EAE_Engine::Math::Vector3));
 				offset += sizeof(EAE_Engine::Math::Vector3);
+				// Now let's fill in the trianlges information
+				EAE_Engine::Core::OctreeNode* pLeaves = completeOctree.GetNodesInLevel(leafLevelIndex);
+				uint32_t countOfLeaves = completeOctree.GetCountOfNodesInLevel(leafLevelIndex);
+				for (uint32_t leafIndex = 0; leafIndex < countOfLeaves; ++leafIndex)
+				{
+					// record count of trianlges in this node
+					uint32_t countOfTrianlges = (uint32_t)pLeaves[leafIndex]._triangles.size();
+					EAE_Engine::CopyMem((uint8_t*)&countOfTrianlges, (uint8_t*)pBuffer+offset, sizeof(uint32_t));
+					offset += sizeof(uint32_t);
+					if (countOfTrianlges > 0)
+					{
+						// record trianlges in this node
+						uint32_t bufferSizeForTrianlge = sizeof(EAE_Engine::Core::TriangleIndex) * countOfTrianlges;
+						EAE_Engine::CopyMem((uint8_t*)&(pLeaves[leafIndex]._triangles[0]), (uint8_t*)pBuffer + offset, bufferSizeForTrianlge);
+						offset += bufferSizeForTrianlge;
+					}
+				}
 			}
 			fout.write(pBuffer, sizeOfBuffer);
 			// Close table

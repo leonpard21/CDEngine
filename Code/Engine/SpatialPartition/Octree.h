@@ -122,6 +122,7 @@ namespace EAE_Engine
 			std::streamoff size = infile.tellg();
 			infile.seekg(0);
 			// allocate memory for file content
+
 			char* pBuffer = new char[size];
 			// read content of infile
 			infile.read(pBuffer, size);
@@ -135,11 +136,28 @@ namespace EAE_Engine
 				offset += sizeof(EAE_Engine::Math::Vector3);
 				EAE_Engine::CopyMem((uint8_t*)(pBuffer + offset), (uint8_t*)&_max, sizeof(EAE_Engine::Math::Vector3));
 				offset += sizeof(EAE_Engine::Math::Vector3);
-
-
-				EAE_Engine::Math::Vector3 min(-100.0f, -25.0f, -100.0f);
-				EAE_Engine::Math::Vector3 max(100.0f, 25.0f, 100.0f);
-				InitFromRange(_level, min, max);
+				// Build the Octree Architecture
+				InitFromRange(_level, _min, _max);
+				// Now let's fill in the trianlges information
+				OctreeNode* pLeaves = GetNodesInLevel(_level - 1);
+				uint32_t countOfLeaves = GetCountOfNodesInLevel(_level - 1);
+				for (uint32_t leafIndex = 0; leafIndex < countOfLeaves; ++leafIndex)
+				{
+					// record count of trianlges in this node
+					uint32_t triangleCountInLeaf = 0;
+					CopyMem((uint8_t*)pBuffer + offset, (uint8_t*)&triangleCountInLeaf, sizeof(uint32_t));
+					offset += sizeof(uint32_t);
+					if (triangleCountInLeaf > 0)
+					{
+						for (uint32_t trianlgeIndex = 0; trianlgeIndex < triangleCountInLeaf; ++trianlgeIndex)
+						{
+							TriangleIndex tempTraiangle;
+							CopyMem((uint8_t*)pBuffer + offset, (uint8_t*)&tempTraiangle, sizeof(TriangleIndex));
+							pLeaves[leafIndex]._triangles.push_back(tempTraiangle);
+							offset += sizeof(TriangleIndex);
+						}
+					}
+				}
 			}
 			// release dynamically-allocated memory
 			delete[] pBuffer;
