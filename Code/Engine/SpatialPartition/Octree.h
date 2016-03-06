@@ -118,8 +118,7 @@ namespace EAE_Engine
 			std::streamoff size = infile.tellg();
 			infile.seekg(0);
 			// allocate memory for file content
-
-			char* pBuffer = new char[size];
+			char* pBuffer = new char[(uint32_t)size];
 			// read content of infile
 			infile.read(pBuffer, size);
 			{
