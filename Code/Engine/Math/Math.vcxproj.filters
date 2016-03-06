@@ -14,6 +14,7 @@
     <ClInclude Include="RowMatrix.h" />
     <ClInclude Include="ColMatrix.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="Geometry.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Rectangle.inl" />

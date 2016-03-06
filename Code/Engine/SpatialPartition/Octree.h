@@ -35,7 +35,6 @@ namespace EAE_Engine
 			Math::Vector3 GetMax() { return _pos + _extent; }
 		};
 
-
 		class CompleteOctree
 		{
 		public: 
@@ -50,9 +49,6 @@ namespace EAE_Engine
 			inline Math::Vector3 GetMin() { return _min; }
 			inline Math::Vector3 GetMax() { return _max; }
 			inline uint32_t Level() { return _level; }
-
-			inline void SetBuffer(OctreeNode* pNodes, uint32_t countOfNode);
-			inline void LoadFromFile();
 
 		private:
 			uint32_t _level;
@@ -163,13 +159,6 @@ namespace EAE_Engine
 			delete[] pBuffer;
 			infile.close();
 		}
-
-		inline void CompleteOctree::SetBuffer(OctreeNode* pNodes, uint32_t countOfNode)
-		{
-			_countOfNode = countOfNode;
-			EAE_Engine::CopyMem((uint8_t*)pNodes, (uint8_t*)_pNodes, sizeof(EAE_Engine::Core::OctreeNode) * countOfNode);
-		}
-
 	}
 }
 

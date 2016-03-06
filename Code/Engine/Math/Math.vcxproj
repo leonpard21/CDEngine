@@ -27,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ColMatrix.h" />
+    <ClInclude Include="Geometry.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="MathTool.h" />
     <ClInclude Include="RowMatrix.h" />

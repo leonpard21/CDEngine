@@ -38,7 +38,6 @@ namespace EAE_Engine
 {
 	namespace Math
 	{
-
 		class ColMatrix22
 		{
 		public:
@@ -107,7 +106,6 @@ namespace EAE_Engine
 		{
 			// Interface
 			//==========
-
 		public:
 			ColMatrix44();	// Identity
 			ColMatrix44(

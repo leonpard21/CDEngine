@@ -126,11 +126,12 @@ void GameplayUpdate()
 		_resetCDRemain -= elpasedTime;
 		//DebugInformations
 		
-		EAE_Engine::Debug::CleanDebugShapes();
 		EAE_Engine::Math::Vector3 yellow(1.0f, 1.0f, 0.0f);
 		EAE_Engine::Math::Vector3 red(1.0f, 0.0f, 0.0f);
 		EAE_Engine::Math::Vector3 green(0.0f, 1.0f, 0.0f);
 		EAE_Engine::Math::Vector3 blue(0.0f, 0.0f, 1.0f);
+		/*
+		EAE_Engine::Debug::CleanDebugShapes();
 		{
 			// DebugLines
 			EAE_Engine::Math::Vector3 start = EAE_Engine::Math::Vector3(0.0f, 0.0f, -10.0f);
@@ -146,7 +147,7 @@ void GameplayUpdate()
 				//EAE_Engine::Debug::AddSphere(start2, 10.0f, blue);
 			}
 		}
-		
+		*/
 		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('C') == EAE_Engine::UserInput::KeyState::OnPressed)
 		{
 			bool playerControllerState = pPlayerController->IsActive();
@@ -167,13 +168,17 @@ void GameplayUpdate()
 		static int octreeLevel = 0;
 		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('1') == EAE_Engine::UserInput::KeyState::OnPressed)
 		{
-			octreeLevel = 1;
+			octreeLevel = 0;
 		}
 		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('2') == EAE_Engine::UserInput::KeyState::OnPressed)
 		{
-			octreeLevel = 2;
+			octreeLevel = 1;
 		}
 		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('3') == EAE_Engine::UserInput::KeyState::OnPressed)
+		{
+			octreeLevel = 2;
+		}
+		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('4') == EAE_Engine::UserInput::KeyState::OnPressed)
 		{
 			octreeLevel = 3;
 		}
@@ -182,15 +187,29 @@ void GameplayUpdate()
 		sprintf_s(text, "FPS:%.2f", fps);
 		pFrameText->_value = text;
 		static float radisu = 1.0f;
-		//EAE_Engine::Debug::CleanDebugShapes();
+		EAE_Engine::Debug::CleanDebugShapes();
 		if (pToggle->_checked)
 		{
+			EAE_Engine::Math::Vector3 octreeColor = EAE_Engine::Math::Vector3(0.0f, 1.0f, 1.0f);
+			switch (octreeLevel)
+			{
+			case 1: 
+				octreeColor = EAE_Engine::Math::Vector3::Right;
+				break;
+			case 2:
+				octreeColor = EAE_Engine::Math::Vector3::Up;
+				break;
+			case 3:
+				octreeColor = EAE_Engine::Math::Vector3::Forward;
+				break;
+			}
+
 			EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
 			uint32_t countOfNodes = g_pCompleteOctree->GetCountOfNodesInLevel(octreeLevel);
 			EAE_Engine::Core::OctreeNode* pNodes = g_pCompleteOctree->GetNodesInLevel(octreeLevel);
 			for (uint32_t index = 0; index < countOfNodes; ++index)
 			{
-				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(pNodes[index]._extent, pNodes[index]._pos, rotation, red);
+				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(pNodes[index]._extent, pNodes[index]._pos, rotation, octreeColor);
 			}
 		}
 	}

@@ -48,7 +48,7 @@ namespace EAE_Engine
 			// Children
 			void AddChild(Common::ITransform* pChild) { _children.push_back(pChild); }
 			void RemoveChild(Common::ITransform* pChild);
-			uint32_t GetChildCount() { return _children.size(); }
+			uint32_t GetChildCount() { return (uint32_t)_children.size(); }
 			Common::ITransform* GetChild(uint32_t index = 0) { return _children[index]; }
 			// Parent
 			void SetParent(Common::ITransform* pParent);

@@ -27,6 +27,7 @@
 #include <vector>
 
 #include "Engine/SpatialPartition/Octree.h"
+#include "Engine/CollisionDetection/CollisionDetectionFunctions.h"
 
 // Vertex Definition
 //==================
@@ -161,19 +162,6 @@ namespace
 		std::vector<MObject>& io_shadingGroups, std::map<std::string, size_t>& io_map_shadingGroupNamesToIndices );
 	MStatus WriteOctreeToFile( const MString& i_fileName, const std::vector<sVertex_maya>& i_vertexBuffer, const std::vector<size_t>& i_indexBuffer,
 		const std::vector<sMaterialInfo>& i_materialInfo );
-
-	bool PointInAABB(const EAE_Engine::Math::Vector3& min, const EAE_Engine::Math::Vector3& max, const EAE_Engine::Math::Vector3& vecPoint)
-	{
-		//Check if the point is less than max and greater than min
-		if (vecPoint._x > min._x && vecPoint._x < max._x &&
-			vecPoint._y > min._y && vecPoint._y < max._y &&
-			vecPoint._z > min._z && vecPoint._z < max._z)
-		{
-			return true;
-		}
-		//If not, then return false
-		return false;
-	}
 }
 
 // Inherited Interface
@@ -769,21 +757,24 @@ namespace
 			{
 				for (size_t index = 0; index < i_indexBuffer.size(); index += 3)
 				{
+					// get the 3 indices of the trianlge
 					uint32_t index0 = (uint32_t)i_indexBuffer[index + 0];
 					uint32_t index1 = (uint32_t)i_indexBuffer[index + 1];
 					uint32_t index2 = (uint32_t)i_indexBuffer[index + 2];
 					EAE_Engine::Core::TriangleIndex triangle = { index0, index1, index2 };
-					bool contains = false;
-					for (uint32_t t = 0; t < 3; ++t)
-					{
-						sVertex_maya vertex_maya = i_vertexBuffer[i_indexBuffer[index + t]];
-						EAE_Engine::Math::Vector3 vertex(vertex_maya.x, vertex_maya.y, vertex_maya.z);
-						if (PointInAABB(pLeaveNodes[leafIndex].GetMin(), pLeaveNodes[leafIndex].GetMax(), vertex))
-						{
-							contains = true;
-							break;
-						}
-					}
+					// get the 3 vertices of the trianlge
+					sVertex_maya vertex_maya0 = i_vertexBuffer[index0];
+					EAE_Engine::Math::Vector3 vertex0(vertex_maya0.x, vertex_maya0.y, vertex_maya0.z);
+					sVertex_maya vertex_maya1 = i_vertexBuffer[index1];
+					EAE_Engine::Math::Vector3 vertex1(vertex_maya1.x, vertex_maya1.y, vertex_maya1.z);
+					sVertex_maya vertex_maya2 = i_vertexBuffer[index2];
+					EAE_Engine::Math::Vector3 vertex2(vertex_maya2.x, vertex_maya2.y, vertex_maya2.z);
+					// create the AABB for this leaf
+					EAE_Engine::Math::AABBV1 aabb;
+					aabb._min = pLeaveNodes[leafIndex].GetMin();
+					aabb._max = pLeaveNodes[leafIndex].GetMax();
+					// do the test
+					bool contains = EAE_Engine::Collision::TestTriangleAABB(vertex0, vertex1, vertex2, aabb);
 					if(contains)
 					{
 						pLeaveNodes[leafIndex]._triangles.push_back(triangle);
