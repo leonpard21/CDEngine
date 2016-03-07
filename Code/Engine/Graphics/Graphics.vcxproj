@@ -47,6 +47,7 @@
     <ClCompile Include="Common\Text.cpp" />
     <ClCompile Include="Common\Texture.cpp" />
     <ClCompile Include="Common\UniformBlock.cpp" />
+    <ClCompile Include="Common\UniformPool.cpp" />
     <ClCompile Include="Common\UniformVariable.cpp" />
     <ClCompile Include="Direct3D9\AOSMesh.d3d9.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -182,6 +183,7 @@
     <ClInclude Include="Common\Texture.h" />
     <ClInclude Include="Common\UniformBlock.h" />
     <ClInclude Include="Common\UniformDesc.h" />
+    <ClInclude Include="Common\UniformPool.h" />
     <ClInclude Include="Common\UniformVariable.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsInclude.h" />

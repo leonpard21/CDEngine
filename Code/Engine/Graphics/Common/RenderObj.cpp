@@ -44,6 +44,7 @@ namespace EAE_Engine
 		void RenderObjManager::Clean()
 		{
 			_renderData3Ds.clear();
+			_renderRawData3Ds.clear();
 			_renderDataUIs.clear();
 			_renderObjs.clear();
 		}
@@ -60,7 +61,6 @@ namespace EAE_Engine
 				RenderObj obj = { weight, &(*it) };
 				_renderObjs.push_back(obj);
 			}
-			_renderData3Ds.clear();
 			for (std::vector<RenderRawData3D>::iterator itRaw = _renderRawData3Ds.begin(); itRaw != _renderRawData3Ds.end(); ++itRaw)
 			{
 				MaterialDesc* pMaterial = itRaw->_pMeshRender->GetMaterial();
@@ -70,7 +70,6 @@ namespace EAE_Engine
 				RenderObj obj = { weight, &(*itRaw) };
 				_renderObjs.push_back(obj);
 			}
-			_renderRawData3Ds.clear();
 			for (std::vector<RenderDataUI>::iterator it = _renderDataUIs.begin(); it != _renderDataUIs.end(); ++it)
 			{
 				CanvasRenderData* pCanvasRenderData = (it)->_pCanvasRenderData;
@@ -93,7 +92,6 @@ namespace EAE_Engine
 				RenderObj obj = { weight, &(*it) };
 				_renderObjs.push_back(obj);
 			}
-			_renderDataUIs.clear();
 			std::sort(_renderObjs.begin(), _renderObjs.end(), sortFunc);
 		}
 

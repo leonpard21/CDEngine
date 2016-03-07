@@ -137,6 +137,9 @@
     <ClCompile Include="Common\AOSMeshLoader.cpp">
       <Filter>Common\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="Common\UniformPool.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -233,6 +236,9 @@
     </ClInclude>
     <ClInclude Include="Common\UniformBlock.h">
       <Filter>Common\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UniformPool.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

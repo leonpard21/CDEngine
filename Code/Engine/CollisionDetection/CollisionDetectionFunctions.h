@@ -3,12 +3,15 @@
 
 #include "Engine/Math/Geometry.h"
 
+#define EPSILON FLT_EPSILON
+
 namespace EAE_Engine
 {
 	namespace Collision 
 	{
+
 		// Test whether a point is in the AABB or not
-		bool TestPointInAABB(const EAE_Engine::Math::Vector3& min, const EAE_Engine::Math::Vector3& max, const EAE_Engine::Math::Vector3& vecPoint)
+		bool TestPointInAABB(const Math::Vector3& min, const Math::Vector3& max, const Math::Vector3& vecPoint)
 		{
 			//Check if the point is less than max and greater than min
 			if (vecPoint._x > min._x && vecPoint._x < max._x &&
@@ -19,6 +22,43 @@ namespace EAE_Engine
 			}
 			//If not, then return false
 			return false;
+		}
+
+		bool TestSegmentAABB(Math::Vector3 p0, Math::Vector3 p1, Math::AABBV1 b)
+		{
+			Math::Vector3 c = (b._min + b._max) * 0.5f; // Box center-point
+			Math::Vector3 e = b._max - c; // Box halflength extents
+			Math::Vector3 m = (p0 + p1) * 0.5f; // Segment midpoint
+			Math::Vector3 d = p1 - m; // Segment halflength vector
+			m = m - c; // Segment midpoint relative to box center
+
+			// Try world coordinate axes as separating axes
+			float adx = std::fabsf(d._x);
+			if (std::fabsf(m._x) > e._x + adx) 
+				return false;
+			float ady = std::fabsf(d._y);
+			if (std::fabsf(m._y) > e._y + ady) 
+				return false;
+			float adz = std::fabsf(d._z);
+			if (std::fabsf(m._z) > e._z + adz) 
+				return false;
+
+			// Add in an epsilon term to counteract arithmetic errors when segment is
+			// (near) parallel to a coordinate axis
+			adx += EPSILON;
+			ady += EPSILON;
+			adz += EPSILON;
+
+			// Try cross products of segment direction vector with coordinate axes
+			if (std::fabsf(m._y * d._z - m._z * d._y) > e._y * adz + e._z * ady) 
+				return false;
+			if (std::fabsf(m._z * d._x - m._x * d._z) > e._x * adz + e._z * adx) 
+				return false;
+			if (std::fabsf(m._x * d._y - m._y * d._x) > e._x * ady + e._y * adx) 
+				return false;
+
+			// No separating axis found; sement must be overlapping AABB
+			return true;
 		}
 
 		// Given segment pq and triangle abc, returns whether segment intersects

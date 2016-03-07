@@ -33,6 +33,12 @@ namespace EAE_Engine
 			_z_farPlane = i_z_farPlane;
 		}
 
+		struct CameraMatrices
+		{
+			Math::ColMatrix44 _worldViewMatrix;
+			Math::ColMatrix44 _viewProjMatrix;
+		};
+
 		void Camera::Update()
 		{
 			CameraMatrices viewprojmatrices;

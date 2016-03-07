@@ -130,24 +130,12 @@ void GameplayUpdate()
 		EAE_Engine::Math::Vector3 red(1.0f, 0.0f, 0.0f);
 		EAE_Engine::Math::Vector3 green(0.0f, 1.0f, 0.0f);
 		EAE_Engine::Math::Vector3 blue(0.0f, 0.0f, 1.0f);
-		/*
 		EAE_Engine::Debug::CleanDebugShapes();
 		{
-			// DebugLines
-			EAE_Engine::Math::Vector3 start = EAE_Engine::Math::Vector3(0.0f, 0.0f, -10.0f);
-			EAE_Engine::Math::Vector3 end(0.0f, 100.0f, -10.0f);
-			EAE_Engine::Math::Vector3 end2(100.0f, 0.0f, -10.0f);
+			EAE_Engine::Math::Vector3 start = pPlayerObj->GetTransform()->GetPos();
+			EAE_Engine::Math::Vector3 end = start + pPlayerObj->GetTransform()->GetForward() * 50.0f;
 			EAE_Engine::Debug::AddSegment(start, end, yellow);
-			EAE_Engine::Debug::AddSegment(start, end2, red);
-			// DebugSpheres
-			{
-				//EAE_Engine::Math::Vector3 start1 = EAE_Engine::Math::Vector3(-5.0f, 0.0f, 0.0f);
-				//EAE_Engine::Debug::AddSphere(start1, 10.0f, green);
-				//EAE_Engine::Math::Vector3 start2 = EAE_Engine::Math::Vector3(0.0f, 1.0f, 0.0f);
-				//EAE_Engine::Debug::AddSphere(start2, 10.0f, blue);
-			}
 		}
-		*/
 		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('C') == EAE_Engine::UserInput::KeyState::OnPressed)
 		{
 			bool playerControllerState = pPlayerController->IsActive();
@@ -187,7 +175,6 @@ void GameplayUpdate()
 		sprintf_s(text, "FPS:%.2f", fps);
 		pFrameText->_value = text;
 		static float radisu = 1.0f;
-		EAE_Engine::Debug::CleanDebugShapes();
 		if (pToggle->_checked)
 		{
 			EAE_Engine::Math::Vector3 octreeColor = EAE_Engine::Math::Vector3(0.0f, 1.0f, 1.0f);
