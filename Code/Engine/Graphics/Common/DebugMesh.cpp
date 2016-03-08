@@ -52,7 +52,7 @@ namespace EAE_Engine
 
 		void DebugMeshes::Init()
 		{
-			//LoadMaterial("data/Materials/debugPrimitives.material");
+			LoadMaterial("data/Materials/debugPrimitives.material");
 			std::vector<std::string> materialList;
 			materialList.push_back("debugPrimitives");
 			_pSegmentsMeshRender = new AOSMeshRender(); 

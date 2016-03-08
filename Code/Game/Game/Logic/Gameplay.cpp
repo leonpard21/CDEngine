@@ -90,8 +90,8 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	{
 		return false;
 	}
+
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/white.material");
-	EAE_Engine::Graphics::LoadMaterial("data/Materials/phongShading.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/lambert.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/floor.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/railing.material");
@@ -99,7 +99,7 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/metal.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/cement.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/walls.material");
-
+	EAE_Engine::Graphics::LoadMaterial("data/Materials/phongShading.material");
 	_windowWidth = windowWidth;
 	_windowHeight = windowHeight;
 	result = InitLevel();

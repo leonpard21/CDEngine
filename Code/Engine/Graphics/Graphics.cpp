@@ -20,7 +20,7 @@
 
 
 #ifdef _DEBUG
-//#define DRAW_DEBUG_SHAPES
+#define DRAW_DEBUG_SHAPES
 #endif
 
 // Interface
@@ -41,7 +41,6 @@ bool EAE_Engine::Graphics::Initialize( const HWND i_renderingWindow )
 	{
 		goto OnError;
 	}
-	//ImageManager::GetInstance()->Init();
 	CanvasRenderManager::GetInstance()->Init();
 	FontManager::GetInstance()->Init();
 	UIElementManager::GetInstance()->Init();
@@ -72,12 +71,15 @@ void EAE_Engine::Graphics::SetLightParameters()
 	const char* pLightBlockName = "SpecularLight";
 #endif
 	UniformBlock* pSLUB = UniformBlockManager::GetInstance()->GetUniformBlock(pLightBlockName);
-	Math::Vector3 specularAlbedo(1.0f, 1.0f, 1.0f);
-	float specularPower = 128.0f;
-	UniformBlockData sldata[] = { { 0, &specularAlbedo, sizeof(Math::Vector3) },
-	{ 0 + sizeof(Math::Vector3), &specularPower, sizeof(float) } };
-	pSLUB->SetBlockData(sldata, 2);
-	UniformBlockManager::GetInstance()->NotifyOwners(pLightBlockName);
+	if (pSLUB) 
+	{
+		Math::Vector3 specularAlbedo(1.0f, 1.0f, 1.0f);
+		float specularPower = 128.0f;
+		UniformBlockData sldata[] = { { 0, &specularAlbedo, sizeof(Math::Vector3) },
+		{ 0 + sizeof(Math::Vector3), &specularPower, sizeof(float) } };
+		pSLUB->SetBlockData(sldata, 2);
+		UniformBlockManager::GetInstance()->NotifyOwners(pLightBlockName);
+	}
 }
 
 void EAE_Engine::Graphics::Render()
