@@ -78,10 +78,17 @@ namespace EAE_Engine
 
 		void UniformBlock::NotifyOwners()
 		{
+#if defined( EAEENGINE_PLATFORM_D3D9 )
 			for (size_t i = 0; i < _owners.size(); ++i)
 			{
 				_owners[i]->OnNotify(this);
 			}
+#elif defined( EAEENGINE_PLATFORM_GL )
+			GLuint bindingPoint = UniformBlockManager::GetInstance()->GetIndexOfUniformBlock(_pBlockName);
+			glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, _uboId);
+			assert(glGetError() == GL_NO_ERROR);
+			UpdateUniformBlockBuffer();
+#endif
 		}
 
 		void UniformBlock::SetBlockData(UniformBlockData* pUBD, uint32_t count)

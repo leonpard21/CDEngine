@@ -118,7 +118,7 @@ namespace EAE_Engine
 				if (!pUniformBlock)
 				{
 					pUniformBlock = new UniformBlock(blockName.c_str(), uniformBlockSize);
-					// the 2nd parameter is the index of the index Of uniform block,
+					// the 2nd parameter is the index of the active uniform block,
 					// the 3nd parameter is the openGL binding point, which is not the buffer we want to use.
 					// the same UniformBlock in different shader, should bind to the same Binding point,
 					// we also bind this binding point to the BufferObj, 
@@ -130,7 +130,7 @@ namespace EAE_Engine
 				}
 				else 
 				{
-					// the 2nd parameter is the index of the index Of uniform block,
+					// the 2nd parameter is the index of the active uniform block,
 					// the 3nd parameter is the openGL binding point, which is not the buffer we want to use.
 					// the same UniformBlock in different shader, should bind to the same Binding point,
 					// we also bind this binding point to the BufferObj, 
@@ -249,15 +249,6 @@ namespace EAE_Engine
 				SetUniform(pValue->GetUniformType(), location, pValue->GetBuffer(), pValue->GetBufferSize());
 			}
 			_updateVariableList.clear();
-			for (std::map<const char*, UniformBlock*>::iterator iter = _updateBlockList.begin(); iter != _updateBlockList.end(); ++iter)
-			{
-				UniformBlock* pBlock = iter->second;
-				GLuint bindingPoint = UniformBlockManager::GetInstance()->GetIndexOfUniformBlock(iter->first);
-				glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, pBlock->GetUboId());
-				assert(glGetError() == GL_NO_ERROR);
-				pBlock->UpdateUniformBlockBuffer();
-			}
-			_updateBlockList.clear();
 		}
 
 

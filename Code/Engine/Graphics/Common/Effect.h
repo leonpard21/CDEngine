@@ -72,7 +72,6 @@ namespace EAE_Engine
 			GLint GetLocation(const char* pName);
 			tSamplerID GetSamplerID(const char* pName, ShaderTypes shaderType);
 			void OnNotify(UniformVariable* pVariable, GLint location);
-			void OnNotify(UniformBlock* pBlock);
 			void Update();
 
 		private:
@@ -102,7 +101,6 @@ namespace EAE_Engine
 			GLuint _programId;
 			uint32_t _renderState;
 			std::map<GLint, UniformVariable*> _updateVariableList;
-			std::map<const char*, UniformBlock*> _updateBlockList;
 		};
 #endif
 
