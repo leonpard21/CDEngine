@@ -133,7 +133,7 @@ namespace EAE_Engine
 					return true;
 				}
 			}
-			return  false;
+			return false;
 		}
 
 		uint32_t UniformBlockManager::GetIndexOfUniformBlock(const char* pBlockName)

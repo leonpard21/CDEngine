@@ -134,9 +134,8 @@ namespace EAE_Engine
 				UINT countToGet = 1;
 				pConstantTable->GetConstantDesc(handle, &constDesc, &countToGet);
 				if (handle == NULL) continue;
-				UniformVariable* pUV = nullptr;
 				uint32_t blockSize = constDesc.Bytes;
-				pUV = UniformVariableManager::GetInstance().AddUniformVariable(constDesc.Name, blockSize, shaderType);
+				UniformVariable* pUV = UniformVariableManager::GetInstance().AddUniformVariable(constDesc.Name, blockSize, shaderType);
 				if (pUV)
 					pUV->AddOwner(this, handle);
 				// Now I'm using struct to handle some feature like Uniform Block.
@@ -148,12 +147,17 @@ namespace EAE_Engine
 				if (constDesc.Class == D3DXPC_STRUCT)
 				{
 					const char* pName = constDesc.Name;
-					if (!UniformBlockManager::GetInstance()->Contains(pName))
+					UniformBlock* pUB = UniformBlockManager::GetInstance()->GetUniformBlock(pName);
+					if (!pUB)
 					{
 						uint32_t blockSize = constDesc.Bytes;
 						UniformBlock* pUB = new UniformBlock(pName, blockSize, handle, shaderType);
 						pUB->AddOwner(this);
 						UniformBlockManager::GetInstance()->AddUniformBlock(pUB);
+					}
+					else 
+					{
+						pUB->AddOwner(this);
 					}
 				}
 			}

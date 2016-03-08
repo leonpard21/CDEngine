@@ -114,9 +114,10 @@ namespace EAE_Engine
 				GLint uniformBlockSize;
 				glGetActiveUniformBlockiv(_programId, blockIx, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlockSize);
 				// only when we didn't create the UniformBlock, we need to create it.
-				if (!UniformBlockManager::GetInstance()->Contains(blockName.c_str()))
+				UniformBlock* pUniformBlock = UniformBlockManager::GetInstance()->GetUniformBlock(blockName.c_str());
+				if (!pUniformBlock)
 				{
-					UniformBlock* pUniformBlock = new UniformBlock(blockName.c_str(), uniformBlockSize);
+					pUniformBlock = new UniformBlock(blockName.c_str(), uniformBlockSize);
 					// the 2nd parameter is the index of the index Of uniform block,
 					// the 3nd parameter is the openGL binding point, which is not the buffer we want to use.
 					// the same UniformBlock in different shader, should bind to the same Binding point,
@@ -126,6 +127,16 @@ namespace EAE_Engine
 					glUniformBlockBinding(_programId, blockIx, UniformBlockManager::GetInstance()->GetUniformBlockCount());
 					pUniformBlock->AddOwner(this);
 					UniformBlockManager::GetInstance()->AddUniformBlock(pUniformBlock);
+				}
+				else 
+				{
+					// the 2nd parameter is the index of the index Of uniform block,
+					// the 3nd parameter is the openGL binding point, which is not the buffer we want to use.
+					// the same UniformBlock in different shader, should bind to the same Binding point,
+					// we also bind this binding point to the BufferObj, 
+					// which contains the data we will offer to the graphics card.
+					// in this case, same uniform block in different shader are sharing data in the same buffer.
+					pUniformBlock->AddOwner(this);
 				}
 			}
 		}
