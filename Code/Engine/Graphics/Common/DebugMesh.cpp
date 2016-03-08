@@ -24,6 +24,14 @@ namespace
 		uint8_t r, g, b, a;	// 8 bits [0,255] per RGBA channel (the alpha channel is unused but is present so that color uses a full 4 bytes)
 #endif
 		DebugVertex() = default;
+		DebugVertex(EAE_Engine::Math::Vector3 i_pos) :
+			x(i_pos.x()), y(i_pos.y()), z(i_pos.z())
+		{
+			r = (uint8_t)255;
+			g = (uint8_t)255;
+			b = (uint8_t)255;
+			a = (uint8_t)255;
+		}
 		DebugVertex(EAE_Engine::Math::Vector3 i_pos, EAE_Engine::Math::Vector4 i_color) :
 			x(i_pos.x()), y(i_pos.y()), z(i_pos.z())
 		{
@@ -44,7 +52,7 @@ namespace EAE_Engine
 
 		void DebugMeshes::Init()
 		{
-			LoadMaterial("data/Materials/debugPrimitives.material");
+			//LoadMaterial("data/Materials/debugPrimitives.material");
 			std::vector<std::string> materialList;
 			materialList.push_back("debugPrimitives");
 			_pSegmentsMeshRender = new AOSMeshRender(); 
@@ -105,7 +113,7 @@ namespace EAE_Engine
 					// Set the Vertices Information.
 					for (uint32_t verticesIndex = 0; verticesIndex < standardBox._vertices.size(); ++verticesIndex)
 					{
-						pVertices[verticesIndex] = DebugVertex(standardBox._vertices[verticesIndex], Math::Vector3::Up);
+						pVertices[verticesIndex] = DebugVertex(standardBox._vertices[verticesIndex]);
 						pVertices[verticesIndex].a = (uint8_t)100;
 					}
 					// Set the Indices Information.
@@ -145,7 +153,7 @@ namespace EAE_Engine
 					for (uint32_t verticesIndex = 0; verticesIndex < vertexCount; ++verticesIndex)
 					{
 						Math::Vector3 currentVertex = standardSphere._vertices[verticesIndex];
-						pVertices[verticesIndex] = DebugVertex(currentVertex, Math::Vector3::Up);
+						pVertices[verticesIndex] = DebugVertex(currentVertex);
 						pVertices[verticesIndex].a = (uint8_t)100;
 					}
 					// Set the Indices Information.
@@ -192,8 +200,8 @@ namespace EAE_Engine
 
 		void DebugMeshes::Update()
 		{
-			//GenerateDebugSegments();
-			//GenerateDebugBoxes();
+			GenerateDebugSegments();
+			GenerateDebugBoxes();
 			GenerateDebugSpheres();
 		}
 
@@ -225,9 +233,10 @@ namespace EAE_Engine
 			}
 			SAFE_DELETE_ARRAY(pVertices);
 
-			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
+			std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
 			// Get the TransformMatrix
-			RenderData3D renderData = {_pSegmentsMeshRender, 0, nullptr };
+			Math::Vector3 white(1.0f, 1.0f, 1.0f);
+			RenderRawData3D renderData = {_pSegmentsMeshRender, white, Math::ColMatrix44::Identity };
 			renderDataList.push_back(renderData);
 		}
 

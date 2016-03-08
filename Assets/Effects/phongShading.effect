@@ -9,8 +9,10 @@ return
 	fsSource = "phongShading.fshd",
 	renderState =
 	{
-	 	DepthTesting = true,
+		Alpha = false,
+		DepthTesting = true,
 		DepthWriting = true,
+		FaceCulling = false,
 	}
 }
 
