@@ -13,11 +13,11 @@ namespace EAE_Engine
 	{
 		Graphics::MaterialDesc* AOSMeshRender::GetMaterial(uint32_t index)
 		{ 
-			if (_materials.size() == 0)
+			if (_sharedMaterials.size() == 0)
 				return nullptr;
-			else if (index >= _materials.size()) 
-				return _materials[0];
-			return _materials[index];
+			else if (index >= _sharedMaterials.size()) 
+				return _sharedMaterials[0];
+			return _sharedMaterials[index];
 		}
 
 		void AOSMeshRender::SetMesh(const char* pMeshName)
@@ -30,12 +30,12 @@ namespace EAE_Engine
 			return _pMesh;
 		}
 
-		void AOSMeshRender::AddMaterial(const std::vector<std::string>& materialKeys)
+		void AOSMeshRender::AddSharedMaterial(const std::vector<std::string>& materialKeys)
 		{
 			for (std::vector<std::string>::const_iterator it = materialKeys.begin(); it != materialKeys.end(); ++it)
 			{
 				MaterialDesc* pMaterial = MaterialManager::GetInstance()->GetMaterial((*it).c_str());
-				_materials.push_back(pMaterial);
+				_sharedMaterials.push_back(pMaterial);
 			}
 		}
 
@@ -44,7 +44,7 @@ namespace EAE_Engine
 		AOSMeshRender* AOSMeshRenderManager::AddMeshRender(const std::vector<std::string>& materialKeys)
 		{
 			AOSMeshRender* pMeshRender = new AOSMeshRender();
-			pMeshRender->AddMaterial(materialKeys);
+			pMeshRender->AddSharedMaterial(materialKeys);
 			_meshRenders.push_back(pMeshRender);
 			return pMeshRender;
 		}
@@ -53,7 +53,7 @@ namespace EAE_Engine
 		{
 			AOSMeshRender* pRO = new AOSMeshRender();
 			pRO->SetMesh(pAOSMesh);
-			pRO->AddMaterial(materialKeys);
+			pRO->AddSharedMaterial(materialKeys);
 			pRO->SetTrans(pTransform);
 			_meshRenders.push_back(pRO);
 			return pRO;
