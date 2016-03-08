@@ -25,7 +25,7 @@ namespace EAE_Engine
 			for (std::vector<UniformVariable*>::iterator iter = _uniformVariables.begin(); iter != _uniformVariables.end();)
 			{
 				UniformVariable* pUV = *iter++;
-				if (pUV->GetName() == std::string(pUniformVariable))
+				if (strcmp(pUV->GetName(), pUniformVariable) == 0)
 				{
 				 	return pUV;
 				}

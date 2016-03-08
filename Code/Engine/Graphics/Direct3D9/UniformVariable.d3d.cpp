@@ -21,16 +21,15 @@ namespace EAE_Engine
 		////////////////////////////////////////UniformVariableManager//////////////////////////////////////
 		UniformVariable* UniformVariableManager::AddUniformVariable(const char* pUniformVariable, uint32_t bufferSize, ShaderTypes shaderType)
 		{
-			UniformVariable* pResult = nullptr;
 			for (std::vector<UniformVariable*>::iterator iter = _uniformVariables.begin(); iter != _uniformVariables.end();)
 			{
 				UniformVariable* pUV = *iter++;
-				if (pUV->GetName() == std::string(pUniformVariable))
+				if (strcmp(pUV->GetName(), pUniformVariable) == 0)
 				{
 					return pUV;
 				}
 			}
-			pResult = new UniformVariable(pUniformVariable, bufferSize, shaderType);
+			UniformVariable* pResult = new UniformVariable(pUniformVariable, bufferSize, shaderType);
 			_uniformVariables.push_back(pResult);
 			return pResult;
 		}
