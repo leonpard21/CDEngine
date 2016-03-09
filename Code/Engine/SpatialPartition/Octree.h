@@ -24,6 +24,16 @@ namespace EAE_Engine
 					uint32_t _index2;
 				};
 			};
+			bool operator == (const TriangleIndex& i_other)
+			{
+				if (_index0 != i_other._index0)
+					return false;
+				if (_index1 != i_other._index1)
+					return false;
+				if (_index2 != i_other._index2)
+					return false;
+				return true;
+			}
 		};
 
 		struct OctreeNode 

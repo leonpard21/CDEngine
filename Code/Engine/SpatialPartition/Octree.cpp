@@ -1,5 +1,7 @@
 #include "Octree.h"
 #include "Engine/CollisionDetection/CollisionDetectionFunctions.h"
+#include <algorithm>
+#include "General/Implements.h"
 
 namespace EAE_Engine 
 {
@@ -14,6 +16,16 @@ namespace EAE_Engine
 		{
 			SAFE_DELETE_ARRAY(_pNodes);
 		}
+
+		struct OctreeNodeLess
+		{
+			OctreeNodeLess() = default;
+			Math::Vector3 _point;
+			bool operator()(OctreeNode* i_pObjA, OctreeNode* i_pObjB)
+			{
+				return (i_pObjA->_pos - _point).Magnitude() < (i_pObjB->_pos - _point).Magnitude();
+			}
+		};
 
 		std::vector<OctreeNode*> CompleteOctree::GetLeavesCollideWithSegment(Math::Vector3 start, Math::Vector3 end)
 		{
@@ -37,6 +49,9 @@ namespace EAE_Engine
 					}
 					nodesCollided.clear();
 					nodesCollided = newNodesCollided;
+					// sort the nodes based on the distance from the Node
+					OctreeNodeLess octreeNodeLess = { start };
+					std::sort(nodesCollided.begin(), nodesCollided.end(), octreeNodeLess);
 					break;
 				}
 				for (std::vector<OctreeNode*>::iterator it = nodesCollided.begin(); it < nodesCollided.end(); ++it)
@@ -57,10 +72,26 @@ namespace EAE_Engine
 			}
 			return nodesCollided;
 		}
+		
+		struct TriangleList 
+		{
+			TriangleList() = default;
+			float _t;
+			TriangleIndex* _pTriangle;
+		};
+
+		struct TriangleListLess
+		{
+			bool operator()(TriangleList& i_objA, TriangleList& i_objB)
+			{
+				return i_objA._t < i_objB._t;
+			}
+		};
 
 		std::vector<TriangleIndex> CompleteOctree::GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end)
 		{
 			std::vector<TriangleIndex> result;
+			std::vector<TriangleList> needToSort;
 			std::vector<OctreeNode*> leavesCollided = GetLeavesCollideWithSegment(start, end);
 			for (std::vector<OctreeNode*>::iterator it = leavesCollided.begin(); it != leavesCollided.end(); ++it)
 			{
@@ -80,16 +111,35 @@ namespace EAE_Engine
 					int collided = Collision::IntersectSegmentTriangle(start, end, vertex0, vertex1, vertex2, u, v, w, t);
 					if (collided)
 					{
-						result.push_back(*itTrianlge);
+						needToSort.push_back({t, &*itTrianlge});
 					}
 				}
+			}
+			// sort all of the triangles by t, it means we want to have the first collision t
+			TriangleListLess triangleListLess;
+			std::sort(needToSort.begin(), needToSort.end(), triangleListLess);
+			// get rid of the duplicated triangles
+			std::vector<TriangleList>::iterator itTrianlge = needToSort.begin();
+			std::vector<TriangleList>::iterator previousTriangle = itTrianlge;
+			for (; itTrianlge != needToSort.end(); ++itTrianlge)
+			{
+				if (Implements::AlmostEqual2sComplement(previousTriangle->_t, itTrianlge->_t, 4) && result.size() > 0)
+				{
+					if (previousTriangle->_pTriangle == itTrianlge->_pTriangle)
+					{
+						continue;
+					}
+				}
+				previousTriangle = itTrianlge;
+				result.push_back(*itTrianlge->_pTriangle);
 			}
 			return result;
 		}
 
 		OctreeNode* CompleteOctree::GetChildOfNode(OctreeNode* pNode)
 		{
-			uint32_t indexOfNode = ((uint32_t)pNode - (uint32_t)_pNodes) / (uint32_t)sizeof(OctreeNode);
+			uint32_t member = reinterpret_cast<uint32_t>(pNode) - reinterpret_cast<uint32_t>(_pNodes);
+			uint32_t indexOfNode = member / (uint32_t)sizeof(OctreeNode);
 			uint32_t baseOfNodesOfLeaves = (uint32_t)(std::pow(8.0f, _level - 1) - 1) / (8 - 1);
 			if (pNode < _pNodes || indexOfNode >= baseOfNodesOfLeaves)
 				return nullptr;
