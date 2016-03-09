@@ -29,7 +29,7 @@ namespace EAE_Engine
 			Math::ColMatrix44& transformMat = _pTransform->GetLocalToWorldMatrix();
 			Math::Vector3 targetStartPoint = transformMat * pTargetRB->GetPos();
 			Math::Vector3 targetEndPoint = transformMat * pTargetRB->PredictPosAfter(i_follisionTimeStep);
-			for (int index = 0; index < _pAOSMeshData->_indices.size(); index += 3)
+			for (uint32_t index = 0; index < _pAOSMeshData->_indices.size(); index += 3)
 			{
 				Math::Vector3& vertex0 = _pAOSMeshData->GetVertex(index + 0);
 				Math::Vector3& vertex1 = _pAOSMeshData->GetVertex(index + 1);
