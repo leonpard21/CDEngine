@@ -64,7 +64,7 @@ namespace EAE_Engine
 		// Given segment pq and triangle abc, returns whether segment intersects
 		// triangle and if so, also returns the barycentric coordinates (u,v,w)
 		// of the intersection point
-		inline int IntersectSegmentTriangle(Math::Vector3 p, Math::Vector3 q, Math::Vector3 a, Math::Vector3 b, Math::Vector3 c, 
+		inline int IntersectSegmentTriangle(Math::Vector3 p, Math::Vector3 q, const Math::Vector3& a, const Math::Vector3& b, const Math::Vector3& c,
 			float &u, float &v, float &w, float &t)
 		{
 			Math::Vector3 ab = b - a;

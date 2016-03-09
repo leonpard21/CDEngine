@@ -105,7 +105,7 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	result = InitLevel();
 
 	g_pCompleteOctree = new EAE_Engine::Core::CompleteOctree();
-	g_pCompleteOctree->InitFromFile("data/Scene/CollisionOctree.octree");
+	g_pCompleteOctree->InitFromFile("data/Scene/CollisionOctree.octree", "collisionData");
 	return true;
 }
  
@@ -192,6 +192,7 @@ void GameplayUpdate()
 			EAE_Engine::Math::Vector3 end = start + pPlayerObj->GetTransform()->GetForward() * 150.0f;
 			EAE_Engine::Debug::AddSegment(start, end, yellow);
 			std::vector<EAE_Engine::Core::OctreeNode*> list = g_pCompleteOctree->GetLeavesCollideWithSegment(start, end);
+			std::vector<EAE_Engine::Core::TriangleIndex> triangles = g_pCompleteOctree->GetTrianlgesCollideWithSegment(start, end);
 			for (uint32_t index = 0; index < list.size(); ++index)
 			{
 				EAE_Engine::Core::OctreeNode* pNode = list[index];

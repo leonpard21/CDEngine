@@ -27,8 +27,8 @@ namespace EAE_Engine
 			friend class AOSMeshRenderManager;
 		private:
 			Graphics::AOSMesh* _pMesh;
-			std::vector<Graphics::MaterialDesc*> _materials;
-			std::vector<Graphics::MaterialDesc*> _sharedMaterials;
+			std::vector<MaterialDesc*> _materials;
+			std::vector<MaterialDesc*> _sharedMaterials;
 			Common::ITransform* _pTrans;
 		};
 

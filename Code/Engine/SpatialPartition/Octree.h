@@ -41,7 +41,7 @@ namespace EAE_Engine
 			CompleteOctree();
 			~CompleteOctree();
 			inline void InitFromRange(uint32_t level, Math::Vector3 min, Math::Vector3 max);
-			inline void InitFromFile(const char* pFile);
+			inline void InitFromFile(const char* pOctreeFile, const char* pMeshKey);
 			inline OctreeNode* GetNodesInLevel(uint32_t levelIndex);
 			inline uint32_t GetCountOfNodesInLevel(uint32_t levelIndex) { return (uint32_t)std::pow(8.0f, levelIndex); }
 			inline uint32_t GetNodeCount() { return _countOfNode; }
@@ -50,6 +50,7 @@ namespace EAE_Engine
 			inline Math::Vector3 GetMax() { return _max; }
 			inline uint32_t Level() { return _level; }
 			std::vector<OctreeNode*> GetLeavesCollideWithSegment(Math::Vector3 start, Math::Vector3 end);
+			std::vector<TriangleIndex> GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end);
 			bool IsLeaf(OctreeNode*);
 
 		private:
@@ -61,6 +62,7 @@ namespace EAE_Engine
 			uint32_t _countOfNode;
 			Math::Vector3 _min;
 			Math::Vector3 _max;
+			Mesh::AOSMeshData* _pMeshData;
 		};
 
 
@@ -106,9 +108,9 @@ namespace EAE_Engine
 			}
 		}
 
-		inline void CompleteOctree::InitFromFile(const char* pFile)
+		inline void CompleteOctree::InitFromFile(const char* pOctreeFile, const char* pMeshKey)
 		{
-			std::ifstream infile(pFile, std::ifstream::binary);
+			std::ifstream infile(pOctreeFile, std::ifstream::binary);
 			// get size of file
 			infile.seekg(0, infile.end);
 			std::streamoff size = infile.tellg();
@@ -153,6 +155,8 @@ namespace EAE_Engine
 			// release dynamically-allocated memory
 			delete[] pBuffer;
 			infile.close();
+			
+			_pMeshData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData(pMeshKey);
 		}
 	}
 }
