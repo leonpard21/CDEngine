@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{0BF78AFF-D764-4BB8-B836-46A0BD3683D3}"
 EndProject
@@ -103,6 +103,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "General", "Code\Engine\Gene
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CollisionDetection", "Code\Engine\CollisionDetection\CollisionDetection.vcxproj", "{5B4C5807-F5DF-461C-B630-968DC423C1B0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{93BC70CF-377D-4E19-9BEC-8ACF76FBCBD9} = {93BC70CF-377D-4E19-9BEC-8ACF76FBCBD9}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Code\Engine\Core\Core.vcxproj", "{2E835EDF-F361-4019-95D5-8EE938232F88}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -206,11 +209,14 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MayaOctreeExporter", "Code\Tools\MayaOctreeExporter\MayaOctreeExporter.vcxproj", "{1C7AC0A9-89BC-4D6D-965B-01B08DC3C877}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EF347137-45A5-4E8D-BD0D-26B524C31E30} = {EF347137-45A5-4E8D-BD0D-26B524C31E30}
+		{5F8004A7-75AD-49AC-85C7-96D9B9F19533} = {5F8004A7-75AD-49AC-85C7-96D9B9F19533}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpatialPartition", "Code\Engine\SpatialPartition\SpatialPartition.vcxproj", "{EF347137-45A5-4E8D-BD0D-26B524C31E30}"
 	ProjectSection(ProjectDependencies) = postProject
+		{5B4C5807-F5DF-461C-B630-968DC423C1B0} = {5B4C5807-F5DF-461C-B630-968DC423C1B0}
 		{31741745-C5FE-474F-A1FA-7A44CF261A12} = {31741745-C5FE-474F-A1FA-7A44CF261A12}
+		{93BC70CF-377D-4E19-9BEC-8ACF76FBCBD9} = {93BC70CF-377D-4E19-9BEC-8ACF76FBCBD9}
 	EndProjectSection
 EndProject
 Global

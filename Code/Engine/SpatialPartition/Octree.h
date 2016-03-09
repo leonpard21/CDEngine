@@ -49,6 +49,11 @@ namespace EAE_Engine
 			inline Math::Vector3 GetMin() { return _min; }
 			inline Math::Vector3 GetMax() { return _max; }
 			inline uint32_t Level() { return _level; }
+			std::vector<OctreeNode*> GetLeavesCollideWithSegment(Math::Vector3 start, Math::Vector3 end);
+			bool IsLeaf(OctreeNode*);
+
+		private:
+			OctreeNode* GetChildOfNode(OctreeNode* pNode);
 
 		private:
 			uint32_t _level;
@@ -58,15 +63,6 @@ namespace EAE_Engine
 			Math::Vector3 _max;
 		};
 
-		CompleteOctree::CompleteOctree() :
-			_min(Math::Vector3::Zero), _max(Math::Vector3::Zero), 
-			_level(0), _countOfNode(0), _pNodes(nullptr)
-		{}
-
-		CompleteOctree::~CompleteOctree()
-		{
-			SAFE_DELETE_ARRAY(_pNodes);
-		}
 
 		inline OctreeNode* CompleteOctree::GetNodesInLevel(uint32_t levelIndex)
 		{
@@ -161,5 +157,4 @@ namespace EAE_Engine
 	}
 }
 
-#include "Octree.inl"
 #endif//EAE_ENGINE_SPATIAL_PARTITION_OCTREE

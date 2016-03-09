@@ -131,11 +131,7 @@ void GameplayUpdate()
 		EAE_Engine::Math::Vector3 green(0.0f, 1.0f, 0.0f);
 		EAE_Engine::Math::Vector3 blue(0.0f, 0.0f, 1.0f);
 		EAE_Engine::Debug::CleanDebugShapes();
-		{
-			EAE_Engine::Math::Vector3 start = pPlayerObj->GetTransform()->GetPos();
-			EAE_Engine::Math::Vector3 end = start + pPlayerObj->GetTransform()->GetForward() * 50.0f;
-			EAE_Engine::Debug::AddSegment(start, end, yellow);
-		}
+
 		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('C') == EAE_Engine::UserInput::KeyState::OnPressed)
 		{
 			bool playerControllerState = pPlayerController->IsActive();
@@ -192,11 +188,17 @@ void GameplayUpdate()
 			}
 
 			EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
-			uint32_t countOfNodes = g_pCompleteOctree->GetCountOfNodesInLevel(octreeLevel);
-			EAE_Engine::Core::OctreeNode* pNodes = g_pCompleteOctree->GetNodesInLevel(octreeLevel);
-			for (uint32_t index = 0; index < countOfNodes; ++index)
+		//	uint32_t countOfNodes = g_pCompleteOctree->GetCountOfNodesInLevel(octreeLevel);
+		//	EAE_Engine::Core::OctreeNode* pNodes = g_pCompleteOctree->GetNodesInLevel(octreeLevel);
+
+			EAE_Engine::Math::Vector3 start = pPlayerObj->GetTransform()->GetPos();
+			EAE_Engine::Math::Vector3 end = start + pPlayerObj->GetTransform()->GetForward() * 150.0f;
+			EAE_Engine::Debug::AddSegment(start, end, yellow);
+			std::vector<EAE_Engine::Core::OctreeNode*> list = g_pCompleteOctree->GetLeavesCollideWithSegment(start, end);
+			for (uint32_t index = 0; index < list.size(); ++index)
 			{
-				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(pNodes[index]._extent, pNodes[index]._pos, rotation, octreeColor);
+				EAE_Engine::Core::OctreeNode* pNode = list[index];
+				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(pNode->_extent, pNode->_pos, rotation, octreeColor);
 			}
 		}
 	}

@@ -16,7 +16,7 @@ namespace EAE_Engine
 		public:
 			MaterialDesc* GetMaterial(uint32_t index = 0);
 			AOSMesh* GetMesh();
-			void AddSharedMaterial(const std::vector<std::string>& materialkeys);
+			void AddMaterial(const std::vector<std::string>& materialkeys);
 			void SetMesh(AOSMesh* pAOSMesh) { _pMesh = pAOSMesh; }
 			void SetMesh(const char* pMeshName);
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
@@ -25,7 +25,7 @@ namespace EAE_Engine
 			friend class AOSMeshRenderManager;
 		private:
 			Graphics::AOSMesh* _pMesh;
-			std::vector<Graphics::MaterialDesc*> _sharedMaterials;
+			std::vector<Graphics::MaterialDesc*> _materials;
 			Common::ITransform* _pTrans;
 		};
 

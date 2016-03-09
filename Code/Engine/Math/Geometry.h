@@ -22,7 +22,7 @@ namespace EAE_Engine
 		};
 
 		// Given three noncollinear points (ordered ccw), compute plane equation
-		Plane ComputePlane(Vector3 a, Vector3 b, Vector3 c)
+		inline Plane ComputePlane(Vector3 a, Vector3 b, Vector3 c)
 		{
 			Plane p;
 			p._normal = Vector3::Cross(b - a, c - a).GetNormalize();

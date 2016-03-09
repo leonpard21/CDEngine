@@ -56,11 +56,11 @@ namespace EAE_Engine
 			std::vector<std::string> materialList;
 			materialList.push_back("debugPrimitives");
 			_pSegmentsMeshRender = new AOSMeshRender(); 
-			_pSegmentsMeshRender->AddSharedMaterial(materialList);
+			_pSegmentsMeshRender->AddMaterial(materialList);
 			_pBoxesMeshRender = new AOSMeshRender();
-			_pBoxesMeshRender->AddSharedMaterial(materialList);
+			_pBoxesMeshRender->AddMaterial(materialList);
 			_pShperesMeshRender = new AOSMeshRender();
-			_pShperesMeshRender->AddSharedMaterial(materialList);
+			_pShperesMeshRender->AddMaterial(materialList);
 			// Setup vertices format.
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 			D3DVERTEXELEMENT9 elemnt_arr[] = {

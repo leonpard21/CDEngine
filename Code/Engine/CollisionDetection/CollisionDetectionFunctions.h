@@ -11,7 +11,7 @@ namespace EAE_Engine
 	{
 
 		// Test whether a point is in the AABB or not
-		bool TestPointInAABB(const Math::Vector3& min, const Math::Vector3& max, const Math::Vector3& vecPoint)
+		inline bool TestPointInAABB(const Math::Vector3& min, const Math::Vector3& max, const Math::Vector3& vecPoint)
 		{
 			//Check if the point is less than max and greater than min
 			if (vecPoint._x > min._x && vecPoint._x < max._x &&
@@ -24,7 +24,7 @@ namespace EAE_Engine
 			return false;
 		}
 
-		bool TestSegmentAABB(Math::Vector3 p0, Math::Vector3 p1, Math::AABBV1 b)
+		inline bool TestSegmentAABB(Math::Vector3 p0, Math::Vector3 p1, Math::AABBV1 b)
 		{
 			Math::Vector3 c = (b._min + b._max) * 0.5f; // Box center-point
 			Math::Vector3 e = b._max - c; // Box halflength extents
@@ -64,7 +64,7 @@ namespace EAE_Engine
 		// Given segment pq and triangle abc, returns whether segment intersects
 		// triangle and if so, also returns the barycentric coordinates (u,v,w)
 		// of the intersection point
-		int IntersectSegmentTriangle(Math::Vector3 p, Math::Vector3 q, Math::Vector3 a, Math::Vector3 b, Math::Vector3 c, 
+		inline int IntersectSegmentTriangle(Math::Vector3 p, Math::Vector3 q, Math::Vector3 a, Math::Vector3 b, Math::Vector3 c, 
 			float &u, float &v, float &w, float &t)
 		{
 			Math::Vector3 ab = b - a;
@@ -104,7 +104,7 @@ namespace EAE_Engine
 		}
 		
 		// Test if AABB b intersects plane p
-		bool TestAABBPlane(Math::AABBV1 b, Math::Plane p)
+		inline bool TestAABBPlane(Math::AABBV1 b, Math::Plane p)
 		{
 			// These two lines not necessary with a (center, extents) AABB representation
 			Math::Vector3 c = (b._max + b._min) * 0.5f; // Compute AABB center
@@ -117,7 +117,7 @@ namespace EAE_Engine
 		}
 
 		// Read Real-time collision detection P169
-		bool TestTriangleAABB(Math::Vector3 v0, Math::Vector3 v1, Math::Vector3 v2, Math::AABBV1 b)
+		inline bool TestTriangleAABB(Math::Vector3 v0, Math::Vector3 v1, Math::Vector3 v2, Math::AABBV1 b)
 		{
 			// Compute box center and extents (if not already given in that format)
 			Math::Vector3 c = (b._min + b._max) * 0.5f;
