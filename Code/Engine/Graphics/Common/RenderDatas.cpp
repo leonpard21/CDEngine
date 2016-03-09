@@ -25,7 +25,7 @@ namespace EAE_Engine
 
 		MaterialDesc* RenderData3D::GetMaterial()
 		{
-			MaterialDesc* pMaterial = _pMeshRender->GetMaterial(_subMeshIndex);
+			MaterialDesc* pMaterial = _pMeshRender->GetSharedMaterial(_subMeshIndex);
 			return pMaterial;
 		}
 
@@ -49,7 +49,7 @@ namespace EAE_Engine
 		void RenderData3D::Render()
 		{
 			//If we need to change material, change the material
-			MaterialDesc* pMaterial =_pMeshRender->GetMaterial(_subMeshIndex);
+			MaterialDesc* pMaterial =_pMeshRender->GetSharedMaterial(_subMeshIndex);
 			if (s_pCurrentMaterial != pMaterial)
 			{
 				s_pCurrentMaterial = pMaterial;

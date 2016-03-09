@@ -188,9 +188,6 @@ void GameplayUpdate()
 			}
 
 			EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
-		//	uint32_t countOfNodes = g_pCompleteOctree->GetCountOfNodesInLevel(octreeLevel);
-		//	EAE_Engine::Core::OctreeNode* pNodes = g_pCompleteOctree->GetNodesInLevel(octreeLevel);
-
 			EAE_Engine::Math::Vector3 start = pPlayerObj->GetTransform()->GetPos();
 			EAE_Engine::Math::Vector3 end = start + pPlayerObj->GetTransform()->GetForward() * 150.0f;
 			EAE_Engine::Debug::AddSegment(start, end, yellow);
@@ -219,15 +216,14 @@ namespace
 		pActorGround = EAE_Engine::Core::World::GetInstance().AddGameObj("ground", zero);
 		EAE_Engine::Math::Vector3 groundScale(1.0f, 1.0f, 1.0f);
 		pActorGround->GetTransform()->SetLocalScale(groundScale);
-		std::vector<std::string> materialList;
-		materialList.push_back("lambert");
-		materialList.push_back("floor");
-		materialList.push_back("railing");
-		materialList.push_back("ceiling");
-		materialList.push_back("metal");
-		materialList.push_back("cement");
-		materialList.push_back("walls");
-		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, materialList, pActorGround->GetTransform());
+		pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, pActorGround->GetTransform());
+		pRenderGround->AddMaterial("lambert");
+		pRenderGround->AddMaterial("floor");
+		pRenderGround->AddMaterial("railing");
+		pRenderGround->AddMaterial("ceiling");
+		pRenderGround->AddMaterial("metal");
+		pRenderGround->AddMaterial("cement");
+		pRenderGround->AddMaterial("walls");
 
 		CreatePlayer();
 		CreateCamera();
@@ -267,9 +263,9 @@ namespace
 			float radian = EAE_Engine::Math::ConvertDegreesToRadians(20.0f);
 			EAE_Engine::Math::Quaternion player_rotation(radian, axis);
 			pPlayerObj->GetTransform()->SetRotation(player_rotation);
-			std::vector<std::string> materialList;
-			materialList.push_back("phongShading");
-			EAE_Engine::Graphics::AddMeshRender(pathPlayer, materialList, pPlayerObj->GetTransform());
+			EAE_Engine::Graphics::AOSMeshRender* pPlayerRender = EAE_Engine::Graphics::AddMeshRender(pathPlayer, pPlayerObj->GetTransform());
+			pPlayerRender->AddMaterial("phongShading");
+
 			pRigidBody = EAE_Engine::Physics::Physics::GetInstance()->AddRigidBody(pPlayerObj->GetTransform());
 			pPlayerObj->AddComponent({ pRigidBody, pRigidBody->GetTypeID() });
 			EAE_Engine::Common::ICompo* pCompo = pPlayerObj->GetTransform()->GetComponent(getTypeID<EAE_Engine::Physics::RigidBody>());

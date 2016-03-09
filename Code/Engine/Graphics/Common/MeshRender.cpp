@@ -6,16 +6,42 @@
 #include "../Common/Material.h"
 #include "RenderObj.h"
 #include "RenderDatas.h"
+#include  <cassert>
 
 namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		Graphics::MaterialDesc* AOSMeshRender::GetMaterial(uint32_t index)
+		AOSMeshRender::~AOSMeshRender() 
+		{
+			assert(_sharedMaterials.size() == _materials.size());
+			std::vector<MaterialDesc*>::iterator itShared = _sharedMaterials.begin();
+			for (std::vector<MaterialDesc*>::iterator it = _materials.begin(); it != _materials.end(); ++itShared)
+			{
+				MaterialDesc* pLocalMaterial = *it++;
+				if (pLocalMaterial != *itShared)
+				{
+					uint8_t* pBuffer = (uint8_t*)pLocalMaterial;
+					SAFE_DELETE_ARRAY(pBuffer);
+				}
+			}
+			_materials.clear();
+		}
+
+		Graphics::MaterialDesc* AOSMeshRender::GetSharedMaterial(uint32_t index)
 		{ 
+			if (_sharedMaterials.size() == 0)
+				return nullptr;
+			else if (index >= _sharedMaterials.size())
+				return _sharedMaterials[0];
+			return _sharedMaterials[index];
+		}
+
+		Graphics::MaterialDesc* AOSMeshRender::GetMaterial(uint32_t index)
+		{
 			if (_materials.size() == 0)
 				return nullptr;
-			else if (index >= _materials.size()) 
+			else if (index >= _materials.size())
 				return _materials[0];
 			return _materials[index];
 		}
@@ -30,30 +56,31 @@ namespace EAE_Engine
 			return _pMesh;
 		}
 
-		void AOSMeshRender::AddMaterial(const std::vector<std::string>& materialKeys)
+		void AOSMeshRender::AddMaterial(std::string materialkey, bool shared)
 		{
-			for (std::vector<std::string>::const_iterator it = materialKeys.begin(); it != materialKeys.end(); ++it)
+			MaterialDesc* pMaterial = MaterialManager::GetInstance()->GetMaterial(materialkey.c_str());
+			_sharedMaterials.push_back(pMaterial);
+			if (shared)
 			{
-				MaterialDesc* pMaterial = MaterialManager::GetInstance()->GetMaterial((*it).c_str());
 				_materials.push_back(pMaterial);
 			}
+			else 
+			{
+				uint32_t materialBufferSize = pMaterial->_sizeOfMaterialBuffer;
+				uint8_t* pMaterialBuffer = new uint8_t[materialBufferSize];
+				CopyMem((uint8_t*)pMaterial, pMaterialBuffer, materialBufferSize);
+				_materials.push_back((MaterialDesc*)pMaterialBuffer);
+			}
+			
 		}
 
 
 		//////////////////////////////RenderObjManager///////////////////////////
-		AOSMeshRender* AOSMeshRenderManager::AddMeshRender(const std::vector<std::string>& materialKeys)
-		{
-			AOSMeshRender* pMeshRender = new AOSMeshRender();
-			pMeshRender->AddMaterial(materialKeys);
-			_meshRenders.push_back(pMeshRender);
-			return pMeshRender;
-		}
 
-		AOSMeshRender* AOSMeshRenderManager::AddMeshRender(const char* pAOSMesh, const std::vector<std::string>& materialKeys, Common::ITransform* pTransform)
+		AOSMeshRender* AOSMeshRenderManager::AddMeshRender(const char* pAOSMesh, Common::ITransform* pTransform)
 		{
 			AOSMeshRender* pRO = new AOSMeshRender();
 			pRO->SetMesh(pAOSMesh);
-			pRO->AddMaterial(materialKeys);
 			pRO->SetTrans(pTransform);
 			_meshRenders.push_back(pRO);
 			return pRO;

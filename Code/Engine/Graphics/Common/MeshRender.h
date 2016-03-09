@@ -14,9 +14,11 @@ namespace EAE_Engine
 		class AOSMeshRender //: public Common::ICompo
 		{
 		public:
+			~AOSMeshRender();
+			MaterialDesc* GetSharedMaterial(uint32_t index = 0);
 			MaterialDesc* GetMaterial(uint32_t index = 0);
 			AOSMesh* GetMesh();
-			void AddMaterial(const std::vector<std::string>& materialkeys);
+			void AddMaterial(std::string materialkey, bool shared = true);
 			void SetMesh(AOSMesh* pAOSMesh) { _pMesh = pAOSMesh; }
 			void SetMesh(const char* pMeshName);
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
@@ -26,6 +28,7 @@ namespace EAE_Engine
 		private:
 			Graphics::AOSMesh* _pMesh;
 			std::vector<Graphics::MaterialDesc*> _materials;
+			std::vector<Graphics::MaterialDesc*> _sharedMaterials;
 			Common::ITransform* _pTrans;
 		};
 
@@ -33,8 +36,7 @@ namespace EAE_Engine
 		class AOSMeshRenderManager 
 		{
 		public:
-			AOSMeshRender* AddMeshRender(const std::vector<std::string>& materialKeys);
-			AOSMeshRender* AddMeshRender(const char* pAOSMesh, const std::vector<std::string>& materialkeys, Common::ITransform* pTransform);
+			AOSMeshRender* AddMeshRender(const char* pAOSMesh, Common::ITransform* pTransform);
 			std::vector<AOSMeshRender*>& GetMeshRenderList() { return _meshRenders; }
 			void UpdateRenderDataList();
 
@@ -52,9 +54,9 @@ namespace EAE_Engine
 			static void CleanInstance();
 		};
 
-		inline AOSMeshRender* AddMeshRender(const char* pAOSMesh, const std::vector<std::string>& materialkeys, Common::ITransform* pTransform)
+		inline AOSMeshRender* AddMeshRender(const char* pAOSMesh, Common::ITransform* pTransform)
 		{
-			AOSMeshRender* pResult = AOSMeshRenderManager::GetInstance().AddMeshRender(pAOSMesh, materialkeys, pTransform);
+			AOSMeshRender* pResult = AOSMeshRenderManager::GetInstance().AddMeshRender(pAOSMesh, pTransform);
 			return pResult;
 		}
 

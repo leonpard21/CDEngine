@@ -63,7 +63,7 @@ namespace EAE_Engine
 			}
 			for (std::vector<RenderRawData3D>::iterator itRaw = _renderRawData3Ds.begin(); itRaw != _renderRawData3Ds.end(); ++itRaw)
 			{
-				MaterialDesc* pMaterial = itRaw->_pMeshRender->GetMaterial();
+				MaterialDesc* pMaterial = itRaw->_pMeshRender->GetSharedMaterial();
 				RenderWeight weight;
 				weight._layer = RenderDataLayer::DebugMesh;
 				weight._material = pMaterial ? pMaterial->_materialCost._cost : 0;
