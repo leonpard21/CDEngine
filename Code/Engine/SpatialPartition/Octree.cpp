@@ -138,8 +138,8 @@ namespace EAE_Engine
 
 		OctreeNode* CompleteOctree::GetChildOfNode(OctreeNode* pNode)
 		{
-			uint32_t member = reinterpret_cast<uint32_t>(pNode) - reinterpret_cast<uint32_t>(_pNodes);
-			uint32_t indexOfNode = member / (uint32_t)sizeof(OctreeNode);
+			size_t member = reinterpret_cast<size_t>(pNode) - reinterpret_cast<size_t>(_pNodes);
+			uint32_t indexOfNode = (uint32_t)member / (uint32_t)sizeof(OctreeNode);
 			uint32_t baseOfNodesOfLeaves = (uint32_t)(std::pow(8.0f, _level - 1) - 1) / (8 - 1);
 			if (pNode < _pNodes || indexOfNode >= baseOfNodesOfLeaves)
 				return nullptr;
@@ -148,8 +148,8 @@ namespace EAE_Engine
 
 		bool CompleteOctree::IsLeaf(OctreeNode* pNode)
 		{
-			uint32_t member = (uint32_t)pNode - (uint32_t)_pNodes;
-			uint32_t indexOfNode = member / (uint32_t)sizeof(OctreeNode);
+			size_t member = reinterpret_cast<size_t>(pNode) - reinterpret_cast<size_t>(_pNodes);
+			uint32_t indexOfNode = (uint32_t)member / (uint32_t)sizeof(OctreeNode);
 			uint32_t baseOfNodesOfLeaves = (uint32_t)(std::pow(8.0f, _level - 1) - 1) / (8 - 1);
 			if (indexOfNode >= baseOfNodesOfLeaves && indexOfNode < _countOfNode)
 				return true;
