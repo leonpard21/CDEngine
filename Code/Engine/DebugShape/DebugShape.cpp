@@ -5,28 +5,24 @@ namespace EAE_Engine
 {
 	namespace Debug
 	{
-		DebugSegment* DebugShapes::AddSegment(Math::Vector3 i_start, Math::Vector3 i_end, Math::Vector3 i_color)
+		void DebugShapes::AddSegment(Math::Vector3 i_start, Math::Vector3 i_end, Math::Vector3 i_color)
 		{
 			_segments.push_back({ i_start, i_end, i_color});
-			return &_segments.back();
 		}
 
-		DebugBox* DebugShapes::AddBox(Math::Vector3 i_extents, Math::Vector3 i_pos, Math::Quaternion i_rotation, Math::Vector3 i_color)
+		void DebugShapes::AddBox(Math::Vector3 i_extents, Math::Vector3 i_pos, Math::Quaternion i_rotation, Math::Vector3 i_color)
 		{
 			_boxes.push_back({ i_extents, i_pos, i_rotation, i_color});
-			return &_boxes.back();
 		}
 
-		DebugSphere* DebugShapes::AddSphere(Math::Vector3 i_pos, float radius, Math::Vector3 i_color)
+		void DebugShapes::AddSphere(Math::Vector3 i_pos, float radius, Math::Vector3 i_color)
 		{
 			_spheres.push_back({ i_pos, i_color, radius });
-			return &_spheres.back();
 		}
 
-		DebugMesh* DebugShapes::AddMesh(std::vector<Math::Vector3> i_vertices, Math::Vector3 i_color)
+		void DebugShapes::AddMesh(std::vector<Math::Vector3> i_vertices, Math::Vector3 i_color)
 		{
 			_meshes.push_back({ i_vertices, i_color });
-			return &_meshes.back();
 		}
 
 		void DebugShapes::Clean()
