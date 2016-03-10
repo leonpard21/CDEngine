@@ -153,19 +153,22 @@ void GameplayUpdate()
 		sprintf_s(text, "FPS:%.2f", fps);
 		pFrameText->_value = text;
 		static float radisu = 1.0f;
+		EAE_Engine::Math::Vector3 start = pPlayerObj->GetTransform()->GetPos();
+		EAE_Engine::Math::Vector3 end = start + pPlayerObj->GetTransform()->GetForward() * 150;
+		EAE_Engine::Debug::AddSegment(start, end, yellow);
 		if (pToggle->_checked)
 		{
 			EAE_Engine::Math::Vector3 octreeColor = EAE_Engine::Math::Vector3(0.0f, 1.0f, 1.0f);
-			EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
-			EAE_Engine::Math::Vector3 start = pPlayerObj->GetTransform()->GetPos();
-			EAE_Engine::Math::Vector3 end = start + pPlayerObj->GetTransform()->GetForward() * 150.0f;
-			EAE_Engine::Debug::AddSegment(start, end, yellow);
+			EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;.0f;
 			std::vector<EAE_Engine::Core::OctreeNode*> list = g_pCompleteOctree->GetLeavesCollideWithSegment(start, end);
 			for (uint32_t index = 0; index < list.size(); ++index)
 			{
 				EAE_Engine::Core::OctreeNode* pNode = list[index];
 				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(pNode->_extent, pNode->_pos, rotation, octreeColor);
 			}
+		}
+		if (pDrawSegmentToggle->_checked)
+		{
 			std::vector<EAE_Engine::Core::TriangleIndex> triangles = g_pCompleteOctree->GetTrianlgesCollideWithSegment(start, end);
 			std::vector<uint32_t> triangleIndices;
 			for (uint32_t index = 0; index < triangles.size(); ++index)
@@ -327,6 +330,7 @@ namespace
 			pDrawSegmentToggle->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pDrawSegmentToggle->_backgroundImage._rectTransform.SetRect({ 16.0f, -200.0f, 16.0f, 16.0f });
 		}
+		
 	}
 
 }
