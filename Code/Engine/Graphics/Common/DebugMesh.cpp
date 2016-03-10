@@ -293,7 +293,7 @@ namespace EAE_Engine
 		void DebugMeshes::GenerateDebugMeshes() 
 		{
 			std::vector<Debug::DebugMesh>& debugMeshes = Debug::DebugShapes::GetInstance().GetMeshes();
-			if (debugMeshes.size() < 3) return;
+			if (debugMeshes.size() == 0) return;
 			std::vector<DebugVertex> _debugVertices;
 			// Get vertices and indices information for all of the debug meshes
 			for (uint32_t meshIndex = 0; meshIndex < debugMeshes.size(); ++meshIndex)
@@ -305,6 +305,8 @@ namespace EAE_Engine
 					_debugVertices.push_back(vertex);
 				}
 			}
+			if (_debugVertices.size() < 3)
+				return;
 			_pTempMesh->ChangeWholeBuffers(&_debugVertices[0], _debugVertices.size(), nullptr, 0, nullptr, 0);
 			_pShperesMeshRender->SetMesh(_pTempMesh);
 			std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
