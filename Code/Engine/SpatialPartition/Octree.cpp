@@ -125,7 +125,7 @@ namespace EAE_Engine
 			{
 				if (Implements::AlmostEqual2sComplement(previousTriangle->_t, itTrianlge->_t, 4) && result.size() > 0)
 				{
-					if (previousTriangle->_pTriangle == itTrianlge->_pTriangle)
+					if (*(previousTriangle->_pTriangle) == *(itTrianlge->_pTriangle))
 					{
 						continue;
 					}
