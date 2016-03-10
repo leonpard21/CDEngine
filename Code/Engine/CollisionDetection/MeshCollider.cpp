@@ -27,7 +27,6 @@ namespace EAE_Engine
 			//o_tmin = FLT_MAX;
 			if (_pAOSMeshData == nullptr)
 				return false;
-			bool collided = false;
 			Math::ColMatrix44& transformMat = _pTransform->GetLocalToWorldMatrix();
 			Math::Vector3 targetStartPoint = transformMat * pTargetRB->GetPos();
 			Math::Vector3 targetEndPoint = transformMat * pTargetRB->PredictPosAfter(i_follisionTimeStep);
@@ -44,25 +43,25 @@ namespace EAE_Engine
 			}
 			Mesh::AOSMeshData* pData = EAE_Engine::Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData("collisionData");
 			std::vector<Math::Vector3> vertices = pData->GetVertexPoses(triangleIndices);
-			for (uint32_t index = 0; index < vertices.size(); index += 3)
+			if (vertices.size() < 3)
+				return false;
+			bool collided = false;
+			Math::Vector3& vertex0 = vertices[0];
+			Math::Vector3& vertex1 = vertices[1];
+			Math::Vector3& vertex2 = vertices[2];
+			float u = 0, v = 0, w = 0, t = 0;
+			int result = Collision::IntersectSegmentTriangle(targetStartPoint, targetEndPoint, vertex0, vertex1, vertex2, 
+				u, v, w, t);
+			if (result == 0)
+				collided = false;
+			if (t > 1.0f)
+				collided = false;
+			if (t < o_tmin)
 			{
-				Math::Vector3& vertex0 = vertices[index + 0];
-				Math::Vector3& vertex1 = vertices[index + 1];
-				Math::Vector3& vertex2 = vertices[index + 2];
-				float u = 0, v = 0, w = 0, t = 0;
-				int result = Collision::IntersectSegmentTriangle(targetStartPoint, targetEndPoint, vertex0, vertex1, vertex2, 
-					u, v, w, t);
-				if (result == 0)
-					continue;
-				if (t > 1.0f)
-					continue;
-				if (t < o_tmin)
-				{
-					collided = true;
-					o_tmin = t;
-					o_collisionPoint = vertex0 * u + vertex1 * v + vertex2 * w;
-					o_collisionNormal = Math::Vector3::Cross((vertex1 - vertex0), (vertex2 - vertex1));
-				}
+				collided = true;
+				o_tmin = t;
+				o_collisionPoint = vertex0 * u + vertex1 * v + vertex2 * w;
+				o_collisionNormal = Math::Vector3::Cross((vertex1 - vertex0), (vertex2 - vertex1));
 			}
 			return collided;
 		}
