@@ -173,8 +173,12 @@ namespace EAE_Engine
 			}
 			
 			{
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+				EAE_Engine::Graphics::MeshD3DVertexElements tempMeshelements = { elemnt_arr, 2,{ sizeof(DebugVertex), D3DPT_TRIANGLELIST, Default } };
+#elif defined( EAEENGINE_PLATFORM_GL )
+				EAE_Engine::Graphics::MeshGLVertexElements tempMeshelements = { element_arr, 2,{ sizeof(DebugVertex), GL_TRIANGLES, GL_STREAM_COPY } };
+#endif
 				DebugVertex vertices;
-				Mesh::sSubMesh subMesh(0, 0);
 				{
 					vertices.x = 0.0f;
 					vertices.y = 0.0f;
@@ -184,7 +188,7 @@ namespace EAE_Engine
 					vertices.b = (uint8_t)255;
 					vertices.a = (uint8_t)255;
 				}
-				_pTempMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, nullptr, 0, nullptr, 0);
+				_pTempMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(tempMeshelements, &vertices, 1, nullptr, 0, nullptr, 0);
 				_pTempMeshRender->SetMesh(_pTempMesh);
 			}
 		}
@@ -301,18 +305,19 @@ namespace EAE_Engine
 				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44::Identity;
 				for (uint32_t index = 0; index < debugMeshes[meshIndex]._vertices.size(); ++index)
 				{
-					DebugVertex vertex(tranformsMatrix * debugMeshes[meshIndex]._vertices[index], debugMeshes[meshIndex]._color);
+					DebugVertex vertex(debugMeshes[meshIndex]._vertices[index], debugMeshes[meshIndex]._color);
+					vertex.a = (uint8_t)100;
 					_debugVertices.push_back(vertex);
 				}
 			}
 			if (_debugVertices.size() < 3)
 				return;
 			_pTempMesh->ChangeWholeBuffers(&_debugVertices[0], _debugVertices.size(), nullptr, 0, nullptr, 0);
-			_pShperesMeshRender->SetMesh(_pTempMesh);
-			std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
+			_pTempMeshRender->SetMesh(_pTempMesh);
+			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
 			Math::Vector3 white(1.0f, 1.0f, 1.0f);
 			Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44::Identity;
-			RenderRawData3D renderData = { _pShperesMeshRender, white, tranformsMatrix };
+			RenderData3D renderData = { _pTempMeshRender, 0, nullptr };
 			renderDataList.push_back(renderData);
 		}
 
