@@ -4,8 +4,10 @@
 #include "Engine/Math/Vector.h"
 #include "Engine/Mesh/AOSMeshData.h"
 #include "Engine/General/MemoryOp.h"
+#include "Engine/General/Singleton.hpp"
 #include <vector>
 #include <fstream>
+
 
 namespace EAE_Engine 
 {
@@ -168,6 +170,18 @@ namespace EAE_Engine
 			
 			_pMeshData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData(pMeshKey);
 		}
+
+		class OctreeManager : public Singleton<OctreeManager>
+		{
+		public:
+			~OctreeManager();
+			void AddOctree(CompleteOctree* pCompleteOctree);
+			CompleteOctree* GetOctree();
+
+		private:
+			std::vector<CompleteOctree*> _octrees;
+		};
+
 	}
 }
 

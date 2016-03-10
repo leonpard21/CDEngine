@@ -312,7 +312,7 @@ namespace EAE_Engine
 			}
 			if (_debugVertices.size() < 3)
 				return;
-			_pTempMesh->ChangeWholeBuffers(&_debugVertices[0], _debugVertices.size(), nullptr, 0, nullptr, 0);
+			_pTempMesh->ChangeWholeBuffers(&_debugVertices[0], (uint32_t)_debugVertices.size(), nullptr, 0, nullptr, 0);
 			_pTempMeshRender->SetMesh(_pTempMesh);
 			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
 			Math::Vector3 white(1.0f, 1.0f, 1.0f);

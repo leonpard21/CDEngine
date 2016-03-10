@@ -11,7 +11,7 @@
 #include "Engine/Common/Interfaces.h"
 #include "Engine/DebugShape/DebugShape.h"
 #include "Engine/UserInput/UserInput.h"
-
+#include "Engine/SpatialPartition/Octree.h"
 
 #include <vector>
 
@@ -86,6 +86,7 @@ namespace EAE_Engine
 		void EngineEnd()
 		{
 			UserInput::Input::Destroy();
+			Core::OctreeManager::Destroy();
 			Controller::ControllerManager::CleanInstance();
 			Physics::Physics::Destroy();
 			Collider::ColliderManager::CleanInstance();

@@ -2,6 +2,8 @@
 #include "RigidBody.h"
 #include "CollisionDetectionFunctions.h"
 #include "Math/ColMatrix.h"
+#include "SpatialPartition/Octree.h"
+#include "DebugShape/DebugShape.h"
 
 namespace EAE_Engine
 {
@@ -29,11 +31,24 @@ namespace EAE_Engine
 			Math::ColMatrix44& transformMat = _pTransform->GetLocalToWorldMatrix();
 			Math::Vector3 targetStartPoint = transformMat * pTargetRB->GetPos();
 			Math::Vector3 targetEndPoint = transformMat * pTargetRB->PredictPosAfter(i_follisionTimeStep);
-			for (uint32_t index = 0; index < _pAOSMeshData->_indices.size(); index += 3)
+			Core::CompleteOctree* pOctree = Core::OctreeManager::GetInstance()->GetOctree();
+			if (pOctree == nullptr)
+				return false;
+			std::vector<Core::TriangleIndex> triangles = pOctree->GetTrianlgesCollideWithSegment(targetStartPoint, targetEndPoint);
+			std::vector<uint32_t> triangleIndices;
+			for (uint32_t index = 0; index < triangles.size(); ++index)
 			{
-				Math::Vector3& vertex0 = _pAOSMeshData->GetVertex(index + 0);
-				Math::Vector3& vertex1 = _pAOSMeshData->GetVertex(index + 1);
-				Math::Vector3& vertex2 = _pAOSMeshData->GetVertex(index + 2);
+				triangleIndices.push_back(triangles[index]._index0);
+				triangleIndices.push_back(triangles[index]._index1);
+				triangleIndices.push_back(triangles[index]._index2);
+			}
+			Mesh::AOSMeshData* pData = EAE_Engine::Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData("collisionData");
+			std::vector<Math::Vector3> vertices = pData->GetVertexPoses(triangleIndices);
+			for (uint32_t index = 0; index < vertices.size(); index += 3)
+			{
+				Math::Vector3& vertex0 = vertices[index + 0];
+				Math::Vector3& vertex1 = vertices[index + 1];
+				Math::Vector3& vertex2 = vertices[index + 2];
 				float u = 0, v = 0, w = 0, t = 0;
 				int result = Collision::IntersectSegmentTriangle(targetStartPoint, targetEndPoint, vertex0, vertex1, vertex2, 
 					u, v, w, t);

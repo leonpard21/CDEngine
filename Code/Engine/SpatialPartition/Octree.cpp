@@ -156,5 +156,28 @@ namespace EAE_Engine
 			return false;
 		}
 
+		//////////////////////////////////////OctreeManager////////////////////////////////////////////////
+		OctreeManager::~OctreeManager()
+		{
+			for (std::vector<CompleteOctree*>::iterator octreeIt = _octrees.begin(); octreeIt != _octrees.end(); )
+			{
+				CompleteOctree* pOctree = *octreeIt++;
+				SAFE_DELETE(pOctree);
+			}
+			_octrees.clear();
+		}
+
+		void OctreeManager::AddOctree(CompleteOctree* pCompleteOctree) 
+		{
+			_octrees.push_back(pCompleteOctree);
+		}
+
+		CompleteOctree* OctreeManager::GetOctree()
+		{
+			if (_octrees.size() == 0)
+				return nullptr;
+			return _octrees[0];
+		}
+
 	}
 }

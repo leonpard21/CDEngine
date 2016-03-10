@@ -107,6 +107,7 @@ bool GameplayInit(float windowWidth, float windowHeight)
 
 	g_pCompleteOctree = new EAE_Engine::Core::CompleteOctree();
 	g_pCompleteOctree->InitFromFile("data/Scene/CollisionOctree.octree", "collisionData");
+	EAE_Engine::Core::OctreeManager::GetInstance()->AddOctree(g_pCompleteOctree);
 	return true;
 }
  
@@ -185,7 +186,7 @@ void GameplayUpdate()
 
 void GameplayExit()
 {
-	SAFE_DELETE(g_pCompleteOctree);
+	
 }
 
 namespace
