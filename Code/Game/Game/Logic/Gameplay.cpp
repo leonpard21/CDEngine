@@ -156,7 +156,6 @@ void GameplayUpdate()
 		static float radisu = 1.0f;
 		EAE_Engine::Math::Vector3 start = pPlayerObj->GetTransform()->GetPos();
 		EAE_Engine::Math::Vector3 end = start + pPlayerObj->GetTransform()->GetForward() * 150;
-		EAE_Engine::Debug::AddSegment(start, end, yellow);
 		if (pToggle->_checked)
 		{
 			EAE_Engine::Math::Vector3 octreeColor = EAE_Engine::Math::Vector3(0.0f, 1.0f, 1.0f);
@@ -170,6 +169,7 @@ void GameplayUpdate()
 		}
 		if (pDrawSegmentToggle->_checked)
 		{
+			EAE_Engine::Debug::AddSegment(start, end, yellow);
 			std::vector<EAE_Engine::Core::TriangleIndex> triangles = g_pCompleteOctree->GetTrianlgesCollideWithSegment(start, end);
 			std::vector<uint32_t> triangleIndices;
 			for (uint32_t index = 0; index < triangles.size(); ++index)

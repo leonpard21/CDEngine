@@ -7,6 +7,10 @@
 
 namespace EAE_Engine
 {
+
+	/*
+	 * Some functions from the book Real Time Collision Detection.
+	 */
 	namespace Collision 
 	{
 
