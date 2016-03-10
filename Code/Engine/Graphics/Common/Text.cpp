@@ -104,7 +104,6 @@ namespace EAE_Engine
 			{
 				_checked = !_checked;
 			}
-
 		}
 
 

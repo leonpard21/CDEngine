@@ -24,15 +24,16 @@ namespace EAE_Engine
 			Button* AddButton(BtnCallBack* pCallBack, Common::ITransform* pTrans);
 			Slider* AddSlider(float min, float max, Common::ITransform* pTrans);
 			Toggle* AddToggle(bool checked, Common::ITransform* pTrans);
+			std::vector<Toggle*>& GetToggles() { return _toggles; }
 
 		private:
 			void UpdateCanvasRender();
 
 		private:
-			std::vector<Button> _buttons;
-			std::vector<Text> _texts;
-			std::vector<Slider> _sliders;
-			std::vector<Toggle> _toggles;
+			std::vector<Text*> _texts;
+			std::vector<Button*> _buttons;
+			std::vector<Slider*> _sliders;
+			std::vector<Toggle*> _toggles;
 		};
 
 

@@ -22,7 +22,9 @@ namespace EAE_Engine
 
 		struct UIImage
 		{
-			UIImage() = default;
+			UIImage(Image* pImage, RectTransform rect) : _pImage(pImage), _rectTransform(rect) {}
+			UIImage(const UIImage& i_other):_pImage(i_other._pImage), _rectTransform(i_other._rectTransform){}
+			UIImage& operator= (const UIImage&) = default;
 			Image* _pImage;
 			RectTransform _rectTransform;
 		};
@@ -56,6 +58,7 @@ namespace EAE_Engine
 		struct Toggle
 		{
 			Toggle() = default;
+			Toggle& operator= (const Toggle&) = default;
 			void Update();
 			UIImage _backgroundImage;
 			UIImage _checkMarkImage;

@@ -41,7 +41,7 @@ namespace EAE_Engine
 				triangleIndices.push_back(triangles[index]._index1);
 				triangleIndices.push_back(triangles[index]._index2);
 			}
-			Mesh::AOSMeshData* pData = EAE_Engine::Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData("collisionData");
+			Mesh::AOSMeshData* pData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData("collisionData");
 			std::vector<Math::Vector3> vertices = pData->GetVertexPoses(triangleIndices);
 			if (vertices.size() < 3)
 				return false;

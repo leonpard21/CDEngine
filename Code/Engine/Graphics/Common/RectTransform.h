@@ -13,6 +13,8 @@ namespace EAE_Engine
 		{
 		public:
 			RectTransform();
+			RectTransform(const RectTransform& i_other);
+			RectTransform& operator= (const RectTransform&) = default;
 			void SetPivot(Math::Vector2 i_pivot) { _pivot = i_pivot; }
 			Math::Vector2 GetPivot() { return _pivot; }
 			void SetAnchor(Rectangle anchorPoint) { _anchorPoint = anchorPoint; }

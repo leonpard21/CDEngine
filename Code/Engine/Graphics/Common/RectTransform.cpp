@@ -11,6 +11,13 @@ namespace EAE_Engine
 		{
 		}
 
+		RectTransform::RectTransform(const RectTransform& i_other):
+			_pivot(i_other._pivot), _anchorPoint(i_other._anchorPoint),
+			_rect(i_other._rect)
+		{
+		
+		}
+
 		Rectangle RectTransform::GetClipRect() const
 		{
 			Rectangle imageScreenRectangle = GetScreenSpaceRect();

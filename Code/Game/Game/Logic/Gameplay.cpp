@@ -331,7 +331,6 @@ namespace
 			pDrawSegmentToggle->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pDrawSegmentToggle->_backgroundImage._rectTransform.SetRect({ 16.0f, -200.0f, 16.0f, 16.0f });
 		}
-		
 	}
 
 }
