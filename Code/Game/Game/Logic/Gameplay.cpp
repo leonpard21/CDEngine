@@ -62,6 +62,7 @@ EAE_Engine::Graphics::Text* pFrameText = nullptr;
 EAE_Engine::Graphics::Button* pControlBtn = nullptr;
 EAE_Engine::Graphics::Slider* pSlider = nullptr;
 EAE_Engine::Graphics::Toggle* pToggle = nullptr;
+EAE_Engine::Graphics::Toggle* pDrawSegmentToggle = nullptr;
 void btnCallBack(void*) 
 {
 	if (pSlider)
@@ -131,7 +132,6 @@ void GameplayUpdate()
 		EAE_Engine::Math::Vector3 green(0.0f, 1.0f, 0.0f);
 		EAE_Engine::Math::Vector3 blue(0.0f, 0.0f, 1.0f);
 		EAE_Engine::Debug::CleanDebugShapes();
-
 		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('C') == EAE_Engine::UserInput::KeyState::OnPressed)
 		{
 			bool playerControllerState = pPlayerController->IsActive();
@@ -148,24 +148,6 @@ void GameplayUpdate()
 				pCamController->GetTransform()->SetParent(nullptr);
 			}
 		}
-
-		static int octreeLevel = 0;
-		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('1') == EAE_Engine::UserInput::KeyState::OnPressed)
-		{
-			octreeLevel = 0;
-		}
-		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('2') == EAE_Engine::UserInput::KeyState::OnPressed)
-		{
-			octreeLevel = 1;
-		}
-		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('3') == EAE_Engine::UserInput::KeyState::OnPressed)
-		{
-			octreeLevel = 2;
-		}
-		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('4') == EAE_Engine::UserInput::KeyState::OnPressed)
-		{
-			octreeLevel = 3;
-		}
 		char text[20];
 		float fps = 1.0f / elpasedTime;
 		sprintf_s(text, "FPS:%.2f", fps);
@@ -174,30 +156,26 @@ void GameplayUpdate()
 		if (pToggle->_checked)
 		{
 			EAE_Engine::Math::Vector3 octreeColor = EAE_Engine::Math::Vector3(0.0f, 1.0f, 1.0f);
-			switch (octreeLevel)
-			{
-			case 1: 
-				octreeColor = EAE_Engine::Math::Vector3::Right;
-				break;
-			case 2:
-				octreeColor = EAE_Engine::Math::Vector3::Up;
-				break;
-			case 3:
-				octreeColor = EAE_Engine::Math::Vector3::Forward;
-				break;
-			}
-
 			EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
 			EAE_Engine::Math::Vector3 start = pPlayerObj->GetTransform()->GetPos();
 			EAE_Engine::Math::Vector3 end = start + pPlayerObj->GetTransform()->GetForward() * 150.0f;
 			EAE_Engine::Debug::AddSegment(start, end, yellow);
 			std::vector<EAE_Engine::Core::OctreeNode*> list = g_pCompleteOctree->GetLeavesCollideWithSegment(start, end);
-			std::vector<EAE_Engine::Core::TriangleIndex> triangles = g_pCompleteOctree->GetTrianlgesCollideWithSegment(start, end);
 			for (uint32_t index = 0; index < list.size(); ++index)
 			{
 				EAE_Engine::Core::OctreeNode* pNode = list[index];
 				EAE_Engine::Debug::DebugShapes::GetInstance().AddBox(pNode->_extent, pNode->_pos, rotation, octreeColor);
 			}
+			std::vector<EAE_Engine::Core::TriangleIndex> triangles = g_pCompleteOctree->GetTrianlgesCollideWithSegment(start, end);
+			std::vector<uint32_t> triangleIndices;
+			for (uint32_t index = 0; index < triangles.size(); ++index)
+			{
+				triangleIndices.push_back(triangles[index]._index0);
+				triangleIndices.push_back(triangles[index]._index1);
+				triangleIndices.push_back(triangles[index]._index2);
+			}
+			EAE_Engine::Mesh::AOSMeshData* pData = EAE_Engine::Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData("collisionData");
+			EAE_Engine::Debug::DebugShapes::GetInstance().AddMesh(pData->GetVertexPoses(triangleIndices), red);
 		}
 	}
 }
@@ -340,6 +318,14 @@ namespace
 			pToggle->_rectTransform.SetRect({ 16.0f, -168.0f, 16.0f, 16.0f });
 			pToggle->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pToggle->_backgroundImage._rectTransform.SetRect({ 16.0f, -168.0f, 16.0f, 16.0f });
+		}
+		EAE_Engine::Common::IGameObj* pSegToggleObj = EAE_Engine::Core::World::GetInstance().AddGameObj("segtoggleObj", textPos);
+		{
+			pDrawSegmentToggle = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddToggle(true, pSegToggleObj->GetTransform());
+			pDrawSegmentToggle->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			pDrawSegmentToggle->_rectTransform.SetRect({ 16.0f, -200.0f, 16.0f, 16.0f });
+			pDrawSegmentToggle->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			pDrawSegmentToggle->_backgroundImage._rectTransform.SetRect({ 16.0f, -200.0f, 16.0f, 16.0f });
 		}
 	}
 

@@ -18,6 +18,8 @@ namespace EAE_Engine
 			std::vector<uint32_t> _indices;
 			std::vector<sSubMesh> _subMeshes;
 			Math::Vector3 GetVertex(uint32_t vertexIndex);
+			std::vector<sVertex> GetVertices(std::vector<uint32_t> indices);
+			std::vector<Math::Vector3> GetVertexPoses(std::vector<uint32_t> indices);
 		};
 
 		class AOSMeshDataManager : public Singleton<AOSMeshDataManager>

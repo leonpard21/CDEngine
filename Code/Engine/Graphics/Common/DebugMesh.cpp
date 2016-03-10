@@ -59,6 +59,9 @@ namespace EAE_Engine
 			_pBoxesMeshRender->AddMaterial("debugPrimitives", false);
 			_pShperesMeshRender = new AOSMeshRender();
 			_pShperesMeshRender->AddMaterial("debugPrimitives", false);
+			_pTempMeshRender = new AOSMeshRender();
+			_pTempMeshRender->AddMaterial("debugPrimitives", false);
+
 			// Setup vertices format.
 #if defined( EAEENGINE_PLATFORM_D3D9 )
 			D3DVERTEXELEMENT9 elemnt_arr[] = {
@@ -95,12 +98,12 @@ namespace EAE_Engine
 				_pSegmentsMeshRender->SetMesh(_pSegmentsMesh);
 			}
 
-			{
 #if defined( EAEENGINE_PLATFORM_D3D9 )
-				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, { sizeof(DebugVertex), D3DPT_TRIANGLELIST, Default } };
+			EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2,{ sizeof(DebugVertex), D3DPT_TRIANGLELIST, Default } };
 #elif defined( EAEENGINE_PLATFORM_GL )
-				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, { sizeof(DebugVertex), GL_TRIANGLES, GL_STREAM_COPY } };
+			EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2,{ sizeof(DebugVertex), GL_TRIANGLES, GL_STREAM_COPY } };
 #endif
+			{
 				BoxMesh standardBox;
 				uint32_t vertexCount = (uint32_t)standardBox._vertices.size();
 				uint32_t indexCount = (uint32_t)standardBox._indices.size();
@@ -133,13 +136,8 @@ namespace EAE_Engine
 				SAFE_DELETE_ARRAY(pIndices);
 				_pBoxesMeshRender->SetMesh(_pBoxesMesh);
 			}
-
 			{
-#if defined( EAEENGINE_PLATFORM_D3D9 )
-				EAE_Engine::Graphics::MeshD3DVertexElements elements = { elemnt_arr, 2, { sizeof(DebugVertex), D3DPT_TRIANGLELIST, Default } };
-#elif defined( EAEENGINE_PLATFORM_GL )
-				EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2, { sizeof(DebugVertex), GL_TRIANGLES, GL_STREAM_COPY } };
-#endif
+
 				// alloc memory for buffers
 				SphereMesh standardSphere(6, 6);
 				uint32_t vertexCount = (uint32_t)standardSphere._vertices.size();
@@ -173,7 +171,22 @@ namespace EAE_Engine
 				SAFE_DELETE_ARRAY(pIndices);		
 				_pShperesMeshRender->SetMesh(_pShperesMesh);
 			}
-
+			
+			{
+				DebugVertex vertices;
+				Mesh::sSubMesh subMesh(0, 0);
+				{
+					vertices.x = 0.0f;
+					vertices.y = 0.0f;
+					vertices.z = -1.0f;
+					vertices.r = (uint8_t)255;
+					vertices.g = (uint8_t)255;
+					vertices.b = (uint8_t)255;
+					vertices.a = (uint8_t)255;
+				}
+				_pTempMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, nullptr, 0, nullptr, 0);
+				_pTempMeshRender->SetMesh(_pTempMesh);
+			}
 		}
 
 		void DebugMeshes::Clean()
@@ -182,6 +195,7 @@ namespace EAE_Engine
 			SAFE_DELETE(_pSegmentsMeshRender);
 			SAFE_DELETE(_pBoxesMeshRender);
 			SAFE_DELETE(_pShperesMeshRender);
+			SAFE_DELETE(_pTempMeshRender);
 			// becareful that we cannot use SAFE_RELEASE, 
 			// because this marco will set _pSegmentsMesh to NULL.
 			// However we need to delete this mesh memory by ourself.
@@ -194,6 +208,9 @@ namespace EAE_Engine
 			if (_pShperesMesh)
 				_pShperesMesh->Release();
 			SAFE_DELETE(_pShperesMesh);
+			if (_pTempMesh)
+				_pTempMesh->Release();
+			SAFE_DELETE(_pTempMesh);
 		}
 
 		void DebugMeshes::Update()
@@ -201,6 +218,7 @@ namespace EAE_Engine
 			GenerateDebugSegments();
 			GenerateDebugBoxes();
 			GenerateDebugSpheres();
+			GenerateDebugMeshes();
 		}
 
 		void DebugMeshes::GenerateDebugSegments()
@@ -241,7 +259,6 @@ namespace EAE_Engine
 		void DebugMeshes::GenerateDebugBoxes()
 		{
 			std::vector<Debug::DebugBox>& debugboxes = Debug::DebugShapes::GetInstance().GetBoxes();
-			//  Make sure that the debugSegments has primitives to draw
 			if (debugboxes.size() == 0) return;
 			std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
 			for (uint32_t boxIndex = 0; boxIndex < debugboxes.size(); ++boxIndex)
@@ -258,7 +275,6 @@ namespace EAE_Engine
 		void DebugMeshes::GenerateDebugSpheres()
 		{
 			std::vector<Debug::DebugSphere>& debugSpheres = Debug::DebugShapes::GetInstance().GetSpheres();
-			//  Make sure that the debugSegments has primitives to draw
 			if (debugSpheres.size() == 0) return;
 			std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
 			// Get vertices and indices information for all of the debug meshes
@@ -272,6 +288,30 @@ namespace EAE_Engine
 				RenderRawData3D renderData = { _pShperesMeshRender, debugSpheres[sphereIndex]._color, tranformsMatrix };
 				renderDataList.push_back(renderData);
 			}
+		}
+
+		void DebugMeshes::GenerateDebugMeshes() 
+		{
+			std::vector<Debug::DebugMesh>& debugMeshes = Debug::DebugShapes::GetInstance().GetMeshes();
+			if (debugMeshes.size() < 3) return;
+			std::vector<DebugVertex> _debugVertices;
+			// Get vertices and indices information for all of the debug meshes
+			for (uint32_t meshIndex = 0; meshIndex < debugMeshes.size(); ++meshIndex)
+			{
+				Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44::Identity;
+				for (uint32_t index = 0; index < debugMeshes[meshIndex]._vertices.size(); ++index)
+				{
+					DebugVertex vertex(tranformsMatrix * debugMeshes[meshIndex]._vertices[index], debugMeshes[meshIndex]._color);
+					_debugVertices.push_back(vertex);
+				}
+			}
+			_pTempMesh->ChangeWholeBuffers(&_debugVertices[0], _debugVertices.size(), nullptr, 0, nullptr, 0);
+			_pShperesMeshRender->SetMesh(_pTempMesh);
+			std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
+			Math::Vector3 white(1.0f, 1.0f, 1.0f);
+			Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44::Identity;
+			RenderRawData3D renderData = { _pShperesMeshRender, white, tranformsMatrix };
+			renderDataList.push_back(renderData);
 		}
 
 		////////////////////////////////static_members/////////////////////////////////

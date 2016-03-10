@@ -36,20 +36,31 @@ namespace EAE_Engine
 			float _radius;
 		};
 
+		struct DebugMesh
+		{
+			DebugMesh() = default;
+
+			std::vector<Math::Vector3> _vertices;
+			Math::Vector3 _color;
+		};
+
 		class DebugShapes 
 		{
 		public:
 			DebugSegment* AddSegment(Math::Vector3 i_start, Math::Vector3 i_end, Math::Vector3 i_color);
 			DebugBox* AddBox(Math::Vector3 i_extents, Math::Vector3 i_pos, Math::Quaternion i_rotation, Math::Vector3 i_color);
 			DebugSphere* AddSphere(Math::Vector3 i_pos, float radius, Math::Vector3 i_color);
+			DebugMesh* AddMesh(std::vector<Math::Vector3> i_vertices, Math::Vector3 i_color);
 			inline std::vector<DebugSegment>& GetSegments() { return _segments; }
 			inline std::vector<DebugBox>& GetBoxes() { return _boxes; }
 			inline std::vector<DebugSphere>& GetSpheres() { return _spheres; }
+			inline std::vector<DebugMesh>& GetMeshes() { return _meshes; }
 			void Clean();
 		private:
 			std::vector<DebugSegment> _segments;
 			std::vector<DebugBox> _boxes;
 			std::vector<DebugSphere> _spheres;
+			std::vector<DebugMesh> _meshes;
 
 			/////////////////////static_members////////////////////////////
 		private:

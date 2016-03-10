@@ -23,11 +23,18 @@ namespace EAE_Engine
 			return &_spheres.back();
 		}
 
+		DebugMesh* DebugShapes::AddMesh(std::vector<Math::Vector3> i_vertices, Math::Vector3 i_color)
+		{
+			_meshes.push_back({ i_vertices, i_color });
+			return &_meshes.back();
+		}
+
 		void DebugShapes::Clean()
 		{
 			_segments.clear();
 			_boxes.clear();
 			_spheres.clear();
+			_meshes.clear();
 		}
 
 		////////////////////////////////static_members/////////////////////////////////

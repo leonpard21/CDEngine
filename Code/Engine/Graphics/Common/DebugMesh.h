@@ -18,16 +18,18 @@ namespace EAE_Engine
 			void GenerateDebugSegments();
 			void GenerateDebugBoxes();
 			void GenerateDebugSpheres();
-
+			void GenerateDebugMeshes();
 			///////////////////////////Members/////////////////////////////
 		private:
 			AOSMeshRender* _pSegmentsMeshRender;
 			AOSMeshRender* _pBoxesMeshRender;
 			AOSMeshRender* _pShperesMeshRender;
+			AOSMeshRender* _pTempMeshRender;
 			// We should Manage the Debug Meshes by ourself, because we need to update them every frame.
 			AOSMesh* _pSegmentsMesh;
 			AOSMesh* _pBoxesMesh;
 			AOSMesh* _pShperesMesh;
+			AOSMesh* _pTempMesh;
 
 			/////////////////////static_members////////////////////////////
 		private:
