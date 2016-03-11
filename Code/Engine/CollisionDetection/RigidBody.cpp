@@ -98,13 +98,13 @@ namespace EAE_Engine
 			{
 				_totalForceWorkingOn = _outForceWorkingOn;
 			}
-			const float epsilon = 0.001f;
+			const float epsilon = 0.0001f;
 			bool hasSolutionForCollision = false;
 			// Detect Collision with All of the Colliders.
 			for (int depth = 0; depth < 3; ++depth)
 			{
 				CollisionInfo o_collisionInfo;
-				if (timeStep < 0.00001f)
+				if (timeStep < epsilon)
 					break;
 				bool collided = DetectionCollision(colliderList, timeStep, o_collisionInfo);
 				if (!collided)

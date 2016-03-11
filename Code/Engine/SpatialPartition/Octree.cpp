@@ -27,6 +27,54 @@ namespace EAE_Engine
 			}
 		};
 
+		std::vector<OctreeNode*> CompleteOctree::GetNodesCollideWithSegment(Math::Vector3 start, Math::Vector3 end, uint32_t levelIndex)
+		{
+			std::vector<OctreeNode*> nodesCollided;
+			if (levelIndex > _level - 1)
+				return nodesCollided;
+			nodesCollided.push_back(&_pNodes[0]);
+			for (; nodesCollided.size() > 0; )
+			{
+				std::vector<OctreeNode*> newNodesCollided;
+				if (IsInLevel(nodesCollided[0], levelIndex))
+				{
+					for (std::vector<OctreeNode*>::iterator it = nodesCollided.begin(); it < nodesCollided.end(); ++it)
+					{
+						OctreeNode* pNode = *it;
+						Math::AABBV1 aabb;
+						aabb._min = pNode->GetMin();
+						aabb._max = pNode->GetMax();
+						if (Collision::TestSegmentAABB(start, end, aabb))
+						{
+							newNodesCollided.push_back(pNode);
+						}
+					}
+					nodesCollided.clear();
+					nodesCollided = newNodesCollided;
+					// sort the nodes based on the distance from the Node
+					OctreeNodeLess octreeNodeLess = { start };
+					std::sort(nodesCollided.begin(), nodesCollided.end(), octreeNodeLess);
+					break;
+				}
+				for (std::vector<OctreeNode*>::iterator it = nodesCollided.begin(); it < nodesCollided.end(); ++it)
+				{
+					OctreeNode* pNode = *it;
+					Math::AABBV1 aabb;
+					aabb._min = pNode->GetMin();
+					aabb._max = pNode->GetMax();
+					if (Collision::TestSegmentAABB(start, end, aabb))
+					{
+						OctreeNode* pChild = GetChildOfNode(pNode);
+						for (uint32_t i = 0; i < 8; ++i)
+							newNodesCollided.push_back(&pChild[i]);
+					}
+				}
+				nodesCollided.clear();
+				nodesCollided = newNodesCollided;
+			}
+			return nodesCollided;
+		}
+
 		std::vector<OctreeNode*> CompleteOctree::GetLeavesCollideWithSegment(Math::Vector3 start, Math::Vector3 end)
 		{
 			std::vector<OctreeNode*> nodesCollided;
@@ -152,6 +200,21 @@ namespace EAE_Engine
 			uint32_t indexOfNode = (uint32_t)member / (uint32_t)sizeof(OctreeNode);
 			uint32_t baseOfNodesOfLeaves = (uint32_t)(std::pow(8.0f, _level - 1) - 1) / (8 - 1);
 			if (indexOfNode >= baseOfNodesOfLeaves && indexOfNode < _countOfNode)
+				return true;
+			return false;
+		}
+
+		bool CompleteOctree::IsInLevel(OctreeNode* pNode, uint32_t levelIndex)
+		{
+			if (levelIndex > _level - 1)
+				return false;
+			else if (levelIndex == _level - 1)
+				return IsLeaf(pNode);
+			size_t member = reinterpret_cast<size_t>(pNode) - reinterpret_cast<size_t>(_pNodes);
+			uint32_t indexOfNode = (uint32_t)member / (uint32_t)sizeof(OctreeNode);
+			uint32_t baseOfNodesInLevel = (uint32_t)(std::pow(8.0f, levelIndex) - 1) / (8 - 1);
+			uint32_t baseOfNodesInNextLevel = (uint32_t)(std::pow(8.0f, levelIndex + 1) - 1) / (8 - 1);
+			if (indexOfNode >= baseOfNodesInLevel && indexOfNode < baseOfNodesInNextLevel)
 				return true;
 			return false;
 		}

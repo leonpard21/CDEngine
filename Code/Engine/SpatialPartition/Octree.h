@@ -61,9 +61,11 @@ namespace EAE_Engine
 			inline Math::Vector3 GetMin() { return _min; }
 			inline Math::Vector3 GetMax() { return _max; }
 			inline uint32_t Level() { return _level; }
+			std::vector<OctreeNode*> GetNodesCollideWithSegment(Math::Vector3 start, Math::Vector3 end, uint32_t levelIndex);
 			std::vector<OctreeNode*> GetLeavesCollideWithSegment(Math::Vector3 start, Math::Vector3 end);
 			std::vector<TriangleIndex> GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end);
-			bool IsLeaf(OctreeNode*);
+			bool IsLeaf(OctreeNode* pNode);
+			bool IsInLevel(OctreeNode* pNode, uint32_t levelIndex);
 
 		private:
 			OctreeNode* GetChildOfNode(OctreeNode* pNode);

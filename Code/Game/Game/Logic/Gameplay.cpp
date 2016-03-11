@@ -149,18 +149,42 @@ void GameplayUpdate()
 				pCamController->GetTransform()->SetParent(nullptr);
 			}
 		}
+
+		static uint32_t levelIndex = 3;
+		static EAE_Engine::Math::Vector3 octreeColor = EAE_Engine::Math::Vector3(0.0f, 1.0f, 1.0f);
+		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('1') == EAE_Engine::UserInput::KeyState::OnPressed)
+		{
+			levelIndex = 0;
+			octreeColor = EAE_Engine::Math::Vector3(1.0f, 0.0f, 0.0f);
+		}
+		else if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('2') == EAE_Engine::UserInput::KeyState::OnPressed)
+		{
+			levelIndex = 1;
+			octreeColor = EAE_Engine::Math::Vector3(0.0f, 1.0f, 0.0f);
+		}
+		else if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('3') == EAE_Engine::UserInput::KeyState::OnPressed)
+		{
+			levelIndex = 2;
+			octreeColor = EAE_Engine::Math::Vector3(0.0f, 0.0f, 1.0f);
+		}
+		else if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('4') == EAE_Engine::UserInput::KeyState::OnPressed)
+		{
+			levelIndex = 3;
+			octreeColor = EAE_Engine::Math::Vector3(0.0f, 1.0f, 1.0f);
+		}
 		char text[20];
 		float fps = 1.0f / elpasedTime;
 		sprintf_s(text, "FPS:%.2f", fps);
 		pFrameText->_value = text;
 		static float radisu = 1.0f;
 		EAE_Engine::Math::Vector3 start = pPlayerObj->GetTransform()->GetPos();
+		start._y += 1.5f;
 		EAE_Engine::Math::Vector3 end = start + pPlayerObj->GetTransform()->GetForward() * 150;
 		if (pToggle->_checked)
 		{
-			EAE_Engine::Math::Vector3 octreeColor = EAE_Engine::Math::Vector3(0.0f, 1.0f, 1.0f);
+			EAE_Engine::Debug::AddSegment(start, end, yellow);
 			EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;.0f;
-			std::vector<EAE_Engine::Core::OctreeNode*> list = g_pCompleteOctree->GetLeavesCollideWithSegment(start, end);
+			std::vector<EAE_Engine::Core::OctreeNode*> list = g_pCompleteOctree->GetNodesCollideWithSegment(start, end, levelIndex);
 			for (uint32_t index = 0; index < list.size(); ++index)
 			{
 				EAE_Engine::Core::OctreeNode* pNode = list[index];
@@ -213,10 +237,9 @@ namespace
 		CreateSprite();
 		CreateDebugMenu();
 
-		std::vector<std::string> materialList2;
-		materialList2.push_back("lambert");
 		EAE_Engine::Common::IGameObj* pCollisionDataObj = EAE_Engine::Core::World::GetInstance().AddGameObj("collisionData", zero);
-	//	EAE_Engine::Graphics::AddMeshRender(pathCollisionData, materialList2, pCollisionDataObj->GetTransform());
+		//EAE_Engine::Graphics::AOSMeshRender* pTempRender = EAE_Engine::Graphics::AddMeshRender(pathCollisionData, pCollisionDataObj->GetTransform());
+		//pTempRender->AddMaterial("lambert");
 		EAE_Engine::Collider::MeshCollider* pMeshCollider = new EAE_Engine::Collider::MeshCollider(pCollisionDataObj->GetTransform());
 		pMeshCollider->Init("collisionData");
 		EAE_Engine::Collider::ColliderManager::GetInstance()->AddToColliderList(pMeshCollider);
