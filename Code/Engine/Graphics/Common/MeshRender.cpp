@@ -12,6 +12,11 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
+		AOSMeshRender::AOSMeshRender() :
+			_pMesh(nullptr), _pTrans(nullptr)
+		{
+		}
+
 		AOSMeshRender::~AOSMeshRender() 
 		{
 			assert(_sharedMaterials.size() == _materials.size());

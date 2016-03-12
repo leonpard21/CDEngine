@@ -6,13 +6,14 @@
 #include "AOSMesh.h"
 #include "ImageRender.h"
 #include "CanvasRender.h"
+#include "Device.h"
 
 #include <algorithm>
-
-
-namespace 
-{
-}
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+#include <d3d9.h>
+#elif defined( EAEENGINE_PLATFORM_GL )
+#include <gl/GL.h>
+#endif
 
 namespace EAE_Engine
 {
@@ -22,6 +23,8 @@ namespace EAE_Engine
 		//////////////////////////////////////RenderObj////////////////////////////////////
 		void RenderObj::Render()
 		{
+			// if we want to use WireFrame mode, use this way:
+			//RenderObjManager::GetInstance().SetFillMode(FillMode::WIREFRAME);
 			//switch()
 			if(_renderWeight._layer == RenderDataLayer::Object3D)
 			{
@@ -95,8 +98,28 @@ namespace EAE_Engine
 			std::sort(_renderObjs.begin(), _renderObjs.end(), sortFunc);
 		}
 
+		void RenderObjManager::SetFillMode(FillMode fillMode)
+		{
+			if(s_fillMode == fillMode)
+				return;
+			s_fillMode = fillMode;
+#if defined( EAEENGINE_PLATFORM_D3D9 )
+			IDirect3DDevice9* pD3DDevice = GetD3DDevice();
+			if (s_fillMode == FillMode::SOLID)
+				pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+			else
+				pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+#elif defined( EAEENGINE_PLATFORM_GL )
+			if (s_fillMode == FillMode::SOLID)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			else
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+#endif
+		}
+
 		////////////////////////////////static_members/////////////////////////////////
 		RenderObjManager* RenderObjManager::s_pInternalInstance = nullptr;
+		FillMode RenderObjManager::s_fillMode = FillMode::SOLID;
 
 		RenderObjManager& RenderObjManager::GetInstance()
 		{

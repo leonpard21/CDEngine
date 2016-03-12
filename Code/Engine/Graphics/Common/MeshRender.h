@@ -14,6 +14,7 @@ namespace EAE_Engine
 		class AOSMeshRender //: public Common::ICompo
 		{
 		public:
+			AOSMeshRender();
 			~AOSMeshRender();
 			MaterialDesc* GetSharedMaterial(uint32_t index = 0);
 			MaterialDesc* GetMaterial(uint32_t index = 0);

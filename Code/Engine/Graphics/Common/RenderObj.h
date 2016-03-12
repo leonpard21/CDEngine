@@ -92,6 +92,12 @@ namespace EAE_Engine
 			void* _pRenderData;
 		};
 
+		enum FillMode
+		{
+			SOLID,
+			WIREFRAME,
+		};
+
 		class RenderObjManager 
 		{
 		public:
@@ -108,12 +114,12 @@ namespace EAE_Engine
 			std::vector<RenderDataUI>& GetRenderData2DList() { return _renderDataUIs; }
 			void Clean();
 			void UpdateRenderObjList();
+			void SetFillMode(FillMode mode);
 		private:
 			std::vector<RenderRawData3D> _renderRawData3Ds;
 			std::vector<RenderData3D> _renderData3Ds;
 			std::vector<RenderDataUI> _renderDataUIs;
 			std::vector<RenderObj> _renderObjs;
-
 		/////////////////////static_members////////////////////////////
 		private:
 			RenderObjManager() {}
@@ -121,6 +127,7 @@ namespace EAE_Engine
 		public:
 			static RenderObjManager& GetInstance();
 			static void CleanInstance();
+			static FillMode s_fillMode;
 		};
 
 
