@@ -98,7 +98,7 @@ namespace EAE_Engine
 					_uvs.push_back(Math::Vector2(0.0f, 0.0f));
 					_uvs.push_back(Math::Vector2(1.0f, 0.0f));
 				}
-				// Add colors for 24 vertices(we have 3 pairs of 2 faces, each face has 4 vertices, so it is 3 * 2 * 4 = 24 vertices)
+				// Add colors for 24 vertices (we have 3 pairs of 2 faces, each face has 4 vertices, so it is 3 * 2 * 4 = 24 vertices)
 				for (uint32_t i = 0; i < 24; ++i)
 				{
 					Math::TVector4<uint8_t> color(255, 255, 255, 255);
@@ -127,7 +127,12 @@ namespace EAE_Engine
 			// Add vertices
 			{
 				// north pole vertex
-				_vertices.push_back(Math::Vector3(0.0f, radius, 0.0f));
+				{
+					_vertices.push_back(Math::Vector3(0.0f, radius, 0.0f));
+					_normals.push_back(Math::Vector3(0.0f, 1.0f, 0.0f));
+					// UV of the sphere can be thought as a rectangle covers the surface of the sphere
+					_uvs.push_back(Math::Vector2(0.0f, 0.0f));
+				}
 				// vertices on the middle stacks, they are saved from one stack to another.
 				for (uint32_t i = 1; i <= stackCount - 1; ++i) {
 					float phi = i * phiStep;
@@ -137,10 +142,26 @@ namespace EAE_Engine
 							(radius * std::cosf(phi)),
 							(radius* std::sinf(phi)*std::sinf(theta)));
 						_vertices.push_back(p);
+						Math::Vector3 t(-radius * std::sinf(phi) * std::sinf(theta), 0.0f, radius * std::sinf(phi) * std::cosf(theta));
+						t.Normalize();
+						Math::Vector3 n = p.GetNormalize();
+						_normals.push_back(n);
+						Math::Vector2 uv(theta / (Math::Pi * 2.0f), phi / Math::Pi);
+						_uvs.push_back(uv);
 					}
 				}
 				// south pole vertex
-				_vertices.push_back(Math::Vector3(0.0f, -radius, 0.0f));
+				{
+					_vertices.push_back(Math::Vector3(0.0f, -radius, 0.0f));
+					_normals.push_back(Math::Vector3(0.0f, -1.0f, 0.0f));
+					_uvs.push_back(Math::Vector2(0.0f, 1.0f));
+				}
+				// add color for each vertex
+				for (uint32_t i = 0; i < _vertices.size(); ++i)
+				{
+					Math::TVector4<uint8_t> color(255, 255, 255, 255);
+					_colors.push_back(color);
+				}
 			}
 			// Add Indices
 			{
