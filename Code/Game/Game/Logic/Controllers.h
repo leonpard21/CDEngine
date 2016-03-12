@@ -39,7 +39,7 @@ public:
 
 	void ResetCamera(EAE_Engine::Common::ITransform* pTarget)
 	{
-		_pTransform->SetLocalPos(EAE_Engine::Math::Vector3::Forward * 5.0f + EAE_Engine::Math::Vector3::Up * 2.0f);
+		_pTransform->SetLocalPos(EAE_Engine::Math::Vector3::Forward * 10.0f + EAE_Engine::Math::Vector3::Up * 5.0f);
 	}
 
 	void Update()

@@ -266,11 +266,14 @@ namespace
 		{
 			EAE_Engine::Math::Vector3 playerinitPos(0.0f, 0.0f, 0.0f);
 			pPlayerObj = EAE_Engine::Core::World::GetInstance().AddGameObj("player", playerinitPos);
-			EAE_Engine::Math::Vector3 axis(0.0f, 1.0f, 0.0f);
-			float radian = EAE_Engine::Math::ConvertDegreesToRadians(20.0f);
-			EAE_Engine::Math::Quaternion player_rotation(radian, axis);
-			pPlayerObj->GetTransform()->SetRotation(player_rotation);
-			EAE_Engine::Graphics::AOSMeshRender* pPlayerRender = EAE_Engine::Graphics::AddMeshRender(pathPlayer, pPlayerObj->GetTransform());
+		//	EAE_Engine::Math::Vector3 axis(0.0f, 1.0f, 0.0f);
+		//	float radian = EAE_Engine::Math::ConvertDegreesToRadians(20.0f);
+		//	EAE_Engine::Math::Quaternion player_rotation(radian, axis);
+		//	pPlayerObj->GetTransform()->SetRotation(player_rotation);
+			EAE_Engine::Math::Vector3 playerRenderPos(0.0f, 2.0f, 0.0f);
+			EAE_Engine::Common::IGameObj* pPlayerRenderObj = EAE_Engine::Core::World::GetInstance().AddGameObj("player", playerRenderPos);
+			pPlayerRenderObj->GetTransform()->SetParent(pPlayerObj->GetTransform());
+			EAE_Engine::Graphics::AOSMeshRender* pPlayerRender = EAE_Engine::Graphics::AddMeshRender(pathPlayer, pPlayerRenderObj->GetTransform());
 			{
 				EAE_Engine::Graphics::CylinderSOAMesh cylinder(1.0f, 1.0f, 4.0f, 20, 1);
 				EAE_Engine::Mesh::sSubMesh subMesh(0, (uint32_t)cylinder._indices.size() - 1);
