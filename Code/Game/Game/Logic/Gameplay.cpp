@@ -20,6 +20,7 @@
 #include "Engine/Graphics/Common/Text.h"
 #include "Engine/Graphics/Common/RectTransform.h"
 #include "Engine/Graphics/Common/GUI.h"
+#include "Engine/Graphics/Common/BasicMeshes.h"
 #include "Engine/CollisionDetection/RigidBody.h"
 #include "Engine/CollisionDetection/MeshCollider.h"
 #include "Engine/SpatialPartition/Octree.h"
@@ -270,6 +271,29 @@ namespace
 			EAE_Engine::Math::Quaternion player_rotation(radian, axis);
 			pPlayerObj->GetTransform()->SetRotation(player_rotation);
 			EAE_Engine::Graphics::AOSMeshRender* pPlayerRender = EAE_Engine::Graphics::AddMeshRender(pathPlayer, pPlayerObj->GetTransform());
+			{
+				EAE_Engine::Graphics::CylinderMesh cylinder(1.0f, 1.0f, 4.0f, 20, 1);
+				EAE_Engine::Mesh::sSubMesh subMesh(0, (uint32_t)cylinder._indices.size() - 1);
+				std::vector<EAE_Engine::Mesh::sVertex> vertices;
+				vertices.resize(cylinder._vertices.size());
+				for (uint32_t index = 0; index < (uint32_t)cylinder._vertices.size(); ++index)
+				{
+					vertices[index].x = cylinder._vertices[index]._x;
+					vertices[index].y = cylinder._vertices[index]._y;
+					vertices[index].z = cylinder._vertices[index]._z;
+					vertices[index].nx = cylinder._normals[index]._x;
+					vertices[index].ny = cylinder._normals[index]._y;
+					vertices[index].nz = cylinder._normals[index]._z;
+					vertices[index].u = cylinder._uvs[index]._x;
+					vertices[index].v = cylinder._uvs[index]._y;
+					vertices[index].r = cylinder._colors[index]._x;
+					vertices[index].g = cylinder._colors[index]._y;
+					vertices[index].b = cylinder._colors[index]._z;
+					vertices[index].a = cylinder._colors[index]._w;
+				}
+				pPlayerRender->GetMesh()->ChangeWholeBuffers(&vertices[0], (uint32_t)vertices.size(),
+					&cylinder._indices[0], (uint32_t)cylinder._indices.size(), &subMesh, 1);
+			}
 			pPlayerRender->AddMaterial("phongShading");
 
 			pRigidBody = EAE_Engine::Physics::Physics::GetInstance()->AddRigidBody(pPlayerObj->GetTransform());

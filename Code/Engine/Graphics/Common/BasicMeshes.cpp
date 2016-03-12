@@ -141,5 +141,118 @@ namespace EAE_Engine
 			}
 		}
 
+
+		/*
+		 * Code of calculating the Cylinder, comes from http://richardssoftware.net/Home/Post/7
+		 */
+		void BuildCylinderTopCap(float topRadius, float height, uint32_t sliceCount, CylinderMesh& o_cylinder) {
+			uint32_t baseIndex = (uint32_t)o_cylinder._vertices.size();
+
+			float y = 0.5f * height;
+			float dTheta = 2.0f * Math::Pi / sliceCount;
+			for (uint32_t i = 0; i <= sliceCount; ++i) {
+				float x = topRadius * std::cosf(i * dTheta);
+				float z = topRadius* std::sinf(i * dTheta);
+				o_cylinder._vertices.push_back(Math::Vector3(x, y, z));
+				o_cylinder._normals.push_back(Math::Vector3(0.0f, 1.0f, 0.0f));
+				float u = x / height + 0.5f;
+				float v = z / height + 0.5f;
+				o_cylinder._uvs.push_back(Math::Vector2(u, v));
+				Math::TVector4<uint8_t> color(255, 200, 255, 255);
+				o_cylinder._colors.push_back(color);
+			}
+			// Add the center point 
+			{
+				o_cylinder._vertices.push_back(Math::Vector3(0.0f, y, 0.0f));
+				o_cylinder._normals.push_back(Math::Vector3(0.0f, 1.0f, 0.0f));
+				o_cylinder._uvs.push_back(Math::Vector2(0.5f, 0.5f));
+				Math::TVector4<uint8_t> color(255, 200, 255, 255);
+				o_cylinder._colors.push_back(color);
+			}
+			uint32_t centerIndex = (uint32_t)o_cylinder._vertices.size() - 1;
+			for (uint32_t i = 0; i < sliceCount; ++i) {
+				o_cylinder._indices.push_back(centerIndex);
+				o_cylinder._indices.push_back(baseIndex + i + 1);
+				o_cylinder._indices.push_back(baseIndex + i);
+			}
+		}
+
+		void BuildCylinderBottomCap(float bottomRadius, float height, uint32_t sliceCount, CylinderMesh& o_cylinder) {
+			uint32_t baseIndex = (uint32_t)o_cylinder._vertices.size();
+
+			float y = -0.5f * height;
+			float dTheta = 2.0f * Math::Pi / sliceCount;
+
+			for (uint32_t i = 0; i <= sliceCount; ++i) {
+				float x = bottomRadius * std::cosf(i * dTheta);
+				float z = bottomRadius * std::sinf(i * dTheta);
+				o_cylinder._vertices.push_back(Math::Vector3(x, y, z));
+				o_cylinder._normals.push_back(Math::Vector3(0.0f, -1.0f, 0.0f));
+				float u = x / height + 0.5f;
+				float v = z / height + 0.5f;
+				o_cylinder._uvs.push_back(Math::Vector2(u, v));
+				Math::TVector4<uint8_t> color(255, 200, 255, 255);
+				o_cylinder._colors.push_back(color);
+			}
+			// Add the center point 
+			{
+				o_cylinder._vertices.push_back(Math::Vector3(0.0f, y, 0.0f));
+				o_cylinder._normals.push_back(Math::Vector3(0.0f, -1.0f, 0.0f));
+				o_cylinder._uvs.push_back(Math::Vector2(0.5f, 0.5f));
+				Math::TVector4<uint8_t> color(255, 200, 255, 255);
+				o_cylinder._colors.push_back(color);
+			}
+			uint32_t centerIndex = (uint32_t)o_cylinder._vertices.size() - 1;
+			for (uint32_t i = 0; i < sliceCount; ++i) {
+				o_cylinder._indices.push_back(centerIndex);
+				o_cylinder._indices.push_back(baseIndex + i);
+				o_cylinder._indices.push_back(baseIndex + i + 1);
+			}
+		}
+
+		CylinderMesh::CylinderMesh(float bottomRadius, float topRadius, float height, uint32_t sliceCount, uint32_t stackCount) {
+			float stackHeight = height / stackCount;//height per stack
+			float radiusStep = (topRadius - bottomRadius) / stackCount;
+			uint32_t ringCount = stackCount + 1;// stack is the gap, so rings will be one more than that
+			for (uint32_t i = 0; i < ringCount; ++i) {
+				// calculate height from bottom to top
+				float y = -0.5f * height + i * stackHeight;
+				// calculate radius of the ring from bottom to top
+				float r = bottomRadius + i * radiusStep;
+				float dTheta = 2.0f * Math::Pi / sliceCount;
+				for (uint32_t j = 0; j <= sliceCount; ++j) {
+					float c = std::cosf(j * dTheta);
+					float s = std::sinf(j * dTheta);
+					Math::Vector3 vertex(r*c, y, r*s);
+					_vertices.push_back(vertex);
+					Math::Vector2 uv((float)j / sliceCount, 1.0f - (float)i / stackCount);
+					_uvs.push_back(uv);
+					Math::Vector3 t(-s, 0.0f, c);
+					float dr = bottomRadius - topRadius;
+					Math::Vector3 bitangent(dr*c, -height, dr*s);
+					Math::Vector3 n = Math::Vector3::Cross(t, bitangent);
+					n.Normalize();
+					_normals.push_back(n);
+					Math::TVector4<uint8_t> color(255, 200, 255, 255);
+					_colors.push_back(color);
+				}
+			}
+			uint32_t ringVertexCount = sliceCount + 1; //vertex count per ring
+			for (uint32_t i = 0; i < stackCount; ++i) {
+				for (uint32_t j = 0; j < sliceCount; ++j) {
+					// the 1st triangle of the rectangle of side
+					_indices.push_back(i * ringVertexCount + j);
+					_indices.push_back((i + 1) * ringVertexCount + j);
+					_indices.push_back((i + 1) * ringVertexCount + j + 1);
+					// the 2nd triangle of the rectangle of side
+					_indices.push_back(i * ringVertexCount + j);
+					_indices.push_back((i + 1) * ringVertexCount + j + 1);
+					_indices.push_back(i * ringVertexCount + j + 1);
+				}
+			}
+			BuildCylinderTopCap(topRadius, height, sliceCount, *this);
+			BuildCylinderBottomCap(bottomRadius, height, sliceCount, *this);
+		}
+
 	}
 }

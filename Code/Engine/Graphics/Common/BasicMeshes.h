@@ -29,7 +29,15 @@ namespace EAE_Engine
 			std::vector<uint32_t> _indices;
 		};
 
-
+		struct CylinderMesh 
+		{
+			CylinderMesh(float bottomRadius, float topRadius, float height, uint32_t sliceCount, uint32_t stackCount);
+			std::vector<Math::Vector3> _vertices;
+			std::vector<Math::Vector3> _normals;
+			std::vector<Math::Vector2> _uvs;
+			std::vector<Math::TVector4<uint8_t>> _colors;
+			std::vector<uint32_t> _indices;
+		};
 
 	}
 }
