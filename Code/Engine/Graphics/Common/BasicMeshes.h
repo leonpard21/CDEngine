@@ -8,30 +8,30 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		struct RectangleMesh
+		struct RectangleSOAMesh
 		{
-			RectangleMesh();
-			RectangleMesh(float i_left, float i_right, float i_bottom, float i_top);
+			RectangleSOAMesh();
+			RectangleSOAMesh(float i_left, float i_right, float i_bottom, float i_top);
 			std::vector<Math::Vector3> _vertices;
 		};
 
-		struct BoxMesh
+		struct BoxSOAMesh
 		{
-			BoxMesh();
-			std::vector<Math::Vector3> _vertices;
-			std::vector<uint32_t> _indices;
-		};
-
-		struct SphereMesh 
-		{
-			SphereMesh(uint32_t sliceCount, uint32_t stackCount, float raduis = 1.0f);
+			BoxSOAMesh();
 			std::vector<Math::Vector3> _vertices;
 			std::vector<uint32_t> _indices;
 		};
 
-		struct CylinderMesh 
+		struct SphereSOAMesh 
 		{
-			CylinderMesh(float bottomRadius, float topRadius, float height, uint32_t sliceCount, uint32_t stackCount);
+			SphereSOAMesh(uint32_t sliceCount, uint32_t stackCount, float raduis = 1.0f);
+			std::vector<Math::Vector3> _vertices;
+			std::vector<uint32_t> _indices;
+		};
+
+		struct CylinderSOAMesh 
+		{
+			CylinderSOAMesh(float bottomRadius, float topRadius, float height, uint32_t sliceCount, uint32_t stackCount);
 			std::vector<Math::Vector3> _vertices;
 			std::vector<Math::Vector3> _normals;
 			std::vector<Math::Vector2> _uvs;

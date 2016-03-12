@@ -104,7 +104,7 @@ namespace EAE_Engine
 			EAE_Engine::Graphics::MeshGLVertexElements elements = { element_arr, 2,{ sizeof(DebugVertex), GL_TRIANGLES, GL_STREAM_COPY } };
 #endif
 			{
-				BoxMesh standardBox;
+				BoxSOAMesh standardBox;
 				uint32_t vertexCount = (uint32_t)standardBox._vertices.size();
 				uint32_t indexCount = (uint32_t)standardBox._indices.size();
 				// alloc memory for vertices and indices buffers
@@ -139,7 +139,7 @@ namespace EAE_Engine
 			{
 
 				// alloc memory for buffers
-				SphereMesh standardSphere(6, 6);
+				SphereSOAMesh standardSphere(6, 6);
 				uint32_t vertexCount = (uint32_t)standardSphere._vertices.size();
 				uint32_t indexCount = (uint32_t)standardSphere._indices.size();
 				DebugVertex* pVertices = new DebugVertex[vertexCount];

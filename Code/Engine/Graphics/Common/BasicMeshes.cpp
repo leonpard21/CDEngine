@@ -7,7 +7,7 @@ namespace EAE_Engine
 {
 	namespace Graphics
 	{
-		RectangleMesh::RectangleMesh()
+		RectangleSOAMesh::RectangleSOAMesh()
 		{
 			//We need 4 vertices
 			_vertices.push_back(Math::Vector3(-0.5f, -0.5f, 0.0f));
@@ -16,7 +16,7 @@ namespace EAE_Engine
 			_vertices.push_back(Math::Vector3(0.5f, -0.5f, 0.0f));
 		}
 
-		RectangleMesh::RectangleMesh(float i_left, float i_right, float i_bottom, float i_top)
+		RectangleSOAMesh::RectangleSOAMesh(float i_left, float i_right, float i_bottom, float i_top)
 		{
 			//We need 4 vertices
 			_vertices.push_back(Math::Vector3(i_left, i_bottom, 0.0f));
@@ -25,7 +25,7 @@ namespace EAE_Engine
 			_vertices.push_back(Math::Vector3(i_left, i_top, 0.0f));
 		}
 
-		BoxMesh::BoxMesh()
+		BoxSOAMesh::BoxSOAMesh()
 		{
 			// Vertices Data, there are 24 vertices for a box
 			{
@@ -76,7 +76,7 @@ namespace EAE_Engine
 		 * The code came from: http://richardssoftware.net/Home/Post/7
 		 * stack is the rows, slice is the columns
 		 */
-		SphereMesh::SphereMesh(uint32_t sliceCount, uint32_t stackCount, float radius)
+		SphereSOAMesh::SphereSOAMesh(uint32_t sliceCount, uint32_t stackCount, float radius)
 		{
 			const float phiStep = Math::Pi / stackCount;
 			const float thetaStep = 2.0f * Math::Pi / sliceCount;
@@ -145,7 +145,7 @@ namespace EAE_Engine
 		/*
 		 * Code of calculating the Cylinder, comes from http://richardssoftware.net/Home/Post/7
 		 */
-		void BuildCylinderTopCap(float topRadius, float height, uint32_t sliceCount, CylinderMesh& o_cylinder) {
+		void BuildCylinderTopCap(float topRadius, float height, uint32_t sliceCount, CylinderSOAMesh& o_cylinder) {
 			uint32_t baseIndex = (uint32_t)o_cylinder._vertices.size();
 
 			float y = 0.5f * height;
@@ -177,7 +177,7 @@ namespace EAE_Engine
 			}
 		}
 
-		void BuildCylinderBottomCap(float bottomRadius, float height, uint32_t sliceCount, CylinderMesh& o_cylinder) {
+		void BuildCylinderBottomCap(float bottomRadius, float height, uint32_t sliceCount, CylinderSOAMesh& o_cylinder) {
 			uint32_t baseIndex = (uint32_t)o_cylinder._vertices.size();
 
 			float y = -0.5f * height;
@@ -210,7 +210,7 @@ namespace EAE_Engine
 			}
 		}
 
-		CylinderMesh::CylinderMesh(float bottomRadius, float topRadius, float height, uint32_t sliceCount, uint32_t stackCount) {
+		CylinderSOAMesh::CylinderSOAMesh(float bottomRadius, float topRadius, float height, uint32_t sliceCount, uint32_t stackCount) {
 			float stackHeight = height / stackCount;//height per stack
 			float radiusStep = (topRadius - bottomRadius) / stackCount;
 			uint32_t ringCount = stackCount + 1;// stack is the gap, so rings will be one more than that

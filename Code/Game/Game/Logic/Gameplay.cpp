@@ -272,7 +272,7 @@ namespace
 			pPlayerObj->GetTransform()->SetRotation(player_rotation);
 			EAE_Engine::Graphics::AOSMeshRender* pPlayerRender = EAE_Engine::Graphics::AddMeshRender(pathPlayer, pPlayerObj->GetTransform());
 			{
-				EAE_Engine::Graphics::CylinderMesh cylinder(1.0f, 1.0f, 4.0f, 20, 1);
+				EAE_Engine::Graphics::CylinderSOAMesh cylinder(1.0f, 1.0f, 4.0f, 20, 1);
 				EAE_Engine::Mesh::sSubMesh subMesh(0, (uint32_t)cylinder._indices.size() - 1);
 				std::vector<EAE_Engine::Mesh::sVertex> vertices;
 				vertices.resize(cylinder._vertices.size());
