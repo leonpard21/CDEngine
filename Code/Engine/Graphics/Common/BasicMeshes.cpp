@@ -35,31 +35,75 @@ namespace EAE_Engine
 				_vertices.push_back(Math::Vector3(-0.5f, 0.5f, -0.5f));
 				_vertices.push_back(Math::Vector3(0.5f, 0.5f, -0.5f));
 				_vertices.push_back(Math::Vector3(0.5f, -0.5f, -0.5f));
+				for (uint32_t i = 0; i < 4; ++i)
+				{
+					_normals.push_back(Math::Vector3(0.0f, 0.0f, -1.0f));
+				}
 				// back
 				_vertices.push_back(Math::Vector3(-0.5f, -0.5f, 0.5f));
 				_vertices.push_back(Math::Vector3(0.5f, -0.5f, 0.5f));
 				_vertices.push_back(Math::Vector3(0.5f, 0.5f, 0.5f));
 				_vertices.push_back(Math::Vector3(-0.5f, 0.5f, 0.5f));
+				for (uint32_t i = 0; i < 4; ++i)
+				{
+					_normals.push_back(Math::Vector3(0.0f, 0.0f, 1.0f));
+				}
 				// top
 				_vertices.push_back(Math::Vector3(-0.5f, 0.5f, -0.5f));
 				_vertices.push_back(Math::Vector3(-0.5f, 0.5f, 0.5f));
 				_vertices.push_back(Math::Vector3(0.5f, 0.5f, 0.5f));
 				_vertices.push_back(Math::Vector3(0.5f, 0.5f, -0.5f));
+				for (uint32_t i = 0; i < 4; ++i)
+				{
+					_normals.push_back(Math::Vector3(0.0f, 1.0f, 0.0f));
+				}
 				// bottom
 				_vertices.push_back(Math::Vector3(-0.5f, -0.5f, -0.5f));
 				_vertices.push_back(Math::Vector3(0.5f, -0.5f, -0.5f));
 				_vertices.push_back(Math::Vector3(0.5f, -0.5f, 0.5f));
 				_vertices.push_back(Math::Vector3(-0.5f, -0.5f, 0.5f));
+				for (uint32_t i = 0; i < 4; ++i)
+				{
+					_normals.push_back(Math::Vector3(0.0f, -1.0f, 0.0f));
+				}
 				// left
 				_vertices.push_back(Math::Vector3(-0.5f, -0.5f, +0.5f));
 				_vertices.push_back(Math::Vector3(-0.5f, +0.5f, +0.5f));
 				_vertices.push_back(Math::Vector3(-0.5f, +0.5f, -0.5f));
 				_vertices.push_back(Math::Vector3(-0.5f, -0.5f, -0.5f));
+				for (uint32_t i = 0; i < 4; ++i)
+				{
+					_normals.push_back(Math::Vector3(-1.0f, 0.0f, 0.0f));
+				}
 				// right
 				_vertices.push_back(Math::Vector3(+0.5f, -0.5f, -0.5f));
 				_vertices.push_back(Math::Vector3(+0.5f, +0.5f, -0.5f));
 				_vertices.push_back(Math::Vector3(+0.5f, +0.5f, +0.5f));
 				_vertices.push_back(Math::Vector3(+0.5f, -0.5f, +0.5f));
+				for (uint32_t i = 0; i < 4; ++i)
+				{
+					_normals.push_back(Math::Vector3(1.0f, 0.0f, 0.0f));
+				}
+				// Insert UVs, add 3 * 8 = 24 uvs
+				for (uint32_t i = 0; i < 3; ++i)
+				{
+					// forward
+					_uvs.push_back(Math::Vector2(0.0f, 1.0f));
+					_uvs.push_back(Math::Vector2(0.0f, 0.0f));
+					_uvs.push_back(Math::Vector2(1.0f, 0.0f));
+					_uvs.push_back(Math::Vector2(1.0f, 1.0f));
+					// backward
+					_uvs.push_back(Math::Vector2(1.0f, 1.0f));
+					_uvs.push_back(Math::Vector2(0.0f, 1.0f));
+					_uvs.push_back(Math::Vector2(0.0f, 0.0f));
+					_uvs.push_back(Math::Vector2(1.0f, 0.0f));
+				}
+				// Add colors for 24 vertices(we have 3 pairs of 2 faces, each face has 4 vertices, so it is 3 * 2 * 4 = 24 vertices)
+				for (uint32_t i = 0; i < 24; ++i)
+				{
+					Math::TVector4<uint8_t> color(255, 255, 255, 255);
+					_colors.push_back(color);
+				}
 			}
 			// Indices Data, there are 36 indices for a box
 			{
