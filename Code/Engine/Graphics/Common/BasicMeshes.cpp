@@ -38,6 +38,7 @@ namespace EAE_Engine
 				for (uint32_t i = 0; i < 4; ++i)
 				{
 					_normals.push_back(Math::Vector3(0.0f, 0.0f, -1.0f));
+					_tangents.push_back(Math::Vector3(1.0f, 0.0f, 0.0f));
 				}
 				// back
 				_vertices.push_back(Math::Vector3(-0.5f, -0.5f, 0.5f));
@@ -47,6 +48,7 @@ namespace EAE_Engine
 				for (uint32_t i = 0; i < 4; ++i)
 				{
 					_normals.push_back(Math::Vector3(0.0f, 0.0f, 1.0f));
+					_tangents.push_back(Math::Vector3(-1.0f, 0.0f, 0.0f));
 				}
 				// top
 				_vertices.push_back(Math::Vector3(-0.5f, 0.5f, -0.5f));
@@ -56,6 +58,7 @@ namespace EAE_Engine
 				for (uint32_t i = 0; i < 4; ++i)
 				{
 					_normals.push_back(Math::Vector3(0.0f, 1.0f, 0.0f));
+					_tangents.push_back(Math::Vector3(1.0f, 0.0f, 0.0f));
 				}
 				// bottom
 				_vertices.push_back(Math::Vector3(-0.5f, -0.5f, -0.5f));
@@ -65,6 +68,7 @@ namespace EAE_Engine
 				for (uint32_t i = 0; i < 4; ++i)
 				{
 					_normals.push_back(Math::Vector3(0.0f, -1.0f, 0.0f));
+					_tangents.push_back(Math::Vector3(-1.0f, 0.0f, 0.0f));
 				}
 				// left
 				_vertices.push_back(Math::Vector3(-0.5f, -0.5f, +0.5f));
@@ -74,6 +78,7 @@ namespace EAE_Engine
 				for (uint32_t i = 0; i < 4; ++i)
 				{
 					_normals.push_back(Math::Vector3(-1.0f, 0.0f, 0.0f));
+					_tangents.push_back(Math::Vector3(0.0f, 0.0f, -1.0f));
 				}
 				// right
 				_vertices.push_back(Math::Vector3(+0.5f, -0.5f, -0.5f));
@@ -83,6 +88,7 @@ namespace EAE_Engine
 				for (uint32_t i = 0; i < 4; ++i)
 				{
 					_normals.push_back(Math::Vector3(1.0f, 0.0f, 0.0f));
+					_tangents.push_back(Math::Vector3(0.0f, 0.0f, 1.0f));
 				}
 				// Insert UVs, add 3 * 8 = 24 uvs
 				for (uint32_t i = 0; i < 3; ++i)
@@ -130,6 +136,7 @@ namespace EAE_Engine
 				{
 					_vertices.push_back(Math::Vector3(0.0f, radius, 0.0f));
 					_normals.push_back(Math::Vector3(0.0f, 1.0f, 0.0f));
+					_tangents.push_back(Math::Vector3(1.0f, 0.0f, 0.0f));
 					// UV of the sphere can be thought as a rectangle covers the surface of the sphere
 					_uvs.push_back(Math::Vector2(0.0f, 0.0f));
 				}
@@ -144,6 +151,7 @@ namespace EAE_Engine
 						_vertices.push_back(p);
 						Math::Vector3 t(-radius * std::sinf(phi) * std::sinf(theta), 0.0f, radius * std::sinf(phi) * std::cosf(theta));
 						t.Normalize();
+						_tangents.push_back(t);
 						Math::Vector3 n = p.GetNormalize();
 						_normals.push_back(n);
 						Math::Vector2 uv(theta / (Math::Pi * 2.0f), phi / Math::Pi);
@@ -154,6 +162,7 @@ namespace EAE_Engine
 				{
 					_vertices.push_back(Math::Vector3(0.0f, -radius, 0.0f));
 					_normals.push_back(Math::Vector3(0.0f, -1.0f, 0.0f));
+					_tangents.push_back(Math::Vector3(1.0f, 0.0f, 0.0f));
 					_uvs.push_back(Math::Vector2(0.0f, 1.0f));
 				}
 				// add color for each vertex
@@ -220,6 +229,7 @@ namespace EAE_Engine
 				float z = topRadius* std::sinf(i * dTheta);
 				o_cylinder._vertices.push_back(Math::Vector3(x, y, z));
 				o_cylinder._normals.push_back(Math::Vector3(0.0f, 1.0f, 0.0f));
+				o_cylinder._tangents.push_back(Math::Vector3(1.0f, 0.0f, 0.0f));
 				float u = x / height + 0.5f;
 				float v = z / height + 0.5f;
 				o_cylinder._uvs.push_back(Math::Vector2(u, v));
@@ -230,6 +240,7 @@ namespace EAE_Engine
 			{
 				o_cylinder._vertices.push_back(Math::Vector3(0.0f, y, 0.0f));
 				o_cylinder._normals.push_back(Math::Vector3(0.0f, 1.0f, 0.0f));
+				o_cylinder._tangents.push_back(Math::Vector3(1.0f, 0.0f, 0.0f));
 				o_cylinder._uvs.push_back(Math::Vector2(0.5f, 0.5f));
 				Math::TVector4<uint8_t> color(255, 200, 255, 255);
 				o_cylinder._colors.push_back(color);
@@ -253,6 +264,7 @@ namespace EAE_Engine
 				float z = bottomRadius * std::sinf(i * dTheta);
 				o_cylinder._vertices.push_back(Math::Vector3(x, y, z));
 				o_cylinder._normals.push_back(Math::Vector3(0.0f, -1.0f, 0.0f));
+				o_cylinder._tangents.push_back(Math::Vector3(1.0f, 0.0f, 0.0f));
 				float u = x / height + 0.5f;
 				float v = z / height + 0.5f;
 				o_cylinder._uvs.push_back(Math::Vector2(u, v));
@@ -263,6 +275,7 @@ namespace EAE_Engine
 			{
 				o_cylinder._vertices.push_back(Math::Vector3(0.0f, y, 0.0f));
 				o_cylinder._normals.push_back(Math::Vector3(0.0f, -1.0f, 0.0f));
+				o_cylinder._tangents.push_back(Math::Vector3(1.0f, 0.0f, 0.0f));
 				o_cylinder._uvs.push_back(Math::Vector2(0.5f, 0.5f));
 				Math::TVector4<uint8_t> color(255, 200, 255, 255);
 				o_cylinder._colors.push_back(color);
@@ -293,6 +306,7 @@ namespace EAE_Engine
 					Math::Vector2 uv((float)j / sliceCount, 1.0f - (float)i / stackCount);
 					_uvs.push_back(uv);
 					Math::Vector3 t(-s, 0.0f, c);
+					_tangents.push_back(t);
 					float dr = bottomRadius - topRadius;
 					Math::Vector3 bitangent(dr*c, -height, dr*s);
 					Math::Vector3 n = Math::Vector3::Cross(t, bitangent);

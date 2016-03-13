@@ -367,7 +367,7 @@ namespace
 		}
 		EAE_Engine::Common::IGameObj* pToggleObj = EAE_Engine::Core::World::GetInstance().AddGameObj("toggleObj", textPos);
 		{
-			pToggle = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddToggle(true, pToggleObj->GetTransform());
+			pToggle = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddToggle(false, pToggleObj->GetTransform());
 			pToggle->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pToggle->_rectTransform.SetRect({ 16.0f, -168.0f, 16.0f, 16.0f });
 			pToggle->_backgroundImage._rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
