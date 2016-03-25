@@ -4,7 +4,6 @@
 #ifndef EAEENGINE_MATH_CQUATERNION_H
 #define EAEENGINE_MATH_CQUATERNION_H
 
-#include "Vector.h"
 
 // Class Declaration
 //==================
@@ -13,6 +12,9 @@ namespace EAE_Engine
 {
   namespace Math
   {
+    template<typename T>
+    class TVector3;
+    typedef TVector3<float> Vector3;
     class EulerAngle;
 	class ColMatrix44;
 	class Quaternion
@@ -21,6 +23,7 @@ namespace EAE_Engine
 		// Concatenation
 		Quaternion operator *( const Quaternion& i_rhs ) const;
 		bool operator ==(const Quaternion& i_rhs) const;
+        Quaternion& operator= (const Quaternion& right);
 		// Inversion
 		void Invert();
 		Quaternion CreateInverse() const;
@@ -33,11 +36,12 @@ namespace EAE_Engine
 		Quaternion();	// Identity
 		Quaternion( const float i_angleInRadians, const Vector3& i_axisOfRotation_normalized );
 		Quaternion(const Quaternion& i_other);
-			
+
 		// Static member functions
 		// Create Matrix for a quaternion
 		static ColMatrix44 CreateColMatrix(const Quaternion& i_rotation);
         static Vector3 CreateEulerAngle(const Quaternion& i_rotation);
+        static Quaternion Slerp(const Quaternion& from, const Quaternion& to, float t);
 		// rotate vector
 		static Vector3 RotateVector(const Quaternion& i_rotation, const Vector3& i_vec);
 		// Data

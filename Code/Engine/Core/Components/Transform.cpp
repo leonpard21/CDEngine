@@ -69,7 +69,7 @@ namespace EAE_Engine
 		}
 
 		// global transofrm
-		Math::Vector3 Transform::GetPos() 
+		Math::Vector3 Transform::GetPos() const
 		{ 
 			if (_pParent == nullptr)
 				return _localPosition;
@@ -89,7 +89,7 @@ namespace EAE_Engine
 				_localPosition = pos - _pParent->GetPos();
 		}
 
-		Math::Quaternion Transform::GetRotation() 
+		Math::Quaternion Transform::GetRotation() const
 		{ 
 			if (_pParent == nullptr)
 				return _localRotation; 
@@ -131,7 +131,7 @@ namespace EAE_Engine
 				_localScale = Math::Vector3(scale.x() / parentScale.x(), scale.y() / parentScale.y(), scale.z() / parentScale.z());
 			}
 		}
-		Math::Vector3 Transform::GetScale()
+		Math::Vector3 Transform::GetScale() const
 		{
 			if (_pParent == nullptr)
 				return _localScale;

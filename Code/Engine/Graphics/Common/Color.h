@@ -17,10 +17,10 @@ namespace EAE_Engine
 			{}
 			inline Color(float r, float g, float b, float a)
 			{
-				_r = (uint8_t)(Math::clip<float>(r, 0.0f, 1.0f) * 255.0f);
-				_g = (uint8_t)(Math::clip<float>(g, 0.0f, 1.0f) * 255.0f);
-				_b = (uint8_t)(Math::clip<float>(b, 0.0f, 1.0f) * 255.0f);
-				_a = (uint8_t)(Math::clip<float>(a, 0.0f, 1.0f) * 255.0f);
+				_r = (uint8_t)(Math::clamp<float>(r, 0.0f, 1.0f) * 255.0f);
+				_g = (uint8_t)(Math::clamp<float>(g, 0.0f, 1.0f) * 255.0f);
+				_b = (uint8_t)(Math::clamp<float>(b, 0.0f, 1.0f) * 255.0f);
+				_a = (uint8_t)(Math::clamp<float>(a, 0.0f, 1.0f) * 255.0f);
 			}
 			inline Color(const Color& i_other) : _r(i_other._r), _g(i_other._g), _b(i_other._b), _a(i_other._a) {}
 			inline Color& operator=(const Color& i_other) 

@@ -31,6 +31,7 @@
     <ClInclude Include="MemoryOp.h" />
     <ClInclude Include="NamedBitSet.h" />
     <ClInclude Include="RTTI.h" />
+    <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="Target.h" />
     <ClInclude Include="Target.Win32.h" />
     <ClInclude Include="Timer\EngineTime.h" />

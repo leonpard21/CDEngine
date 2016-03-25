@@ -247,10 +247,10 @@ namespace
 				}
 			}
 			lua_pop(&io_luaState, 1);
-			o_vertex.r = (uint8_t)(EAE_Engine::Math::clip<float>(color._u[0], 0.0f, 1.0f) * 255.0f);
-			o_vertex.g = (uint8_t)(EAE_Engine::Math::clip<float>(color._u[1], 0.0f, 1.0f) * 255.0f);
-			o_vertex.b = (uint8_t)(EAE_Engine::Math::clip<float>(color._u[2], 0.0f, 1.0f) * 255.0f);
-			o_vertex.a = (uint8_t)(EAE_Engine::Math::clip<float>(color._u[3], 0.0f, 1.0f) * 255.0f);
+			o_vertex.r = (uint8_t)(EAE_Engine::Math::clamp<float>(color._u[0], 0.0f, 1.0f) * 255.0f);
+			o_vertex.g = (uint8_t)(EAE_Engine::Math::clamp<float>(color._u[1], 0.0f, 1.0f) * 255.0f);
+			o_vertex.b = (uint8_t)(EAE_Engine::Math::clamp<float>(color._u[2], 0.0f, 1.0f) * 255.0f);
+			o_vertex.a = (uint8_t)(EAE_Engine::Math::clamp<float>(color._u[3], 0.0f, 1.0f) * 255.0f);
 		}
 		// Get the value of "Normal"
 		{

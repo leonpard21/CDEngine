@@ -24,12 +24,12 @@ namespace EAE_Engine
 			virtual Common::IGameObj* GetGameObj();
 			virtual Common::ICompo* GetComponent(typeid_t type);
 			// global transform
-			Math::Vector3 GetPos();
+			Math::Vector3 GetPos() const;
 			void SetPos(const Math::Vector3&);
-			Math::Quaternion GetRotation();
+			Math::Quaternion GetRotation() const;
 			void SetRotation(const Math::Quaternion& i_other);
 			void SetScale(const Math::Vector3& scale);
-			Math::Vector3 GetScale();
+			Math::Vector3 GetScale() const;
 			// local transform
 			Math::Vector3& GetLocalPos();
 			void SetLocalPos(const Math::Vector3&);

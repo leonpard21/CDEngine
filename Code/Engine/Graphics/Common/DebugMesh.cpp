@@ -35,10 +35,10 @@ namespace
 		DebugVertex(EAE_Engine::Math::Vector3 i_pos, EAE_Engine::Math::Vector4 i_color) :
 			x(i_pos.x()), y(i_pos.y()), z(i_pos.z())
 		{
-			r = (uint8_t)(EAE_Engine::Math::clip<float>(i_color.x(), 0.0f, 1.0f) * 255.0f);
-			g = (uint8_t)(EAE_Engine::Math::clip<float>(i_color.y(), 0.0f, 1.0f) * 255.0f);
-			b = (uint8_t)(EAE_Engine::Math::clip<float>(i_color.z(), 0.0f, 1.0f) * 255.0f);
-			a = (uint8_t)(EAE_Engine::Math::clip<float>(i_color.w(), 0.0f, 1.0f) * 255.0f);
+			r = (uint8_t)(EAE_Engine::Math::clamp<float>(i_color.x(), 0.0f, 1.0f) * 255.0f);
+			g = (uint8_t)(EAE_Engine::Math::clamp<float>(i_color.y(), 0.0f, 1.0f) * 255.0f);
+			b = (uint8_t)(EAE_Engine::Math::clamp<float>(i_color.z(), 0.0f, 1.0f) * 255.0f);
+			a = (uint8_t)(EAE_Engine::Math::clamp<float>(i_color.w(), 0.0f, 1.0f) * 255.0f);
 		}
 	};
 }

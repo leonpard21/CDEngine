@@ -72,12 +72,12 @@ namespace EAE_Engine
 			virtual ~ITransform() {}
 			virtual IGameObj* GetGameObj() = 0;
 			// global transform
-			virtual Math::Vector3 GetPos() = 0;
+			virtual Math::Vector3 GetPos() const = 0;
 			virtual void SetPos(const Math::Vector3&) = 0;
 			virtual void SetRotation(const Math::Quaternion&) = 0;
-			virtual Math::Quaternion GetRotation() = 0;
+			virtual Math::Quaternion GetRotation() const = 0;
 			virtual void SetScale(const Math::Vector3&) = 0;
-			virtual Math::Vector3 GetScale() = 0;
+			virtual Math::Vector3 GetScale() const = 0;
 			// local transform
 			virtual Math::Vector3& GetLocalPos() = 0;
 			virtual void SetLocalPos(const Math::Vector3&) = 0;
