@@ -35,6 +35,27 @@ namespace EAE_Engine{
 			return t >= 0 ? t : -t;
 		}
 
+        // Linearly interpolates between a and b by t.
+        // The parameter t is clamped to the range[0, 1].
+        // t = 0 is a, t = 1 is b
+        template<typename Type>
+        inline Type Lerp(Type a, Type b, float t)
+        {
+          t = clip<float>(t, 0.0f, 1.0f);
+          return a * (1.0f - t) + b * t;
+        }
+
+        // Same as Lerp, but makes sure the values interpolate correctly when they wrap around 360 degrees.
+        // The parameter t is clamped to the range[0, 1].
+        // Variables a and b are assumed to be in degrees.
+        template<typename Type>
+        inline Type LerpAngle(Type a, Type b, float t)
+        {
+          Type result = Lerp<Type>(a, b, t);
+          result = result / (Type)360 * (Type)360;
+          return result;
+        }
+
 		float ConvertDegreesToRadians(const float i_degrees);
 	}
 }

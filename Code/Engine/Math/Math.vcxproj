@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ColMatrix.cpp" />
+    <ClCompile Include="EulerAngle.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="MathTool.cpp" />
     <ClCompile Include="RowMatrix.cpp" />
@@ -27,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ColMatrix.h" />
+    <ClInclude Include="EulerAngle.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="MathTool.h" />

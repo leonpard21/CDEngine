@@ -1,16 +1,17 @@
 // Header Files
 //=============
 #include "Quaternion.h"
+#include "ColMatrix.h"
+#include "EulerAngle.h"
+#include "MathTool.h"
 #include <cassert>
 #include <cmath>
-#include "ColMatrix.h"
-
 // Static Data Initialization
 //===========================
 
 namespace
 {
-	const float s_epsilon = 1.0e-9f;
+  const float s_epsilon = 1.0e-9f;
 }
 
 // Interface
@@ -134,6 +135,37 @@ namespace EAE_Engine
 			result._m22 = 1.0f - _2xx - _2yy;
 			return result;
 		}
+
+        // Converting an object-to-upright quaternion to Euler angles
+        // Come from 3DMath Primier for Graphics and Game development 2nd, Chaptor 8.7.6
+        Vector3 Quaternion::CreateEulerAngle(const Quaternion& i_rotation)
+        {
+          // result is radians
+          Vector3 result = Vector3::Zero; 
+          float w = i_rotation._w;
+          float x = i_rotation._x;
+          float y = i_rotation._y;
+          float z = i_rotation._z;
+          // sin(Pitch)
+          float sp = -2.0f * (y * z - w * x);
+          // Check for Gimbal Lock
+          if (Abs<float>(sp) > 0.9999f) 
+          {
+            // This is the Gimbal Lock case.
+            // the pitch is looking for stright up or down
+            // We just calculate the heading and make bank to 0.0f
+            result._x = Math::Pi * 0.5f; // pitch
+            result._y = std::atan2f(-x * z + w * y, 0.5f - y * y - z * z); //heading
+            result._z = 0.0f; // bank
+          }
+          else 
+          {
+            result._x = std::asinf(sp);
+            result._y = std::atan2f(x * z + w * y, 0.5f - x * x - y * y);
+            result._z = std::atan2f(x * y + w * z, 0.5f - x * x - z * z);
+          }
+          return result;
+        }
 
 		Vector3 Quaternion::RotateVector(const Quaternion& i_rotation, const Math::Vector3& i_vec)
 		{

@@ -75,9 +75,9 @@ namespace EAE_Engine
 			inline void z(const T tz){ _z = tz; }
 
 			inline TVector3 Normalize();
-			inline TVector3 GetNormalize();
+			inline TVector3 GetNormalize() const;
 			inline T Dot(const TVector3<T>& right) const;
-			inline TVector3 Cross(const TVector3<T>& right);
+			inline TVector3 Cross(const TVector3<T>& right) const;
 			inline T Magnitude() const { return sqrt(_x * _x + _y*_y + _z*_z); }
 			inline TVector3 GetEdge(TVector3& point_another);
 
@@ -97,7 +97,9 @@ namespace EAE_Engine
 			// Static version of the functions
 			static float Dot(const TVector3<T>& left, const TVector3<T>& right);
 			static TVector3<T> Cross(const TVector3<T>& left, const TVector3<T>& right);
-			
+            static float Angle(const TVector3<T>& from, const TVector3<T>& to);
+            static TVector3<T> Lerp(const TVector3<T>& from, const TVector3<T>& to, float t);
+
 			//Some useful variables
 			const static TVector3 Zero;
 			const static TVector3 Right;
@@ -130,6 +132,23 @@ namespace EAE_Engine
 			result._z = (left._x * right._y - left._y * right._x);//u1*v2 - u2*v1
 			return result;
 		}
+
+        // Returns the angle in degrees between from and to [0.0f, 180.0f]. 
+        // The angle returned is always the acute angle between the two vectors.
+        template <typename T>
+        float TVector3<T>::Angle(const TVector3<T>& from, const TVector3<T>& to)
+        {
+          float arccos = Vector3<T>::Dot(from.GetNormalize(), to.GetNormalize());
+          return std::acosf(arccos);
+        }
+
+        template <typename T>
+        TVector3<T> TVector3<T>::Lerp(const TVector3<T>& from, const TVector3<T>& to, float t)
+        {
+          float t = t < 0.0f ? 0.0f : t;
+          t = t > 1.0f ? 1.0f : t;
+          return from * (1.0f - t) + to * t;
+        }
 
 		template <typename T>
 		TVector3<T>::TVector3(const T x, const T y, const T z) :
@@ -188,7 +207,7 @@ namespace EAE_Engine
 		}
 
 		template <typename T>
-		inline TVector3<T> TVector3<T>::GetNormalize()
+		inline TVector3<T> TVector3<T>::GetNormalize() const
 		{
 			TVector3<T> result = *this;
 			T length = Magnitude();
@@ -204,7 +223,7 @@ namespace EAE_Engine
 			result->_z = result->_z / length;
 			return result;
 		}
-		inline TVector3<float> TVector3<float>::GetNormalize()
+		inline TVector3<float> TVector3<float>::GetNormalize() const
 		{
 			TVector3<float> result = *this;
 			float length = Magnitude();
@@ -229,7 +248,7 @@ namespace EAE_Engine
 		}
 
 		template <typename T>
-		inline TVector3<T> TVector3<T>::Cross(const TVector3<T>& right)
+		inline TVector3<T> TVector3<T>::Cross(const TVector3<T>& right) const
 		{
 			//this.x,y,z can be u1, u2, u3
 			//right.xy,z can be v1, v2, v3

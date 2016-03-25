@@ -9,9 +9,9 @@
 namespace EAE_Engine 
 {
 	// set mem by value
-	inline void SetMem(uint8_t* dest, size_t numOfDest, int value)
+	inline void SetMem(uint8_t* dest, size_t numOfDest, uint8_t value)
 	{
-		for (unsigned int i = 0; i < numOfDest; i++)
+		for (size_t i = 0; i < numOfDest; ++i)
 		{
 			dest[i] = value;
 		}
@@ -20,7 +20,7 @@ namespace EAE_Engine
 	// copy mem from source to destination
 	inline void CopyMem(const uint8_t* source, uint8_t* dest, size_t numOfDest)
 	{
-		for (unsigned int i = 0; i < numOfDest; i++)
+		for (size_t i = 0; i < numOfDest; ++i)
 		{
 			dest[i] = source[i];
 		}
