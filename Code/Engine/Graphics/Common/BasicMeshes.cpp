@@ -25,19 +25,19 @@ namespace EAE_Engine
           _vertices.push_back(Math::Vector3(i_left, i_top, 0.0f));
         }
 
-        CircleMesh::CircleMesh() 
+        CircleSOAMesh::CircleSOAMesh() 
         {
           const size_t segments = 24;
           float angleStep = Math::Pi * 2.0f / segments;
-          float cos = std::cosf(Math::Pi - angleStep);
-          float sin = std::sinf(Math::Pi - angleStep);
-          Math::Vector3 offset(cos, 0.0f, sin);
           _vertices.push_back({ 1.0f, 0.0f, 0.0f });
-          for (size_t i = 0; i < segments; ++i)
+          for (size_t i = 1; i < segments; ++i)
           {
-            Math::Vector3 last = _vertices[i];
-            _vertices.push_back(last + offset);
+            float cos = std::cosf(angleStep * i);
+            float sin = std::sinf(angleStep * i);
+            _vertices.push_back({cos, 0.0f, sin});
+            _vertices.push_back({ cos, 0.0f, sin });
           }
+          _vertices.push_back({ 1.0f, 0.0f, 0.0f });
           // add colors
           for (size_t i = 0; i < _vertices.size(); ++i)
           {

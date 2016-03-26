@@ -101,7 +101,7 @@ namespace EAE_Engine
                 
                 // Circle
                 {
-                  CircleMesh standardCircle;
+                  CircleSOAMesh standardCircle;
                   uint32_t vertexCount = (uint32_t)standardCircle._vertices.size();
                   DebugVertex* pVertices = new DebugVertex[vertexCount];
                   // Set the Vertices Information.
@@ -295,7 +295,7 @@ namespace EAE_Engine
             Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(scale);
             tranformsMatrix = tranformsMatrix * scaleMatrix;
             // Get the TransformMatrix
-            RenderRawData3D renderData = { _pBoxesMeshRender, debugCircles[circleIndex]._color, tranformsMatrix };
+            RenderRawData3D renderData = { _pCirclesMeshRender, debugCircles[circleIndex]._color, tranformsMatrix };
             renderDataList.push_back(renderData);
           }
         }

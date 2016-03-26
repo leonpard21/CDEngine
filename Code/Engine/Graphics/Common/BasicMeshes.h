@@ -15,9 +15,9 @@ namespace EAE_Engine
       std::vector<Math::Vector3> _vertices;
     };
 
-    struct CircleMesh 
+    struct CircleSOAMesh 
     {
-      CircleMesh();
+      CircleSOAMesh();
       std::vector<Math::Vector3> _vertices;
       std::vector<Math::TVector4<uint8_t>> _colors;
     };
