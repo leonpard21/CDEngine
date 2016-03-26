@@ -282,6 +282,9 @@ namespace EAE_Engine
     // 1. comuter deltaA, 2. t * deltaA, 3. a0 + t * deltaA.
     // For Slerp, it's the same thing.
     // as a result, slerp(q0, q1, t) = (q1 * q0.inverse())^t * q0.
+    // for speed reason, we use:
+    // slerp(q0, q1, t) = sin((1 ? t) * Omega)/sin(Omega) * q0 + sin(t * Omega)/sin(Omega) * q1.
+    // Omega is the angle between q0 and q1.
     Quaternion Quaternion::Slerp(const Quaternion& q0, const Quaternion& q1, float t)
     {
       t = clamp<float>(t, 0.0f, 1.0f);
