@@ -99,6 +99,7 @@ namespace EAE_Engine
       static TVector3<T> Cross(const TVector3<T>& left, const TVector3<T>& right);
       static float Angle(const TVector3<T>& from, const TVector3<T>& to);
       static TVector3<T> Lerp(const TVector3<T>& from, const TVector3<T>& to, float t);
+      static TVector3<T> Slerp(const TVector3<T>& from, const TVector3<T>& to, float t);
 
       //Some useful variables
       const static TVector3 Zero;
@@ -148,6 +149,29 @@ namespace EAE_Engine
       float t = t < 0.0f ? 0.0f : t;
       t = t > 1.0f ? 1.0f : t;
       return from * (1.0f - t) + to * t;
+    }
+
+    // Geometric Slerp: https://en.wikipedia.org/wiki/Slerp
+    template <typename T>
+    TVector3<T> TVector3<T>::Slerp(const TVector3<T>& from, const TVector3<T>& to, float t)
+    {
+      float t = t < 0.0f ? 0.0f : t;
+      t = t > 1.0f ? 1.0f : t;
+      // get cos of 2 vectors
+      float cosOmega = TVector3<T>::Dot(from.GetNormalize(), to.GetNormalize());
+      // if the 2 vectors's direction are too close, 
+      // just use lerp. 
+      float k0 = 1.0f - t;
+      float k1 = t;
+      if (cosOmega < 0.9999f)
+      {
+        float sinOmega = std::sqrt(1.0f - cosOmega * cosOmega);
+        float omega = std::atan2f(sinOmega, cosOmega);
+        float oneOverSinOmega = 1.0f / sinOmega;
+        k0 = std::sinf(k0 * omega) * oneOverSinOmega;
+        k1 = std::sinf(k1 * omega) * oneOverSinOmega;
+      }
+      return from * k0 + to * k1;
     }
 
     template <typename T>

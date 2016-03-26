@@ -292,6 +292,9 @@ namespace EAE_Engine
       Quaternion target = q1;
       // cos of the angle between q0, q1
       float cosOmega = Dot(q0, target);
+      // this cosOmega sign check is trying to: 
+      // avoid some differnt for doing a longer or shorter rotation arc from q0 to q1.
+      // by doing this, we only use the shortest rotation arc.
       if (cosOmega < 0.0f) 
       {
         target = target * -1.0f;
