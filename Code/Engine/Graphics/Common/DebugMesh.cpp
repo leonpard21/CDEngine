@@ -55,6 +55,8 @@ namespace EAE_Engine
 			LoadMaterial("data/Materials/debugPrimitives.material");
 			_pSegmentsMeshRender = new AOSMeshRender(); 
 			_pSegmentsMeshRender->AddMaterial("debugPrimitives", false);
+            _pCirclesMeshRender = new AOSMeshRender();
+            _pCirclesMeshRender->AddMaterial("debugPrimitives", false);
 			_pBoxesMeshRender = new AOSMeshRender();
 			_pBoxesMeshRender->AddMaterial("debugPrimitives", false);
 			_pShperesMeshRender = new AOSMeshRender();
@@ -96,6 +98,22 @@ namespace EAE_Engine
 				}
 				_pSegmentsMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, nullptr, 0, nullptr, 0);
 				_pSegmentsMeshRender->SetMesh(_pSegmentsMesh);
+                
+                // Circle
+                {
+                  CircleMesh standardCircle;
+                  uint32_t vertexCount = (uint32_t)standardCircle._vertices.size();
+                  DebugVertex* pVertices = new DebugVertex[vertexCount];
+                  // Set the Vertices Information.
+                  for (uint32_t verticesIndex = 0; verticesIndex < standardCircle._vertices.size(); ++verticesIndex)
+                  {
+                    pVertices[verticesIndex] = DebugVertex(standardCircle._vertices[verticesIndex]);
+                    pVertices[verticesIndex].a = (uint8_t)100;
+                  }
+                  _pCircleMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, pVertices, vertexCount, nullptr, 0, nullptr, 0);
+                  SAFE_DELETE_ARRAY(pVertices);
+                  _pCirclesMeshRender->SetMesh(_pCircleMesh);
+                }
 			}
 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
@@ -197,6 +215,7 @@ namespace EAE_Engine
 		{
 			// DELETE all of the MeshRenders
 			SAFE_DELETE(_pSegmentsMeshRender);
+            SAFE_DELETE(_pCirclesMeshRender);
 			SAFE_DELETE(_pBoxesMeshRender);
 			SAFE_DELETE(_pShperesMeshRender);
 			SAFE_DELETE(_pTempMeshRender);
@@ -206,6 +225,9 @@ namespace EAE_Engine
 			if (_pSegmentsMesh)
 				_pSegmentsMesh->Release();
 			SAFE_DELETE(_pSegmentsMesh);
+            if (_pCircleMesh)
+              _pCircleMesh->Release();
+            SAFE_DELETE(_pCircleMesh);
 			if (_pBoxesMesh)
 				_pBoxesMesh->Release();
 			SAFE_DELETE(_pBoxesMesh);
@@ -220,6 +242,7 @@ namespace EAE_Engine
 		void DebugMeshes::Update()
 		{
 			GenerateDebugSegments();
+            GenerateDebugCircles();
 			GenerateDebugBoxes();
 			GenerateDebugSpheres();
 			GenerateDebugMeshes();
@@ -259,6 +282,23 @@ namespace EAE_Engine
 			RenderRawData3D renderData = {_pSegmentsMeshRender, white, Math::ColMatrix44::Identity };
 			renderDataList.push_back(renderData);
 		}
+
+        void DebugMeshes::GenerateDebugCircles()
+        {
+          std::vector<Debug::DebugCircle>& debugCircles = Debug::DebugShapes::GetInstance().GetCircles();
+          if (debugCircles.size() == 0) return;
+          std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
+          for (uint32_t circleIndex = 0; circleIndex < debugCircles.size(); ++circleIndex)
+          {
+            Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44(Math::Quaternion::Identity, debugCircles[circleIndex]._pos);
+            Math::Vector3 scale(debugCircles[circleIndex]._radius, debugCircles[circleIndex]._radius, debugCircles[circleIndex]._radius);
+            Math::ColMatrix44 scaleMatrix = Math::ColMatrix44::CreateScaleMatrix(scale);
+            tranformsMatrix = tranformsMatrix * scaleMatrix;
+            // Get the TransformMatrix
+            RenderRawData3D renderData = { _pBoxesMeshRender, debugCircles[circleIndex]._color, tranformsMatrix };
+            renderDataList.push_back(renderData);
+          }
+        }
 
 		void DebugMeshes::GenerateDebugBoxes()
 		{

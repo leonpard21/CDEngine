@@ -33,6 +33,7 @@ namespace EAE_Engine
 		void DebugShapes::Clean()
 		{
 			_segments.clear();
+            _circles.clear();
 			_boxes.clear();
 			_spheres.clear();
 			_meshes.clear();
