@@ -22,28 +22,42 @@ namespace EAE_Engine
 	public:
 		// Concatenation
 		Quaternion operator *( const Quaternion& i_rhs ) const;
+        Quaternion operator* (float value) const;
+        Quaternion operator+ (const Quaternion& i_rhs) const;
 		bool operator ==(const Quaternion& i_rhs) const;
         Quaternion& operator= (const Quaternion& right);
 		// Inversion
 		void Invert();
-		Quaternion CreateInverse() const;
+        Quaternion GetInverse() const;
+        void Conjugate();
+        Quaternion GetConjugate() const;
+        // Exponentiation
+        // becareful this is exponentiate, q^t; not the exponential function, e^q. 
+        void Pow(float t);
+        Quaternion GetPow(float exponent) const;
 		// Normalization
 		void Normalize();
 		Quaternion CreateNormalized() const;
-
+        float GetMagnitude() const;
+        float GetSqMagnitude() const;
+        Vector3 GetVec() const;
+        
 		// Initialization / Shut Down
 		//---------------------------
 		Quaternion();	// Identity
-		Quaternion( const float i_angleInRadians, const Vector3& i_axisOfRotation_normalized );
+		Quaternion(const float i_angleInRadians, const Vector3& i_axisOfRotation_normalized );
 		Quaternion(const Quaternion& i_other);
+        Quaternion(float pitch, float heading, float bank);
 
 		// Static member functions
 		// Create Matrix for a quaternion
 		static ColMatrix44 CreateColMatrix(const Quaternion& i_rotation);
         static Vector3 CreateEulerAngle(const Quaternion& i_rotation);
         static Quaternion Slerp(const Quaternion& from, const Quaternion& to, float t);
-		// rotate vector
-		static Vector3 RotateVector(const Quaternion& i_rotation, const Vector3& i_vec);
+        static Quaternion GetDifference(const Quaternion& from, const Quaternion& to);
+        static Vector3 RotateVector(const Quaternion& i_rotation, const Math::Vector3& i_vec);
+        //static Quaternion GetQuatnionOf2Vectors(const Vector3& i_left, const Vector3& i_right);
+
 		// Data
 		//=====
 		static Quaternion Identity;
@@ -66,7 +80,6 @@ namespace EAE_Engine
 
 	// Products
 	float Dot(const Quaternion& i_lhs, const Quaternion& i_rhs);
-	Vector3 RotateVector(const Quaternion& i_rotation, const Math::Vector3& i_vec);
 	
   }
 }

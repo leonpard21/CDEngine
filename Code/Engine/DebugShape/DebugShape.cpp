@@ -10,6 +10,11 @@ namespace EAE_Engine
 			_segments.push_back({ i_start, i_end, i_color});
 		}
 
+        void DebugShapes::AddCircle(Math::Vector3 i_center, float radius, Math::Vector3 i_color)
+        {
+          _circles.push_back({i_center, radius, i_color});
+        }
+
 		void DebugShapes::AddBox(Math::Vector3 i_extents, Math::Vector3 i_pos, Math::Quaternion i_rotation, Math::Vector3 i_color)
 		{
 			_boxes.push_back({ i_extents, i_pos, i_rotation, i_color});
