@@ -358,10 +358,10 @@ namespace EAE_Engine
                 return;
             _pTempMesh->ChangeWholeBuffers(&_debugVertices[0], (uint32_t)_debugVertices.size(), nullptr, 0, nullptr, 0);
             _pTempMeshRender->SetMesh(_pTempMesh);
-            std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
+            std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
             Math::Vector3 white(1.0f, 1.0f, 1.0f);
             Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44::Identity;
-            RenderData3D renderData = { _pTempMeshRender, 0, nullptr };
+            RenderRawData3D renderData = { _pTempMeshRender, white, tranformsMatrix };
             renderDataList.push_back(renderData);
         }
 

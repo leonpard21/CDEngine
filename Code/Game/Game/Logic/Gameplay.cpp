@@ -181,10 +181,10 @@ void GameplayUpdate()
 		EAE_Engine::Math::Vector3 start = pPlayerObj->GetTransform()->GetPos();
 		start._y += 1.5f;
 		EAE_Engine::Math::Vector3 end = start + pPlayerObj->GetTransform()->GetForward() * 150;
-        {
-          EAE_Engine::Debug::DebugShapes::GetInstance().AddCircle(start, 2.0f, yellow);
-          EAE_Engine::Debug::DebugShapes::GetInstance().AddCircle(start, 4.0f, green);
-        }
+    {
+      EAE_Engine::Debug::DebugShapes::GetInstance().AddCircle(start, 2.0f, yellow);
+      EAE_Engine::Debug::DebugShapes::GetInstance().AddCircle(start, 10.0f, green);
+    }
 		if (pToggle->_checked)
 		{
 			EAE_Engine::Debug::AddSegment(start, end, yellow);
