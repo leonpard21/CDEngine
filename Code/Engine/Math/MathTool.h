@@ -4,7 +4,13 @@
 
 namespace EAE_Engine{
 	namespace Math{
+    template <typename T>
+    class TVector3;
+    typedef TVector3<float> Vector3;
+
 		extern const float Pi;
+    extern const float DegreeToRadian;
+    extern const float RadianToDegree;
 
 		template<class T>
 		const T& max(const T& a, const T& b)
@@ -51,6 +57,11 @@ namespace EAE_Engine{
     float LerpDegree(float from, float to, float t);
 
 		float ConvertDegreesToRadians(const float i_degrees);
+    float ConvertRadiansToDegrees(const float i_radians);
+
+    float Radian(const Vector3& from, const Vector3& to);
+    float Angle(const Vector3& from, const Vector3& to);
+
 	}
 }
 

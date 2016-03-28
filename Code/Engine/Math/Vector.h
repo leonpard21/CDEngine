@@ -78,6 +78,7 @@ namespace EAE_Engine
       inline TVector3 GetNormalize() const;
       inline T Dot(const TVector3<T>& right) const;
       inline TVector3 Cross(const TVector3<T>& right) const;
+      inline T SqMagnitude() const { return _x * _x + _y*_y + _z*_z; }
       inline T Magnitude() const { return sqrt(_x * _x + _y*_y + _z*_z); }
       inline TVector3 GetEdge(TVector3& point_another);
 
@@ -97,7 +98,6 @@ namespace EAE_Engine
       // Static version of the functions
       static float Dot(const TVector3<T>& left, const TVector3<T>& right);
       static TVector3<T> Cross(const TVector3<T>& left, const TVector3<T>& right);
-      static float Angle(const TVector3<T>& from, const TVector3<T>& to);
       static TVector3<T> Lerp(const TVector3<T>& from, const TVector3<T>& to, float t);
       static TVector3<T> Slerp(const TVector3<T>& from, const TVector3<T>& to, float t);
 
@@ -132,15 +132,6 @@ namespace EAE_Engine
         result._y = (T)(-1) *(left._x * right._z - left._z * right._x);//-(u1*v3 - u3*v1)
         result._z = (left._x * right._y - left._y * right._x);//u1*v2 - u2*v1
         return result;
-    }
-
-    // Returns the angle in degrees between from and to [0.0f, 180.0f]. 
-    // The angle returned is always the acute angle between the two vectors.
-    template <typename T>
-    float TVector3<T>::Angle(const TVector3<T>& from, const TVector3<T>& to)
-    {
-      float arccos = Vector3<T>::Dot(from.GetNormalize(), to.GetNormalize());
-      return std::acosf(arccos);
     }
 
     template <typename T>
@@ -398,7 +389,6 @@ namespace EAE_Engine
 
     typedef TVector3<float> Vector3;
 
-        
 ///////////////////////////////////////////////Vector4//////////////////////////////////////////
     template<typename T>
     class TVector4

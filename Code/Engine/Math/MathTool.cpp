@@ -1,4 +1,5 @@
 #include "MathTool.h"
+#include "Vector.h"
 #include <cmath>
 
 namespace EAE_Engine 
@@ -9,6 +10,8 @@ namespace EAE_Engine
 		//===========================
 
 		const float Pi = 3.141592654f;
+    const float DegreeToRadian = Pi / 180.0f;
+    const float RadianToDegree = 180.0f / Pi;
 
 		// Interface
 		//==========
@@ -33,6 +36,32 @@ namespace EAE_Engine
 		{
 			return i_degrees * Pi / 180.0f;
 		}
+
+    float ConvertRadiansToDegrees(const float i_radians)
+    {
+      return i_radians * 180.0f / Pi;
+    }
+
+    // dot_product = a.x * b.x + a.y * b.y + a.z * b.z = a.len() * b.len * cos(angle)
+    // thus: cos(angle) = dot_product / (a.len * b.len)
+    // if we just use acos, we cannot get the positive or nagetive of the angle.
+    float Radian(const Vector3& from, const Vector3& to) 
+    {
+      float dot = Vector3::Dot(from, to);
+      float sqmagnitude1 = from.SqMagnitude();
+      float sqmagnitude2 = to.SqMagnitude();
+      float cosValue = dot / std::sqrt(sqmagnitude1 * sqmagnitude2);
+      // clamp the cosValue
+      cosValue = clamp<float>(cosValue, -1.0f, 1.0f);
+      float radian = std::acosf(cosValue);
+      return radian;
+    }
+
+    float Angle(const Vector3& from, const Vector3& to)
+    {
+      float angle = ConvertRadiansToDegrees(Radian(from, to));
+      return angle;
+    }
 
 	}
 }
