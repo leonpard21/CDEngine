@@ -20,9 +20,9 @@ class LazyCamera : public EAE_Engine::Controller::Controller
 public:
   LazyCamera(EAE_Engine::Common::ICamera* pCamera) :
     EAE_Engine::Controller::Controller(pCamera->GetTransform()),
-    _r(10.0f), _phi(20.0f), _theta(EAE_Engine::Math::Pi)
+    _phi(20.0f)
   {
-    _inner = 2.0f;
+    _inner = 4.0f;
     _outter = 10.0f;
   }
 
@@ -35,6 +35,7 @@ public:
   void Update()
   {
     UpdateOrientation();
+    UpdatePosition();
     return;
   }
 
@@ -63,7 +64,26 @@ private:
       EAE_Engine::Math::Quaternion rotation(_phi * EAE_Engine::Math::DegreeToRadian, normal);
       _pTransform->Rotate(rotation);
     }
+  }
 
+  void UpdatePosition() 
+  {
+    if (!_pTarget)
+      return;
+    EAE_Engine::Math::Vector3 relativePos = _pTarget->GetPos() - _pTransform->GetPos();
+    relativePos._y = 0.0f;
+    if (relativePos.Magnitude() > _outter)
+    {
+      EAE_Engine::Math::Vector3 newPos = _pTarget->GetPos() + relativePos.Normalize() * -_outter;
+      newPos = newPos + EAE_Engine::Math::Vector3(0.0f, 2.0f, 0.0f);
+      _pTransform->SetPos(newPos);
+    }
+    else if (relativePos.Magnitude() < _inner)
+    {
+      EAE_Engine::Math::Vector3 newPos = _pTarget->GetPos() + relativePos.Normalize() * - _inner;
+      newPos = newPos + EAE_Engine::Math::Vector3(0.0f, 2.0f, 0.0f);
+      _pTransform->SetPos(newPos);
+    }
   }
 
   void Reset() 
@@ -75,7 +95,6 @@ private:
 
 private:
   EAE_Engine::Common::ITransform* _pTarget;
-  float _r;
   float _phi;
   float _theta;
 

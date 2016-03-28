@@ -209,6 +209,9 @@ namespace EAE_Engine
 
     void Transform::SetForward(Math::Vector3 forward)
     {
+      // get rid of the zero vector cases
+      if (forward.SqMagnitude() < 0.0001f)
+        return;
       Math::Vector3 currentForward = GetForward();
       Math::Vector3 currentUp = GetUp();
       // Get the angle from currentForward to the new forward
@@ -218,7 +221,8 @@ namespace EAE_Engine
       // so we need to rotate the -radian.
       Math::Quaternion rotation(-radian, normalAxis);
       Rotate(rotation);
-      assert((GetForward() - forward).Magnitude() < 0.0001f);
+      Math::Vector3 dir = (GetForward() - forward);
+      assert(dir.Magnitude() < 0.0001f + FLT_EPSILON);
     }
 
     Math::Vector3 Transform::GetRight() 
