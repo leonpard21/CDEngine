@@ -24,6 +24,9 @@
     <ClInclude Include="Logic\ColliderCallback.h">
       <Filter>Logic</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\LazyCamera.h">
+      <Filter>Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\big.ico">

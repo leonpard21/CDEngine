@@ -218,8 +218,7 @@ namespace EAE_Engine
       // so we need to rotate the -radian.
       Math::Quaternion rotation(-radian, normalAxis);
       Rotate(rotation);
-      currentForward = GetForward();
-      assert((currentForward - forward).Magnitude() < 0.0001f);
+      assert((GetForward() - forward).Magnitude() < 0.0001f);
     }
 
     Math::Vector3 Transform::GetRight() 

@@ -1,6 +1,7 @@
 ﻿#include "Gameplay.h"
 #include "Controllers.h"
 #include "ColliderCallback.h"
+#include "LazyCamera.h"
 #include "Engine/DebugShape/DebugShape.h"
 #include "Engine/CollisionDetection/ColliderBase.h"
 #include "Engine/Graphics/Graphics.h"
@@ -57,6 +58,7 @@ EAE_Engine::Common::ICamera* pCamera = nullptr;
 CameraController* pCamController = nullptr;
 PlayerController* pPlayerController = nullptr;
 
+
 EAE_Engine::Graphics::ImageRender* pNumberSpriteRender = nullptr;
 
 EAE_Engine::Graphics::Text* pFrameText = nullptr;
@@ -64,6 +66,9 @@ EAE_Engine::Graphics::Button* pControlBtn = nullptr;
 EAE_Engine::Graphics::Slider* pSlider = nullptr;
 EAE_Engine::Graphics::Toggle* pToggle = nullptr;
 EAE_Engine::Graphics::Toggle* pDrawSegmentToggle = nullptr;
+
+bool g_drawDebugMenu = true;
+
 void btnCallBack(void*) 
 {
 	if (pSlider)
@@ -328,12 +333,21 @@ namespace
 		pCamera = EAE_Engine::Engine::CreateCamera("mainCamera", camera_pos, camera_rotation,
 			_windowWidth, _windowHeight);
 		pCameraObj = pCamera->GetTransform()->GetGameObj();
-		pCamera->GetTransform()->SetParent(pPlayerObj->GetTransform());
+		//pCamera->GetTransform()->SetParent(pPlayerObj->GetTransform());
 		//Camera Controller
-		pCamController = new CameraController(pCamera);
+    /*
+    {
+      pCamController = new CameraController(pCamera);
 		pCamController->ResetCamera(pPlayerObj->GetTransform());
 		pCamController->SetActive(false);
 		EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pCamController);
+    }
+    */
+    {
+      LazyCamera * pLazyCamController = new LazyCamera(pCamera);
+      pLazyCamController->ResetCamera(pPlayerObj->GetTransform());
+      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pLazyCamController);
+    }
 	}
 
 	void CreateSprite() 

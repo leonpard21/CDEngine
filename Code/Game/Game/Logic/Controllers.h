@@ -16,14 +16,6 @@
 
 namespace 
 {
-	enum ActorType 
-	{
-		Player,
-		Enemy,
-		Pbullet,
-		Ebullet,
-	};
-
 	bool _resetLevelController = false;
 }
 
