@@ -318,8 +318,10 @@ namespace
 			//pPlayerCollider = EAE_Engine::Collider::CreateOBBCollider(pPlayerObj->GetTransform(), playerSize);
 			//pPlayerCollider->RegistOnCollideCallback(OnCollideRestart);
 			//Set Controller
-			pPlayerController = new PlayerController(pPlayerObj->GetTransform());
-			EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pPlayerController);
+		//	pPlayerController = new PlayerController(pPlayerObj->GetTransform());
+		//	EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pPlayerController);
+      RelativeScreenInput* prsi = new RelativeScreenInput(pPlayerObj->GetTransform());
+      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(prsi);
 		}
 	}
 

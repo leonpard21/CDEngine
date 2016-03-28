@@ -15,6 +15,60 @@
 #include "Engine/DebugShape/DebugShape.h"
 #include <cassert>
 
+class RelativeScreenInput : public EAE_Engine::Controller::Controller
+{
+public:
+  RelativeScreenInput(EAE_Engine::Common::ITransform* pTransform) :
+    EAE_Engine::Controller::Controller(pTransform)
+  {
+  }
+
+  void Update() 
+  {
+    EAE_Engine::Common::ICamera* pCam = EAE_Engine::Graphics::CameraManager::GetInstance().GetCam();
+    if (!pCam)
+      return;
+    EAE_Engine::Math::Vector3 movement = GetInput(pCam);
+    _pTransform->Move(movement);
+  }
+
+private:
+  // This is the same example using the cVector class from the provided Math library instead:
+  EAE_Engine::Math::Vector3 GetInput(EAE_Engine::Common::ICamera* pCam)
+  {
+    EAE_Engine::Math::Vector3 offset = EAE_Engine::Math::Vector3::Zero;
+    // Get the direction
+    {
+      EAE_Engine::Math::Vector3 forward = pCam->GetTransform()->GetForward();
+      EAE_Engine::Math::Vector3 right = pCam->GetTransform()->GetRight();
+      if (EAE_Engine::UserInput::IsKeyPressed('W'))
+      {
+        offset = forward;
+      }
+      if (EAE_Engine::UserInput::IsKeyPressed('S'))
+      {
+        offset = forward * -1.0f;
+      }
+      if (EAE_Engine::UserInput::IsKeyPressed('A'))
+      {
+        offset = right * -1.0f;
+      }
+      if (EAE_Engine::UserInput::IsKeyPressed('D'))
+      {
+        offset = right;
+      }
+    }
+    // Get the speed
+    const float unitsPerSecond = 10.0f;	// This is arbitrary
+                                        // This makes the speed frame-rate-independent
+    const float unitsToMove = unitsPerSecond * EAE_Engine::Time::GetSecondsElapsedThisFrame();	// Normalize the offset																	
+    offset *= unitsToMove;
+    return offset;
+  }
+
+
+};
+
 class LazyCamera : public EAE_Engine::Controller::Controller
 {
 public:
@@ -22,7 +76,7 @@ public:
     EAE_Engine::Controller::Controller(pCamera->GetTransform()),
     _phi(20.0f)
   {
-    _inner = 4.0f;
+    _inner = 6.0f;
     _outter = 10.0f;
   }
 
@@ -80,9 +134,9 @@ private:
     }
     else if (relativePos.Magnitude() < _inner)
     {
-      EAE_Engine::Math::Vector3 newPos = _pTarget->GetPos() + relativePos.Normalize() * - _inner;
+      EAE_Engine::Math::Vector3 newPos = _pTarget->GetPos() + relativePos.Normalize() * -_inner;
       newPos = newPos + EAE_Engine::Math::Vector3(0.0f, 2.0f, 0.0f);
-      _pTransform->SetPos(newPos);
+     // _pTransform->SetPos(newPos);
     }
   }
 
