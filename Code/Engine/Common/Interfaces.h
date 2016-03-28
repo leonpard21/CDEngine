@@ -78,6 +78,9 @@ namespace EAE_Engine
       virtual Math::Quaternion GetRotation() const = 0;
       virtual void SetScale(const Math::Vector3&) = 0;
       virtual Math::Vector3 GetScale() const = 0;
+      // euler angle
+      virtual Math::Vector3 GetEulerAngle() const = 0;
+      virtual void SetEulerAngle(Math::Vector3 eulerAngle) = 0;
       // local transform
       virtual Math::Vector3& GetLocalPos() = 0;
       virtual void SetLocalPos(const Math::Vector3&) = 0;
@@ -85,6 +88,8 @@ namespace EAE_Engine
       virtual void SetLocalRotation(const Math::Quaternion&) = 0;
       virtual void SetLocalScale(const Math::Vector3&) = 0;
       virtual Math::Vector3 LocalScale() = 0;
+      virtual Math::Vector3 GetLocalEulerAngle() = 0;
+      virtual void SetLocalEulerAngle(const Math::Vector3& eulerAngle) = 0;
       virtual void Move(const Math::Vector3&) = 0;
       virtual void Rotate(const Math::Quaternion&) = 0;
       // Matrix

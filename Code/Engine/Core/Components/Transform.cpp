@@ -1,5 +1,6 @@
 #include "Transform.h"
 #include "../Individual/GameObj.h"
+#include "Math/EulerAngle.h"
 #include <cassert>
 
 namespace EAE_Engine
@@ -146,6 +147,18 @@ namespace EAE_Engine
         return result;
       }
     }
+
+    Math::Vector3 Transform::GetEulerAngle() const
+    {
+      return Math::Quaternion::CreateEulerAngle(GetRotation());
+    }
+
+    void Transform::SetEulerAngle(Math::Vector3 eulerAngle)
+    {
+      Math::Quaternion rotation = Math::EulerAngle::GetQuaternion(eulerAngle);
+      SetRotation(rotation);
+    }
+
     // local transform
     Math::Vector3& Transform::GetLocalPos() { return _localPosition; }
     void Transform::SetLocalPos(const Math::Vector3& pos) { _localPosition = pos; }
@@ -153,6 +166,12 @@ namespace EAE_Engine
     void Transform::SetLocalRotation(const Math::Quaternion& i_other) { _localRotation = i_other; }
     void Transform::SetLocalScale(const Math::Vector3& localScale) { _localScale = localScale; }
     Math::Vector3 Transform::LocalScale() { return _localScale; }
+    Math::Vector3 Transform::GetLocalEulerAngle() { return Math::Quaternion::CreateEulerAngle(_localRotation); }
+    void Transform::SetLocalEulerAngle(const Math::Vector3& eulerAngle)
+    {
+      Math::Quaternion localrotation = Math::EulerAngle::GetQuaternion(eulerAngle);
+      _localRotation = localrotation;
+    }
     void Transform::Move(const Math::Vector3& i_movement) { _localPosition = _localPosition + i_movement; }
     void Transform::Rotate(const Math::Quaternion& i_other) { _localRotation = _localRotation * i_other; }
     // Transform Matrices
@@ -183,7 +202,7 @@ namespace EAE_Engine
       Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
       // Remember that we are working on the ColumnMatrix and Right hand coordinate.
       // So the 3rd axis of the RotateTransformMatrix is pointing to the backward
-      Math::Vector3 forward = rotationMat.GetCol(2) * -1.0f;
+      Math::Vector3 forward = rotationMat.GetCol(2) * 1.0f;
       return forward.Normalize();
     }
     Math::Vector3 Transform::GetRight() 
