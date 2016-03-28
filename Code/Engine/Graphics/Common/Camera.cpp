@@ -69,7 +69,13 @@ namespace EAE_Engine
 
     Math::ColMatrix44 Camera::GetWroldToViewMatrix() 
     {
-      Math::ColMatrix44 result = CreateWorldToViewMatrix(_pTransform->GetRotation(), _pTransform->GetPos());
+      // for the right hand coordinate,
+      // we rotate the current rotation to the inverse version,
+      // in this case, the forward of the Camera Transform will be the lookat of the Camera.
+      Math::Quaternion roratePi(Math::Pi, _pTransform->GetUp());
+      Math::Quaternion cameraOrientation = _pTransform->GetRotation() * roratePi;
+      // calcualte the WorldToViewMatrix
+      Math::ColMatrix44 result = CreateWorldToViewMatrix(cameraOrientation, _pTransform->GetPos());
       return result;
     }
 
