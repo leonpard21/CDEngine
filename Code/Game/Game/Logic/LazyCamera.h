@@ -29,6 +29,7 @@ public:
     if (!pCam)
       return;
     EAE_Engine::Math::Vector3 movement = GetInput(pCam);
+    _pTransform->SetForward(movement.GetNormalize());
     _pTransform->Move(movement);
   }
 
@@ -115,7 +116,7 @@ private:
       // first, set the camera to look at the target
       _pTransform->SetForward(targetForward);
       // second, rotate back so that the target will keep staying at the edge
-      EAE_Engine::Math::Quaternion rotation((_phi + 2.0f) * EAE_Engine::Math::DegreeToRadian, normal);
+      EAE_Engine::Math::Quaternion rotation((_phi) * EAE_Engine::Math::DegreeToRadian, normal);
       _pTransform->Rotate(rotation);
     }
   }
@@ -136,7 +137,7 @@ private:
     {
       EAE_Engine::Math::Vector3 newPos = _pTarget->GetPos() + relativePos.Normalize() * -_inner;
       newPos = newPos + EAE_Engine::Math::Vector3(0.0f, 2.0f, 0.0f);
-     // _pTransform->SetPos(newPos);
+      _pTransform->SetPos(newPos);
     }
   }
 

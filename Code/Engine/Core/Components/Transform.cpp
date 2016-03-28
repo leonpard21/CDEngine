@@ -210,10 +210,16 @@ namespace EAE_Engine
     void Transform::SetForward(Math::Vector3 forward)
     {
       // get rid of the zero vector cases
-      if (forward.SqMagnitude() < 0.0001f)
+      if (forward.SqMagnitude() < 0.001f)
         return;
       Math::Vector3 currentForward = GetForward();
       Math::Vector3 currentUp = GetUp();
+      if (Math::Vector3::Dot(currentForward, forward) < -0.999f)
+      {
+        Math::Quaternion rotation(Math::Pi, currentUp);
+        Rotate(rotation);
+        return;
+      }
       // Get the angle from currentForward to the new forward
       float radian = Math::Radian(currentForward, forward);
       Math::Vector3 normalAxis = Math::Vector3::Cross(currentForward, forward).Normalize();
