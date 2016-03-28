@@ -1,6 +1,7 @@
 #include "EulerAngle.h"
 #include "ColMatrix.h"
 #include "Quaternion.h"
+#include "MathTool.h"
 #include <cmath>
 #include <cassert>
 
@@ -8,6 +9,22 @@ namespace EAE_Engine
 {
   namespace Math
   {
+    // for a polar system:
+    // Vector3 result = Vector3::Zero;
+    // result._x = r * sin(theta) * cos(phi);
+    // result._y = r * std::sinf(theta) * std::sinf(phi);
+    // result._z = r * std::cosf(theta);
+    // so we can use the inverse idea to conver a vector3 to an euler angle
+    Vector3 EulerAngle::CreateEulerAngle(Vector3 dir)
+    {
+      if (dir.Magnitude() < 0.00001f)
+        return Vector3::Zero;
+      dir.Normalize();
+      float r = dir.Magnitude();
+      float theta = std::acosf(dir._z / r) * RadianToDegree;
+      float phi = std::atan(dir._y / dir._x) * RadianToDegree;
+      return Vector3(phi, theta, 0.0f);
+    }
 
     Quaternion EulerAngle::GetQuaternion(Vector3 eulerAngle)
     {
@@ -29,10 +46,10 @@ namespace EAE_Engine
       float sbhalf = std::sinf(bank * 0.5f);
 
       Quaternion result = Quaternion::Identity;
-      result._x = chhalf * cphalf * cbhalf + shhalf * sphalf * sbhalf;
-      result._y = chhalf * sphalf * cbhalf + shhalf * cbhalf * sbhalf;
-      result._z = shhalf * cphalf * cbhalf - chhalf * sphalf * sbhalf;
-      result._w = chhalf * cphalf * sbhalf - shhalf * sphalf * cbhalf;
+      result._w = chhalf * cphalf * cbhalf + shhalf * sphalf * sbhalf;
+      result._x = chhalf * sphalf * cbhalf + shhalf * cbhalf * sbhalf;
+      result._y = shhalf * cphalf * cbhalf - chhalf * sphalf * sbhalf;
+      result._z = chhalf * cphalf * sbhalf - shhalf * sphalf * cbhalf;
       return result;
     }
 

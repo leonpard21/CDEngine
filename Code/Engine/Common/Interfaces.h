@@ -96,6 +96,7 @@ namespace EAE_Engine
       virtual Math::ColMatrix44 GetRotateTransformMatrix() = 0;
       virtual Math::ColMatrix44 GetLocalToWorldMatrix() = 0;
       virtual Math::Vector3 GetForward() = 0;
+      virtual void SetForward(Math::Vector3 forward) = 0;
       virtual Math::Vector3 GetRight() = 0;
       virtual Math::Vector3 GetUp() = 0;
       // Children

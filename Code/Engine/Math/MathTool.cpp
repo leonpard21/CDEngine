@@ -57,7 +57,7 @@ namespace EAE_Engine
       return radian;
     }
 
-    float Angle(const Vector3& from, const Vector3& to)
+    float Degree(const Vector3& from, const Vector3& to)
     {
       float angle = ConvertRadiansToDegrees(Radian(from, to));
       return angle;

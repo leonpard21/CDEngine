@@ -1,6 +1,7 @@
 #include "Transform.h"
 #include "../Individual/GameObj.h"
 #include "Math/EulerAngle.h"
+#include "Math/MathTool.h"
 #include <cassert>
 
 namespace EAE_Engine
@@ -205,6 +206,22 @@ namespace EAE_Engine
       Math::Vector3 forward = rotationMat.GetCol(2) * 1.0f;
       return forward.Normalize();
     }
+
+    void Transform::SetForward(Math::Vector3 forward)
+    {
+      Math::Vector3 currentForward = GetForward();
+      Math::Vector3 currentUp = GetUp();
+      // Get the angle from currentForward to the new forward
+      float radian = Math::Radian(currentForward, forward);
+      Math::Vector3 normalAxis = Math::Vector3::Cross(currentForward, forward).Normalize();
+      // Because we're looking from the positive to the negative dirction of the normalAxis, 
+      // so we need to rotate the -radian.
+      Math::Quaternion rotation(-radian, normalAxis);
+      Rotate(rotation);
+      currentForward = GetForward();
+      assert((currentForward - forward).Magnitude() < 0.0001f);
+    }
+
     Math::Vector3 Transform::GetRight() 
     {
       Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();

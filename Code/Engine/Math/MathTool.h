@@ -41,6 +41,13 @@ namespace EAE_Engine{
 			return t >= 0 ? t : -t;
 		}
 
+    // return the sign of t
+    template<typename Type>
+    inline static int GetSign(Type t)
+    {
+      return t >= (Type)0 ? 1: -1;
+    }
+
     // Linearly interpolates between a and b by t.
     // The parameter t is clamped to the range[0, 1].
     // t = 0 is a, t = 1 is b
@@ -60,8 +67,7 @@ namespace EAE_Engine{
     float ConvertRadiansToDegrees(const float i_radians);
 
     float Radian(const Vector3& from, const Vector3& to);
-    float Angle(const Vector3& from, const Vector3& to);
-
+    float Degree(const Vector3& from, const Vector3& to);
 	}
 }
 

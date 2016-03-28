@@ -48,6 +48,7 @@ namespace EAE_Engine
       Math::ColMatrix44 GetRotateTransformMatrix() override;
       Math::ColMatrix44 GetLocalToWorldMatrix() override;//read only, so return value
       Math::Vector3 GetForward() override;
+      void SetForward(Math::Vector3 forward) override;
       Math::Vector3 GetRight() override;
       Math::Vector3 GetUp() override;
       // Children
