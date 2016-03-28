@@ -174,7 +174,7 @@ namespace EAE_Engine
       _localRotation = localrotation;
     }
     void Transform::Move(const Math::Vector3& i_movement) { _localPosition = _localPosition + i_movement; }
-    void Transform::Rotate(const Math::Quaternion& i_other) { _localRotation = _localRotation * i_other; }
+    void Transform::Rotate(const Math::Quaternion& i_other) { _localRotation = i_other * _localRotation; }
     // Transform Matrices
     Math::ColMatrix44 Transform::GetRotateTransformMatrix() 
     { 
@@ -221,8 +221,9 @@ namespace EAE_Engine
       // so we need to rotate the -radian.
       Math::Quaternion rotation(-radian, normalAxis);
       Rotate(rotation);
-      Math::Vector3 dir = (GetForward() - forward);
-      assert(dir.Magnitude() < 0.0001f + FLT_EPSILON);
+      currentForward = GetForward();
+      Math::Vector3 dir = currentForward - forward.Normalize();
+      assert(dir.Magnitude() < 0.001f + FLT_EPSILON);
     }
 
     Math::Vector3 Transform::GetRight() 

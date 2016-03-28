@@ -115,7 +115,7 @@ private:
       // first, set the camera to look at the target
       _pTransform->SetForward(targetForward);
       // second, rotate back so that the target will keep staying at the edge
-      EAE_Engine::Math::Quaternion rotation(_phi * EAE_Engine::Math::DegreeToRadian, normal);
+      EAE_Engine::Math::Quaternion rotation((_phi + 2.0f) * EAE_Engine::Math::DegreeToRadian, normal);
       _pTransform->Rotate(rotation);
     }
   }
