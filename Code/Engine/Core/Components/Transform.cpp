@@ -214,7 +214,10 @@ namespace EAE_Engine
         return;
       Math::Vector3 currentForward = GetForward();
       Math::Vector3 currentUp = GetUp();
-      if (Math::Vector3::Dot(currentForward, forward) < -0.999f)
+      float dot = Math::Vector3::Dot(currentForward, forward);
+      if (dot > 0.999f)
+        return;
+      else if (dot< -0.999f)
       {
         Math::Quaternion rotation(Math::Pi, currentUp);
         Rotate(rotation);

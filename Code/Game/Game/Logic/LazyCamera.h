@@ -52,11 +52,11 @@ private:
       }
       if (EAE_Engine::UserInput::IsKeyPressed('A'))
       {
-        offset = right * -1.0f;
+        offset = right * 1.0f;
       }
       if (EAE_Engine::UserInput::IsKeyPressed('D'))
       {
-        offset = right;
+        offset = right * -1.0f;
       }
     }
     // Get the speed
