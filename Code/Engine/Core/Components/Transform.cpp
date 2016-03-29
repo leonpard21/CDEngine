@@ -200,14 +200,43 @@ namespace EAE_Engine
     }
     Math::Vector3 Transform::GetForward() const
     {
+      // some temp test code. 
       {
         Math::Quaternion gloablRot = GetRotation();
+        // test quaternion to matrix
         Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
+        // test matrix to quaternion
         Math::Quaternion testRot = Math::ColMatrix44::CreateQuaternion(rotationMat);
         Math::Quaternion diff = (gloablRot - testRot);
         bool b1 = diff.GetMagnitude() < 0.001f;
         bool b2 = (gloablRot + testRot).GetMagnitude() < 0.001f;
         assert(b1 || b2);
+      }
+      {
+        Math::Quaternion gloablRot = GetRotation();
+        // test quaternion to euler
+        Math::Vector3 euler = Math::Quaternion::CreateEulerAngle(gloablRot);
+        // test euler to quaternion
+        Math::Quaternion convertedRot = Math::EulerAngle::GetQuaternion(euler);
+        bool b3 = (gloablRot - convertedRot).GetMagnitude() < 0.001f;
+        bool b4 = (gloablRot + convertedRot).GetMagnitude() < 0.001f;
+        assert(b3 || b4);
+      }
+      {
+        Math::Quaternion gloablRot = GetRotation();
+        Math::Vector3 euler = Math::Quaternion::CreateEulerAngle(gloablRot);
+        // test euler to matrix
+        Math::ColMatrix44 colMat = Math::EulerAngle::GetColMatrix(euler);
+        Math::ColMatrix44 colMat2 = GetRotateTransformMatrix();
+        float acount = 0.0f;
+        for (int i = 0; i < 3; ++i)
+        {
+          for (int j = 0; j < 3; ++j)
+          {
+            acount += colMat._u[i]._u[j] - colMat2._u[i]._u[j];
+          }
+        }
+        assert(acount < 0.0001f);
       }
       Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
       // Remember that we are working on the ColumnMatrix and Right hand coordinate.
