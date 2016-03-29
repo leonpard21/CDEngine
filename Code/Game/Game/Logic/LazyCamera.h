@@ -153,12 +153,12 @@ private:
       // only when the camera is too far away from the Camera's Forward, we rotate the camera.
       if (angle > _phi)
       {
-        //float rotateAngle = angle - _phi;
-        //EAE_Engine::Math::Quaternion rotation(-rotateAngle* EAE_Engine::Math::DegreeToRadian, normal);
+       // float rotateAngle = angle - _phi;
+        //EAE_Engine::Math::Quaternion rotation(rotateAngle* EAE_Engine::Math::DegreeToRadian, normal);
         //_pTransform->Rotate(rotation);
         //_pTransform->SetForward(relativeForward);
-        _pTransform->LookAt(relativePos);
       }
+      _pTransform->LookAt(relativePos);
     }
     /*
     {

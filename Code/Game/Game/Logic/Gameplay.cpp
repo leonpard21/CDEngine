@@ -141,19 +141,22 @@ void GameplayUpdate()
 		EAE_Engine::Debug::CleanDebugShapes();
 		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('C') == EAE_Engine::UserInput::KeyState::OnPressed)
 		{
-			bool playerControllerState = pPlayerController->IsActive();
-			pPlayerController->SetActive(!playerControllerState);
-			pCamController->SetActive(playerControllerState);
-			if (!playerControllerState)
-			{
-				pCamController->GetTransform()->SetLocalRotation(EAE_Engine::Math::Quaternion::Identity);
-				pCamController->ResetCamera(pPlayerObj->GetTransform());
-				pCamController->GetTransform()->SetParent(pPlayerObj->GetTransform());
-			}
-			else 
-			{
-				pCamController->GetTransform()->SetParent(nullptr);
-			}
+      if (pPlayerController && pCamController)
+      {
+        bool playerControllerState = pPlayerController->IsActive();
+        pPlayerController->SetActive(!playerControllerState);
+        pCamController->SetActive(playerControllerState);
+        if (!playerControllerState)
+        {
+          pCamController->GetTransform()->SetLocalRotation(EAE_Engine::Math::Quaternion::Identity);
+          pCamController->ResetCamera(pPlayerObj->GetTransform());
+          pCamController->GetTransform()->SetParent(pPlayerObj->GetTransform());
+        }
+        else
+        {
+          pCamController->GetTransform()->SetParent(nullptr);
+        }
+      }
 		}
 
 		static uint32_t levelIndex = 3;

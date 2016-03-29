@@ -24,6 +24,7 @@ namespace EAE_Engine
 		Quaternion operator *( const Quaternion& i_rhs ) const;
     Quaternion operator* (float value) const;
     Quaternion operator+ (const Quaternion& i_rhs) const;
+    Quaternion operator- (const Quaternion& i_rhs) const;
 		bool operator ==(const Quaternion& i_rhs) const;
     Quaternion& operator= (const Quaternion& right);
 		// Inversion
@@ -74,6 +75,7 @@ namespace EAE_Engine
 		Quaternion( const float i_w, const float i_x, const float i_y, const float i_z );
 		// Friend Classes
 		//===============
+    friend class ColMatrix33;
 		friend class ColMatrix44;
     friend class EulerAngle;
 		// Products

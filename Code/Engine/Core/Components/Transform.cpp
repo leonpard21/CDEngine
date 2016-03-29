@@ -200,6 +200,15 @@ namespace EAE_Engine
     }
     Math::Vector3 Transform::GetForward() const
     {
+      {
+        Math::Quaternion gloablRot = GetRotation();
+        Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
+        Math::Quaternion testRot = Math::ColMatrix44::CreateQuaternion(rotationMat);
+        Math::Quaternion diff = (gloablRot - testRot);
+        bool b1 = diff.GetMagnitude() < 0.001f;
+        bool b2 = (gloablRot + testRot).GetMagnitude() < 0.001f;
+        assert(b1 || b2);
+      }
       Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
       // Remember that we are working on the ColumnMatrix and Right hand coordinate.
       // So the 3rd axis of the RotateTransformMatrix is pointing to the backward
@@ -226,9 +235,7 @@ namespace EAE_Engine
       // Get the angle from currentForward to the new forward
       float radian = Math::Radian(currentForward, forward);
       Math::Vector3 normalAxis = Math::Vector3::Cross(currentForward, forward).Normalize();
-      // Because we're looking from the positive to the negative dirction of the normalAxis, 
-      // so we need to rotate the -radian.
-      Math::Quaternion rotation(-radian, normalAxis);
+      Math::Quaternion rotation(radian, normalAxis);
       SetRotation(rotation * GetRotation());
       currentForward = GetForward();
       Math::Vector3 dir = currentForward - forward;

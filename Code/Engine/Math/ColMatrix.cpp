@@ -33,6 +33,7 @@ namespace EAE_Engine
 			_m02(i_02), _m12(i_12), _m22(i_22), _m32(i_32),
 			_m03(i_03), _m13(i_13), _m23(i_23), _m33(i_33)
 		{}
+
 		ColMatrix44::ColMatrix44(const ColMatrix44& i_other)
 		{
 			CopyMem((uint8_t*)i_other._m, (uint8_t*)(this->_m), sizeof(float[16]));
@@ -162,15 +163,15 @@ namespace EAE_Engine
 			const float _2zw = _2z * i_rotation._w;
 
 			_m00 = 1.0f - _2yy - _2zz;
-			_m10 = _2xy - _2zw;
-			_m20 = _2xz + _2yw;
+			_m10 = _2xy + _2zw;
+			_m20 = _2xz - _2yw;
 
-			_m01 = _2xy + _2zw;
+			_m01 = _2xy - _2zw;
 			_m11 = 1.0f - _2xx - _2zz;
-			_m21 = _2yz - _2xw;
+			_m21 = _2yz + _2xw;
 
-			_m02 = _2xz - _2yw;
-			_m12 = _2yz + _2xw;
+			_m02 = _2xz + _2yw;
+			_m12 = _2yz - _2xw;
 			_m22 = 1.0f - _2xx - _2yy;
 		}
 
@@ -285,13 +286,13 @@ namespace EAE_Engine
 			const float _2zz = _2z * i_rotation._z;
 			const float _2zw = _2z * i_rotation._w;
 			result._m00 = 1.0f - _2yy - _2zz;
-			result._m10 = _2xy - _2zw;
-			result._m20 = _2xz + _2yw;
-			result._m01 = _2xy + _2zw;
+			result._m10 = _2xy + _2zw;
+			result._m20 = _2xz - _2yw;
+			result._m01 = _2xy - _2zw;
 			result._m11 = 1.0f - _2xx - _2zz;
-			result._m21 = _2yz - _2xw;
-			result._m02 = _2xz - _2yw;
-			result._m12 = _2yz + _2xw;
+			result._m21 = _2yz + _2xw;
+			result._m02 = _2xz + _2yw;
+			result._m12 = _2yz - _2xw;
 			result._m22 = 1.0f - _2xx - _2yy;
 			return result;
 		}
@@ -305,7 +306,99 @@ namespace EAE_Engine
 			return result;
 		}
 
-
+    Quaternion ColMatrix44::CreateQuaternion(const ColMatrix44& i_rotation)
+    {
+      Quaternion result = Quaternion::Identity;
+      /*
+      float trace = i_rotation._m00 + i_rotation._m11 + i_rotation._m22;
+      if (trace > 0) 
+      {
+        float s = sqrtf(trace + 1.0f) * 2.0f; // S=4*qw 
+        result._w = 0.25f * s;
+        result._x = (i_rotation._m21 - i_rotation._m12) / s;
+        result._y = (i_rotation._m02 - i_rotation._m20) / s;
+        result._z = (i_rotation._m10 - i_rotation._m01) / s;
+      }
+      else if ((i_rotation._m00 > i_rotation._m11)&&(i_rotation._m00 > i_rotation._m22)) 
+      {
+        float s = sqrtf(1.0f + i_rotation._m00 - i_rotation._m11 - i_rotation._m22) * 2.0f; // S=4*qx 
+        result._w = (i_rotation._m21 - i_rotation._m12) / s;
+        result._x = 0.25f * s;
+        result._y = (i_rotation._m01 + i_rotation._m10) / s;
+        result._z = (i_rotation._m02 + i_rotation._m20) / s;
+      }
+      else if (i_rotation._m11 > i_rotation._m22) 
+      {
+        float s = sqrtf(1.0f + i_rotation._m11 - i_rotation._m00 - i_rotation._m22) * 2.0f; // S=4*qy
+        result._w = (i_rotation._m02 - i_rotation._m20) / s;
+        result._x = (i_rotation._m01 + i_rotation._m10) / s;
+        result._y = 0.25 * s;
+        result._z = (i_rotation._m12 + i_rotation._m21) / s;
+      }
+      else {
+        float s = sqrtf(1.0f + i_rotation._m22 - i_rotation._m00 - i_rotation._m11) * 2.0f; // S=4*qz
+        result._w = (i_rotation._m10 - i_rotation._m01) / s;
+        result._x = (i_rotation._m02 + i_rotation._m20) / s;
+        result._y = (i_rotation._m12 + i_rotation._m21) / s;
+        result._z = 0.25f * s;
+      }
+      */
+      float w = std::sqrtf(i_rotation._m00 + i_rotation._m11 + i_rotation._m22 + 1.0f);
+      // Determine which of w, x, y, or z has the largest absolute value
+      float fourWSquaredMinus1 = i_rotation._m00 + i_rotation._m11 + i_rotation._m22;
+      float fourXSquaredMinus1 = i_rotation._m00 - i_rotation._m11 - i_rotation._m22;
+      float fourYSquaredMinus1 = i_rotation._m11 - i_rotation._m00 - i_rotation._m22;
+      float fourZSquaredMinus1 = i_rotation._m22 - i_rotation._m00 - i_rotation._m11;
+      int biggestIndex = 0;
+      float fourBiggestSquaredMinus1 = fourWSquaredMinus1;
+      if(fourXSquaredMinus1 > fourBiggestSquaredMinus1)
+      {
+        fourBiggestSquaredMinus1 = fourXSquaredMinus1;
+        biggestIndex = 1;
+      }
+      if(fourYSquaredMinus1 > fourBiggestSquaredMinus1)
+      {
+        fourBiggestSquaredMinus1 = fourYSquaredMinus1;
+        biggestIndex = 2;
+      }
+      if(fourZSquaredMinus1 > fourBiggestSquaredMinus1)
+      {
+        fourBiggestSquaredMinus1 = fourZSquaredMinus1;
+        biggestIndex = 3;
+      }
+      // Perform square root and division
+      float biggestVal = sqrtf(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
+      float mult = 0.25f / biggestVal;
+      // Apply table to compute quaternion values
+      switch (biggestIndex) 
+      {
+      case 0:
+        result._w = biggestVal;
+        result._x = (i_rotation._m21 - i_rotation._m12) * mult;
+        result._y = (i_rotation._m02 - i_rotation._m20) * mult;
+        result._z = (i_rotation._m10 - i_rotation._m01) * mult;
+        break;
+      case 1:
+        result._x = biggestVal;
+        result._w = (i_rotation._m21 - i_rotation._m12) * mult;
+        result._y = (i_rotation._m01 + i_rotation._m10) * mult;
+        result._z = (i_rotation._m02 + i_rotation._m20) * mult;
+        break;
+      case 2:
+        result._y = biggestVal;
+        result._w = (i_rotation._m02 - i_rotation._m20) * mult;
+        result._x = (i_rotation._m01 + i_rotation._m10) * mult;
+        result._z = (i_rotation._m21 + i_rotation._m12) * mult;
+        break;
+      case 3:
+        result._z = biggestVal;
+        result._w = (i_rotation._m10 - i_rotation._m01) * mult;
+        result._x = (i_rotation._m02 + i_rotation._m20) * mult;
+        result._y = (i_rotation._m21 + i_rotation._m12) * mult;
+        break;
+      }
+      return result;
+    }
 
 
 

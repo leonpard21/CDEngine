@@ -42,6 +42,12 @@ namespace EAE_Engine
       return { _w + i_rhs._w, _x + i_rhs._x, _y + i_rhs._y, _z + i_rhs._z};
     }
 
+    Quaternion Quaternion::operator- (const Quaternion& i_rhs) const
+    {
+      return{ _w - i_rhs._w, _x - i_rhs._x, _y - i_rhs._y, _z - i_rhs._z };
+    }
+
+
     bool Quaternion::operator ==(const Quaternion& i_rhs) const
     {
       bool b0 = std::fabsf(_w - i_rhs._w) < 0.00001f;
@@ -219,6 +225,8 @@ namespace EAE_Engine
 
     }
 
+    // The referense is: 
+    // http://gamedev.stackexchange.com/questions/34519/rotation-matrix-derived-from-quaternion-is-opposite-of-expected-direction
     ColMatrix44 Quaternion::CreateColMatrix(const Quaternion& i_rotation)
     {
       ColMatrix44 result = ColMatrix44::Identity;
@@ -235,13 +243,13 @@ namespace EAE_Engine
       const float _2zz = _2z * i_rotation._z;
       const float _2zw = _2z * i_rotation._w;
       result._m00 = 1.0f - _2yy - _2zz;
-      result._m10 = _2xy - _2zw;
-      result._m20 = _2xz + _2yw;
-      result._m01 = _2xy + _2zw;
+      result._m10 = _2xy + _2zw;
+      result._m20 = _2xz - _2yw;
+      result._m01 = _2xy - _2zw;
       result._m11 = 1.0f - _2xx - _2zz;
-      result._m21 = _2yz - _2xw;
-      result._m02 = _2xz - _2yw;
-      result._m12 = _2yz + _2xw;
+      result._m21 = _2yz + _2xw;
+      result._m02 = _2xz + _2yw;
+      result._m12 = _2yz - _2xw;
       result._m22 = 1.0f - _2xx - _2yy;
       return result;
     }
@@ -363,18 +371,22 @@ namespace EAE_Engine
       // make sure we are not deal with zero vector
       if (forward.Magnitude() < 0.0001f)
         return Quaternion::Identity;
-      Quaternion rot1 = RotationBetween2Vectors(Vector3::Forward, forward);
+      forward = Vector3::OrthoNormalize(forward, upward);
       Vector3 right = Vector3::Cross(upward, forward);
-      Vector3 desiredUp = Vector3::Cross(right, forward);
-
-      Quaternion ret = Quaternion::Identity;
-      ret._w = sqrtf(1.0f + right._x + upward._y + forward._z) * 0.5f;
-      float w4_recip = 1.0f / (4.0f * ret._w);
-      ret._x = (forward._y - upward._z) * w4_recip;
-      ret._y = (right._z - forward._x) * w4_recip;
-      ret._z = (upward._x - right._y) * w4_recip;
-      ret.Normalize();
-      return ret;
+      ColMatrix44 matrix = ColMatrix44::Identity;
+      // right
+      matrix._m00 = right._x;
+      matrix._m10 = right._y;
+      matrix._m20 = right._z;
+      // up
+      matrix._m01 = upward._x;
+      matrix._m11 = upward._y;
+      matrix._m21 = upward._z;
+      // forward
+      matrix._m02 = forward._x;
+      matrix._m12 = forward._y;
+      matrix._m22 = forward._z;
+      return ColMatrix44::CreateQuaternion(matrix);
     }
 
     // Rotate a vectoc equals to quaternion * vector * quaternion.inverse().

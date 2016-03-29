@@ -78,18 +78,18 @@ namespace EAE_Engine
 
       ColMatrix44 result = ColMatrix44::Identity;
       result._m00 = ch * cb + sh * sp * sb;
-      result._m10 = -ch * sb + sh * sp * cb;
-      result._m20 = sh * cp;
+      result._m10 = sb * cp;
+      result._m20 = -sh * cb + ch * sp * sb;
 
-      result._m01 = sb * cp;
+      result._m01 = -ch * sb + sh * sp * cb;
       result._m11 = cb * cp;
-      result._m21 = -sp;
-
-      result._m02 = -sh * cb + ch * sp * sb;
       result._m21 = sb * sh + ch * sp * cb;
+
+      result._m02 = sh * cp;
+      result._m12 = -sp;
       result._m22 = ch * cp;
       return result;
     }
-
+    
   }
 }

@@ -133,7 +133,7 @@ namespace EAE_Engine
 			static ColMatrix44 CreateMovementMatrix(const Vector3& i_position);
 			static ColMatrix44 CreateRotationMatrix(const Quaternion& i_rotation);
 			static ColMatrix44 CreateScaleMatrix(const Vector3& i_scale);
-
+      static Quaternion CreateQuaternion(const ColMatrix44& i_rotation);
 		private:
 			ColMatrix33 GetCofactorMatrix(size_t row, size_t col) const;
 			static int GetSignOfCofactor(size_t row, size_t col);
