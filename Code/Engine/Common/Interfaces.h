@@ -93,12 +93,14 @@ namespace EAE_Engine
       virtual void Move(const Math::Vector3&) = 0;
       virtual void Rotate(const Math::Quaternion&) = 0;
       // Matrix
-      virtual Math::ColMatrix44 GetRotateTransformMatrix() = 0;
-      virtual Math::ColMatrix44 GetLocalToWorldMatrix() = 0;
-      virtual Math::Vector3 GetForward() = 0;
+      virtual Math::ColMatrix44 GetRotateTransformMatrix() const = 0;
+      virtual Math::ColMatrix44 GetLocalToWorldMatrix() const = 0;
+      virtual Math::Vector3 GetForward() const = 0;
       virtual void SetForward(Math::Vector3 forward) = 0;
-      virtual Math::Vector3 GetRight() = 0;
-      virtual Math::Vector3 GetUp() = 0;
+      virtual Math::Vector3 GetRight() const = 0;
+      virtual Math::Vector3 GetUp() const = 0;
+      // Lookat
+      virtual void LookAt(Math::Vector3 lookat) = 0;
       // Children
       virtual uint32_t GetChildCount() = 0;
       virtual ITransform* GetChild(uint32_t index = 0) = 0;

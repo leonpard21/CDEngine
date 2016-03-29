@@ -9,6 +9,7 @@ namespace EAE_Engine
 {
   namespace Math
   {
+    /*
     // for a polar system:
     // Vector3 result = Vector3::Zero;
     // result._x = r * sin(theta) * cos(phi);
@@ -25,6 +26,7 @@ namespace EAE_Engine
       float phi = std::atan(dir._y / dir._x) * RadianToDegree;
       return Vector3(phi, theta, 0.0f);
     }
+    */
 
     Quaternion EulerAngle::GetQuaternion(Vector3 eulerAngle)
     {

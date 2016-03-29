@@ -11,7 +11,7 @@ namespace EAE_Engine
     class EulerAngle 
     {
     public:
-      static Vector3 CreateEulerAngle(Vector3 dir);
+    //  static Vector3 CreateEulerAngle(Vector3 dir);
       static Quaternion GetQuaternion(Vector3 eulerAngle);
       static ColMatrix44 GetColMatrix(Vector3 eulerAngle);
     };

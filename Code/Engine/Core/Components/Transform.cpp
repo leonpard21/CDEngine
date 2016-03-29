@@ -97,10 +97,10 @@ namespace EAE_Engine
         return _localRotation; 
       else 
       {
-        // Always remember that: 
-        // the quaternion multiplication should be read from right to left!
-        Math::Quaternion result = _localRotation * _pParent->GetRotation();
-        return result;
+        // From 3D Math Primier for Graphics and Game Development, 2nd:
+        // rotating by A and then by B is equivalent to performing a single rotation by the quaternion product b * a;
+        // the quaternion multiplication should be read from right to left.
+        return _pParent->GetRotation() * _localRotation;
       }
     }
 
@@ -110,10 +110,9 @@ namespace EAE_Engine
         _localRotation = i_other;
       else 
       {
-        // We need to calculate the difference between the local to the parent, 
-        // which is _localQuaternion * _parentQuaternion.inverse()
-        Math::Quaternion result = i_other * _pParent->GetRotation().GetInverse();
-        _localRotation = result;
+        // Because Parent * Local = Global, 
+        // so the new Local = new Global * Parent.Inverse()
+        _localRotation = i_other * _pParent->GetRotation().GetInverse();
       }
     }
 
@@ -174,9 +173,10 @@ namespace EAE_Engine
       _localRotation = localrotation;
     }
     void Transform::Move(const Math::Vector3& i_movement) { _localPosition = _localPosition + i_movement; }
+    // Do rotation A, then do rotation B, equals to do rotation (BA)
     void Transform::Rotate(const Math::Quaternion& i_other) { _localRotation = i_other * _localRotation; }
     // Transform Matrices
-    Math::ColMatrix44 Transform::GetRotateTransformMatrix() 
+    Math::ColMatrix44 Transform::GetRotateTransformMatrix() const
     { 
       Math::ColMatrix44 result;
       if (_pParent) 
@@ -186,7 +186,7 @@ namespace EAE_Engine
       return result;
     }
 
-    Math::ColMatrix44 Transform::GetLocalToWorldMatrix() 
+    Math::ColMatrix44 Transform::GetLocalToWorldMatrix() const
     {
       // When we want to get the transform Matrix of a Transform,
       // we should use the Global Rotaion and Global Position,
@@ -198,7 +198,7 @@ namespace EAE_Engine
       else
         return _pParent->GetLocalToWorldMatrix() * localTransformMatrix;
     }
-    Math::Vector3 Transform::GetForward()
+    Math::Vector3 Transform::GetForward() const
     {
       Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
       // Remember that we are working on the ColumnMatrix and Right hand coordinate.
@@ -220,7 +220,7 @@ namespace EAE_Engine
       else if (dot< -0.999f)
       {
         Math::Quaternion rotation(Math::Pi, currentUp);
-        Rotate(rotation);
+        SetRotation(rotation * GetRotation());
         return;
       }
       // Get the angle from currentForward to the new forward
@@ -229,23 +229,30 @@ namespace EAE_Engine
       // Because we're looking from the positive to the negative dirction of the normalAxis, 
       // so we need to rotate the -radian.
       Math::Quaternion rotation(-radian, normalAxis);
-      Rotate(rotation);
+      SetRotation(rotation * GetRotation());
       currentForward = GetForward();
-      Math::Vector3 dir = currentForward - forward.Normalize();
+      Math::Vector3 dir = currentForward - forward;
       assert(dir.Magnitude() < 0.001f + FLT_EPSILON);
     }
 
-    Math::Vector3 Transform::GetRight() 
+    Math::Vector3 Transform::GetRight() const
     {
       Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
       Math::Vector3 right = rotationMat.GetCol(0);
       return right.Normalize();
     }
-    Math::Vector3 Transform::GetUp()
+    Math::Vector3 Transform::GetUp() const
     {
       Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
       Math::Vector3 up = rotationMat.GetCol(1);
       return up.Normalize();
+    }
+
+    void Transform::LookAt(Math::Vector3 lookat)
+    {
+      Math::Vector3 forward = (lookat - GetPos()).Normalize();
+      Math::Quaternion rotation = Math::Quaternion::LookRotation(forward, GetUp());
+      SetRotation(rotation);
     }
 
   }

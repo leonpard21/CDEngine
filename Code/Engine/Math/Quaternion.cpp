@@ -190,8 +190,8 @@ namespace EAE_Engine
       // [w, v] = [cos(?/2), sin(?/2)n]
       // [w, (x, y, z)] = [cos(?/2), (sin(?/2)nx, sin(?/2)ny, sin(?/2)nz)]
       const float theta_half = i_angleInRadians * 0.5f;
-      _w = std::cos(theta_half);
-      const float sin_theta_half = std::sin(theta_half);
+      _w = std::cosf(theta_half);
+      const float sin_theta_half = std::sinf(theta_half);
       _x = i_axisOfRotation_normalized._x * sin_theta_half;
       _y = i_axisOfRotation_normalized._y * sin_theta_half;
       _z = i_axisOfRotation_normalized._z * sin_theta_half;
@@ -214,7 +214,7 @@ namespace EAE_Engine
     // Initialization / Shut Down
     //---------------------------
     Quaternion::Quaternion(const float i_w, const float i_x, const float i_y, const float i_z) :
-        _w(i_w), _x(i_x), _y(i_y), _z(i_z)
+       _w(i_w), _x(i_x), _y(i_y), _z(i_z)
     {
 
     }
@@ -322,6 +322,59 @@ namespace EAE_Engine
     Quaternion Quaternion::GetDifference(const Quaternion& from, const Quaternion& to)
     {
       return to * from.GetInverse();
+    }
+
+    Quaternion Quaternion::RotationBetween2Vectors(Vector3 from, Vector3 to)
+    {
+      from.Normalize();
+      to.Normalize();
+      // Get the angle and axis between from and to.
+      float cosTheta = Vector3::Dot(from, to);
+      Vector3 rotationAxis;
+      // if from and to are almost on opposite direction.
+      if (cosTheta < -1.0f + 0.001f) 
+      {
+        rotationAxis = Vector3::Cross(Vector3::Forward, from);
+        if (rotationAxis.Magnitude() < 0.01f)
+          rotationAxis = Vector3::Cross(Vector3::Right, from);
+        rotationAxis.Normalize();
+        return Quaternion(Pi, rotationAxis);
+      }
+      // get the axis
+      rotationAxis = Vector3::Cross(from, to);
+      rotationAxis.Normalize();
+      // _w = std::cos(theta/2), 
+      // cos(theta) = 2 * cos(theta/2)^2 - 1.
+      // cos(theta) = 1 - 2 * sin(theta/2)^2.
+      float w = std::sqrtf((cosTheta + 1.0f) * 0.5f);
+      float sinTheta_half = std::sqrtf((1.0f - cosTheta) * 0.5f);
+
+      return Quaternion(
+        w,
+        rotationAxis._x * sinTheta_half,
+        rotationAxis._y * sinTheta_half,
+        rotationAxis._z * sinTheta_half);
+    }
+
+    // Creates a rotation with the specified forward and upwards directions.
+    // Assuming that the forwad and upward are orthogonal.
+    Quaternion Quaternion::LookRotation(Vector3 forward, Vector3 upward)
+    {
+      // make sure we are not deal with zero vector
+      if (forward.Magnitude() < 0.0001f)
+        return Quaternion::Identity;
+      Quaternion rot1 = RotationBetween2Vectors(Vector3::Forward, forward);
+      Vector3 right = Vector3::Cross(upward, forward);
+      Vector3 desiredUp = Vector3::Cross(right, forward);
+
+      Quaternion ret = Quaternion::Identity;
+      ret._w = sqrtf(1.0f + right._x + upward._y + forward._z) * 0.5f;
+      float w4_recip = 1.0f / (4.0f * ret._w);
+      ret._x = (forward._y - upward._z) * w4_recip;
+      ret._y = (right._z - forward._x) * w4_recip;
+      ret._z = (upward._x - right._y) * w4_recip;
+      ret.Normalize();
+      return ret;
     }
 
     // Rotate a vectoc equals to quaternion * vector * quaternion.inverse().

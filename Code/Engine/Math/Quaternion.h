@@ -55,8 +55,10 @@ namespace EAE_Engine
     static Vector3 CreateEulerAngle(const Quaternion& i_rotation);
     static Quaternion Slerp(const Quaternion& from, const Quaternion& to, float t);
     static Quaternion GetDifference(const Quaternion& from, const Quaternion& to);
+    static Quaternion RotationBetween2Vectors(Vector3 from, Vector3 to);
+    // Assuming that the forwad and upward are orthogonal.
+    static Quaternion LookRotation(Vector3 forward, Vector3 upward);
     static Vector3 RotateVector(const Quaternion& i_rotation, const Math::Vector3& i_vec);
-    //static Quaternion GetQuatnionOf2Vectors(const Vector3& i_left, const Vector3& i_right);
 
 		// Data
 		//=====

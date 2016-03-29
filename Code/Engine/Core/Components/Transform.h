@@ -45,12 +45,14 @@ namespace EAE_Engine
       void Move(const Math::Vector3& i_movement) override;
       void Rotate(const Math::Quaternion& i_other) override;
       // Matrix && Direction
-      Math::ColMatrix44 GetRotateTransformMatrix() override;
-      Math::ColMatrix44 GetLocalToWorldMatrix() override;//read only, so return value
-      Math::Vector3 GetForward() override;
+      Math::ColMatrix44 GetRotateTransformMatrix() const override;
+      Math::ColMatrix44 GetLocalToWorldMatrix() const override;//read only, so return value
+      Math::Vector3 GetForward() const override;
       void SetForward(Math::Vector3 forward) override;
-      Math::Vector3 GetRight() override;
-      Math::Vector3 GetUp() override;
+      Math::Vector3 GetRight() const override;
+      Math::Vector3 GetUp() const override;
+      void LookAt(Math::Vector3 lookat) override;
+
       // Children
       void AddChild(Common::ITransform* pChild) override { _children.push_back(pChild); }
       void RemoveChild(Common::ITransform* pChild) override;

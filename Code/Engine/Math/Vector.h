@@ -82,10 +82,6 @@ namespace EAE_Engine
       inline T Magnitude() const { return sqrt(_x * _x + _y*_y + _z*_z); }
       inline TVector3 GetEdge(TVector3& point_another);
 
-      //functions for 2D
-      inline TVector3 PrependicularXY();//get the prependicular vector in XY plane/ 
-      inline TVector3 NormalXY();//get the normal of the vector in XY plane.
-
       inline TVector3& operator+= (const TVector3& right);
       inline TVector3& operator= (const TVector3& right);
       inline TVector3 operator* (T f) const;
@@ -100,7 +96,8 @@ namespace EAE_Engine
       static TVector3<T> Cross(const TVector3<T>& left, const TVector3<T>& right);
       static TVector3<T> Lerp(const TVector3<T>& from, const TVector3<T>& to, float t);
       static TVector3<T> Slerp(const TVector3<T>& from, const TVector3<T>& to, float t);
-
+      // Keeps up the same, make forward orthogonal to up
+      static TVector3<T> OrthoNormalize(const TVector3<T>& forward, const TVector3<T> &up);
       //Some useful variables
       const static TVector3 Zero;
       const static TVector3 Right;
@@ -163,6 +160,15 @@ namespace EAE_Engine
         k1 = std::sinf(k1 * omega) * oneOverSinOmega;
       }
       return from * k0 + to * k1;
+    }
+
+    template <typename T>
+    TVector3<T> TVector3<T>::OrthoNormalize(const TVector3<T>& forward, const TVector3<T> &upward)
+    {
+      TVector3<T> right = Cross(upward, forward);
+      right.Normalize();
+      TVector3<T> idealForward = Cross(right, upward);
+      return idealForward;
     }
 
     template <typename T>
@@ -287,24 +293,6 @@ namespace EAE_Engine
     inline TVector3<T> TVector3<T>::GetEdge(TVector3& point_another)
     {
         return TVector3<T>(point_another._x - _x, point_another._y - _y, point_another.z - _z);
-    }
-
-    //functions for 2D plane
-    template <typename T>
-    inline TVector3<T> TVector3<T>::PrependicularXY()
-    {
-        TVector3 temp;
-        temp._x = this->_y;
-        temp._y = -(this->_x);
-        temp._z = (T)0;
-        return temp;
-    }
-
-    template <typename T>
-    inline TVector3<T> TVector3<T>::NormalXY()
-    {
-        TVector3 temp = this->PrependicularXY();
-        return temp.Normalize();
     }
 
     template <typename T>
