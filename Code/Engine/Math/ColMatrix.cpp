@@ -306,6 +306,8 @@ namespace EAE_Engine
 			return result;
 		}
 
+    // Reference: 
+    // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
     Quaternion ColMatrix44::CreateQuaternion(const ColMatrix44& i_rotation)
     {
       Quaternion result = Quaternion::Identity;

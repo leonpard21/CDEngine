@@ -226,7 +226,7 @@ namespace EAE_Engine
     }
 
     // The referense is: 
-    // http://gamedev.stackexchange.com/questions/34519/rotation-matrix-derived-from-quaternion-is-opposite-of-expected-direction
+    // http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
     ColMatrix44 Quaternion::CreateColMatrix(const Quaternion& i_rotation)
     {
       ColMatrix44 result = ColMatrix44::Identity;
@@ -265,7 +265,7 @@ namespace EAE_Engine
       float y = i_rotation._y;
       float z = i_rotation._z;
       // sin(Pitch)
-      float sp = -2.0f * (y * z - w * x);
+      float sp = -2.0f * (y * z + w * x);
       // Check for Gimbal Lock
       if (Abs<float>(sp) > 0.9999f) 
       {
@@ -273,14 +273,14 @@ namespace EAE_Engine
         // the pitch is looking for stright up or down
         // We just calculate the heading and make bank to 0.0f
         result._x = Math::Pi * 0.5f; // pitch
-        result._y = std::atan2f(-x * z + w * y, 0.5f - y * y - z * z); //heading
+        result._y = std::atan2f(-x * z - w * y, 0.5f - y * y - z * z); //heading
         result._z = 0.0f; // bank
       }
       else 
       {
         result._x = std::asinf(sp);
-        result._y = std::atan2f(x * z + w * y, 0.5f - x * x - y * y);
-        result._z = std::atan2f(x * y + w * z, 0.5f - x * x - z * z);
+        result._y = std::atan2f(x * z - w * y, 0.5f - x * x - y * y);
+        result._z = std::atan2f(x * y - w * z, 0.5f - x * x - z * z);
       }
       return result;
     }
@@ -371,17 +371,17 @@ namespace EAE_Engine
       // make sure we are not deal with zero vector
       if (forward.Magnitude() < 0.0001f)
         return Quaternion::Identity;
-      forward = Vector3::OrthoNormalize(forward, upward);
-      Vector3 right = Vector3::Cross(upward, forward);
+      Vector3 right = Vector3::Cross(upward, forward).GetNormalize();
+      Vector3 idealUp = Vector3::Cross(forward, right).GetNormalize();
       ColMatrix44 matrix = ColMatrix44::Identity;
       // right
       matrix._m00 = right._x;
       matrix._m10 = right._y;
       matrix._m20 = right._z;
       // up
-      matrix._m01 = upward._x;
-      matrix._m11 = upward._y;
-      matrix._m21 = upward._z;
+      matrix._m01 = idealUp._x;
+      matrix._m11 = idealUp._y;
+      matrix._m21 = idealUp._z;
       // forward
       matrix._m02 = forward._x;
       matrix._m12 = forward._y;

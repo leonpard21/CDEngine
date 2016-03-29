@@ -213,13 +213,22 @@ namespace EAE_Engine
         assert(b1 || b2);
       }
       {
+        Math::Quaternion quat = Math::EulerAngle::GetQuaternion({ 1.5708f, 0.0f, 0.0f});
+        Math::Vector3 euler = Math::Quaternion::CreateEulerAngle(quat);
+        size_t t = 0;
+      }
+      {
         Math::Quaternion gloablRot = GetRotation();
         // test quaternion to euler
         Math::Vector3 euler = Math::Quaternion::CreateEulerAngle(gloablRot);
         // test euler to quaternion
         Math::Quaternion convertedRot = Math::EulerAngle::GetQuaternion(euler);
-        bool b3 = (gloablRot - convertedRot).GetMagnitude() < 0.001f;
-        bool b4 = (gloablRot + convertedRot).GetMagnitude() < 0.001f;
+        Math::Quaternion diff1 = (gloablRot - convertedRot);
+        Math::Quaternion diff2 = (gloablRot + convertedRot);
+        float diff1Mag = diff1.GetMagnitude();
+        float diff2Mag = diff2.GetMagnitude();
+        bool b3 = diff1Mag < 0.1f;
+        bool b4 = diff2Mag < 0.1f;
         assert(b3 || b4);
       }
       {

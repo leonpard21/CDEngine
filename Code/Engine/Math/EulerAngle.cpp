@@ -49,9 +49,9 @@ namespace EAE_Engine
 
       Quaternion result = Quaternion::Identity;
       result._w = chhalf * cphalf * cbhalf + shhalf * sphalf * sbhalf;
-      result._x = chhalf * sphalf * cbhalf + shhalf * cbhalf * sbhalf;
-      result._y = shhalf * cphalf * cbhalf - chhalf * sphalf * sbhalf;
-      result._z = chhalf * cphalf * sbhalf - shhalf * sphalf * cbhalf;
+      result._x = -chhalf * sphalf * cbhalf - shhalf * cphalf * sbhalf;
+      result._y = chhalf * sphalf * sbhalf - shhalf * cphalf * cbhalf;
+      result._z = shhalf * sphalf * cbhalf - chhalf * cphalf * sbhalf;
       return result;
     }
 
