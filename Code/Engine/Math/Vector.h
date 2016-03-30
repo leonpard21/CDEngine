@@ -126,7 +126,7 @@ namespace EAE_Engine
         //right.xy,z can be v1, v2, v3
         TVector3<T> result = TVector3<T>::Zero;
         result._x = (left._y * right._z - left._z * right._y);//u2*v3 - u3*v2
-        result._y = (T)(-1) *(left._x * right._z - left._z * right._x);//-(u1*v3 - u3*v1)
+        result._y = (left._z * right._x - left._x * right._z);//-(u1*v3 - u3*v1)
         result._z = (left._x * right._y - left._y * right._x);//u1*v2 - u2*v1
         return result;
     }

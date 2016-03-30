@@ -311,7 +311,7 @@ namespace EAE_Engine
     Quaternion ColMatrix44::CreateQuaternion(const ColMatrix44& i_rotation)
     {
       Quaternion result = Quaternion::Identity;
-      /*
+
       float trace = i_rotation._m00 + i_rotation._m11 + i_rotation._m22;
       if (trace > 0) 
       {
@@ -337,15 +337,15 @@ namespace EAE_Engine
         result._y = 0.25 * s;
         result._z = (i_rotation._m12 + i_rotation._m21) / s;
       }
-      else {
+      else
+      {
         float s = sqrtf(1.0f + i_rotation._m22 - i_rotation._m00 - i_rotation._m11) * 2.0f; // S=4*qz
         result._w = (i_rotation._m10 - i_rotation._m01) / s;
         result._x = (i_rotation._m02 + i_rotation._m20) / s;
         result._y = (i_rotation._m12 + i_rotation._m21) / s;
         result._z = 0.25f * s;
       }
-      */
-      float w = std::sqrtf(i_rotation._m00 + i_rotation._m11 + i_rotation._m22 + 1.0f);
+      /*
       // Determine which of w, x, y, or z has the largest absolute value
       float fourWSquaredMinus1 = i_rotation._m00 + i_rotation._m11 + i_rotation._m22;
       float fourXSquaredMinus1 = i_rotation._m00 - i_rotation._m11 - i_rotation._m22;
@@ -399,6 +399,7 @@ namespace EAE_Engine
         result._y = (i_rotation._m21 + i_rotation._m12) * mult;
         break;
       }
+      */
       return result;
     }
 

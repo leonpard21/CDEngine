@@ -5,6 +5,7 @@
 #include "ColMatrix.h"
 #include "EulerAngle.h"
 #include "MathTool.h"
+#include "UserOutput/Source/Assert.h"
 #include <cassert>
 #include <cmath>
 // Static Data Initialization
@@ -193,6 +194,8 @@ namespace EAE_Engine
 
     Quaternion::Quaternion(const float i_angleInRadians, const Vector3& i_axisOfRotation_normalized)
     {
+      MessagedAssert(i_axisOfRotation_normalized.Magnitude() > 0.00001f, "axis of quaternion cannot be zero vector.");
+
       // [w, v] = [cos(?/2), sin(?/2)n]
       // [w, (x, y, z)] = [cos(?/2), (sin(?/2)nx, sin(?/2)ny, sin(?/2)nz)]
       const float theta_half = i_angleInRadians * 0.5f;
@@ -267,7 +270,7 @@ namespace EAE_Engine
       // sin(Pitch)
       float sp = -2.0f * (y * z + w * x);
       // Check for Gimbal Lock
-      if (Abs<float>(sp) > 0.9999f) 
+      if (std::fabsf(sp) > 0.999f) 
       {
         // This is the Gimbal Lock case.
         // the pitch is looking for stright up or down
@@ -336,6 +339,12 @@ namespace EAE_Engine
     {
       from.Normalize();
       to.Normalize();
+      //http://lolengine.net/blog/2013/09/18/beautiful-maths-quaternion-from-vectors
+      Vector3 w = Vector3::Cross(from, to);
+      Quaternion q = Quaternion(1.0f + Vector3::Dot(from, to), w._x, w._y, w._z);
+      q.Normalize();
+      return q;
+      /*
       // Get the angle and axis between from and to.
       float cosTheta = Vector3::Dot(from, to);
       Vector3 rotationAxis;
@@ -362,17 +371,25 @@ namespace EAE_Engine
         rotationAxis._x * sinTheta_half,
         rotationAxis._y * sinTheta_half,
         rotationAxis._z * sinTheta_half);
+        */
     }
 
     // Creates a rotation with the specified forward and upwards directions.
     // Assuming that the forwad and upward are orthogonal.
     Quaternion Quaternion::LookRotation(Vector3 forward, Vector3 upward)
     {
+      forward.Normalize();
+      upward.Normalize();
       // make sure we are not deal with zero vector
       if (forward.Magnitude() < 0.0001f)
         return Quaternion::Identity;
       Vector3 right = Vector3::Cross(upward, forward).GetNormalize();
       Vector3 idealUp = Vector3::Cross(forward, right).GetNormalize();
+      if (Vector3::Dot(idealUp, upward) < 0.0f)
+      {
+        right = right * -1.0f;
+        idealUp = idealUp * -1.0f;
+      }
       ColMatrix44 matrix = ColMatrix44::Identity;
       // right
       matrix._m00 = right._x;
@@ -388,6 +405,68 @@ namespace EAE_Engine
       matrix._m22 = forward._z;
       return ColMatrix44::CreateQuaternion(matrix);
     }
+
+    /*
+    //http://answers.unity3d.com/questions/467614/what-is-the-source-code-of-quaternionlookrotation.html
+    Quaternion Quaternion::LookRotation(Vector3 forward, Vector3 up)
+    {
+      forward.Normalize();
+
+      Vector3 vector = forward.GetNormalize();
+      Vector3 vector2 = Vector3::Cross(up, vector).GetNormalize();
+      Vector3 vector3 = Vector3::Cross(vector, vector2);
+      float m00 = vector2._x;
+      float m01 = vector2._y;
+      float m02 = vector2._z;
+      float m10 = vector3._x;
+      float m11 = vector3._y;
+      float m12 = vector3._z;
+      float m20 = vector._x;
+      float m21 = vector._y;
+      float m22 = vector._z;
+
+
+      float num8 = (m00 + m11) + m22;
+      Quaternion quaternion = Quaternion::Identity;
+      if (num8 > 0.0f)
+      {
+        float num = sqrtf(num8 + 1.0f);
+        quaternion._w = num * 0.5f;
+        num = 0.5f / num;
+        quaternion._x = (m12 - m21) * num;
+        quaternion._y = (m20 - m02) * num;
+        quaternion._z = (m01 - m10) * num;
+        return quaternion;
+      }
+      if ((m00 >= m11) && (m00 >= m22))
+      {
+        float num7 = sqrtf(((1.0f + m00) - m11) - m22);
+        float num4 = 0.5f / num7;
+        quaternion._x = 0.5f * num7;
+        quaternion._y = (m01 + m10) * num4;
+        quaternion._z = (m02 + m20) * num4;
+        quaternion._w = (m12 - m21) * num4;
+        return quaternion;
+      }
+      if (m11 > m22)
+      {
+        float num6 = sqrtf(((1.0f + m11) - m00) - m22);
+        float num3 = 0.5f / num6;
+        quaternion._x = (m10 + m01) * num3;
+        quaternion._y = 0.5f * num6;
+        quaternion._z = (m21 + m12) * num3;
+        quaternion._w = (m20 - m02) * num3;
+        return quaternion;
+      }
+      float num5 = sqrtf(((1.0f + m22) - m00) - m11);
+      float num2 = 0.5f / num5;
+      quaternion._x = (m20 + m02) * num2;
+      quaternion._y = (m21 + m12) * num2;
+      quaternion._z = 0.5f * num5;
+      quaternion._w = (m01 - m10) * num2;
+      return quaternion;
+    }
+    */
 
     // Rotate a vectoc equals to quaternion * vector * quaternion.inverse().
     // Its about the same number of operations involved as converting the

@@ -136,6 +136,7 @@ namespace EAE_Engine
         _localScale = Math::Vector3(scale.x() / parentScale.x(), scale.y() / parentScale.y(), scale.z() / parentScale.z());
       }
     }
+
     Math::Vector3 Transform::GetScale() const
     {
       if (_pParent == nullptr)
@@ -295,9 +296,17 @@ namespace EAE_Engine
 
     void Transform::LookAt(Math::Vector3 lookat)
     {
-      Math::Vector3 forward = (lookat - GetPos()).Normalize();
-      Math::Quaternion rotation = Math::Quaternion::LookRotation(forward, GetUp());
+      Math::Vector3 relative = lookat - GetPos();
+      // relative._y = 0.0f;
+      Math::Vector3 forward = relative.Normalize();
+      Math::Vector3 up = GetUp();
+      Math::Quaternion rotation = Math::Quaternion::LookRotation(forward, Math::Vector3::Up);
       SetRotation(rotation);
+      {
+        Math::Vector3 forward2 = GetForward();
+        Math::Vector3 diff = forward2 - forward;
+        assert(diff.Magnitude() < 0.001f);
+      }
     }
 
   }

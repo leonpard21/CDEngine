@@ -49,7 +49,7 @@ namespace EAE_Engine
 		Quaternion(const float i_angleInRadians, const Vector3& i_axisOfRotation_normalized );
 		Quaternion(const Quaternion& i_other);
     Quaternion(float pitch, float heading, float bank);
-
+    Quaternion(const float i_w, const float i_x, const float i_y, const float i_z);
 		// Static member functions
 		// Create Matrix for a quaternion
 		static ColMatrix44 CreateColMatrix(const Quaternion& i_rotation);
@@ -72,7 +72,6 @@ namespace EAE_Engine
 		};
 
 	private:
-		Quaternion( const float i_w, const float i_x, const float i_y, const float i_z );
 		// Friend Classes
 		//===============
     friend class ColMatrix33;
