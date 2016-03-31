@@ -269,14 +269,6 @@ namespace EAE_Engine
         Rotate(rotation);
         return;
       }
-      /*
-      // Get the angle from currentForward to the new forward
-      float radian = Math::Radian(currentForward, forward);
-      Math::Vector3 normalAxis = Math::Vector3::Cross(currentForward, forward).Normalize();
-      if (normalAxis.Magnitude() < 0.0001f)
-        return;
-      Math::Quaternion rotation(radian, normalAxis);
-      */
       Math::Quaternion rotation = Math::Quaternion::RotationBetween2Vectors(currentForward, forward);
       //SetRotation(rotation * GetRotation()); 
       Rotate(rotation);
@@ -307,7 +299,7 @@ namespace EAE_Engine
         assert(dot < 0.0001f);
       }
       Math::Quaternion currentRot = GetRotation();
-      Math::Quaternion rotation = Math::Quaternion::LookRotation(forward, Math::Vector3::Up);
+      Math::Quaternion rotation = Math::Quaternion::LookRotation(forward, up);
       SetRotation(rotation);
       //SetForward(forward);
       {
@@ -316,6 +308,16 @@ namespace EAE_Engine
         Math::Vector3 diff = forward2 - forward;
         assert(diff.Magnitude() < 0.001f + FLT_EPSILON);
       }
+    }
+
+    void Transform::RotateAround(Math::Vector3 point, Math::Vector3 axis, float radians)
+    {
+      Math::Vector3 movement = point - GetPos();
+      float dot = Math::Vector3::Dot(movement, GetForward());
+      Move(GetForward() * dot);
+      Math::Quaternion rotation(radians, axis);
+      Rotate(rotation);
+      Move(GetForward() * -dot);
     }
 
   }

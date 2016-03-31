@@ -112,8 +112,8 @@ public:
   {
     if (!_pTarget)
       return;
-    UpdatePosition();
     UpdateInputRotation();
+    UpdatePosition();
     UpdateOrientation();
 
     return;
@@ -122,26 +122,16 @@ public:
 private:
   void UpdateInputRotation()
   {
-    EAE_Engine::Math::Quaternion rotationOffset = RotateAroundY();
-    if (rotationOffset.GetMagnitude() < 0.1f)
-      return;
-  //  EAE_Engine::Math::Vector3 relativePos = _pTarget->GetPos() - _pTransform->GetPos();
-  //  _pTransform->Move(relativePos);
-    EAE_Engine::Math::Quaternion current = _pTransform->GetRotation();
-    EAE_Engine::Math::Quaternion target = rotationOffset * current;
-    {
-      target = EAE_Engine::Math::Quaternion::Slerp(current, target, 0.5f);
-      _pTransform->SetRotation(target);
-    }
-    //EAE_Engine::Math::Vector3 movement = _pTransform->GetForward() * -relativePos.Magnitude();
-    //_pTransform->Move(movement);
+    float rotationOffset = RotateAroundY();
+    if(fabsf(rotationOffset) > 0.0f)
+      _pTransform->RotateAround(GetAimingPoint(), EAE_Engine::Math::Vector3::Up, rotationOffset);
   }
 
   void UpdateOrientation() 
   {
     if (!_pTarget)
       return;
-    EAE_Engine::Math::Vector3 relativePos =  _pTarget->GetPos() - _pTransform->GetPos();
+    EAE_Engine::Math::Vector3 relativePos = GetAimingPoint() - _pTransform->GetPos();
     {
       EAE_Engine::Math::Vector3 relativeForward = relativePos;
       relativeForward._y = 0;
@@ -159,63 +149,47 @@ private:
         float rotateAngle = angle - _phi;
         if(normal.Magnitude() > 0.0001f)
         {
-        //  EAE_Engine::Math::Quaternion rotation(rotateAngle * EAE_Engine::Math::DegreeToRadian, normal);
-        //  _pTransform->Rotate(rotation);
+          EAE_Engine::Math::Quaternion rotation(rotateAngle * EAE_Engine::Math::DegreeToRadian, normal);
+          _pTransform->Rotate(rotation);
         }
         //_pTransform->SetForward(relativeForward);
+        //_pTransform->LookAt(GetAimingPoint());
       }
-      _pTransform->LookAt(_pTarget->GetPos());
+      //_pTransform->LookAt(GetAimingPoint());
     }
-    /*
-    {
-      EAE_Engine::Math::Vector3 relativeForward = relativePos;
-      relativeForward._x = 0;
-      relativeForward.Normalize();
-      EAE_Engine::Math::Vector3 camForward = _pTransform->GetForward();
-      float angle = EAE_Engine::Math::Degree(camForward, relativeForward);
-      EAE_Engine::Math::Vector3 normal = EAE_Engine::Math::Vector3::Cross(camForward, relativeForward).Normalize();
-      // only when the camera is too far away from the Camera's Forward, we rotate the camera.
-      if (angle > _theta)
-      {
-        // first, set the camera to look at the target
-        _pTransform->SetForward(relativeForward);
-        //_pTransform->LookAt(relativePos);
-        // second, rotate back so that the target will keep staying at the edge
-        EAE_Engine::Math::Quaternion rotation((_theta)* EAE_Engine::Math::DegreeToRadian, normal);
-        _pTransform->Rotate(rotation);
-      }
-    }
-    */
   }
 
   void UpdatePosition() 
   {
     if (!_pTarget)
       return;
-    EAE_Engine::Math::Vector3 relativePos = _pTarget->GetPos() - _pTransform->GetPos();
-    relativePos._y = 0;
+    EAE_Engine::Math::Vector3 movement = EAE_Engine::Math::Vector3::Zero;
+    EAE_Engine::Math::Vector3 relativePos = GetAimingPoint() - _pTransform->GetPos();
+    if (fabsf(relativePos._y) > 1.0f)
+    {
+      float yOffset = EAE_Engine::Math::GetSign(relativePos._y) * (relativePos._y - 1.0f);
+      movement = movement + EAE_Engine::Math::Vector3(0.0f, -yOffset, 0.0f);
+      relativePos._y = 1.0f * EAE_Engine::Math::GetSign<float>(relativePos._y);
+    }
     if (relativePos.Magnitude() > _outter)
     {
-      EAE_Engine::Math::Vector3 newPos = _pTarget->GetPos() + relativePos.Normalize() * -_outter;
-      newPos = newPos + EAE_Engine::Math::Vector3(0.0f, 2.0f, 0.0f);
-      _pTransform->SetPos(newPos);
+      movement = movement + relativePos.Normalize() * (relativePos.Magnitude() - _outter);
     }
     else if (relativePos.Magnitude() < _inner)
     {
-      EAE_Engine::Math::Vector3 newPos = _pTarget->GetPos() + relativePos.Normalize() * -_inner;
-      newPos = newPos + EAE_Engine::Math::Vector3(0.0f, 2.0f, 0.0f);
-      _pTransform->SetPos(newPos);
+      movement = movement + relativePos.Normalize() * (relativePos.Magnitude() - _inner);
     }
+    _pTransform->Move(movement);
   }
 
   void Reset() 
   {
     if (!_pTarget)
       return;
-    _pTransform->SetLocalPos(_pTarget->GetPos() + _pTarget->GetForward() * -10.0f + EAE_Engine::Math::Vector3::Up * 2.0f);
+    _pTransform->SetLocalPos(GetAimingPoint() + _pTarget->GetForward() * -10.0f + EAE_Engine::Math::Vector3::Up * 2.0f);
   }
 
-  EAE_Engine::Math::Quaternion RotateAroundY()
+  float RotateAroundY()
   {
     float rotatAngle = 0.0f;
     if (EAE_Engine::UserInput::IsKeyPressed(VK_LEFT))
@@ -228,8 +202,9 @@ private:
     }
     const float unitsPerSecond = 1.0f;
     const float unitsToRotate = unitsPerSecond * EAE_Engine::Time::GetSecondsElapsedThisFrame();
-    EAE_Engine::Math::Quaternion quat(rotatAngle * unitsToRotate, EAE_Engine::Math::Vector3::Up);
-    return quat;
+    return rotatAngle * unitsToRotate;
+    // EAE_Engine::Math::Quaternion quat(rotatAngle * unitsToRotate, EAE_Engine::Math::Vector3::Up);
+    // return quat;
   }
 
   EAE_Engine::Math::Quaternion RotateAroundX()
@@ -247,6 +222,11 @@ private:
     const float unitsToRotate = unitsPerSecond * EAE_Engine::Time::GetSecondsElapsedThisFrame();
     EAE_Engine::Math::Quaternion quat(rotatAngle * unitsToRotate, EAE_Engine::Math::Vector3::Right);
     return quat;
+  }
+
+  EAE_Engine::Math::Vector3 GetAimingPoint()
+  {
+    return _pTarget->GetPos() + EAE_Engine::Math::Vector3(0.0f, 2.0f, 0.0f);
   }
 
 private:

@@ -101,6 +101,8 @@ namespace EAE_Engine
       virtual Math::Vector3 GetUp() const = 0;
       // Lookat
       virtual void LookAt(Math::Vector3 lookat) = 0;
+      // Round Around
+      virtual void RotateAround(Math::Vector3 point, Math::Vector3 axis, float radians) = 0;
       // Children
       virtual uint32_t GetChildCount() = 0;
       virtual ITransform* GetChild(uint32_t index = 0) = 0;

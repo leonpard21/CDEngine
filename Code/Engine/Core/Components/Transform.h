@@ -52,6 +52,7 @@ namespace EAE_Engine
       Math::Vector3 GetRight() const override;
       Math::Vector3 GetUp() const override;
       void LookAt(Math::Vector3 lookat) override;
+      void RotateAround(Math::Vector3 point, Math::Vector3 axis, float radians) override;
 
       // Children
       void AddChild(Common::ITransform* pChild) override { _children.push_back(pChild); }
