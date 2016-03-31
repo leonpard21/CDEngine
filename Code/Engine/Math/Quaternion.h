@@ -59,7 +59,7 @@ namespace EAE_Engine
     static Quaternion RotationBetween2Vectors(Vector3 from, Vector3 to);
     // Assuming that the forwad and upward are orthogonal.
     static Quaternion LookRotation(Vector3 forward, Vector3 upward);
-    static Vector3 RotateVector(const Quaternion& i_rotation, const Math::Vector3& i_vec);
+    static Vector3 MultiVector(const Quaternion& i_rotation, const Math::Vector3& i_vec);
 
 		// Data
 		//=====

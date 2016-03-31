@@ -246,66 +246,75 @@ namespace EAE_Engine
             acount += colMat._u[i]._u[j] - colMat2._u[i]._u[j];
           }
         }
-        assert(acount < 0.0001f);
+        assert(acount < 0.1f);
       }
-      Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
-      // Remember that we are working on the ColumnMatrix and Right hand coordinate.
-      // So the 3rd axis of the RotateTransformMatrix is pointing to the backward
-      Math::Vector3 forward = rotationMat.GetCol(2) * 1.0f;
-      return forward.Normalize();
+      Math::Vector3 forward = Math::Quaternion::MultiVector(GetRotation(), Math::Vector3::Forward);
+      return forward;
     }
 
     void Transform::SetForward(Math::Vector3 forward)
     {
+      forward.Normalize();
       // get rid of the zero vector cases
       if (forward.SqMagnitude() < 0.001f)
         return;
       Math::Vector3 currentForward = GetForward();
       Math::Vector3 currentUp = GetUp();
       float dot = Math::Vector3::Dot(currentForward, forward);
-      if (dot > 0.999f)
+      if (dot > 1.0f - 0.0001f)
         return;
-      else if (dot< -0.999f)
+      else if (dot< -1.0f + 0.0001f)
       {
         Math::Quaternion rotation(Math::Pi, currentUp);
-        SetRotation(rotation * GetRotation());
+        Rotate(rotation);
         return;
       }
+      /*
       // Get the angle from currentForward to the new forward
       float radian = Math::Radian(currentForward, forward);
       Math::Vector3 normalAxis = Math::Vector3::Cross(currentForward, forward).Normalize();
+      if (normalAxis.Magnitude() < 0.0001f)
+        return;
       Math::Quaternion rotation(radian, normalAxis);
-      SetRotation(rotation * GetRotation());
-      currentForward = GetForward();
-      Math::Vector3 dir = currentForward - forward;
-      assert(dir.Magnitude() < 0.001f + FLT_EPSILON);
+      */
+      Math::Quaternion rotation = Math::Quaternion::RotationBetween2Vectors(currentForward, forward);
+      //SetRotation(rotation * GetRotation()); 
+      Rotate(rotation);
+      {
+        Math::Vector3 currentForward2 = GetForward();
+        Math::Vector3 dir = currentForward2 - forward;
+        assert(dir.Magnitude() < 0.001f + FLT_EPSILON);
+      }
     }
 
     Math::Vector3 Transform::GetRight() const
     {
-      Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
-      Math::Vector3 right = rotationMat.GetCol(0);
-      return right.Normalize();
+      return Math::Quaternion::MultiVector(GetRotation(), Math::Vector3::Right);
     }
     Math::Vector3 Transform::GetUp() const
     {
-      Math::ColMatrix44 rotationMat = GetRotateTransformMatrix();
-      Math::Vector3 up = rotationMat.GetCol(1);
-      return up.Normalize();
+      return Math::Quaternion::MultiVector(GetRotation(), Math::Vector3::Up);
     }
 
     void Transform::LookAt(Math::Vector3 lookat)
     {
       Math::Vector3 relative = lookat - GetPos();
-      // relative._y = 0.0f;
-      Math::Vector3 forward = relative.Normalize();
+      Math::Vector3 forward = relative.GetNormalize();
       Math::Vector3 up = GetUp();
+      Math::Vector3 currentForward = GetForward();
+      {
+        float dot = fabsf(Math::Vector3::Dot(up, currentForward));
+        assert(dot < 0.0001f);
+      }
+      Math::Quaternion currentRot = GetRotation();
       Math::Quaternion rotation = Math::Quaternion::LookRotation(forward, Math::Vector3::Up);
       SetRotation(rotation);
+      //SetForward(forward);
       {
         Math::Vector3 forward2 = GetForward();
+        Math::Vector3 up2 = GetUp();
         Math::Vector3 diff = forward2 - forward;
-        assert(diff.Magnitude() < 0.001f);
+        assert(diff.Magnitude() < 0.001f + FLT_EPSILON);
       }
     }
 

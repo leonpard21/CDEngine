@@ -259,14 +259,21 @@ namespace EAE_Engine
 
     // Converting an object-to-upright quaternion to Euler angles
     // Come from 3DMath Primier for Graphics and Game development 2nd, Chaptor 8.7.6
+    // The x, y, and z angles represent a rotation 
+    // z degrees around the z axis, (bank)
+    // x degrees around the x axis, (pitch)
+    // and y degrees around the y axis (heading) (in that order).
     Vector3 Quaternion::CreateEulerAngle(const Quaternion& i_rotation)
     {
-      // result is radians
-      Vector3 result = Vector3::Zero; 
+      assert(fabsf(i_rotation.GetMagnitude() - 1.0f) < 0.001f);
       float w = i_rotation._w;
       float x = i_rotation._x;
       float y = i_rotation._y;
       float z = i_rotation._z;
+
+      // Output Euler angles(radians)
+      float heading = 0.0f, pitch = 0.0f, bank = 0.0f;
+
       // sin(Pitch)
       float sp = -2.0f * (y * z + w * x);
       // Check for Gimbal Lock
@@ -275,16 +282,18 @@ namespace EAE_Engine
         // This is the Gimbal Lock case.
         // the pitch is looking for stright up or down
         // We just calculate the heading and make bank to 0.0f
-        result._x = Math::Pi * 0.5f; // pitch
-        result._y = std::atan2f(-x * z - w * y, 0.5f - y * y - z * z); //heading
-        result._z = 0.0f; // bank
+        pitch = Math::Pi * 0.5f; // pitch
+        heading = std::atan2f(-x * z - w * y, 0.5f - y * y - z * z); //heading
+        bank = 0.0f; // bank       
       }
       else 
       {
-        result._x = std::asinf(sp);
-        result._y = std::atan2f(x * z - w * y, 0.5f - x * x - y * y);
-        result._z = std::atan2f(x * y - w * z, 0.5f - x * x - z * z);
+        pitch = std::asinf(sp); // pitch 
+        heading = std::atan2f(x * z - w * y, 0.5f - x * x - y * y);// heading 
+        bank = std::atan2f(x * y - w * z, 0.5f - x * x - z * z);// bank
       }
+      // result is radians
+      Vector3 result(bank, pitch, heading);
       return result;
     }
 
@@ -373,23 +382,28 @@ namespace EAE_Engine
         rotationAxis._z * sinTheta_half);
         */
     }
-
+    
     // Creates a rotation with the specified forward and upwards directions.
     // Assuming that the forwad and upward are orthogonal.
     Quaternion Quaternion::LookRotation(Vector3 forward, Vector3 upward)
     {
+      forward = forward * -1.0f;
       forward.Normalize();
       upward.Normalize();
+
+      Quaternion result = Quaternion::Identity;
+
       // make sure we are not deal with zero vector
       if (forward.Magnitude() < 0.0001f)
-        return Quaternion::Identity;
+      return Quaternion::Identity;
       Vector3 right = Vector3::Cross(upward, forward).GetNormalize();
       Vector3 idealUp = Vector3::Cross(forward, right).GetNormalize();
       if (Vector3::Dot(idealUp, upward) < 0.0f)
       {
-        right = right * -1.0f;
-        idealUp = idealUp * -1.0f;
+      right = right * -1.0f;
+      idealUp = idealUp * -1.0f;
       }
+
       ColMatrix44 matrix = ColMatrix44::Identity;
       // right
       matrix._m00 = right._x;
@@ -405,26 +419,23 @@ namespace EAE_Engine
       matrix._m22 = forward._z;
       return ColMatrix44::CreateQuaternion(matrix);
     }
-
+    
     /*
-    //http://answers.unity3d.com/questions/467614/what-is-the-source-code-of-quaternionlookrotation.html
     Quaternion Quaternion::LookRotation(Vector3 forward, Vector3 up)
     {
       forward.Normalize();
-
-      Vector3 vector = forward.GetNormalize();
-      Vector3 vector2 = Vector3::Cross(up, vector).GetNormalize();
-      Vector3 vector3 = Vector3::Cross(vector, vector2);
-      float m00 = vector2._x;
-      float m01 = vector2._y;
-      float m02 = vector2._z;
-      float m10 = vector3._x;
-      float m11 = vector3._y;
-      float m12 = vector3._z;
-      float m20 = vector._x;
-      float m21 = vector._y;
-      float m22 = vector._z;
-
+      up.Normalize();
+      Vector3 right = Vector3::Cross(up, forward).GetNormalize();
+      up = Vector3::Cross(forward, right);
+      float m00 = right._x;
+      float m01 = right._y;
+      float m02 = right._z;
+      float m10 = up._x;
+      float m11 = up._y;
+      float m12 = up._z;
+      float m20 = forward._x;
+      float m21 = forward._y;
+      float m22 = forward._z;
 
       float num8 = (m00 + m11) + m22;
       Quaternion quaternion = Quaternion::Identity;
@@ -464,19 +475,28 @@ namespace EAE_Engine
       quaternion._y = (m21 + m12) * num2;
       quaternion._z = 0.5f * num5;
       quaternion._w = (m01 - m10) * num2;
-      return quaternion;
+      return quaternion.GetInverse();
     }
     */
-
-    // Rotate a vectoc equals to quaternion * vector * quaternion.inverse().
-    // Its about the same number of operations involved as converting the
-    // quaternion to the equivalent rotation matrix
-    Vector3 Quaternion::RotateVector(const Quaternion& i_rotation, const Math::Vector3& i_vec)
+    Vector3 Quaternion::MultiVector(const Quaternion& i_rotation, const Math::Vector3& i_vec)
     {
-      // Extract the vector part of the quaternion
-      Quaternion p(0.0f, i_rotation._x, i_rotation._y, i_rotation._z);
-      Quaternion p_apostrophe = i_rotation * p * i_rotation.GetInverse();
-      return p_apostrophe.GetVec();
+      float num = i_rotation._x * 2.0f;
+      float num2 = i_rotation._y * 2.0f;
+      float num3 = i_rotation._z * 2.0f;
+      float num4 = i_rotation._x * num;
+      float num5 = i_rotation._y * num2;
+      float num6 = i_rotation._z * num3;
+      float num7 = i_rotation._x * num2;
+      float num8 = i_rotation._x * num3;
+      float num9 = i_rotation._y * num3;
+      float num10 = i_rotation._w * num;
+      float num11 = i_rotation._w * num2;
+      float num12 = i_rotation._w * num3;
+      Vector3 result = Vector3::Zero;
+      result._x = (1.0f - (num5 + num6)) * i_vec._x + (num7 - num12) * i_vec._y + (num8 + num11) * i_vec._z;
+      result._y = (num7 + num12) * i_vec._x + (1.0f - (num4 + num6)) * i_vec._y + (num9 - num10) * i_vec._z;
+      result._z = (num8 - num11) * i_vec._x + (num9 + num10) * i_vec._y + (1.0f - (num4 + num5)) * i_vec._z;
+      return result;
     }
 
     // Products

@@ -184,7 +184,7 @@ namespace EAE_Engine
     template <typename T>
     const TVector3<T> TVector3<T>::Up(T(0), T(1), T(0));
     template <typename T>
-    const TVector3<T> TVector3<T>::Forward(T(0), T(0), T(1));
+    const TVector3<T> TVector3<T>::Forward(T(0), T(0), T(-1));
 
     inline float TVector3<float>::Magnitude() const
     {

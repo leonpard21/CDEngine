@@ -73,11 +73,11 @@ private:
       }
       if (EAE_Engine::UserInput::IsKeyPressed('A'))
       {
-        offset = right * 1.0f;
+        offset = right * -1.0f;
       }
       if (EAE_Engine::UserInput::IsKeyPressed('D'))
       {
-        offset = right * -1.0f;
+        offset = right * 1.0f;
       }
     }
     // Get the speed
@@ -112,33 +112,36 @@ public:
   {
     if (!_pTarget)
       return;
-    //UpdateInputRotation();
+    UpdatePosition();
+    UpdateInputRotation();
     UpdateOrientation();
-   // UpdatePosition();
+
     return;
   }
 
 private:
   void UpdateInputRotation()
   {
-    EAE_Engine::Math::Vector3 relativePos = _pTarget->GetPos() - _pTransform->GetPos();
-    _pTransform->Move(relativePos);
     EAE_Engine::Math::Quaternion rotationOffset = RotateAroundY();
+    if (rotationOffset.GetMagnitude() < 0.1f)
+      return;
+  //  EAE_Engine::Math::Vector3 relativePos = _pTarget->GetPos() - _pTransform->GetPos();
+  //  _pTransform->Move(relativePos);
     EAE_Engine::Math::Quaternion current = _pTransform->GetRotation();
     EAE_Engine::Math::Quaternion target = rotationOffset * current;
     {
       target = EAE_Engine::Math::Quaternion::Slerp(current, target, 0.5f);
       _pTransform->SetRotation(target);
     }
-    EAE_Engine::Math::Vector3 movement = _pTransform->GetForward() * -relativePos.Magnitude();
-    _pTransform->Move(movement);
+    //EAE_Engine::Math::Vector3 movement = _pTransform->GetForward() * -relativePos.Magnitude();
+    //_pTransform->Move(movement);
   }
 
   void UpdateOrientation() 
   {
     if (!_pTarget)
       return;
-    EAE_Engine::Math::Vector3 relativePos = _pTarget->GetPos() - _pTransform->GetPos();
+    EAE_Engine::Math::Vector3 relativePos =  _pTarget->GetPos() - _pTransform->GetPos();
     {
       EAE_Engine::Math::Vector3 relativeForward = relativePos;
       relativeForward._y = 0;
@@ -148,20 +151,20 @@ private:
       EAE_Engine::Math::Vector3 normal = EAE_Engine::Math::Vector3::Cross(camForward, relativeForward).Normalize();
       // get the direction of the angle.
       float direct = EAE_Engine::Math::Vector3::Dot(normal, EAE_Engine::Math::Vector3::Up);
-    //  if (direct < 0)
-    //    angle = -angle;
+      // if (direct < 0)
+      //   angle = -angle;
       // only when the camera is too far away from the Camera's Forward, we rotate the camera.
       if (angle > _phi)
       {
         float rotateAngle = angle - _phi;
         if(normal.Magnitude() > 0.0001f)
         {
-          //EAE_Engine::Math::Quaternion rotation(rotateAngle* EAE_Engine::Math::DegreeToRadian, normal);
-          //_pTransform->Rotate(rotation);
+        //  EAE_Engine::Math::Quaternion rotation(rotateAngle * EAE_Engine::Math::DegreeToRadian, normal);
+        //  _pTransform->Rotate(rotation);
         }
         //_pTransform->SetForward(relativeForward);
       }
-      _pTransform->LookAt(relativePos);
+      _pTransform->LookAt(_pTarget->GetPos());
     }
     /*
     {

@@ -334,7 +334,7 @@ namespace EAE_Engine
         float s = sqrtf(1.0f + i_rotation._m11 - i_rotation._m00 - i_rotation._m22) * 2.0f; // S=4*qy
         result._w = (i_rotation._m02 - i_rotation._m20) / s;
         result._x = (i_rotation._m01 + i_rotation._m10) / s;
-        result._y = 0.25 * s;
+        result._y = 0.25f * s;
         result._z = (i_rotation._m12 + i_rotation._m21) / s;
       }
       else

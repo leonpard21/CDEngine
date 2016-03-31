@@ -282,7 +282,7 @@ namespace
 		//	EAE_Engine::Math::Quaternion player_rotation(radian, axis);
 		//	pPlayerObj->GetTransform()->SetRotation(player_rotation);
 			EAE_Engine::Math::Vector3 playerRenderPos(0.0f, 2.0f, 0.0f);
-			EAE_Engine::Common::IGameObj* pPlayerRenderObj = EAE_Engine::Core::World::GetInstance().AddGameObj("player", playerRenderPos);
+			EAE_Engine::Common::IGameObj* pPlayerRenderObj = EAE_Engine::Core::World::GetInstance().AddGameObj("playerRenderObj", playerRenderPos);
 			pPlayerRenderObj->GetTransform()->SetParent(pPlayerObj->GetTransform());
 			EAE_Engine::Graphics::AOSMeshRender* pPlayerRender = EAE_Engine::Graphics::AddMeshRender(pathPlayer, pPlayerRenderObj->GetTransform());
 			{

@@ -28,6 +28,10 @@ namespace EAE_Engine
     }
     */
 
+    // The x, y, and z angles represent
+    // a rotation z degrees around the z axis, 
+    // x degrees around the x axis, 
+    // and y degrees around the y axis (in that order).
     Quaternion EulerAngle::GetQuaternion(Vector3 eulerAngle)
     {
       // In convertion from EulerAngle to Quaternion(from obj to upright), 
@@ -35,10 +39,11 @@ namespace EAE_Engine
       // 1. because we're using fixed-axis rotations, 
       // so the order of rotation should be bank(around z), pitch(around x) and heading(around Y)
       // 2. because we also need to multiply the quaternion from right to left,
-      // so at the end: Q_object?upright(h, p, b) = hpb
-      float heading = eulerAngle._y;
-      float pitch = eulerAngle._x;
-      float bank = eulerAngle._z;
+      // so at the end: Q_object->upright(h, p, b) = hpb
+      float bank = eulerAngle._x;
+      float pitch = eulerAngle._y;
+      float heading = eulerAngle._z;
+
       float chhalf = std::cosf(heading * 0.5f);
       float cphalf = std::cosf(pitch * 0.5f);
       float cbhalf = std::cosf(bank * 0.5f);
@@ -55,6 +60,10 @@ namespace EAE_Engine
       return result;
     }
 
+    // The x, y, and z angles represent a rotation,      
+    // z degrees around the z axis, (bank)
+    // x degrees around the x axis, (pitch)
+    // and y degrees around the y axis (heading) (in that order).
     ColMatrix44 EulerAngle::GetColMatrix(Vector3 eulerAngle)
     {
       // For the from obj to upright case:
@@ -65,9 +74,10 @@ namespace EAE_Engine
       // instead of doing euler rotations about the body axes.
       // For object->upright, The final correct order is: 
       // Bank(around z), Pitch(around X) and heading(around Y).
-      float heading = eulerAngle._y;
-      float pitch = eulerAngle._x;
-      float bank = eulerAngle._z;
+      // M(object->upright) = BPH,
+      float bank = eulerAngle._x;
+      float pitch = eulerAngle._y;
+      float heading = eulerAngle._z;
       float ch = std::cosf(heading);
       float cp = std::cosf(pitch);
       float cb = std::cosf(bank);
