@@ -122,9 +122,16 @@ public:
 private:
   void UpdateInputRotation()
   {
+    EAE_Engine::Math::Quaternion rotation = EAE_Engine::Math::Quaternion::Identity;
     float rotationOffset = RotateAroundY();
     if(fabsf(rotationOffset) > 0.0f)
       _pTransform->RotateAround(GetAimingPoint(), EAE_Engine::Math::Vector3::Up, rotationOffset);
+    float rotationOffset2 = RotateAroundX();
+    {
+      EAE_Engine::Math::Vector3 movement = EAE_Engine::Math::Vector3(0.0f, rotationOffset2, 0.0f);
+      _pTransform->Move(movement);
+    }
+
   }
 
   void UpdateOrientation() 
@@ -159,7 +166,7 @@ private:
     }
   }
 
-  void UpdatePosition() 
+  void UpdatePosition()
   {
     if (!_pTarget)
       return;
@@ -167,10 +174,9 @@ private:
     EAE_Engine::Math::Vector3 relativePos = GetAimingPoint() - _pTransform->GetPos();
     if (fabsf(relativePos._y) > 1.0f)
     {
-      float yOffset = EAE_Engine::Math::GetSign(relativePos._y) * (relativePos._y - 1.0f);
-      movement = movement + EAE_Engine::Math::Vector3(0.0f, -yOffset, 0.0f);
-      relativePos._y = 1.0f * EAE_Engine::Math::GetSign<float>(relativePos._y);
+      movement._y = (fabsf(relativePos._y) - 1.0f) * EAE_Engine::Math::GetSign<float>(relativePos._y);
     }
+
     if (relativePos.Magnitude() > _outter)
     {
       movement = movement + relativePos.Normalize() * (relativePos.Magnitude() - _outter);
@@ -207,7 +213,7 @@ private:
     // return quat;
   }
 
-  EAE_Engine::Math::Quaternion RotateAroundX()
+  float RotateAroundX()
   {
     float rotatAngle = 0.0f;
     if (EAE_Engine::UserInput::IsKeyPressed(VK_UP))
@@ -220,8 +226,7 @@ private:
     }
     const float unitsPerSecond = 1.0f;
     const float unitsToRotate = unitsPerSecond * EAE_Engine::Time::GetSecondsElapsedThisFrame();
-    EAE_Engine::Math::Quaternion quat(rotatAngle * unitsToRotate, EAE_Engine::Math::Vector3::Right);
-    return quat;
+    return rotatAngle * unitsToRotate;
   }
 
   EAE_Engine::Math::Vector3 GetAimingPoint()
