@@ -47,6 +47,12 @@ namespace EAE_Engine
 
 		void UIElementManager::Update()
 		{
+      if (!_enable) 
+      {
+        CanvasRenderManager* crManager = CanvasRenderManager::GetInstance();
+        CanvasRenderManager::GetInstance()->Clean();
+        return;
+      }
 			// Iterate all of the Buttons
 			for (std::vector<Button*>::iterator it = _buttons.begin(); it != _buttons.end(); ++it)
 			{

@@ -25,6 +25,7 @@ namespace EAE_Engine
 			Slider* AddSlider(float min, float max, Common::ITransform* pTrans);
 			Toggle* AddToggle(bool checked, Common::ITransform* pTrans);
 			std::vector<Toggle*>& GetToggles() { return _toggles; }
+      inline void SetEnable(bool enable) { _enable = enable; }
 
 		private:
 			void UpdateCanvasRender();
@@ -34,6 +35,7 @@ namespace EAE_Engine
 			std::vector<Button*> _buttons;
 			std::vector<Slider*> _sliders;
 			std::vector<Toggle*> _toggles;
+      bool _enable = false;
 		};
 
 

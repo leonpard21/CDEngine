@@ -55,8 +55,9 @@ EAE_Engine::Common::IGameObj* pActorBoard = nullptr;
 EAE_Engine::Common::IGameObj* pPlayerObj = nullptr;
 EAE_Engine::Common::IGameObj* pCameraObj = nullptr;
 EAE_Engine::Common::ICamera* pCamera = nullptr;
-CameraController* pCamController = nullptr;
-PlayerController* pPlayerController = nullptr;
+EAE_Engine::Controller::Controller* pCamController = nullptr;
+EAE_Engine::Controller::Controller* pFlyCamController = nullptr;
+EAE_Engine::Controller::Controller* pPlayerController = nullptr;
 
 
 EAE_Engine::Graphics::ImageRender* pNumberSpriteRender = nullptr;
@@ -139,25 +140,31 @@ void GameplayUpdate()
 		EAE_Engine::Math::Vector3 green(0.0f, 1.0f, 0.0f);
 		EAE_Engine::Math::Vector3 blue(0.0f, 0.0f, 1.0f);
 		EAE_Engine::Debug::CleanDebugShapes();
+    static bool bUseFlyCam = false;
 		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('C') == EAE_Engine::UserInput::KeyState::OnPressed)
 		{
-      if (pPlayerController && pCamController)
+      bUseFlyCam = !bUseFlyCam;
+      if (bUseFlyCam)
       {
-        bool playerControllerState = pPlayerController->IsActive();
-        pPlayerController->SetActive(!playerControllerState);
-        pCamController->SetActive(playerControllerState);
-        if (!playerControllerState)
-        {
-          pCamController->GetTransform()->SetLocalRotation(EAE_Engine::Math::Quaternion::Identity);
-          pCamController->ResetCamera(pPlayerObj->GetTransform());
-          pCamController->GetTransform()->SetParent(pPlayerObj->GetTransform());
-        }
-        else
-        {
-          pCamController->GetTransform()->SetParent(nullptr);
-        }
+        pPlayerController->SetActive(false);
+        pCamController->SetActive(false);
+        pFlyCamController->SetActive(true);
+      }
+      else 
+      {
+        dynamic_cast<LazyCamera*>(pCamController)->ResetCamera(pPlayerObj->GetTransform());
+        pPlayerController->SetActive(true);
+        pCamController->SetActive(true);
+        pFlyCamController->SetActive(false);
       }
 		}
+
+    static bool s_EnableMenuOrNot = false;
+    if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState(VK_TAB) == EAE_Engine::UserInput::KeyState::OnPressed)
+    {
+      s_EnableMenuOrNot = !s_EnableMenuOrNot;
+      EAE_Engine::Graphics::UIElementManager::GetInstance()->SetEnable(s_EnableMenuOrNot);
+    }
 
 		static uint32_t levelIndex = 3;
 		static EAE_Engine::Math::Vector3 octreeColor = EAE_Engine::Math::Vector3(0.0f, 1.0f, 1.0f);
@@ -322,8 +329,8 @@ namespace
 			//Set Controller
 		//	pPlayerController = new PlayerController(pPlayerObj->GetTransform());
 		//	EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pPlayerController);
-      RelativeScreenInput* prsi = new RelativeScreenInput(pPlayerObj->GetTransform());
-      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(prsi);
+      pPlayerController = new RelativeScreenInput(pPlayerObj->GetTransform());
+      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pPlayerController);
 		}
 	}
 
@@ -348,9 +355,12 @@ namespace
     }
     */
     {
-      LazyCamera * pLazyCamController = new LazyCamera(pCamera);
-      pLazyCamController->ResetCamera(pPlayerObj->GetTransform());
-      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pLazyCamController);
+      pCamController = new LazyCamera(pCamera);
+      pFlyCamController = new FlyCameraController(pCamera);
+      ((LazyCamera*)pCamController)->ResetCamera(pPlayerObj->GetTransform());
+      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pCamController);
+      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlyCamController);
+      pFlyCamController->SetActive(false);
     }
 	}
 

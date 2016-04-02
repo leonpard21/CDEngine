@@ -245,6 +245,7 @@ namespace EAE_Engine
 
         void DebugMeshes::Update()
         {
+
             GenerateDebugSegments();
             GenerateDebugCircles();
             GenerateDebugBoxes();

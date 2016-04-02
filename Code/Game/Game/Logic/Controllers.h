@@ -20,10 +20,10 @@ namespace
 }
 
 
-class CameraController : public EAE_Engine::Controller::Controller
+class FlyCameraController : public EAE_Engine::Controller::Controller
 {
 public:
-	CameraController(EAE_Engine::Common::ICamera* pCamera) :
+	FlyCameraController(EAE_Engine::Common::ICamera* pCamera) :
 		EAE_Engine::Controller::Controller(pCamera->GetTransform()),
 		_cdRemain(0.0f), c_ShootingCD(0.3f)
 	{
@@ -58,11 +58,11 @@ public:
 		float rotatAngle = 0.0f;
 		if (EAE_Engine::UserInput::IsKeyPressed('A'))
 		{
-			rotatAngle -= 1.0f;
+			rotatAngle = 1.0f;
 		}
 		if (EAE_Engine::UserInput::IsKeyPressed('D'))
 		{
-			rotatAngle += 1.0f;
+			rotatAngle = -1.0f;
 		}
 		const float unitsPerSecond = 1.0f;
 		const float unitsToRotate = unitsPerSecond * EAE_Engine::Time::GetSecondsElapsedThisFrame();
