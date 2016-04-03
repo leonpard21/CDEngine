@@ -23,6 +23,11 @@ namespace EAE_Engine
 		void Physics::Init() 
 		{
 			_pRigidBodyManager = new RigidBodyManager();
+
+      EAE_Engine::Core::CompleteOctree* pCompleteOctree = new EAE_Engine::Core::CompleteOctree();
+      const char* const pathCollisionData = "data/Meshes/collisionData.aosmesh";
+      pCompleteOctree->InitFromFile("data/Scene/CollisionOctree.octree", pathCollisionData);
+      EAE_Engine::Core::OctreeManager::GetInstance()->AddOctree(pCompleteOctree);
 		}
 
 		void Physics::FixedUpdateBegin()
@@ -46,6 +51,18 @@ namespace EAE_Engine
 				return nullptr;
 			return _pRigidBodyManager->AddRigidBody(pTransform);
 		}
+
+    bool Physics::RayCast(Math::Vector3 origin, Math::Vector3 end, std::vector<EAE_Engine::Core::TriangleIndex>& o_triangles)
+    {
+      o_triangles.clear();
+      EAE_Engine::Core::CompleteOctree* pCompleteOctree = EAE_Engine::Core::OctreeManager::GetInstance()->GetOctree();
+      if (!pCompleteOctree)
+        return false;
+      o_triangles = pCompleteOctree->GetTrianlgesCollideWithSegment(origin, end);
+      if (o_triangles.size() > 0)
+        return true;
+      return false;
+    }
 
 		/////////////////////////////////RigidBody/////////////////////////////////////
 		RigidBody::RigidBody(Common::ITransform* pTransform) :

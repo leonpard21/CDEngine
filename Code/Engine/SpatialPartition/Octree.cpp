@@ -2,6 +2,7 @@
 #include "Engine/CollisionDetection/CollisionDetectionFunctions.h"
 #include <algorithm>
 #include "General/Implements.h"
+#include "Windows/WindowsFunctions.h"
 
 namespace EAE_Engine 
 {
@@ -16,6 +17,60 @@ namespace EAE_Engine
 		{
 			SAFE_DELETE_ARRAY(_pNodes);
 		}
+
+    void CompleteOctree::InitFromFile(const char* pOctreeFile, const char* pCollisionMesh)
+    {
+      std::ifstream infile(pOctreeFile, std::ifstream::binary);
+      // get size of file
+      infile.seekg(0, infile.end);
+      std::streamoff size = infile.tellg();
+      infile.seekg(0);
+      // allocate memory for file content
+      char* pBuffer = new char[(uint32_t)size];
+      // read content of infile
+      infile.read(pBuffer, size);
+      {
+        uint32_t offset = 0;
+        EAE_Engine::CopyMem((uint8_t*)(pBuffer + offset), (uint8_t*)&_level, sizeof(uint32_t));
+        offset += sizeof(uint32_t);
+        EAE_Engine::CopyMem((uint8_t*)(pBuffer + offset), (uint8_t*)&_countOfNode, sizeof(uint32_t));
+        offset += sizeof(uint32_t);
+        EAE_Engine::CopyMem((uint8_t*)(pBuffer + offset), (uint8_t*)&_min, sizeof(EAE_Engine::Math::Vector3));
+        offset += sizeof(EAE_Engine::Math::Vector3);
+        EAE_Engine::CopyMem((uint8_t*)(pBuffer + offset), (uint8_t*)&_max, sizeof(EAE_Engine::Math::Vector3));
+        offset += sizeof(EAE_Engine::Math::Vector3);
+        // Build the Octree Architecture
+        InitFromRange(_level, _min, _max);
+        // Now let's fill in the trianlges information
+        OctreeNode* pLeaves = GetNodesInLevel(_level - 1);
+        uint32_t countOfLeaves = GetCountOfNodesInLevel(_level - 1);
+        for (uint32_t leafIndex = 0; leafIndex < countOfLeaves; ++leafIndex)
+        {
+          // record count of trianlges in this node
+          uint32_t triangleCountInLeaf = 0;
+          CopyMem((uint8_t*)pBuffer + offset, (uint8_t*)&triangleCountInLeaf, sizeof(uint32_t));
+          offset += sizeof(uint32_t);
+          if (triangleCountInLeaf > 0)
+          {
+            for (uint32_t trianlgeIndex = 0; trianlgeIndex < triangleCountInLeaf; ++trianlgeIndex)
+            {
+              TriangleIndex tempTraiangle;
+              CopyMem((uint8_t*)pBuffer + offset, (uint8_t*)&tempTraiangle, sizeof(TriangleIndex));
+              pLeaves[leafIndex]._triangles.push_back(tempTraiangle);
+              offset += sizeof(TriangleIndex);
+            }
+          }
+        }
+      }
+      // release dynamically-allocated memory
+      delete[] pBuffer;
+      infile.close();
+
+      Mesh::LoadMeshData(pCollisionMesh);
+      std::string mesh_path(pCollisionMesh);
+      std::string key = GetFileNameWithoutExtension(mesh_path.c_str());
+      _pMeshData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData(key.c_str());
+    }
 
 		struct OctreeNodeLess
 		{

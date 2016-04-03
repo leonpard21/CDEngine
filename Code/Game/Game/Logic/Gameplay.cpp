@@ -44,7 +44,7 @@ namespace
 
 const char* const pathGround = "data/Meshes/warehouse.aosmesh";
 const char* const pathPlayer = "data/Meshes/sphere.aosmesh";
-const char* const pathCollisionData = "data/Meshes/collisionData.aosmesh";
+
 EAE_Engine::Collider::Collider* pPlayerCollider = nullptr;
 EAE_Engine::Physics::RigidBody* pRigidBody = nullptr;
 
@@ -93,11 +93,7 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	{
 		return false;
 	}
-	result = EAE_Engine::Graphics::LoadMeshFromBinary(pathCollisionData);
-	if (!result)
-	{
-		return false;
-	}
+
 
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/white.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/lambert.material");
@@ -111,10 +107,8 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	_windowWidth = windowWidth;
 	_windowHeight = windowHeight;
 	result = InitLevel();
-
-	g_pCompleteOctree = new EAE_Engine::Core::CompleteOctree();
-	g_pCompleteOctree->InitFromFile("data/Scene/CollisionOctree.octree", "collisionData");
-	EAE_Engine::Core::OctreeManager::GetInstance()->AddOctree(g_pCompleteOctree);
+	
+  g_pCompleteOctree = EAE_Engine::Core::OctreeManager::GetInstance()->GetOctree();
 	return true;
 }
  
@@ -158,14 +152,14 @@ void GameplayUpdate()
         pFlyCamController->SetActive(false);
       }
 		}
-
+    // Enable/Disable DebugMenu
     static bool s_EnableMenuOrNot = false;
     if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState(VK_TAB) == EAE_Engine::UserInput::KeyState::OnPressed)
     {
       s_EnableMenuOrNot = !s_EnableMenuOrNot;
       EAE_Engine::Graphics::UIElementManager::GetInstance()->SetEnable(s_EnableMenuOrNot);
     }
-
+    // Switch the Octree Info
 		static uint32_t levelIndex = 3;
 		static EAE_Engine::Math::Vector3 octreeColor = EAE_Engine::Math::Vector3(0.0f, 1.0f, 1.0f);
 		if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState('1') == EAE_Engine::UserInput::KeyState::OnPressed)
@@ -213,7 +207,8 @@ void GameplayUpdate()
 		if (pDrawSegmentToggle->_checked)
 		{
 			EAE_Engine::Debug::AddSegment(start, end, yellow);
-			std::vector<EAE_Engine::Core::TriangleIndex> triangles = g_pCompleteOctree->GetTrianlgesCollideWithSegment(start, end);
+      std::vector<EAE_Engine::Core::TriangleIndex> triangles;
+      EAE_Engine::Physics::Physics::GetInstance()->RayCast(start, end, triangles);
 			std::vector<uint32_t> triangleIndices;
 			for (uint32_t index = 0; index < triangles.size(); ++index)
 			{

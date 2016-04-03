@@ -6,6 +6,7 @@
 #include "Engine/Math/Quaternion.h"
 #include "Engine/General/Singleton.hpp"
 #include "Engine/General/EngineObj.h"
+#include "Engine/SpatialPartition/Octree.h"
 #include <vector>
 
 namespace EAE_Engine 
@@ -28,6 +29,7 @@ namespace EAE_Engine
 			void FixedUpdateBegin();
 			void FixedUpdate();
 			void FixedUpdateEnd();
+      bool RayCast(Math::Vector3 origin, Math::Vector3 end, std::vector<EAE_Engine::Core::TriangleIndex>& o_triangles);
 			RigidBody* AddRigidBody(Common::ITransform* pTransform);
 			Math::Vector3 GetGravity() { return _gravity; }
 
@@ -35,6 +37,7 @@ namespace EAE_Engine
 			RigidBodyManager* _pRigidBodyManager;
 			Math::Vector3 _gravity;
 			float _accumulatTime;
+      Core::CompleteOctree* _pCompleteOctreeTree;
 		};
 
 
