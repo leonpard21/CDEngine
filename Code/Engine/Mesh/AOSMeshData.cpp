@@ -63,9 +63,9 @@ namespace EAE_Engine
       sVertex v0 = _vertices[index0];
       sVertex v1 = _vertices[index1];
       sVertex v2 = _vertices[index2];
-      Math::Vector3 edge0 = GetPos(v1) - GetPos(v0);
-      Math::Vector3 edge1 = GetPos(v2) - GetPos(v1);
-      return Math::Vector3::Cross(edge0, edge1).GetNormalize();
+      Math::Vector3 edge0 = (GetPos(v1) - GetPos(v0)).GetNormalize();
+      Math::Vector3 edge1 = (GetPos(v2) - GetPos(v1)).GetNormalize();
+      return Math::Vector3::Cross(edge0, edge1);
     }
 
 		/////////////////////////////////////////////AOSMeshDataManager//////////////////////////////////////////////

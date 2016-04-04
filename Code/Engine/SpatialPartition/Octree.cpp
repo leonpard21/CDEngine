@@ -170,16 +170,15 @@ namespace EAE_Engine
 			return nodesCollided;
 		}
 		
-		struct TriangleList 
+		struct TriangleCollisionInfo 
 		{
-			TriangleList() = default;
 			float _t;
       Mesh::TriangleIndex* _pTriangle;
 		};
 
 		void CompleteOctree::GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end, std::vector<Mesh::TriangleIndex>& o_triangles)
 		{
-			std::vector<TriangleList> needToSort;
+			std::vector<TriangleCollisionInfo> needToSort;
 			std::vector<OctreeNode*> leavesCollided = GetLeavesCollideWithSegment(start, end);
 			for (std::vector<OctreeNode*>::iterator it = leavesCollided.begin(); it != leavesCollided.end(); ++it)
 			{
@@ -194,7 +193,15 @@ namespace EAE_Engine
 					Mesh::sVertex& svertex2 = _pMeshData->_vertices[index2];
 					Math::Vector3 vertex0(svertex0.x, svertex0.y, svertex0.z);
 					Math::Vector3 vertex1(svertex1.x, svertex1.y, svertex1.z);
-					Math::Vector3 vertex2(svertex2.x, svertex2.y, svertex2.z);
+          Math::Vector3 vertex2(svertex2.x, svertex2.y, svertex2.z); 
+          /*
+          {
+            Math::Vector3 normal = Math::Vector3::Cross((vertex1 - vertex0).GetNormalize(), (vertex2 - vertex1).GetNormalize());
+            float dot = Math::Vector3::Dot(normal, (end - start).GetNormalize());
+            if (dot > 0.0f)
+              continue;
+          }
+          */
 					float u = 0, v = 0, w = 0, t = 0;
 					int collided = Collision::IntersectSegmentTriangle(start, end, vertex0, vertex1, vertex2, u, v, w, t);
 					if (collided)
@@ -205,10 +212,10 @@ namespace EAE_Engine
 			}
 			// sort all of the triangles by t, it means we want to have the first collision t
       // notice that we're using the lambda at here.
-      std::sort(needToSort.begin(), needToSort.end(), [](TriangleList& i_objA, TriangleList& i_objB) { return i_objA._t < i_objB._t; });
+      std::sort(needToSort.begin(), needToSort.end(), [](auto i_objA, auto i_objB) { return i_objA._t < i_objB._t; });
 			// get rid of the duplicated triangles
-			std::vector<TriangleList>::iterator itTrianlge = needToSort.begin();
-			std::vector<TriangleList>::iterator previousTriangle = itTrianlge;
+			std::vector<TriangleCollisionInfo>::iterator itTrianlge = needToSort.begin();
+			std::vector<TriangleCollisionInfo>::iterator previousTriangle = itTrianlge;
 			for (; itTrianlge != needToSort.end(); ++itTrianlge)
 			{
 				if (Implements::AlmostEqual2sComplement(previousTriangle->_t, itTrianlge->_t, 4) && o_triangles.size() > 0)
