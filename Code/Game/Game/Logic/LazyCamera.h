@@ -112,10 +112,12 @@ public:
   {
     if (!_pTarget)
       return;
-    HandleCollision();
- //   _pTransform->LookAt(GetAimingPoint());
+    bool collided = HandleCollision();
     UpdateInputRotation();
-    UpdatePosition();
+    if (!collided)
+    {
+      UpdatePosition();
+    }
     UpdateOrientation();
 
     return;
@@ -233,7 +235,7 @@ private:
     return _pTarget->GetPos() + EAE_Engine::Math::Vector3(0.0f, 2.0f, 0.0f);
   }
 
-  void HandleCollision()
+  bool HandleCollision()
   {
     EAE_Engine::Math::Vector3 playerPos = GetAimingPoint();
     EAE_Engine::Math::Vector3 cameraPos = _pTransform->GetPos();
@@ -241,7 +243,7 @@ private:
     EAE_Engine::Math::Vector3 collisionNormal = EAE_Engine::Math::Vector3::Zero;
     EAE_Engine::Physics::Physics::GetInstance()->RayCast(playerPos, cameraPos, triangles, collisionNormal);
     if (triangles.size() == 0)
-      return;
+      return false;
     {
       collisionNormal._y = 0.0f;
       collisionNormal.Normalize();
@@ -257,11 +259,11 @@ private:
     {
       proj = relativeXZ - proj;
     }
-    EAE_Engine::Math::Vector3 targetPos = playerPos + proj.GetNormalize() * relativeXZ.Magnitude();
+    EAE_Engine::Math::Vector3 targetPos = playerPos + proj.GetNormalize() * 15.0f;// relativeXZ.Magnitude();
     float deltaTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
     targetPos = EAE_Engine::Math::Vector3::Lerp(cameraPos, targetPos, deltaTime * 3.0f);
     _pTransform->SetPos(targetPos);
-    return;
+    return true;
   }
 
 private:
