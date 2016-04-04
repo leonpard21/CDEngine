@@ -116,8 +116,9 @@ public:
     UpdateInputRotation();
     if (!collided)
     {
-      UpdatePosition();
+      _lastVisiblePos = GetAimingPoint();
     }
+    UpdatePosition();
     UpdateOrientation();
 
     return;
@@ -195,6 +196,7 @@ private:
   {
     if (!_pTarget)
       return;
+    _lastVisiblePos = GetAimingPoint();
     _pTransform->SetLocalPos(GetAimingPoint() + _pTarget->GetForward() * -10.0f + EAE_Engine::Math::Vector3::Up * 2.0f);
   }
 
@@ -254,20 +256,24 @@ private:
     float dot = EAE_Engine::Math::Vector3::Dot(relativeXZ.GetNormalize(), collisionNormal);
     int sign = EAE_Engine::Math::GetSign<float>(dot); 
     EAE_Engine::Math::Vector3 proj = EAE_Engine::Math::Vector3::Project(relativeXZ, collisionNormal);
-    proj = relativeXZ + proj;
-    if (sign < 0) 
+    if (sign > 0)
     {
-      proj = relativeXZ - proj;
+      proj = EAE_Engine::Math::Vector3::Project(relativeXZ, collisionNormal * -1.0f);
     }
-    EAE_Engine::Math::Vector3 targetPos = playerPos + proj.GetNormalize() * 15.0f;// relativeXZ.Magnitude();
+    /*
+    proj = relativeXZ + proj * 1.20f;
+    EAE_Engine::Math::Vector3 targetPos = playerPos + proj.GetNormalize() * relativeXZ.Magnitude();
+    */
+    EAE_Engine::Math::Vector3 targetPos = playerPos + (_lastVisiblePos - GetAimingPoint()) + proj.GetNormalize() * 0.2f;
     float deltaTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
-    targetPos = EAE_Engine::Math::Vector3::Lerp(cameraPos, targetPos, deltaTime * 3.0f);
+    targetPos = EAE_Engine::Math::Vector3::Lerp(cameraPos, targetPos, deltaTime * 1.0f);
     _pTransform->SetPos(targetPos);
     return true;
   }
 
 private:
   EAE_Engine::Common::ITransform* _pTarget;
+  EAE_Engine::Math::Vector3 _lastVisiblePos;
   float _phi;
   float _theta;
 

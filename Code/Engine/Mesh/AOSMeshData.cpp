@@ -58,8 +58,13 @@ namespace EAE_Engine
     Math::Vector3 AOSMeshData::GetNormal(TriangleIndex triangle) const
     {
       uint32_t index0 = _indices[triangle._index0];
+#ifdef EAEENGINE_PLATFORM_D3D9
       uint32_t index1 = _indices[triangle._index1];
       uint32_t index2 = _indices[triangle._index2];
+#elif defined( EAEENGINE_PLATFORM_GL )
+      uint32_t index1 = _indices[triangle._index2];
+      uint32_t index2 = _indices[triangle._index1];
+#endif
       sVertex v0 = _vertices[index0];
       sVertex v1 = _vertices[index1];
       sVertex v2 = _vertices[index2];
