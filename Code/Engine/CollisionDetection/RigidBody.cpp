@@ -57,7 +57,7 @@ namespace EAE_Engine
       o_triangles.clear();
       Core::CompleteOctree* pCompleteOctree = Core::OctreeManager::GetInstance()->GetOctree();
       assert(pCompleteOctree);
-      o_triangles = pCompleteOctree->GetTrianlgesCollideWithSegment(origin, end);
+      pCompleteOctree->GetTrianlgesCollideWithSegment(origin, end, o_triangles);
       if (o_triangles.size() == 0)
         return false;
       return true;

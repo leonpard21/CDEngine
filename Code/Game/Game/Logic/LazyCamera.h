@@ -246,16 +246,20 @@ private:
     if (triangles.size() == 0)
       return EAE_Engine::Math::Vector3::Zero;
     EAE_Engine::Math::Vector3 relative = (cameraPos - playerPos);
+    EAE_Engine::Math::Vector3 relativeXZ = relative;
+    relativeXZ._y = 0.0f;
     {
       collisionNormal._y = 0.0f;
       collisionNormal.Normalize();
     }
-    EAE_Engine::Math::Vector3 proj = EAE_Engine::Math::Vector3::Project(relative, collisionNormal * -1.0f);
-   // proj = relative + proj;
-    proj = proj.GetNormalize() * relative.Magnitude();
+    float dot = EAE_Engine::Math::Vector3::Dot(relativeXZ, collisionNormal);
+    int sign = EAE_Engine::Math::GetSign<float>(dot);
+    EAE_Engine::Math::Vector3 proj = EAE_Engine::Math::Vector3::Project(relativeXZ, collisionNormal * sign);
+    proj = relativeXZ + proj;
+    proj = proj.GetNormalize() * relativeXZ.Magnitude();
     EAE_Engine::Math::Vector3 targetPos = playerPos + proj;
     float deltaTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
-    targetPos = EAE_Engine::Math::Vector3::Lerp(cameraPos, targetPos, deltaTime * 1.0f);
+    targetPos = EAE_Engine::Math::Vector3::Lerp(cameraPos, targetPos, deltaTime * 3.0f);
     _pTransform->SetPos(targetPos);
     return result;
   }

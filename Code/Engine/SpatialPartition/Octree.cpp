@@ -74,15 +74,6 @@ namespace EAE_Engine
       _pMeshData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData(key.c_str());
     }
 
-		struct OctreeNodeLess
-		{
-			OctreeNodeLess() = default;
-			Math::Vector3 _point;
-			bool operator()(OctreeNode* i_pObjA, OctreeNode* i_pObjB)
-			{
-				return (i_pObjA->_pos - _point).Magnitude() < (i_pObjB->_pos - _point).Magnitude();
-			}
-		};
 
 		std::vector<OctreeNode*> CompleteOctree::GetNodesCollideWithSegment(Math::Vector3 start, Math::Vector3 end, uint32_t levelIndex)
 		{
@@ -109,8 +100,9 @@ namespace EAE_Engine
 					nodesCollided.clear();
 					nodesCollided = newNodesCollided;
 					// sort the nodes based on the distance from the Node
-					OctreeNodeLess octreeNodeLess = { start };
-					std::sort(nodesCollided.begin(), nodesCollided.end(), octreeNodeLess);
+          // we're using lambad at here.
+					std::sort(nodesCollided.begin(), nodesCollided.end(), 
+            [&](OctreeNode* i_pObjA, OctreeNode* i_pObjB) { return (i_pObjA->_pos - start).Magnitude() < (i_pObjB->_pos - start).Magnitude(); });
 					break;
 				}
 				for (std::vector<OctreeNode*>::iterator it = nodesCollided.begin(); it < nodesCollided.end(); ++it)
@@ -155,8 +147,8 @@ namespace EAE_Engine
 					nodesCollided.clear();
 					nodesCollided = newNodesCollided;
 					// sort the nodes based on the distance from the Node
-					OctreeNodeLess octreeNodeLess = { start };
-					std::sort(nodesCollided.begin(), nodesCollided.end(), octreeNodeLess);
+					std::sort(nodesCollided.begin(), nodesCollided.end(), 
+            [&](OctreeNode* i_pObjA, OctreeNode* i_pObjB) { return (i_pObjA->_pos - start).Magnitude() < (i_pObjB->_pos - start).Magnitude(); });
 					break;
 				}
 				for (std::vector<OctreeNode*>::iterator it = nodesCollided.begin(); it < nodesCollided.end(); ++it)
@@ -185,17 +177,8 @@ namespace EAE_Engine
       Mesh::TriangleIndex* _pTriangle;
 		};
 
-		struct TriangleListLess
+		void CompleteOctree::GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end, std::vector<Mesh::TriangleIndex>& o_triangles)
 		{
-			bool operator()(TriangleList& i_objA, TriangleList& i_objB)
-			{
-				return i_objA._t < i_objB._t;
-			}
-		};
-
-		std::vector<Mesh::TriangleIndex> CompleteOctree::GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end)
-		{
-			std::vector<Mesh::TriangleIndex> result;
 			std::vector<TriangleList> needToSort;
 			std::vector<OctreeNode*> leavesCollided = GetLeavesCollideWithSegment(start, end);
 			for (std::vector<OctreeNode*>::iterator it = leavesCollided.begin(); it != leavesCollided.end(); ++it)
@@ -221,14 +204,14 @@ namespace EAE_Engine
 				}
 			}
 			// sort all of the triangles by t, it means we want to have the first collision t
-			TriangleListLess triangleListLess;
-			std::sort(needToSort.begin(), needToSort.end(), triangleListLess);
+      // notice that we're using the lambda at here.
+      std::sort(needToSort.begin(), needToSort.end(), [](TriangleList& i_objA, TriangleList& i_objB) { return i_objA._t < i_objB._t; });
 			// get rid of the duplicated triangles
 			std::vector<TriangleList>::iterator itTrianlge = needToSort.begin();
 			std::vector<TriangleList>::iterator previousTriangle = itTrianlge;
 			for (; itTrianlge != needToSort.end(); ++itTrianlge)
 			{
-				if (Implements::AlmostEqual2sComplement(previousTriangle->_t, itTrianlge->_t, 4) && result.size() > 0)
+				if (Implements::AlmostEqual2sComplement(previousTriangle->_t, itTrianlge->_t, 4) && o_triangles.size() > 0)
 				{
 					if (*(previousTriangle->_pTriangle) == *(itTrianlge->_pTriangle))
 					{
@@ -236,9 +219,8 @@ namespace EAE_Engine
 					}
 				}
 				previousTriangle = itTrianlge;
-				result.push_back(*itTrianlge->_pTriangle);
+        o_triangles.push_back(*itTrianlge->_pTriangle);
 			}
-			return result;
 		}
 
 		OctreeNode* CompleteOctree::GetChildOfNode(OctreeNode* pNode)

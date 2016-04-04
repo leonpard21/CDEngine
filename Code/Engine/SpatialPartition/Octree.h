@@ -39,7 +39,7 @@ namespace EAE_Engine
 			inline uint32_t Level() { return _level; }
 			std::vector<OctreeNode*> GetNodesCollideWithSegment(Math::Vector3 start, Math::Vector3 end, uint32_t levelIndex);
 			std::vector<OctreeNode*> GetLeavesCollideWithSegment(Math::Vector3 start, Math::Vector3 end);
-			std::vector<Mesh::TriangleIndex> GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end);
+      void GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end, std::vector<Mesh::TriangleIndex>& o_triangles);
       inline Mesh::AOSMeshData* GetCollisionMesh() { return _pMeshData; }
       bool IsLeaf(OctreeNode* pNode);
 			bool IsInLevel(OctreeNode* pNode, uint32_t levelIndex);
