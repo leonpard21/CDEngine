@@ -266,8 +266,10 @@ private:
     */
     EAE_Engine::Math::Vector3 targetPos = playerPos + (_lastVisiblePos - GetAimingPoint()) + proj.GetNormalize() * 0.2f;
     float deltaTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
-    targetPos = EAE_Engine::Math::Vector3::Lerp(cameraPos, targetPos, deltaTime * 1.0f);
-    _pTransform->SetPos(targetPos);
+    EAE_Engine::Math::Vector3 newPos = EAE_Engine::Math::Vector3::Lerp(cameraPos, targetPos, deltaTime * 1.0f);
+    if ((newPos - targetPos).SqMagnitude() < 0.0016f)
+      newPos = targetPos;
+    _pTransform->SetPos(newPos);
     return true;
   }
 
