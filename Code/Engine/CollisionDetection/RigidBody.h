@@ -29,7 +29,10 @@ namespace EAE_Engine
 			void FixedUpdateBegin();
 			void FixedUpdate();
 			void FixedUpdateEnd();
-      bool RayCast(Math::Vector3 origin, Math::Vector3 end, std::vector<EAE_Engine::Core::TriangleIndex>& o_triangles);
+      bool RayCast(Math::Vector3 origin, Math::Vector3 end, std::vector<Mesh::TriangleIndex>& o_triangles);
+      bool RayCast(Math::Vector3 origin, Math::Vector3 end, std::vector<Mesh::TriangleIndex>& o_triangles, Math::Vector3& o_normal);
+   //   bool RayCast(Math::Vector3 origin, Math::Vector3 end, std::vector<Mesh::TriangleIndex>& o_triangles, 
+   //     Math::Vector3& o_normal, Math::Vector3& o_hitPoint);
 			RigidBody* AddRigidBody(Common::ITransform* pTransform);
 			Math::Vector3 GetGravity() { return _gravity; }
 

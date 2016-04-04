@@ -5,6 +5,29 @@ namespace EAE_Engine
 {
 	namespace Mesh
 	{	
+    inline Math::Vector3 GetPos(const sVertex& vertex) 
+    {
+      return Math::Vector3(vertex.x, vertex.y, vertex.z);
+    }
+
+    inline Math::Vector3 GetNormal(const sVertex& vertex)
+    {
+      return Math::Vector3(vertex.nx, vertex.ny, vertex.nz);
+    }
+
+    ///////////////////////////////TriangleIndex//////////////////////////////////////////
+    bool TriangleIndex::operator == (const TriangleIndex& i_other)
+    {
+      if (_index0 != i_other._index0)
+        return false;
+      if (_index1 != i_other._index1)
+        return false;
+      if (_index2 != i_other._index2)
+        return false;
+      return true;
+    }
+
+    /////////////////////////////////AOSMeshData////////////////////////////////////////
 		Math::Vector3 AOSMeshData::GetVertex(uint32_t vertexIndex)
 		{
 			uint32_t index = _indices[vertexIndex];
@@ -31,6 +54,20 @@ namespace EAE_Engine
 			}
 			return result;
 		}
+
+    Math::Vector3 AOSMeshData::GetNormal(TriangleIndex triangle) const
+    {
+      uint32_t index0 = _indices[triangle._index0];
+      uint32_t index1 = _indices[triangle._index1];
+      uint32_t index2 = _indices[triangle._index2];
+      sVertex v0 = _vertices[index0];
+      sVertex v1 = _vertices[index1];
+      sVertex v2 = _vertices[index2];
+      Math::Vector3 edge0 = GetPos(v1) - GetPos(v0);
+      Math::Vector3 edge1 = GetPos(v2) - GetPos(v1);
+      return Math::Vector3::Cross(edge0, edge1).GetNormalize();
+    }
+
 		/////////////////////////////////////////////AOSMeshDataManager//////////////////////////////////////////////
 		AOSMeshDataManager::~AOSMeshDataManager() 
 		{

@@ -761,7 +761,7 @@ namespace
 					uint32_t index0 = (uint32_t)i_indexBuffer[index + 0];
 					uint32_t index1 = (uint32_t)i_indexBuffer[index + 1];
 					uint32_t index2 = (uint32_t)i_indexBuffer[index + 2];
-					EAE_Engine::Core::TriangleIndex triangle = { index0, index1, index2 };
+					EAE_Engine::Mesh::TriangleIndex triangle = { index0, index1, index2 };
 					// get the 3 vertices of the trianlge
 					sVertex_maya vertex_maya0 = i_vertexBuffer[index0];
 					EAE_Engine::Math::Vector3 vertex0(vertex_maya0.x, vertex_maya0.y, vertex_maya0.z);
@@ -786,7 +786,7 @@ namespace
 			uint32_t nodesCount = completeOctree.GetNodeCount();
 			// information we need are _Level, _NodeCount, _min, _max, triangles we added to each leaf.
 			uint32_t sizeOfBuffer = sizeof(uint32_t) + sizeof(uint32_t) + sizeof(EAE_Engine::Math::Vector3) + sizeof(EAE_Engine::Math::Vector3) + 
-				+countOfTrianglesAdded * sizeof(uint32_t) + countOfTrianglesAdded * sizeof(EAE_Engine::Core::TriangleIndex) + 1;
+				+countOfTrianglesAdded * sizeof(uint32_t) + countOfTrianglesAdded * sizeof(EAE_Engine::Mesh::TriangleIndex) + 1;
 			EAE_Engine::Math::Vector3 min = completeOctree.GetMin();
 			EAE_Engine::Math::Vector3 max = completeOctree.GetMax();
 			EAE_Engine::Core::OctreeNode* pNodes = completeOctree.GetNodes();
@@ -815,7 +815,7 @@ namespace
 					if (countOfTrianlges > 0)
 					{
 						// record trianlges in this node
-						uint32_t bufferSizeForTrianlge = sizeof(EAE_Engine::Core::TriangleIndex) * countOfTrianlges;
+						uint32_t bufferSizeForTrianlge = sizeof(EAE_Engine::Mesh::TriangleIndex) * countOfTrianlges;
 						EAE_Engine::CopyMem((uint8_t*)&(pLeaves[leafIndex]._triangles[0]), (uint8_t*)pBuffer + offset, bufferSizeForTrianlge);
 						offset += bufferSizeForTrianlge;
 					}

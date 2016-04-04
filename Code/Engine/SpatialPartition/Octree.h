@@ -13,36 +13,12 @@ namespace EAE_Engine
 {
 	namespace Core 
 	{
-		struct TriangleIndex
-		{
-			TriangleIndex() = default;
-			union
-			{
-				uint32_t _indices[3];
-				struct
-				{
-					uint32_t _index0;
-					uint32_t _index1;
-					uint32_t _index2;
-				};
-			};
-			bool operator == (const TriangleIndex& i_other)
-			{
-				if (_index0 != i_other._index0)
-					return false;
-				if (_index1 != i_other._index1)
-					return false;
-				if (_index2 != i_other._index2)
-					return false;
-				return true;
-			}
-		};
 
 		struct OctreeNode 
 		{
 			Math::Vector3 _pos;
 			Math::Vector3 _extent;
-			std::vector<TriangleIndex> _triangles;
+			std::vector<Mesh::TriangleIndex> _triangles;
 			Math::Vector3 GetMin() { return _pos - _extent; }
 			Math::Vector3 GetMax() { return _pos + _extent; }
 		};
@@ -63,8 +39,9 @@ namespace EAE_Engine
 			inline uint32_t Level() { return _level; }
 			std::vector<OctreeNode*> GetNodesCollideWithSegment(Math::Vector3 start, Math::Vector3 end, uint32_t levelIndex);
 			std::vector<OctreeNode*> GetLeavesCollideWithSegment(Math::Vector3 start, Math::Vector3 end);
-			std::vector<TriangleIndex> GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end);
-			bool IsLeaf(OctreeNode* pNode);
+			std::vector<Mesh::TriangleIndex> GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end);
+      inline Mesh::AOSMeshData* GetCollisionMesh() { return _pMeshData; }
+      bool IsLeaf(OctreeNode* pNode);
 			bool IsInLevel(OctreeNode* pNode, uint32_t levelIndex);
 
 		private:

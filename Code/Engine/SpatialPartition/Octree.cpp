@@ -8,6 +8,8 @@ namespace EAE_Engine
 {
 	namespace Core 
 	{
+
+    ///////////////////////////////CompleteOctree///////////////////////////////////////
 		CompleteOctree::CompleteOctree() :
 			_min(Math::Vector3::Zero), _max(Math::Vector3::Zero),
 			_level(0), _countOfNode(0), _pNodes(nullptr), _pMeshData(nullptr) 
@@ -54,10 +56,10 @@ namespace EAE_Engine
           {
             for (uint32_t trianlgeIndex = 0; trianlgeIndex < triangleCountInLeaf; ++trianlgeIndex)
             {
-              TriangleIndex tempTraiangle;
-              CopyMem((uint8_t*)pBuffer + offset, (uint8_t*)&tempTraiangle, sizeof(TriangleIndex));
+              Mesh::TriangleIndex tempTraiangle;
+              CopyMem((uint8_t*)pBuffer + offset, (uint8_t*)&tempTraiangle, sizeof(Mesh::TriangleIndex));
               pLeaves[leafIndex]._triangles.push_back(tempTraiangle);
-              offset += sizeof(TriangleIndex);
+              offset += sizeof(Mesh::TriangleIndex);
             }
           }
         }
@@ -180,7 +182,7 @@ namespace EAE_Engine
 		{
 			TriangleList() = default;
 			float _t;
-			TriangleIndex* _pTriangle;
+      Mesh::TriangleIndex* _pTriangle;
 		};
 
 		struct TriangleListLess
@@ -191,15 +193,15 @@ namespace EAE_Engine
 			}
 		};
 
-		std::vector<TriangleIndex> CompleteOctree::GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end)
+		std::vector<Mesh::TriangleIndex> CompleteOctree::GetTrianlgesCollideWithSegment(Math::Vector3 start, Math::Vector3 end)
 		{
-			std::vector<TriangleIndex> result;
+			std::vector<Mesh::TriangleIndex> result;
 			std::vector<TriangleList> needToSort;
 			std::vector<OctreeNode*> leavesCollided = GetLeavesCollideWithSegment(start, end);
 			for (std::vector<OctreeNode*>::iterator it = leavesCollided.begin(); it != leavesCollided.end(); ++it)
 			{
 				OctreeNode* pLeaf = *it;
-				for (std::vector<TriangleIndex>::iterator itTrianlge = pLeaf->_triangles.begin(); itTrianlge != pLeaf->_triangles.end(); ++itTrianlge)
+				for (std::vector<Mesh::TriangleIndex>::iterator itTrianlge = pLeaf->_triangles.begin(); itTrianlge != pLeaf->_triangles.end(); ++itTrianlge)
 				{
 					uint32_t index0 = itTrianlge->_index0;
 					uint32_t index1 = itTrianlge->_index1;

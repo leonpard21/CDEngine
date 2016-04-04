@@ -33,7 +33,7 @@ namespace EAE_Engine
 			Core::CompleteOctree* pOctree = Core::OctreeManager::GetInstance()->GetOctree();
 			if (pOctree == nullptr)
 				return false;
-			std::vector<Core::TriangleIndex> triangles = pOctree->GetTrianlgesCollideWithSegment(targetStartPoint, targetEndPoint);
+			std::vector<Mesh::TriangleIndex> triangles = pOctree->GetTrianlgesCollideWithSegment(targetStartPoint, targetEndPoint);
 			std::vector<uint32_t> triangleIndices;
 			for (uint32_t index = 0; index < triangles.size(); ++index)
 			{

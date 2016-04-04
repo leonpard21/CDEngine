@@ -93,6 +93,7 @@ namespace EAE_Engine
 
       // Static version of the functions
       static float Dot(const TVector3<T>& left, const TVector3<T>& right);
+      static TVector3<T> Project(const TVector3<T>& left, const TVector3<T>& right);
       static TVector3<T> Cross(const TVector3<T>& left, const TVector3<T>& right);
       static TVector3<T> Lerp(const TVector3<T>& from, const TVector3<T>& to, float t);
       static TVector3<T> Slerp(const TVector3<T>& from, const TVector3<T>& to, float t);
@@ -120,6 +121,13 @@ namespace EAE_Engine
     }
 
     template <typename T>
+    TVector3<T> TVector3<T>::Project(const TVector3<T>& left, const TVector3<T>& right)
+    {
+      float dot = Dot(left, right);
+      return right.GetNormalize() * dot;
+    }
+
+    template <typename T>
     TVector3<T> TVector3<T>::Cross(const TVector3<T>& left, const TVector3<T>& right)
     {
         //left.x,y,z can be u1, u2, u3
@@ -134,7 +142,7 @@ namespace EAE_Engine
     template <typename T>
     TVector3<T> TVector3<T>::Lerp(const TVector3<T>& from, const TVector3<T>& to, float t)
     {
-      float t = t < 0.0f ? 0.0f : t;
+      t = t < 0.0f ? 0.0f : t;
       t = t > 1.0f ? 1.0f : t;
       return from * (1.0f - t) + to * t;
     }
@@ -143,7 +151,7 @@ namespace EAE_Engine
     template <typename T>
     TVector3<T> TVector3<T>::Slerp(const TVector3<T>& from, const TVector3<T>& to, float t)
     {
-      float t = t < 0.0f ? 0.0f : t;
+      t = t < 0.0f ? 0.0f : t;
       t = t > 1.0f ? 1.0f : t;
       // get cos of 2 vectors
       float cosOmega = TVector3<T>::Dot(from.GetNormalize(), to.GetNormalize());

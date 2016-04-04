@@ -11,6 +11,22 @@ namespace EAE_Engine
 {
 	namespace Mesh
 	{	
+    struct TriangleIndex
+    {
+      TriangleIndex() = default;
+      union
+      {
+        uint32_t _indices[3];
+        struct
+        {
+          uint32_t _index0;
+          uint32_t _index1;
+          uint32_t _index2;
+        };
+      };
+      bool operator == (const TriangleIndex& i_other);
+    };
+
 		struct sVertex;
 		struct AOSMeshData 
 		{
@@ -20,6 +36,7 @@ namespace EAE_Engine
 			Math::Vector3 GetVertex(uint32_t vertexIndex);
 			std::vector<sVertex> GetVertices(std::vector<uint32_t> indices);
 			std::vector<Math::Vector3> GetVertexPoses(std::vector<uint32_t> indices);
+      Math::Vector3 GetNormal(TriangleIndex triangle) const;
 		};
 
 		class AOSMeshDataManager : public Singleton<AOSMeshDataManager>

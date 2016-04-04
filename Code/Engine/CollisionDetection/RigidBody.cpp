@@ -52,17 +52,32 @@ namespace EAE_Engine
 			return _pRigidBodyManager->AddRigidBody(pTransform);
 		}
 
-    bool Physics::RayCast(Math::Vector3 origin, Math::Vector3 end, std::vector<EAE_Engine::Core::TriangleIndex>& o_triangles)
+    bool Physics::RayCast(Math::Vector3 origin, Math::Vector3 end, std::vector<Mesh::TriangleIndex>& o_triangles)
     {
       o_triangles.clear();
-      EAE_Engine::Core::CompleteOctree* pCompleteOctree = EAE_Engine::Core::OctreeManager::GetInstance()->GetOctree();
-      if (!pCompleteOctree)
-        return false;
+      Core::CompleteOctree* pCompleteOctree = Core::OctreeManager::GetInstance()->GetOctree();
+      assert(pCompleteOctree);
       o_triangles = pCompleteOctree->GetTrianlgesCollideWithSegment(origin, end);
-      if (o_triangles.size() > 0)
-        return true;
-      return false;
+      if (o_triangles.size() == 0)
+        return false;
+      return true;
     }
+
+    bool Physics::RayCast(Math::Vector3 origin, Math::Vector3 end, std::vector<Mesh::TriangleIndex>& o_triangles, Math::Vector3& o_normal)
+    {
+      o_normal = Math::Vector3::Zero;
+      bool result = RayCast(origin, end, o_triangles);
+      if (!result)
+        return false;
+      Core::CompleteOctree* pCompleteOctree = Core::OctreeManager::GetInstance()->GetOctree();
+      assert(pCompleteOctree);
+      Mesh::AOSMeshData* pCollisionMesh = pCompleteOctree->GetCollisionMesh();
+      assert(pCollisionMesh);
+      o_normal = pCollisionMesh->GetNormal(o_triangles[0]);
+      return true;
+    }
+
+
 
 		/////////////////////////////////RigidBody/////////////////////////////////////
 		RigidBody::RigidBody(Common::ITransform* pTransform) :

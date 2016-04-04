@@ -99,7 +99,7 @@ public:
     _phi(20.0f), _theta(20.0f)
   {
     _inner = 6.0f;
-    _outter = 10.0f;
+    _outter = 16.0f;
   }
 
   void ResetCamera(EAE_Engine::Common::ITransform* pTarget)
@@ -112,7 +112,9 @@ public:
   {
     if (!_pTarget)
       return;
-    UpdateInputRotation();
+    EAE_Engine::Math::Vector3 offset = TestCollision();
+ //   _pTransform->LookAt(GetAimingPoint());
+//    UpdateInputRotation();
     UpdatePosition();
     UpdateOrientation();
 
@@ -160,7 +162,6 @@ private:
           _pTransform->Rotate(rotation);
         }
         //_pTransform->SetForward(relativeForward);
-        //_pTransform->LookAt(GetAimingPoint());
       }
       //_pTransform->LookAt(GetAimingPoint());
     }
@@ -232,6 +233,31 @@ private:
   EAE_Engine::Math::Vector3 GetAimingPoint()
   {
     return _pTarget->GetPos() + EAE_Engine::Math::Vector3(0.0f, 2.0f, 0.0f);
+  }
+
+  EAE_Engine::Math::Vector3 TestCollision()
+  {
+    EAE_Engine::Math::Vector3 result = EAE_Engine::Math::Vector3::Zero;
+    EAE_Engine::Math::Vector3 playerPos = GetAimingPoint();
+    EAE_Engine::Math::Vector3 cameraPos = _pTransform->GetPos();
+    std::vector<EAE_Engine::Mesh::TriangleIndex> triangles;
+    EAE_Engine::Math::Vector3 collisionNormal = EAE_Engine::Math::Vector3::Zero;
+    EAE_Engine::Physics::Physics::GetInstance()->RayCast(playerPos, cameraPos, triangles, collisionNormal);
+    if (triangles.size() == 0)
+      return EAE_Engine::Math::Vector3::Zero;
+    EAE_Engine::Math::Vector3 relative = (cameraPos - playerPos);
+    {
+      collisionNormal._y = 0.0f;
+      collisionNormal.Normalize();
+    }
+    EAE_Engine::Math::Vector3 proj = EAE_Engine::Math::Vector3::Project(relative, collisionNormal * -1.0f);
+   // proj = relative + proj;
+    proj = proj.GetNormalize() * relative.Magnitude();
+    EAE_Engine::Math::Vector3 targetPos = playerPos + proj;
+    float deltaTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
+    targetPos = EAE_Engine::Math::Vector3::Lerp(cameraPos, targetPos, deltaTime * 1.0f);
+    _pTransform->SetPos(targetPos);
+    return result;
   }
 
 private:

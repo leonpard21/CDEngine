@@ -207,7 +207,7 @@ void GameplayUpdate()
 		if (pDrawSegmentToggle->_checked)
 		{
 			EAE_Engine::Debug::AddSegment(start, end, yellow);
-      std::vector<EAE_Engine::Core::TriangleIndex> triangles;
+      std::vector<EAE_Engine::Mesh::TriangleIndex> triangles;
       EAE_Engine::Physics::Physics::GetInstance()->RayCast(start, end, triangles);
 			std::vector<uint32_t> triangleIndices;
 			for (uint32_t index = 0; index < triangles.size(); ++index)
