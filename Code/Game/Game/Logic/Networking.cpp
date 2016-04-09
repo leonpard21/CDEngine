@@ -34,6 +34,28 @@ struct PlayerTransform
   };
   RakNet::RakNetGUID _networkGUID; // NetworkID of the player, used as a common method to refer to the mine on different computers
 };
+
+struct NewPlayer
+{
+  NewPlayer() {}
+  //  unsigned char useTimeStamp; // Assign ID_TIMESTAMP to this
+  //  RakNet::Time timeStamp; // Put the system time in here returned by RakNet::GetTime() or some other method that returns a similar value
+  unsigned char _dataTypeID;
+  union
+  {
+    float _data[7];
+    struct
+    {
+      float x, y, z;
+      float p, q, r, s;
+    };
+    struct
+    {
+      EAE_Engine::Math::Vector3 _pos;
+      EAE_Engine::Math::Quaternion _rotation;
+    };
+  };
+};
 #pragma pack(pop)
 
 // Define our custom packet ID's
@@ -121,13 +143,16 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
     {
       printf("Our connection request has been accepted.\n");
       _serverAddress = packet->systemAddress;
+      NewPlayer newPlayer;
+      newPlayer._dataTypeID = ID_GAME_NEW_PLAYER;
+      newPlayer._pos = pLocalPlayer->GetPos();
+      newPlayer._rotation = pLocalPlayer->GetRotation();
+      _peer->Send((char*)&newPlayer, sizeof(NewPlayer), HIGH_PRIORITY, RELIABLE, 0, packet->systemAddress, false);
     }
     break;
     case ID_NEW_INCOMING_CONNECTION:
     {
       printf("A connection is incoming.\n");
-      RakNet::RakNetGUID id = _peer->GetGuidFromSystemAddress(packet->systemAddress);
-      _clients.push_back(id);
     }
     break;
     case ID_NO_FREE_INCOMING_CONNECTIONS:
@@ -167,7 +192,16 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       }
     }
     break;
-
+    case ID_GAME_NEW_PLAYER:
+    {
+      NewPlayer* pNewplayer = (NewPlayer*)packet->data;
+      RakNet::RakNetGUID id = _peer->GetGuidFromSystemAddress(packet->systemAddress);
+      _clients.push_back(id);
+      CreateOtherPlayer(id.ToString(), pNewplayer->_pos, pNewplayer->_rotation);
+      EAE_Engine::Common::IGameObj* pClientPlayer2 = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
+      size_t t = 0;
+    }
+    break;
     default:
       printf("Message with identifier %i has arrived.\n", packet->data[0]);
       break;
@@ -190,7 +224,7 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
         localTransform._pos = pLocalPlayer->GetPos();
         localTransform._rotation = pLocalPlayer->GetRotation();
         localTransform._networkGUID = _peer->GetMyGUID();
-        _peer->Send((char*)&localTransform, sizeof(PlayerTransform), HIGH_PRIORITY, RELIABLE_ORDERED, 0, _peer->GetSystemAddressFromGuid(outter), false);
+        _peer->Send((char*)&localTransform, sizeof(PlayerTransform), LOW_PRIORITY, UNRELIABLE, 0, _peer->GetSystemAddressFromGuid(outter), false);
       }
       // 2. send the information of each player to all of the players
       PlayerTransform transform;
@@ -205,7 +239,7 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
         // don't send to itself
         if (outter == inner)
           continue;
-        _peer->Send((char*)&transform, sizeof(PlayerTransform), HIGH_PRIORITY, RELIABLE_ORDERED, 0, _peer->GetSystemAddressFromGuid(inner), false);
+        _peer->Send((char*)&transform, sizeof(PlayerTransform), LOW_PRIORITY, UNRELIABLE, 0, _peer->GetSystemAddressFromGuid(inner), false);
       }
     }
   }
@@ -220,7 +254,7 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       transform._networkGUID = _peer->GetMyGUID();
     };
     // send local data to server
-    _peer->Send((char*)&transform, sizeof(PlayerTransform), HIGH_PRIORITY, RELIABLE_ORDERED, 0, _serverAddress, false);
+    _peer->Send((char*)&transform, sizeof(PlayerTransform), LOW_PRIORITY, UNRELIABLE, 0, _serverAddress, false);
   }
 }
 

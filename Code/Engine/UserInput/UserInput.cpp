@@ -103,6 +103,9 @@ namespace
 {
 	bool IsVirtualKeyPressed( const int i_virtualKeyCode )
 	{
+    HWND focus = GetFocus();
+    if (focus != GetForegroundWindow())
+      return false;
 		short keyState = GetAsyncKeyState( i_virtualKeyCode );
 		const short isKeyDownMask = ~1;// ~ is Bitwise NOT
 		return ( keyState & isKeyDownMask ) != 0;
@@ -110,6 +113,8 @@ namespace
 
 	bool IsVirtualKeyReleased(const int i_virtualKeyCode)
 	{
+    if (GetFocus() != GetForegroundWindow())
+      return false;
 		short keyState = GetAsyncKeyState(i_virtualKeyCode);
 		const short isKeyDownMask = ~1;// ~ is Bitwise NOT
 		return (keyState & isKeyDownMask) == 0;
