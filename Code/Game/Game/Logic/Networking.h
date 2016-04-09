@@ -6,6 +6,12 @@
 #include <string>
 #include <vector>
 #include "RakPeerInterface.h"
+//#include "NetworkIDObject.h"
+
+#include "Engine/Math/Vector.h"
+#include "Engine/Math/Quaternion.h"
+
+
 
 
 class NetworkPeer : public EAE_Engine::Singleton<NetworkPeer>
@@ -16,10 +22,15 @@ public:
   void Init( bool isServer, std::string ipaddress);
   void Update(EAE_Engine::Common::ITransform* pLocalPlayer);
 
+private: 
+  void RemoveClient(RakNet::RakNetGUID id);
+  
+
 private:
   RakNet::RakPeerInterface* _peer;
   bool _isServer;
-  std::vector<RakNet::RakPeerInterface*> _clients;
+  std::vector<RakNet::RakNetGUID> _clients;
+  RakNet::SystemAddress _serverAddress;
 };
 
 
