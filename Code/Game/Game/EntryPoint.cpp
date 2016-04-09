@@ -44,10 +44,12 @@ int WINAPI WinMain(
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	_CrtSetBreakAlloc(0);
 #endif
-	// A Windows program doesn't actually need any windows at all
+	
+  // A Windows program doesn't actually need any windows at all
 	// but in most cases there will be a single "main" window
 	// and when it is closed the program will exit
 	const int exitCode = CreateMainWindowAndReturnExitCodeWhenItCloses( i_thisInstanceOfTheProgram, i_initialWindowDisplayState );
+
 
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
