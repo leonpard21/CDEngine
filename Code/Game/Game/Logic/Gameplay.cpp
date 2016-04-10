@@ -1,7 +1,10 @@
 ﻿#include "Gameplay.h"
 
+//#define USE_NETWORKMODE
+#ifdef USE_NETWORKMODE
 #include <shellapi.h>
 #include "Networking.h"
+#endif
 
 #include "Controllers.h"
 #include "ColliderCallback.h"
@@ -80,9 +83,9 @@ EAE_Engine::Core::CompleteOctree* g_pCompleteOctree = nullptr;
 
 bool GameplayInit(float windowWidth, float windowHeight)
 {
+#ifdef USE_NETWORKMODE
   LPWSTR *szArglist;
   int nArgs;
-  int i;
   szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
   if (nArgs < 3)
     return false;
@@ -100,7 +103,7 @@ bool GameplayInit(float windowWidth, float windowHeight)
   //A std:string  using the char* constructor.
   std::string ipaddress(ch);
   NetworkPeer::GetInstance()->Init(isServe, ipaddress);
-  
+#endif  
 
 
   bool result = true;
@@ -231,12 +234,16 @@ void GameplayUpdate()
 		EAE_Engine::Mesh::AOSMeshData* pData = EAE_Engine::Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData("collisionData");
 		EAE_Engine::Debug::DebugShapes::GetInstance().AddMesh(pData->GetVertexPoses(triangleIndices), red);
 	}
+#ifdef USE_NETWORKMODE
   NetworkPeer::GetInstance()->Update(g_pPlayerObj->GetTransform());
+#endif
 }
 
 void GameplayExit()
 {
+#ifdef USE_NETWORKMODE
   NetworkPeer::Destroy();
+#endif
 }
 
 
