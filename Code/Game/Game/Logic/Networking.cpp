@@ -199,7 +199,6 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       if (_isServer) 
       {
         printf("A client has disconnected.\n");
-        RakNet::RakNetGUID localid = _peer->GetMyGUID();
         RakNet::RakNetGUID id = packet->guid;
         EAE_Engine::Common::IGameObj* pClientPlayer = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
         if (pClientPlayer)
@@ -225,11 +224,11 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       if (_isServer)
       {
         printf("A client lost the connection.\n");
-        RakNet::RakNetGUID id = _peer->GetGuidFromSystemAddress(packet->systemAddress);
+        RakNet::RakNetGUID id = packet->guid;
         EAE_Engine::Common::IGameObj* pClientPlayer = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
         if (pClientPlayer)
         {
-          // EAE_Engine::Core::World::GetInstance().Remove(pClientPlayer->GetTransform());
+          //EAE_Engine::Core::World::GetInstance().Remove(pClientPlayer->GetTransform());
           EAE_Engine::Engine::AddToRemoveList(pClientPlayer->GetTransform());
         }
         // notice all other clients to remove the lost connect one
@@ -276,8 +275,6 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       id = pNewplayer->_networkGUID;
       _clients.push_back(id);
       CreateOtherPlayer(id.ToString(), pNewplayer->_pos, pNewplayer->_rotation);
-    //   EAE_Engine::Common::IGameObj* pClientPlayer2 = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
-    //   size_t t = 0;
     }
     break;
     case ID_GAME_REMOVE_PLAYER:
