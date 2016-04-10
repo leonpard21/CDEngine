@@ -104,19 +104,17 @@ namespace EAE_Engine
 			for (std::vector<EAE_Engine::Common::ITransform*>::iterator it = _pRemoveList->begin();it!= _pRemoveList->end();++it)
 			{
         if (*it == pTrans)
-        {
-          // add all of the children of this transform
-          for (uint32_t i = 0; pTrans->GetChildCount(); ++i)
-          {
-            EAE_Engine::Common::ITransform* pChild = pTrans->GetChild(i);
-            if(pChild)
-              _pRemoveList->push_back(pChild);
-          }
-          // add the transform itself
-          _pRemoveList->push_back(pTrans);
-					break;
-				}
+          return;
 			}
+      // add all of the children of this transform
+      for (uint32_t i = 0; i < pTrans->GetChildCount(); ++i)
+      {
+        EAE_Engine::Common::ITransform* pChild = pTrans->GetChild(i);
+        if (pChild)
+          _pRemoveList->push_back(pChild);
+      }
+      // add the transform itself
+      _pRemoveList->push_back(pTrans);
 		}
 
 		void RemoveGameObj(Common::ITransform* pTrans)

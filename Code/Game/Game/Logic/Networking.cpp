@@ -58,6 +58,15 @@ struct NewPlayer
   };
   RakNet::RakNetGUID _networkGUID;
 };
+
+struct RemovePlayer
+{
+  RemovePlayer() {}
+  //  unsigned char useTimeStamp; // Assign ID_TIMESTAMP to this
+  //  RakNet::Time timeStamp; // Put the system time in here returned by RakNet::GetTime() or some other method that returns a similar value
+  unsigned char _dataTypeID;
+  RakNet::RakNetGUID _networkGUID;
+};
 #pragma pack(pop)
 
 // Define our custom packet ID's
@@ -65,7 +74,7 @@ enum GameMessages
 {
   ID_GAME_GET_TRANSFORM = ID_USER_PACKET_ENUM + 1,
   ID_GAME_NEW_PLAYER,
-
+  ID_GAME_REMOVE_PLAYER,
 };
 
 #define MAX_CLIENTS 10
@@ -187,9 +196,9 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       printf("The server is full.\n");
       break;
     case ID_DISCONNECTION_NOTIFICATION:
-      printf("A client has disconnected.\n");
       if (_isServer) 
       {
+        printf("A client has disconnected.\n");
         RakNet::RakNetGUID localid = _peer->GetMyGUID();
         RakNet::RakNetGUID id = packet->guid;
         EAE_Engine::Common::IGameObj* pClientPlayer = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
@@ -198,6 +207,14 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
           //EAE_Engine::Core::World::GetInstance().Remove(pClientPlayer->GetTransform());
           EAE_Engine::Engine::AddToRemoveList(pClientPlayer->GetTransform());
         }
+        // notice all other clients to remove the lost connect one
+        for (auto clientID : _clients)
+        {
+          RemovePlayer removePlayer;
+          removePlayer._dataTypeID = ID_GAME_REMOVE_PLAYER;
+          removePlayer._networkGUID = id;
+          _peer->Send((char*)&removePlayer, sizeof(RemovePlayer), HIGH_PRIORITY, RELIABLE, 0, _peer->GetSystemAddressFromGuid(clientID), false);
+        }
       }
       else
       {
@@ -205,15 +222,23 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       }
       break;
     case ID_CONNECTION_LOST:
-      printf("A client lost the connection.\n");
-      if (_isServer) 
+      if (_isServer)
       {
+        printf("A client lost the connection.\n");
         RakNet::RakNetGUID id = _peer->GetGuidFromSystemAddress(packet->systemAddress);
         EAE_Engine::Common::IGameObj* pClientPlayer = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
         if (pClientPlayer)
         {
-         // EAE_Engine::Core::World::GetInstance().Remove(pClientPlayer->GetTransform());
+          // EAE_Engine::Core::World::GetInstance().Remove(pClientPlayer->GetTransform());
           EAE_Engine::Engine::AddToRemoveList(pClientPlayer->GetTransform());
+        }
+        // notice all other clients to remove the lost connect one
+        for(auto clientID: _clients) 
+        {
+          RemovePlayer removePlayer;
+          removePlayer._dataTypeID = ID_GAME_REMOVE_PLAYER;
+          removePlayer._networkGUID = id;
+          _peer->Send((char*)&removePlayer, sizeof(RemovePlayer), HIGH_PRIORITY, RELIABLE, 0, _peer->GetSystemAddressFromGuid(clientID), false);
         }
       }
       else 
@@ -222,39 +247,47 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       }
       break;
     case ID_GAME_GET_TRANSFORM:
+    {
+      PlayerTransform* pTransofrm = (PlayerTransform*)packet->data;
+      const char* pGUID = pTransofrm->_networkGUID.ToString();
+      EAE_Engine::Common::IGameObj* pClientPlayer = EAE_Engine::Core::World::GetInstance().GetGameObj(pGUID);
+      if (pClientPlayer)
       {
-        PlayerTransform* pTransofrm = (PlayerTransform*)packet->data;
-        const char* pGUID = pTransofrm->_networkGUID.ToString();
-        EAE_Engine::Common::IGameObj* pClientPlayer = EAE_Engine::Core::World::GetInstance().GetGameObj(pGUID);
-        if (pClientPlayer)
-        {
-          pClientPlayer->GetTransform()->SetPos(pTransofrm->_pos);
-          pClientPlayer->GetTransform()->SetRotation(pTransofrm->_rotation);
-        }
+        pClientPlayer->GetTransform()->SetPos(pTransofrm->_pos);
+        pClientPlayer->GetTransform()->SetRotation(pTransofrm->_rotation);
       }
-     break;
+    }
+    break;
     case ID_GAME_NEW_PLAYER:
+    {
+      NewPlayer* pNewplayer = (NewPlayer*)packet->data;
+      RakNet::RakNetGUID id;
+      if (_isServer)
       {
-        NewPlayer* pNewplayer = (NewPlayer*)packet->data;
-        RakNet::RakNetGUID id;
-        if (_isServer)
+        // calculate the new GUID
+        id = _peer->GetGuidFromSystemAddress(packet->systemAddress);
+        pNewplayer->_networkGUID = id;
+        // send the info of new client to all perivous clients.
+        for (auto clientID : _clients)
         {
-          // calculate the new GUID
-          id = _peer->GetGuidFromSystemAddress(packet->systemAddress);
-          pNewplayer->_networkGUID = id;
-          // send the info of new client to all perivous clients.
-          for (auto clientID : _clients)
-          {
-            _peer->Send((char*)pNewplayer, sizeof(NewPlayer), HIGH_PRIORITY, RELIABLE, 0, _peer->GetSystemAddressFromGuid(clientID), false);
-          }
+          _peer->Send((char*)pNewplayer, sizeof(NewPlayer), HIGH_PRIORITY, RELIABLE, 0, _peer->GetSystemAddressFromGuid(clientID), false);
         }
-        id = pNewplayer->_networkGUID;
-        _clients.push_back(id);
-        CreateOtherPlayer(id.ToString(), pNewplayer->_pos, pNewplayer->_rotation);
-     //   EAE_Engine::Common::IGameObj* pClientPlayer2 = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
-     //   size_t t = 0;
       }
-      break;
+      id = pNewplayer->_networkGUID;
+      _clients.push_back(id);
+      CreateOtherPlayer(id.ToString(), pNewplayer->_pos, pNewplayer->_rotation);
+    //   EAE_Engine::Common::IGameObj* pClientPlayer2 = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
+    //   size_t t = 0;
+    }
+    break;
+    case ID_GAME_REMOVE_PLAYER:
+    {
+      RemovePlayer* pRemovePlayer = (RemovePlayer*)packet->data;
+      EAE_Engine::Common::IGameObj* pClientPlayer = EAE_Engine::Core::World::GetInstance().GetGameObj(pRemovePlayer->_networkGUID.ToString());
+      if (pClientPlayer)
+        EAE_Engine::Engine::AddToRemoveList(pClientPlayer->GetTransform());
+    }
+    break;
     default:
       printf("Message with identifier %i has arrived.\n", packet->data[0]);
       break;
