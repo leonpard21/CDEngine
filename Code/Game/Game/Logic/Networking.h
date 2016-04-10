@@ -21,10 +21,8 @@ public:
   ~NetworkPeer();
   void Init( bool isServer, std::string ipaddress);
   void Update(EAE_Engine::Common::ITransform* pLocalPlayer);
+  void DisConnect();
 
-private: 
-  void RemoveClient(RakNet::RakNetGUID id);
-  
 
 private:
   RakNet::RakPeerInterface* _peer;
