@@ -9,6 +9,7 @@
 
 #include "Engine/Common/Interfaces.h"
 #include "Engine/Core/Entirety/World.h"
+#include "Engine/Engine/Engine.h"
 #include "Gameplay.h"
 
 #pragma pack(push, 1)
@@ -190,11 +191,12 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       if (_isServer) 
       {
         RakNet::RakNetGUID localid = _peer->GetMyGUID();
-        RakNet::RakNetGUID id = _peer->GetGuidFromSystemAddress(packet->systemAddress);
+        RakNet::RakNetGUID id = packet->guid;
         EAE_Engine::Common::IGameObj* pClientPlayer = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
         if (pClientPlayer)
         {
-          EAE_Engine::Core::World::GetInstance().Remove(pClientPlayer->GetTransform());
+          //EAE_Engine::Core::World::GetInstance().Remove(pClientPlayer->GetTransform());
+          EAE_Engine::Engine::AddToRemoveList(pClientPlayer->GetTransform());
         }
       }
       else
@@ -210,7 +212,8 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
         EAE_Engine::Common::IGameObj* pClientPlayer = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
         if (pClientPlayer)
         {
-          EAE_Engine::Core::World::GetInstance().Remove(pClientPlayer->GetTransform());
+         // EAE_Engine::Core::World::GetInstance().Remove(pClientPlayer->GetTransform());
+          EAE_Engine::Engine::AddToRemoveList(pClientPlayer->GetTransform());
         }
       }
       else 
@@ -248,8 +251,8 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
         id = pNewplayer->_networkGUID;
         _clients.push_back(id);
         CreateOtherPlayer(id.ToString(), pNewplayer->_pos, pNewplayer->_rotation);
-        EAE_Engine::Common::IGameObj* pClientPlayer2 = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
-        size_t t = 0;
+     //   EAE_Engine::Common::IGameObj* pClientPlayer2 = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
+     //   size_t t = 0;
       }
       break;
     default:
@@ -257,7 +260,7 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       break;
     }
   }
-  
+  // send the local transofrm information to clients or server.
   if (_isServer)
   {
     // send all transform information of each player

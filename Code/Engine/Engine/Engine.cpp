@@ -19,7 +19,7 @@ namespace EAE_Engine
 {
 	namespace Engine
 	{
-		void RemoveActor(Common::ITransform* pTrans);
+		void RemoveGameObj(Common::ITransform* pTrans);
 	}
 }
 
@@ -33,7 +33,7 @@ namespace
 		for (; iter != _pRemoveList->end(); )
 		{ 
 			EAE_Engine::Common::ITransform* pTrans = *iter++;
-			EAE_Engine::Engine::RemoveActor(pTrans);
+			EAE_Engine::Engine::RemoveGameObj(pTrans);
 		}
 		_pRemoveList->clear();
 	}
@@ -99,19 +99,27 @@ namespace EAE_Engine
 
 		void AddToRemoveList(Common::ITransform* pTrans)
 		{
-			if (!_pRemoveList)
+			if (!_pRemoveList || pTrans == nullptr)
 				return;
 			for (std::vector<EAE_Engine::Common::ITransform*>::iterator it = _pRemoveList->begin();it!= _pRemoveList->end();++it)
 			{
-				if (*it == pTrans) 
-				{
-					return;
+        if (*it == pTrans)
+        {
+          // add all of the children of this transform
+          for (uint32_t i = 0; pTrans->GetChildCount(); ++i)
+          {
+            EAE_Engine::Common::ITransform* pChild = pTrans->GetChild(i);
+            if(pChild)
+              _pRemoveList->push_back(pChild);
+          }
+          // add the transform itself
+          _pRemoveList->push_back(pTrans);
+					break;
 				}
 			}
-			_pRemoveList->push_back(pTrans);
 		}
 
-		void RemoveActor(Common::ITransform* pTrans)
+		void RemoveGameObj(Common::ITransform* pTrans)
 		{
 			Controller::ControllerManager::GetInstance().Remove(pTrans);
 			Collider::ColliderManager::GetInstance()->Remove(pTrans);
