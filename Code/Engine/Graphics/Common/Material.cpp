@@ -129,7 +129,7 @@ namespace EAE_Engine
 		}
 
 ////////////////////////////////////member function////////////////////////////
-		bool MaterialManager::AddMaterialInfo(const char* key, uint8_t* pValue)
+		bool MaterialManager::AddMaterialDesc(const char* key, uint8_t* pValue)
 		{
 			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materialsInfo.begin(); iter != _materialsInfo.end(); ++iter)
 			{
@@ -155,7 +155,7 @@ namespace EAE_Engine
 			}
 			_materialsInfo.clear();
 		}
-		MaterialDesc* MaterialManager::GetMaterialInfo(const char* key)
+		MaterialDesc* MaterialManager::GetMaterialDesc(const char* key)
 		{
 			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materialsInfo.begin(); iter != _materialsInfo.end(); ++iter)
 			{

@@ -50,7 +50,7 @@ namespace EAE_Engine
 
 		void AOSMeshRender::AddMaterial(std::string materialkey)
 		{
-			MaterialDesc* pMaterial = MaterialManager::GetInstance()->GetMaterialInfo(materialkey.c_str());
+			MaterialDesc* pMaterial = MaterialManager::GetInstance()->GetMaterialDesc(materialkey.c_str());
       // Copy the material and save it to the list.
       {
         uint32_t materialBufferSize = pMaterial->_sizeOfMaterialBuffer;

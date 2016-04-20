@@ -71,9 +71,9 @@ namespace EAE_Engine
 		class MaterialManager 
 		{
 		public:
-			bool AddMaterialInfo(const char* key, uint8_t* pValue);
+			bool AddMaterialDesc(const char* key, uint8_t* pValue);
 			void Clean();
-			MaterialDesc* GetMaterialInfo(const char* key);
+			MaterialDesc* GetMaterialDesc(const char* key);
 
 		public:
 			static MaterialManager* GetInstance();
