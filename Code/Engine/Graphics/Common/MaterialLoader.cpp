@@ -177,7 +177,7 @@ namespace EAE_Engine
 			// Third, add this MaterialDesc buffer to the Material Map.
 			std::string mat_path(i_pBinaryMaterialFile);
 			std::string key = GetFileNameWithoutExtension(mat_path.c_str());
-			MaterialManager::GetInstance()->AddMaterial(key.c_str(), pOutBuffer);
+			MaterialManager::GetInstance()->AddMaterialInfo(key.c_str(), pOutBuffer);
 			SAFE_DELETE(pBuffer);
 		}
 	}

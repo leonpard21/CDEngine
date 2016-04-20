@@ -54,15 +54,15 @@ namespace EAE_Engine
         {
             LoadMaterial("data/Materials/debugPrimitives.material");
             _pSegmentsMeshRender = new AOSMeshRender(); 
-            _pSegmentsMeshRender->AddMaterial("debugPrimitives", false);
+            _pSegmentsMeshRender->AddMaterial("debugPrimitives");
             _pCirclesMeshRender = new AOSMeshRender();
-            _pCirclesMeshRender->AddMaterial("debugPrimitives", false);
+            _pCirclesMeshRender->AddMaterial("debugPrimitives");
             _pBoxesMeshRender = new AOSMeshRender();
-            _pBoxesMeshRender->AddMaterial("debugPrimitives", false);
+            _pBoxesMeshRender->AddMaterial("debugPrimitives");
             _pShperesMeshRender = new AOSMeshRender();
-            _pShperesMeshRender->AddMaterial("debugPrimitives", false);
+            _pShperesMeshRender->AddMaterial("debugPrimitives");
             _pTempMeshRender = new AOSMeshRender();
-            _pTempMeshRender->AddMaterial("debugPrimitives", false);
+            _pTempMeshRender->AddMaterial("debugPrimitives");
 
             // Setup vertices format.
 #if defined( EAEENGINE_PLATFORM_D3D9 )

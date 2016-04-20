@@ -31,7 +31,7 @@ namespace EAE_Engine
 		void CanvasRenderManager::Init() 
 		{
 			LoadMaterial("data/Materials/imageRender.material");
-			_pMaterial = MaterialManager::GetInstance()->GetMaterial("imageRender");
+			_pMaterial = MaterialManager::GetInstance()->GetMaterialInfo("imageRender");
 		}
 
 		void CanvasRenderManager::Clean()

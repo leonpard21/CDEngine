@@ -28,7 +28,11 @@ return
 				source = "CollisionData.aosmeshtext",
 				target = "collisionData.aosmesh",
 			},
-        }
+            {
+				source = "Flag.aosmeshtext",
+				target = "flag.aosmesh",
+			},
+        },
     },
 	{
          buildTool = "EffectBuilder.exe",

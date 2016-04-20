@@ -57,7 +57,7 @@ namespace EAE_Engine
 		{
 			for (std::vector<RenderData3D>::iterator it = _renderData3Ds.begin(); it != _renderData3Ds.end(); ++it)
 			{
-				MaterialDesc* pMaterial = it->GetMaterial();
+				MaterialDesc* pMaterial = it->GetSharedMaterial();
 				RenderWeight weight;
 				weight._layer = RenderDataLayer::Object3D;
 				weight._material = pMaterial ? pMaterial->_materialCost._cost : 0;
@@ -84,7 +84,7 @@ namespace EAE_Engine
 				if (pCanvasRenderData->_renderType == eCanvasRender::IMAGE)
 				{
 					ImageRender* pImageRender = (ImageRender*)pCanvasRenderData->_pCanvasRender;
-					MaterialDesc* pMaterial = pImageRender->GetMaterial();
+					MaterialDesc* pMaterial = pImageRender->GetSharedMaterial();
 					weight._material = pMaterial ? pMaterial->_materialCost._cost : 0;
 				}
 				else if (pCanvasRenderData->_renderType == eCanvasRender::TEXT)

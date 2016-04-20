@@ -22,7 +22,7 @@ namespace EAE_Engine
 			Common::ITransform* _pTrans;
 
 			RenderData3D() = default;
-			MaterialDesc* GetMaterial();
+			MaterialDesc* GetSharedMaterial();
 			void ChangeEffectVariables();
 			void Render();
 

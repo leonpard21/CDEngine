@@ -129,9 +129,9 @@ namespace EAE_Engine
 		}
 
 ////////////////////////////////////member function////////////////////////////
-		bool MaterialManager::AddMaterial(const char* key, uint8_t* pValue)
+		bool MaterialManager::AddMaterialInfo(const char* key, uint8_t* pValue)
 		{
-			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materials.begin(); iter != _materials.end(); ++iter)
+			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materialsInfo.begin(); iter != _materialsInfo.end(); ++iter)
 			{
 				MaterialKeyValuePair pair = *iter;
 				char* pKey = const_cast<char*>(pair._pKey);
@@ -140,12 +140,12 @@ namespace EAE_Engine
 					return false;
 			}
 			MaterialKeyValuePair keyValuePair = { _strdup(key), pValue };
-			_materials.push_back(keyValuePair);
+			_materialsInfo.push_back(keyValuePair);
 			return true;
 		}
 		void MaterialManager::Clean()
 		{
-			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materials.begin(); iter != _materials.end();)
+			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materialsInfo.begin(); iter != _materialsInfo.end();)
 			{
 				MaterialKeyValuePair pair = *iter++;
 				char* pKey = const_cast<char*>(pair._pKey);
@@ -153,11 +153,11 @@ namespace EAE_Engine
 				SAFE_DELETE(pKey);
 				SAFE_DELETE_ARRAY(pValue);
 			}
-			_materials.clear();
+			_materialsInfo.clear();
 		}
-		MaterialDesc* MaterialManager::GetMaterial(const char* key)
+		MaterialDesc* MaterialManager::GetMaterialInfo(const char* key)
 		{
-			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materials.begin(); iter != _materials.end(); ++iter)
+			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materialsInfo.begin(); iter != _materialsInfo.end(); ++iter)
 			{
 				MaterialKeyValuePair pair = *iter;
 				char* pKey = const_cast<char*>(pair._pKey);

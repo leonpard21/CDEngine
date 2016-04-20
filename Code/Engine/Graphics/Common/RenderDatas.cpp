@@ -23,7 +23,7 @@ namespace EAE_Engine
 		AOSMesh* RenderData3D::s_pCurrentAOSMesh = nullptr;
 		//MeshRender* RenderObj::s_pCurrentMeshRender = nullptr;
 
-		MaterialDesc* RenderData3D::GetMaterial()
+		MaterialDesc* RenderData3D::GetSharedMaterial()
 		{
 			MaterialDesc* pMaterial = _pMeshRender->GetSharedMaterial(_subMeshIndex);
 			return pMaterial;
@@ -109,7 +109,7 @@ namespace EAE_Engine
 		void RenderRawData3D::Render()
 		{
 			//If we need to change material, change the material
-			MaterialDesc* pMaterial = _pMeshRender->GetMaterial(0);
+			MaterialDesc* pMaterial = _pMeshRender->GetSharedMaterial(0);
 			//If we need to change effect, change the effect
 			Effect* pEffect = pMaterial->_pEffect;
 			if (s_pCurrentEffect != pEffect)
@@ -160,7 +160,7 @@ namespace EAE_Engine
 		void RenderDataUI::RenderImage(ImageRender* pImageRender) 
 		{
 			//If we need to change material, change the material
-			MaterialDesc* pMaterial = CanvasRenderManager::GetInstance()->GetMaterial();
+			MaterialDesc* pMaterial = CanvasRenderManager::GetInstance()->GetSharedMaterial();
 			s_pCurrentMaterial = pMaterial;
 			s_pCurrentEffect = pMaterial->_pEffect;
 			BindCurrentEffect(s_pCurrentEffect);

@@ -19,37 +19,24 @@ namespace EAE_Engine
 
 		AOSMeshRender::~AOSMeshRender() 
 		{
-			assert(_sharedMaterials.size() == _materials.size());
-			std::vector<MaterialDesc*>::iterator itShared = _sharedMaterials.begin();
-			for (std::vector<MaterialDesc*>::iterator it = _materials.begin(); it != _materials.end(); ++itShared)
+			for (std::vector<MaterialDesc*>::iterator it = _materials.begin(); it != _materials.end();)
 			{
 				MaterialDesc* pLocalMaterial = *it++;
-				if (pLocalMaterial != *itShared)
-				{
-					uint8_t* pBuffer = (uint8_t*)pLocalMaterial;
-					SAFE_DELETE_ARRAY(pBuffer);
-				}
+				uint8_t* pBuffer = (uint8_t*)pLocalMaterial;
+				SAFE_DELETE_ARRAY(pBuffer);
 			}
 			_materials.clear();
 		}
 
 		Graphics::MaterialDesc* AOSMeshRender::GetSharedMaterial(uint32_t index)
 		{ 
-			if (_sharedMaterials.size() == 0)
-				return nullptr;
-			else if (index >= _sharedMaterials.size())
-				return _sharedMaterials[0];
-			return _sharedMaterials[index];
-		}
-
-		Graphics::MaterialDesc* AOSMeshRender::GetMaterial(uint32_t index)
-		{
 			if (_materials.size() == 0)
 				return nullptr;
 			else if (index >= _materials.size())
 				return _materials[0];
 			return _materials[index];
 		}
+
 
 		void AOSMeshRender::SetMesh(const char* pMeshName)
 		{
@@ -61,22 +48,16 @@ namespace EAE_Engine
 			return _pMesh;
 		}
 
-		void AOSMeshRender::AddMaterial(std::string materialkey, bool shared)
+		void AOSMeshRender::AddMaterial(std::string materialkey)
 		{
-			MaterialDesc* pMaterial = MaterialManager::GetInstance()->GetMaterial(materialkey.c_str());
-			_sharedMaterials.push_back(pMaterial);
-			if (shared)
-			{
-				_materials.push_back(pMaterial);
-			}
-			else 
-			{
-				uint32_t materialBufferSize = pMaterial->_sizeOfMaterialBuffer;
-				uint8_t* pMaterialBuffer = new uint8_t[materialBufferSize];
-				CopyMem((uint8_t*)pMaterial, pMaterialBuffer, materialBufferSize);
-				_materials.push_back((MaterialDesc*)pMaterialBuffer);
-			}
-			
+			MaterialDesc* pMaterial = MaterialManager::GetInstance()->GetMaterialInfo(materialkey.c_str());
+      // Copy the material and save it to the list.
+      {
+        uint32_t materialBufferSize = pMaterial->_sizeOfMaterialBuffer;
+        uint8_t* pMaterialBuffer = new uint8_t[materialBufferSize];
+        CopyMem((uint8_t*)pMaterial, pMaterialBuffer, materialBufferSize);
+        _materials.push_back((MaterialDesc*)pMaterialBuffer);
+      }
 		}
 
 

@@ -71,15 +71,15 @@ namespace EAE_Engine
 		class MaterialManager 
 		{
 		public:
-			bool AddMaterial(const char* key, uint8_t* pValue);
+			bool AddMaterialInfo(const char* key, uint8_t* pValue);
 			void Clean();
-			MaterialDesc* GetMaterial(const char* key);
+			MaterialDesc* GetMaterialInfo(const char* key);
 
 		public:
 			static MaterialManager* GetInstance();
 			static void CleanInstance();
 		private:
-			std::vector<MaterialKeyValuePair> _materials;
+			std::vector<MaterialKeyValuePair> _materialsInfo;
 			static MaterialManager* s_pMaterialManager;
 		};
 	}

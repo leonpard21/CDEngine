@@ -50,6 +50,7 @@ namespace
 
 const char* const pathGround = "data/Meshes/warehouse.aosmesh";
 const char* const pathPlayer = "data/Meshes/sphere.aosmesh";
+const char* const pathFlag = "data/Meshes/flag.aosmesh";
 
 EAE_Engine::Physics::RigidBody* g_pRigidBody = nullptr;
 EAE_Engine::Common::IGameObj* g_pPlayerObj = nullptr;
@@ -117,7 +118,11 @@ bool GameplayInit(float windowWidth, float windowHeight)
 	{
 		return false;
 	}
-
+  result = EAE_Engine::Graphics::LoadMeshFromBinary(pathFlag);
+  if (!result)
+  {
+    return false;
+  }
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/white.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/lambert.material");
 	EAE_Engine::Graphics::LoadMaterial("data/Materials/floor.material");

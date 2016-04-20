@@ -43,7 +43,7 @@ namespace EAE_Engine
 			ImageRender* AddImageRender(Image* pImage, RectTransform* pRectTransform);
 			TextRender* AddTextRender(Text* pText, RectTransform* pRectTransform);
 			void UpdateRenderDataList();
-			MaterialDesc* GetMaterial() { return _pMaterial; }
+			MaterialDesc* GetSharedMaterial() { return _pMaterial; }
 			//std::vector<CanvasRenderData>& GetRenderDatas() { return _canvasRenderDatas; }
 
 		private:
