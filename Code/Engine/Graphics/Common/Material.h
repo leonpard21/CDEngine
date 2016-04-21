@@ -59,6 +59,7 @@ namespace EAE_Engine
 			void SetUniformForEffect();
 			void SetTexturesForEffect();
 			void ChangeTexture(uint32_t index, TextureInfo* pTextureInfo);
+      void ChangeUniformVariable(const char* pName, void* pValue);
 		};
 
 		struct MaterialKeyValuePair 
@@ -79,7 +80,7 @@ namespace EAE_Engine
 			static MaterialManager* GetInstance();
 			static void CleanInstance();
 		private:
-			std::vector<MaterialKeyValuePair> _materialsInfo;
+			std::vector<MaterialKeyValuePair> _materialsDesc;
 			static MaterialManager* s_pMaterialManager;
 		};
 	}

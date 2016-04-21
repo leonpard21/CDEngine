@@ -111,6 +111,31 @@ namespace EAE_Engine
 			(pTexDescBuffer + index)->_pTextureInfo = pTextureInfo;
 		}
 
+    void MaterialDesc::ChangeUniformVariable(const char* i_pName, void* i_pValue)
+    {
+      if (_uniformCount == 0)
+        return;
+      char* pNameBuffer = (char*)((uint8_t*)this + _offsetOfUniformVariableNameBuffer);
+      char** pNames = new char*[_uniformCount];
+      for (uint32_t i = 0; i < _uniformCount; ++i)
+      {
+        UniformDesc* pUniform = GetUniformDesc() + i;
+        uint32_t offsetInNameBuffer = pUniform->_offsetInNameBuffer;
+        pNames[i] = (char*)this + _offsetOfUniformVariableNameBuffer + offsetInNameBuffer;
+      }
+      for (uint32_t i = 0; i < _uniformCount; ++i)
+      {
+        if (strcmp(i_pName, pNames[i]) == 0)
+        {
+          UniformDesc* pUniform = GetUniformDesc() + i;
+          uint32_t offsetInValueBuffer = pUniform->_offsetInValueBuffer;
+          uint8_t* pValueOfUniform = (uint8_t*)this + _offsetOfUniformVariableValueBuffer + offsetInValueBuffer;
+          CopyMem((uint8_t*)i_pValue, pValueOfUniform, pUniform->_valueBufferSize);
+        }
+      }
+      SAFE_DELETE_ARRAY(pNames);
+    }
+
 ////////////////////////MaterialManager static members//////////////////
 		MaterialManager* MaterialManager::s_pMaterialManager = nullptr;
 
@@ -131,7 +156,7 @@ namespace EAE_Engine
 ////////////////////////////////////member function////////////////////////////
 		bool MaterialManager::AddMaterialDesc(const char* key, uint8_t* pValue)
 		{
-			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materialsInfo.begin(); iter != _materialsInfo.end(); ++iter)
+			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materialsDesc.begin(); iter != _materialsDesc.end(); ++iter)
 			{
 				MaterialKeyValuePair pair = *iter;
 				char* pKey = const_cast<char*>(pair._pKey);
@@ -140,12 +165,12 @@ namespace EAE_Engine
 					return false;
 			}
 			MaterialKeyValuePair keyValuePair = { _strdup(key), pValue };
-			_materialsInfo.push_back(keyValuePair);
+			_materialsDesc.push_back(keyValuePair);
 			return true;
 		}
 		void MaterialManager::Clean()
 		{
-			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materialsInfo.begin(); iter != _materialsInfo.end();)
+			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materialsDesc.begin(); iter != _materialsDesc.end();)
 			{
 				MaterialKeyValuePair pair = *iter++;
 				char* pKey = const_cast<char*>(pair._pKey);
@@ -153,11 +178,11 @@ namespace EAE_Engine
 				SAFE_DELETE(pKey);
 				SAFE_DELETE_ARRAY(pValue);
 			}
-			_materialsInfo.clear();
+			_materialsDesc.clear();
 		}
 		MaterialDesc* MaterialManager::GetMaterialDesc(const char* key)
 		{
-			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materialsInfo.begin(); iter != _materialsInfo.end(); ++iter)
+			for (std::vector<MaterialKeyValuePair>::const_iterator iter = _materialsDesc.begin(); iter != _materialsDesc.end(); ++iter)
 			{
 				MaterialKeyValuePair pair = *iter;
 				char* pKey = const_cast<char*>(pair._pKey);

@@ -1,6 +1,6 @@
 ﻿#include "Gameplay.h"
 
-//#define USE_NETWORKMODE
+#define USE_NETWORKMODE
 #ifdef USE_NETWORKMODE
 #include <shellapi.h>
 #include "Networking.h"
@@ -11,18 +11,19 @@
 #include "LazyCamera.h"
 #include "Engine/DebugShape/DebugShape.h"
 #include "Engine/CollisionDetection/ColliderBase.h"
+#include "Engine/General/BasicShapes.h"
+#include "Engine/Common/Interfaces.h"
+#include "Engine/Core/Entirety/World.h"
+#include "Engine/Engine/Engine.h"
 #include "Engine/Graphics/Graphics.h"
 #include "Engine/Graphics/Common/MeshRender.h"
+#include "Engine/Graphics/Common/Material.h"
 #include "Engine/Graphics/Common/ImageRender.h"
 #include "Engine/Graphics/Common/CanvasRender.h"
 #include "Engine/Graphics/Common/Image.h"
 #include "Engine/Graphics/Common/Camera.h"
 #include "Engine/Graphics/Common/Screen.h"
 #include "Engine/Graphics/Common/BinaryFileLoader.h"
-#include "Engine/General/BasicShapes.h"
-#include "Engine/Common/Interfaces.h"
-#include "Engine/Core/Entirety/World.h"
-#include "Engine/Engine/Engine.h"
 #include "Engine/Graphics/Common/DebugMesh.h"
 #include "Engine/Graphics/Common/Text.h"
 #include "Engine/Graphics/Common/RectTransform.h"
@@ -42,6 +43,7 @@ namespace
 	bool InitLevel();
 	bool ResetLevel();
 
+  void CreateFlag(EAE_Engine::Math::Vector3 flagPos, const char* pName, EAE_Engine::Math::Vector4 color);
 	void CreatePlayer();
 	void CreateCamera();
 	void CreateSprite();
@@ -311,6 +313,9 @@ namespace
 		pRenderGround->AddMaterial("cement");
 		pRenderGround->AddMaterial("walls");
 
+    EAE_Engine::Math::Vector3 flagpos0(0.0f, -25.0f, 0.0f);
+    EAE_Engine::Math::Vector4 red(1.0f, 0.0f, 0.0f, 1.0f);
+    CreateFlag(flagpos0, "0", red);
 		CreatePlayer();
 		CreateCamera();
 		CreateSprite();
@@ -337,6 +342,16 @@ namespace
 		return result;
 	}
 
+
+  void CreateFlag(EAE_Engine::Math::Vector3 flagPos, const char* pName, EAE_Engine::Math::Vector4 color)
+  {
+    EAE_Engine::Common::IGameObj* pFlagObj = EAE_Engine::Core::World::GetInstance().AddGameObj(pName, flagPos);
+    pFlagObj->GetTransform()->SetLocalScale(EAE_Engine::Math::Vector3(0.2f, 0.2f, 0.2f));
+    EAE_Engine::Graphics::AOSMeshRender* pFlagRender = EAE_Engine::Graphics::AddMeshRender(pathFlag, pFlagObj->GetTransform());
+    pFlagRender->AddMaterial("lambert");
+    EAE_Engine::Graphics::MaterialDesc* pMaterial = pFlagRender->GetSharedMaterial();
+    pMaterial->ChangeUniformVariable("g_RGBColor", &color);
+  }
 
 	void CreatePlayer() 
 	{
