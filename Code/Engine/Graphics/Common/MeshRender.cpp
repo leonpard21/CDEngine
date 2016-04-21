@@ -19,24 +19,23 @@ namespace EAE_Engine
 
 		AOSMeshRender::~AOSMeshRender() 
 		{
-      /*
-			for (std::vector<MaterialDesc*>::iterator it = _materials.begin(); it != _materials.end();)
+			for (std::vector<MaterialDesc*>::iterator it = _duplicated_materials.begin(); it != _duplicated_materials.end();)
 			{
 				MaterialDesc* pLocalMaterial = *it++;
 				uint8_t* pBuffer = (uint8_t*)pLocalMaterial;
 				SAFE_DELETE_ARRAY(pBuffer);
 			}
-      */
-			_materials.clear();
+      _duplicated_materials.clear();
+      _sharedMaterials.clear();
 		}
 
 		Graphics::MaterialDesc* AOSMeshRender::GetSharedMaterial(uint32_t index)
 		{ 
-			if (_materials.size() == 0)
+			if (_sharedMaterials.size() == 0)
 				return nullptr;
-			else if (index >= _materials.size())
-				return _materials[0];
-			return _materials[index];
+			else if (index >= _sharedMaterials.size())
+				return _sharedMaterials[0];
+			return _sharedMaterials[index];
 		}
 
 
@@ -53,16 +52,37 @@ namespace EAE_Engine
 		void AOSMeshRender::AddMaterial(std::string materialkey)
 		{
 			MaterialDesc* pMaterial = MaterialManager::GetInstance()->GetMaterialDesc(materialkey.c_str());
-      _materials.push_back(pMaterial);
+      _sharedMaterials.push_back(pMaterial);
 		}
 
     void AOSMeshRender::SetMaterial(uint32_t index, MaterialDesc* pNewMaterial)
     {
-      if (index >= _materials.size())
+      if (index >= _sharedMaterials.size())
         return;
-      // Copy the material and save it to the list.
       {
-        _materials[index] = pNewMaterial;
+        _sharedMaterials[index] = pNewMaterial;
+      }
+    }
+
+    void AOSMeshRender::DuplicateMaterial(uint32_t index)
+    {
+      if (index >= _sharedMaterials.size())
+        return;
+      MaterialDesc* pMaterial = _sharedMaterials[index];
+      for (auto it : _duplicated_materials) 
+      {
+        MaterialDesc* pOld = it;
+        bool same = CompareMem((uint8_t*)pOld, (uint8_t*)pMaterial, pMaterial->_sizeOfMaterialBuffer);
+        if (same)
+          return;
+      }
+      // Copy the material and save it to the duplicated material list.
+      {
+        uint32_t materialBufferSize = pMaterial->_sizeOfMaterialBuffer;
+        uint8_t* pMaterialBuffer = new uint8_t[materialBufferSize];
+        CopyMem((uint8_t*)pMaterial, pMaterialBuffer, materialBufferSize);
+        _duplicated_materials.push_back((MaterialDesc*)pMaterialBuffer);
+        _sharedMaterials[index] = (MaterialDesc*)pMaterialBuffer;
       }
     }
 

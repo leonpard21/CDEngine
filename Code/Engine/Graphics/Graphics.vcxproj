@@ -31,6 +31,7 @@
     <ClCompile Include="Common\GUI.cpp" />
     <ClCompile Include="Common\Material.cpp" />
     <ClCompile Include="Common\MaterialLoader.cpp" />
+    <ClCompile Include="Common\MeshFilter.cpp" />
     <ClCompile Include="Common\RectTransform.cpp" />
     <ClCompile Include="Common\RenderDatas.cpp" />
     <ClCompile Include="Common\RenderObj.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Common\GUI.h" />
     <ClInclude Include="Common\Material.h" />
     <ClInclude Include="Common\GraphicsOp.h" />
+    <ClInclude Include="Common\MeshFilter.h" />
     <ClInclude Include="Common\RectTransform.h" />
     <ClInclude Include="Common\RenderDatas.h" />
     <ClInclude Include="Common\RenderObj.h" />

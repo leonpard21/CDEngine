@@ -263,7 +263,7 @@ void CreateOtherPlayer(const char* pname, EAE_Engine::Math::Vector3 pos, EAE_Eng
   EAE_Engine::Math::Vector3 playerRenderPos(0.0f, 2.0f, 0.0f);
   EAE_Engine::Common::IGameObj* pOthersRenderObj = EAE_Engine::Core::World::GetInstance().AddGameObj("otherRender", playerRenderPos);
   pOthersRenderObj->GetTransform()->SetParent(pOtherObj->GetTransform());
-  EAE_Engine::Graphics::AOSMeshRender* pOtherRender = EAE_Engine::Graphics::AddMeshRender(pathPlayer, pOthersRenderObj->GetTransform());
+  EAE_Engine::Graphics::AOSMeshRender* pOtherRender = EAE_Engine::Graphics::AOSMeshRenderManager::GetInstance().AddMeshRender(pathPlayer, pOthersRenderObj->GetTransform());
   /*
   {
     EAE_Engine::Graphics::SphereSOAMesh sphere(5, 5, 1.0f);
@@ -304,7 +304,7 @@ namespace
 		EAE_Engine::Math::Vector3 groundScale(1.0f, 1.0f, 1.0f);
 		pActorGround->GetTransform()->SetLocalScale(groundScale);
 
-    EAE_Engine::Graphics::AOSMeshRender* pRenderGround = EAE_Engine::Graphics::AddMeshRender(pathGround, pActorGround->GetTransform());
+    EAE_Engine::Graphics::AOSMeshRender* pRenderGround = EAE_Engine::Graphics::AOSMeshRenderManager::GetInstance().AddMeshRender(pathGround, pActorGround->GetTransform());
 		pRenderGround->AddMaterial("lambert");
 		pRenderGround->AddMaterial("floor");
 		pRenderGround->AddMaterial("railing");
@@ -347,7 +347,7 @@ namespace
   {
     EAE_Engine::Common::IGameObj* pFlagObj = EAE_Engine::Core::World::GetInstance().AddGameObj(pName, flagPos);
     pFlagObj->GetTransform()->SetLocalScale(EAE_Engine::Math::Vector3(0.2f, 0.2f, 0.2f));
-    EAE_Engine::Graphics::AOSMeshRender* pFlagRender = EAE_Engine::Graphics::AddMeshRender(pathFlag, pFlagObj->GetTransform());
+    EAE_Engine::Graphics::AOSMeshRender* pFlagRender = EAE_Engine::Graphics::AOSMeshRenderManager::GetInstance().AddMeshRender(pathFlag, pFlagObj->GetTransform());
     pFlagRender->AddMaterial("lambert");
     EAE_Engine::Graphics::MaterialDesc* pMaterial = pFlagRender->GetSharedMaterial();
     pMaterial->ChangeUniformVariable("g_RGBColor", &color);
@@ -366,7 +366,7 @@ namespace
 			EAE_Engine::Math::Vector3 playerRenderPos(0.0f, 2.0f, 0.0f);
 			EAE_Engine::Common::IGameObj* pPlayerRenderObj = EAE_Engine::Core::World::GetInstance().AddGameObj("playerRenderObj", playerRenderPos);
 			pPlayerRenderObj->GetTransform()->SetParent(g_pPlayerObj->GetTransform());
-			EAE_Engine::Graphics::AOSMeshRender* pPlayerRender = EAE_Engine::Graphics::AddMeshRender(pathPlayer, pPlayerRenderObj->GetTransform());
+			EAE_Engine::Graphics::AOSMeshRender* pPlayerRender = EAE_Engine::Graphics::AOSMeshRenderManager::GetInstance().AddMeshRender(pathPlayer, pPlayerRenderObj->GetTransform());
 			{
 				EAE_Engine::Graphics::CylinderSOAMesh cylinder(1.0f, 1.0f, 4.0f, 20, 1);
 				EAE_Engine::Mesh::sSubMesh subMesh(0, (uint32_t)cylinder._indices.size() - 1);

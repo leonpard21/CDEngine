@@ -140,6 +140,9 @@
     <ClCompile Include="Common\UniformPool.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="Common\MeshFilter.cpp">
+      <Filter>Common\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -239,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="Common\UniformPool.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MeshFilter.h">
+      <Filter>Common\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

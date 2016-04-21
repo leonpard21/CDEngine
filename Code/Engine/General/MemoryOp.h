@@ -26,6 +26,18 @@ namespace EAE_Engine
 		}
 	}
 
+  inline bool CompareMem(const uint8_t* pMem0, const uint8_t* pMem1, size_t numOfDest)
+  {
+    for (size_t i = 0; i < numOfDest; ++i)
+    {
+      if (pMem0[i] != pMem1[i])
+      {
+        return false;
+      }
+    }
+    return false;
+  }
+
 	char* CopyStr(const char* pStr);
 	void DeleteStr(char* pStr);
 }
