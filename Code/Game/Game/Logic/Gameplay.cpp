@@ -1,6 +1,6 @@
 ﻿#include "Gameplay.h"
 
-#define USE_NETWORKMODE
+//#define USE_NETWORKMODE
 #ifdef USE_NETWORKMODE
 #include <shellapi.h>
 #include "Networking.h"

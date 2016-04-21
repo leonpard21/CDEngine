@@ -19,12 +19,14 @@ namespace EAE_Engine
 
 		AOSMeshRender::~AOSMeshRender() 
 		{
+      /*
 			for (std::vector<MaterialDesc*>::iterator it = _materials.begin(); it != _materials.end();)
 			{
 				MaterialDesc* pLocalMaterial = *it++;
 				uint8_t* pBuffer = (uint8_t*)pLocalMaterial;
 				SAFE_DELETE_ARRAY(pBuffer);
 			}
+      */
 			_materials.clear();
 		}
 
@@ -51,15 +53,18 @@ namespace EAE_Engine
 		void AOSMeshRender::AddMaterial(std::string materialkey)
 		{
 			MaterialDesc* pMaterial = MaterialManager::GetInstance()->GetMaterialDesc(materialkey.c_str());
-      // Copy the material and save it to the list.
-      {
-        uint32_t materialBufferSize = pMaterial->_sizeOfMaterialBuffer;
-        uint8_t* pMaterialBuffer = new uint8_t[materialBufferSize];
-        CopyMem((uint8_t*)pMaterial, pMaterialBuffer, materialBufferSize);
-        _materials.push_back((MaterialDesc*)pMaterialBuffer);
-      }
+      _materials.push_back(pMaterial);
 		}
 
+    void AOSMeshRender::SetMaterial(uint32_t index, MaterialDesc* pNewMaterial)
+    {
+      if (index >= _materials.size())
+        return;
+      // Copy the material and save it to the list.
+      {
+        _materials[index] = pNewMaterial;
+      }
+    }
 
 		//////////////////////////////RenderObjManager///////////////////////////
 

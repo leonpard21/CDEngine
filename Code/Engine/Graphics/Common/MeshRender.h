@@ -19,6 +19,9 @@ namespace EAE_Engine
 			MaterialDesc* GetSharedMaterial(uint32_t index = 0);
 			AOSMesh* GetMesh();
 			void AddMaterial(std::string materialkey);
+      // Just like Unity3D, if you set the material in this way, 
+      // you need to delete the new material by yourself.
+      void SetMaterial(uint32_t index, MaterialDesc* pNewMaterial);
 			void SetMesh(AOSMesh* pAOSMesh) { _pMesh = pAOSMesh; }
 			void SetMesh(const char* pMeshName);
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
