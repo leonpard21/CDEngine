@@ -16,27 +16,28 @@ namespace EAE_Engine
 		public:
 			AOSMeshRender();
 			~AOSMeshRender();
+      AOSMesh* GetMesh();
+      void SetMesh(AOSMesh* pAOSMesh) { _pMesh = pAOSMesh; }
+      void SetMesh(const char* pMeshName);
+      void AddMaterial(std::string materialkey);
+      // In untiy3d, if the material is used by any other renderers, 
+      // this will clone the shared material and start using it from now on.
+      MaterialDesc* GetMaterial(uint32_t index = 0);
+      // In unity3d, modifying sharedMaterial will change the appearance of all objects using this material, 
+      // and change material settings that are stored in the project too.
 			MaterialDesc* GetSharedMaterial(uint32_t index = 0);
-			AOSMesh* GetMesh();
-			void AddMaterial(std::string materialkey);
-      // Just like Unity3D, if you set the material in this way, 
-      // you need to delete the new material by yourself.
+      void SetSharedMaterial(uint32_t index, std::string materialkey);
       void SetMaterial(uint32_t index, MaterialDesc* pNewMaterial);
-      // This is useful when we want to change the material just this the gameobject 
-      // which contains this AOSMeshRender. It will be managed by this AOSMeshRender itself.
-      // In unity we need to use .materials and set it back, 
-      // so here I add this function which is helpful for those requirement.
-      void DuplicateMaterial(uint32_t index);
-			void SetMesh(AOSMesh* pAOSMesh) { _pMesh = pAOSMesh; }
-			void SetMesh(const char* pMeshName);
 			void SetTrans(Common::ITransform*  pTrans) { _pTrans = pTrans; }
 			Common::ITransform* GetTransform() { return _pTrans; }
-
+    private: 
+      // copy the shared material to local material
+      bool CopySharedMaterialToLocal(uint32_t index);
 			friend class AOSMeshRenderManager;
 		private:
 			Graphics::AOSMesh* _pMesh;
 			std::vector<MaterialDesc*> _sharedMaterials;
-      std::vector<MaterialDesc*> _duplicated_materials;
+      std::vector<MaterialDesc*> _localMaterials;
 			Common::ITransform* _pTrans;
 		};
 

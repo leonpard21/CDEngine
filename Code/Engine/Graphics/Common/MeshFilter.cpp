@@ -7,20 +7,63 @@ namespace EAE_Engine
   namespace Graphics
   {
 
-    MeshFilter::MeshFilter(const char* pKey)
+    MeshFilter::MeshFilter(const char* pKey) : 
+      _pSharedAOSMesh(nullptr), _pLocalAOSMesh(nullptr)
     {
-      _key = std::string(pKey);
-      Mesh::AOSMeshData* pAOSMeshData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData(pKey);
-      _pMesh = CreateAOSMesh(pAOSMeshData);
+      _pAOSMeshData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData(pKey);
+      if (!_pAOSMeshData)
+        return;
+      _pSharedAOSMesh = CreateAOSMesh(_pAOSMeshData);
     }
 
-    AOSMesh* MeshFilter::GetMesh() const 
+    MeshFilter::~MeshFilter() 
     {
-      if (_pMesh == nullptr)
+      if (_pLocalAOSMesh)
+      {
+        _pLocalAOSMesh->Release();
+        SAFE_DELETE(_pLocalAOSMesh);
+      }
+    }
+
+    void MeshFilter::SetSharedMesh(Mesh::AOSMeshData* pNewAOSMeshData)
+    {
+      _pSharedAOSMesh = CreateAOSMesh(_pAOSMeshData);
+      if (_pLocalAOSMesh)
+      {
+        _pLocalAOSMesh->Release();
+        SAFE_DELETE(_pLocalAOSMesh);
+        _pLocalAOSMesh = CreateAOSMesh(_pAOSMeshData);
+      }
+    }
+
+    void MeshFilter::SetMesh(Mesh::AOSMeshData* pNewAOSMeshData)
+    {
+      // clear the old local mesh, if instantiated
+      if (_pLocalAOSMesh)
+      {
+        _pLocalAOSMesh->Release();
+        SAFE_DELETE(_pLocalAOSMesh);
+      }
+      _pAOSMeshData = pNewAOSMeshData;
+      if (pNewAOSMeshData == nullptr) 
+      {
+        return;
+      }
+      _pLocalAOSMesh = CreateAOSMesh(_pAOSMeshData);
+    }
+
+    AOSMesh* MeshFilter::GetSharedMesh() 
+    {
+      return _pSharedAOSMesh;
+    }
+
+    AOSMesh* MeshFilter::GetMesh() 
+    {
+      if (_pSharedAOSMesh == nullptr || _pAOSMeshData == nullptr)
         return nullptr;
-      Mesh::AOSMeshData* pAOSMeshData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData(_key.c_str());
-      AOSMesh* pMesh = CreateAOSMesh(pAOSMeshData);
-      return pMesh;
+      if (!_pLocalAOSMesh)
+        _pLocalAOSMesh = CreateAOSMesh(_pAOSMeshData);
+      return _pLocalAOSMesh;
     }
 
   }

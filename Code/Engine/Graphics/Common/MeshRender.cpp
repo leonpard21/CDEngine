@@ -19,25 +19,21 @@ namespace EAE_Engine
 
 		AOSMeshRender::~AOSMeshRender() 
 		{
-			for (std::vector<MaterialDesc*>::iterator it = _duplicated_materials.begin(); it != _duplicated_materials.end();)
+      auto itForShared = _sharedMaterials.begin();
+			for (std::vector<MaterialDesc*>::iterator it = _localMaterials.begin(); it != _localMaterials.end(); )
 			{
-				MaterialDesc* pLocalMaterial = *it++;
-				uint8_t* pBuffer = (uint8_t*)pLocalMaterial;
-				SAFE_DELETE_ARRAY(pBuffer);
+        MaterialDesc* pLocalMaterial = *it++;
+        if (pLocalMaterial == *itForShared)
+          continue;
+        uint8_t* pBuffer = (uint8_t*)pLocalMaterial;
+        SAFE_DELETE_ARRAY(pBuffer);
+        // make sure the itForShared is not pointing to somewhere after the end.
+        if (itForShared != _sharedMaterials.end())
+          ++itForShared;
 			}
-      _duplicated_materials.clear();
+      _localMaterials.clear();
       _sharedMaterials.clear();
 		}
-
-		Graphics::MaterialDesc* AOSMeshRender::GetSharedMaterial(uint32_t index)
-		{ 
-			if (_sharedMaterials.size() == 0)
-				return nullptr;
-			else if (index >= _sharedMaterials.size())
-				return _sharedMaterials[0];
-			return _sharedMaterials[index];
-		}
-
 
 		void AOSMeshRender::SetMesh(const char* pMeshName)
 		{
@@ -53,37 +49,69 @@ namespace EAE_Engine
 		{
 			MaterialDesc* pMaterial = MaterialManager::GetInstance()->GetMaterialDesc(materialkey.c_str());
       _sharedMaterials.push_back(pMaterial);
+      _localMaterials.push_back(nullptr);
 		}
 
-    void AOSMeshRender::SetMaterial(uint32_t index, MaterialDesc* pNewMaterial)
+    MaterialDesc* AOSMeshRender::GetSharedMaterial(uint32_t index)
+    {
+      if (_sharedMaterials.size() == 0)
+        return nullptr;
+      else if (index >= _sharedMaterials.size())
+        return _sharedMaterials[0];
+      return _sharedMaterials[index];
+    }
+
+    MaterialDesc* AOSMeshRender::GetMaterial(uint32_t index)
+    {
+      if (_localMaterials.size() == 0 || index >= _sharedMaterials.size())
+        return nullptr;
+      else if (index < _localMaterials.size())
+        return _localMaterials[index];
+      // Copy the material and save it to the local material list.
+      CopySharedMaterialToLocal(index);
+      return _localMaterials[index];
+    }
+
+    void AOSMeshRender::SetSharedMaterial(uint32_t index, std::string materialkey)
     {
       if (index >= _sharedMaterials.size())
         return;
+      MaterialDesc* pNewMaterial = MaterialManager::GetInstance()->GetMaterialDesc(materialkey.c_str());
+      _sharedMaterials[index] = pNewMaterial;
+      // also remember to clean the localMaterial(if instantiated)
+      if (_localMaterials[index] != nullptr)
       {
-        _sharedMaterials[index] = pNewMaterial;
+        uint8_t* pBuffer = (uint8_t*)_localMaterials[index];
+        SAFE_DELETE_ARRAY(pBuffer);
+        _localMaterials[index] = nullptr;
+        // generate the new local material in the local list. 
+        CopySharedMaterialToLocal(index);
       }
     }
 
-    void AOSMeshRender::DuplicateMaterial(uint32_t index)
+    void AOSMeshRender::SetMaterial(uint32_t index, MaterialDesc* pNewMaterial)
     {
-      if (index >= _sharedMaterials.size())
+      if (index >= _localMaterials.size())
         return;
-      MaterialDesc* pMaterial = _sharedMaterials[index];
-      for (auto it : _duplicated_materials) 
+      // delete the previous local material, if exists. 
+      if (_localMaterials[index] != nullptr)
       {
-        MaterialDesc* pOld = it;
-        bool same = CompareMem((uint8_t*)pOld, (uint8_t*)pMaterial, pMaterial->_sizeOfMaterialBuffer);
-        if (same)
-          return;
+        uint8_t* pBuffer = (uint8_t*)_localMaterials[index];
+        SAFE_DELETE_ARRAY(pBuffer);
       }
-      // Copy the material and save it to the duplicated material list.
-      {
+      _localMaterials[index] = pNewMaterial;
+    }
+
+    bool AOSMeshRender::CopySharedMaterialToLocal(uint32_t index)
+    {
+        MaterialDesc* pMaterial = _sharedMaterials[index];
+        if (!pMaterial)
+          return false;
         uint32_t materialBufferSize = pMaterial->_sizeOfMaterialBuffer;
-        uint8_t* pMaterialBuffer = new uint8_t[materialBufferSize];
-        CopyMem((uint8_t*)pMaterial, pMaterialBuffer, materialBufferSize);
-        _duplicated_materials.push_back((MaterialDesc*)pMaterialBuffer);
-        _sharedMaterials[index] = (MaterialDesc*)pMaterialBuffer;
-      }
+        uint8_t* pNewMaterial = new uint8_t[materialBufferSize];
+        CopyMem((uint8_t*)pMaterial, pNewMaterial, materialBufferSize);
+        _localMaterials[index] = (MaterialDesc*)pNewMaterial;
+        return true;
     }
 
 		//////////////////////////////RenderObjManager///////////////////////////

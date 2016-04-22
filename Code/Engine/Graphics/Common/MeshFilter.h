@@ -5,19 +5,32 @@
 
 namespace EAE_Engine
 {
+  namespace Mesh 
+  {
+    struct AOSMeshData;
+  }
+
   namespace Graphics
   {
+    // In Unity3D, 
+    // if MeshFilter is a part of an asset object, 
+    // quering mesh property is not allowed and only asset mesh can be assigned.
     class MeshFilter 
     {
     public:
       MeshFilter(const char* pKey);
-      void SetMesh(AOSMesh* pMesh) { _pMesh = pMesh; }
+      ~MeshFilter();
+      void SetSharedMesh(Mesh::AOSMeshData* pNewAOSMeshData);
+      void SetMesh(Mesh::AOSMeshData* pNewAOSMeshData);
+      AOSMesh* GetSharedMesh();
       // like Unity3D, we will return a duplicated mesh
-      AOSMesh* GetMesh() const;
-      AOSMesh* GetSharedMesh() { return _pMesh; }
+      AOSMesh* GetMesh();
     private: 
-      std::string _key;
-      AOSMesh* _pMesh;
+
+    private: 
+      Mesh::AOSMeshData* _pAOSMeshData;
+      AOSMesh* _pSharedAOSMesh;
+      AOSMesh* _pLocalAOSMesh;
     };
   }
 }
