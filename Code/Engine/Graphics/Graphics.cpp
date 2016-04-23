@@ -131,7 +131,7 @@ bool EAE_Engine::Graphics::ShutDown()
 	FontManager::Destroy();
 	UniformVariableManager::CleanInstance();
 	UniformBlockManager::Destroy();
-	MeshManager::CleanMeshManager();
+	AOSMeshManager::Destroy();
 	RenderObjManager::CleanInstance();
 	CameraManager::CleanInstance();
 	EffectsManager::CleanInstance();

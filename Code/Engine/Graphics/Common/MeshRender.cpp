@@ -37,7 +37,7 @@ namespace EAE_Engine
 
 		void AOSMeshRender::SetMesh(const char* pMeshName)
 		{
-			_pMesh = MeshManager::GetMeshManager()->GetMesh(pMeshName);
+			_pMesh = AOSMeshManager::GetInstance()->GetMesh(pMeshName);
 		}
 
 		AOSMesh* AOSMeshRender::GetMesh()

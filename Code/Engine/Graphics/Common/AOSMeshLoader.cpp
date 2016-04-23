@@ -31,14 +31,13 @@ namespace EAE_Engine
 				SAFE_DELETE(pAOSMesh);
 				return false;
 			}
-			MeshManager::GetMeshManager()->AddAOSMesh(i_binaryMeshFile, pAOSMesh);
+			AOSMeshManager::GetInstance()->AddAOSMesh(i_binaryMeshFile, pAOSMesh);
 			return true;
 		}
 
 		AOSMesh* LoadMeshData(const char* i_binaryMeshFile)
 		{
-			std::string mesh_path(i_binaryMeshFile);
-			std::string key = GetFileNameWithoutExtension(mesh_path.c_str());
+			std::string key = GetFileNameWithoutExtension(i_binaryMeshFile);
 			Mesh::AOSMeshData* pData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData(key.c_str());
 			if (!pData)
 				return nullptr;

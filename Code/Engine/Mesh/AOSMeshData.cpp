@@ -28,6 +28,24 @@ namespace EAE_Engine
     }
 
     /////////////////////////////////AOSMeshData////////////////////////////////////////
+
+    AOSMeshData::AOSMeshData() {}
+
+    AOSMeshData::AOSMeshData(const AOSMeshData& i_other) : 
+      _vertices(i_other._vertices), 
+      _indices(i_other._indices), 
+      _subMeshes(i_other._subMeshes)
+    {
+    }
+
+    AOSMeshData& AOSMeshData::operator= (const AOSMeshData& i_other)
+    {
+      _vertices = i_other._vertices;
+      _indices = i_other._indices;
+      _subMeshes = i_other._subMeshes;
+      return *this;
+    }
+
 		Math::Vector3 AOSMeshData::GetVertex(uint32_t vertexIndex)
 		{
 			uint32_t index = _indices[vertexIndex];

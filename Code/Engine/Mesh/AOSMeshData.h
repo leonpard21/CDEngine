@@ -33,6 +33,9 @@ namespace EAE_Engine
 			std::vector<sVertex> _vertices;
 			std::vector<uint32_t> _indices;
 			std::vector<sSubMesh> _subMeshes;
+      AOSMeshData();
+      AOSMeshData(const AOSMeshData& i_other);
+      AOSMeshData& operator= (const AOSMeshData& i_other);
 			Math::Vector3 GetVertex(uint32_t vertexIndex);
 			std::vector<sVertex> GetVertices(std::vector<uint32_t> indices);
 			std::vector<Math::Vector3> GetVertexPoses(std::vector<uint32_t> indices);

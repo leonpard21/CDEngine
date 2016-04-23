@@ -1,30 +1,25 @@
 #ifndef EAE_ENGINE_MESH_MANAGER_H
 #define EAE_ENGINE_MESH_MANAGER_H
 
-#include <map>
+#include <unordered_map>
 #include "GraphicsInternal.h"
+#include "Engine/General/Singleton.hpp"
 
 namespace EAE_Engine 
 {
 	namespace Graphics 
 	{
 		class AOSMesh;
-		class MeshManager
+		class AOSMeshManager : public Singleton<AOSMeshManager>
 		{
 		public:
+      ~AOSMeshManager();
 			void AddAOSMesh(const char* pMeshKey, AOSMesh* pAOSMesh);
 			void CleanList();
-			const std::map<const char*, AOSMesh*>& GetAOSMeshes() const;
+			const std::unordered_map<const char*, AOSMesh*>& GetAOSMeshes() const;
 			AOSMesh* GetMesh(const char* pKeyName);
 		private:
-			std::map<const char*, AOSMesh*> _meshMap;
-
-			//////////////////////////////////static_members////////////////////////////////
-		public:
-			static MeshManager* GetMeshManager();
-			static void CleanMeshManager();
-		private:
-			static MeshManager* s_pMeshManager;
+			std::unordered_map<const char*, AOSMesh*> _meshMap;
 		};
 	}
 }
