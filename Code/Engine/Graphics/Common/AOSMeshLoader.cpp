@@ -75,9 +75,22 @@ namespace EAE_Engine
       };
       MeshGLVertexElements elements = { element_arr, 4,{ sizeof(Mesh::sVertex), GL_TRIANGLES, GL_STATIC_DRAW } };
 #endif
+      uint32_t* pIndices = nullptr;
+      uint32_t indexCount = (uint32_t)pAOSMeshData->_indices.size();
+      Mesh::sSubMesh* pSubMeshes = nullptr;
+      uint32_t subMeshCount = (uint32_t)pAOSMeshData->_subMeshes.size();
+      if (indexCount > 0)
+      {
+        pIndices = &pAOSMeshData->_indices[0];
+        indexCount = (uint32_t)pAOSMeshData->_indices.size();
+      }
+      if(subMeshCount > 0)
+      {
+        pSubMeshes = &pAOSMeshData->_subMeshes[0];
+        subMeshCount = (uint32_t)pAOSMeshData->_subMeshes.size();
+      }
       pAOSMesh = CreateAOSMeshInternal(elements, &pAOSMeshData->_vertices[0], (uint32_t)pAOSMeshData->_vertices.size(),
-        &pAOSMeshData->_indices[0], (uint32_t)pAOSMeshData->_indices.size(),
-        &pAOSMeshData->_subMeshes[0], (uint32_t)pAOSMeshData->_subMeshes.size());
+        pIndices, indexCount, pSubMeshes, subMeshCount);
       return pAOSMesh;
     }
 

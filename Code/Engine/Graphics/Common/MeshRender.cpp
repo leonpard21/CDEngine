@@ -19,17 +19,11 @@ namespace EAE_Engine
 
 		AOSMeshRender::~AOSMeshRender() 
 		{
-      auto itForShared = _sharedMaterials.begin();
 			for (std::vector<MaterialDesc*>::iterator it = _localMaterials.begin(); it != _localMaterials.end(); )
 			{
         MaterialDesc* pLocalMaterial = *it++;
-        if (pLocalMaterial == *itForShared)
-          continue;
         uint8_t* pBuffer = (uint8_t*)pLocalMaterial;
         SAFE_DELETE_ARRAY(pBuffer);
-        // make sure the itForShared is not pointing to somewhere after the end.
-        if (itForShared != _sharedMaterials.end())
-          ++itForShared;
 			}
       _localMaterials.clear();
       _sharedMaterials.clear();
