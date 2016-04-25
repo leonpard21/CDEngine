@@ -20,10 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AOSMeshData.cpp" />
+    <ClCompile Include="MeshFilter.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AOSMeshData.h" />
+    <ClInclude Include="MeshFilter.h" />
     <ClInclude Include="MeshLoader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

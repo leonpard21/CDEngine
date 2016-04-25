@@ -47,7 +47,7 @@ namespace EAE_Engine
 		public:
 			~AOSMeshDataManager();
 			bool AddAOSMeshData(const char* i_pKey, AOSMeshData* pData);
-			AOSMeshData* GetAOSMeshData(const char* i_pKey);
+      AOSMeshData* GetAOSMeshData(const char* i_pKey);
 
 		private:
 			std::map<const char*, AOSMeshData*> _aosMeshDatas;
