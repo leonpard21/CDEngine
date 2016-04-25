@@ -16,9 +16,9 @@ namespace EAE_Engine
 		public:
 			AOSMeshRender();
 			~AOSMeshRender();
-      AOSMesh* GetMesh();
-      void SetMesh(AOSMesh* pAOSMesh) { _pMesh = pAOSMesh; }
-      void SetMesh(const char* pMeshName);
+      AOSMesh* GetSharedMesh();
+      void SetSharedMesh(AOSMesh* pAOSMesh) { _pSharedMesh = pAOSMesh; }
+      void SetSharedMesh(const char* pMeshName);
       void AddMaterial(std::string materialkey);
       // In untiy3d, if the material is used by any other renderers, 
       // this will clone the shared material and start using it from now on.
@@ -35,7 +35,7 @@ namespace EAE_Engine
       bool CopySharedMaterialToLocal(uint32_t index);
 			friend class AOSMeshRenderManager;
 		private:
-			Graphics::AOSMesh* _pMesh;
+			AOSMesh* _pSharedMesh;
 			std::vector<MaterialDesc*> _sharedMaterials;
       std::vector<MaterialDesc*> _localMaterials;
 			Common::ITransform* _pTrans;

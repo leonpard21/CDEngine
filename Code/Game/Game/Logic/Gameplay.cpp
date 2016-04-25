@@ -387,7 +387,8 @@ namespace
 					vertices[index].b = cylinder._colors[index]._z;
 					vertices[index].a = cylinder._colors[index]._w;
 				}
-				pPlayerRender->GetMesh()->ChangeWholeBuffers(&vertices[0], (uint32_t)vertices.size(),
+        //EAE_Engine::Graphics::AOSMesh* pNewAOSMesh = EAE_Engine::Graphics::CreateAOSMesh();
+				pPlayerRender->GetSharedMesh()->ChangeWholeBuffers(&vertices[0], (uint32_t)vertices.size(),
 					&cylinder._indices[0], (uint32_t)cylinder._indices.size(), &subMesh, 1);
 			}
 			pPlayerRender->AddMaterial("phongShading");

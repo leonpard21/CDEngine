@@ -13,7 +13,7 @@ namespace EAE_Engine
 	namespace Graphics
 	{
 		AOSMeshRender::AOSMeshRender() :
-			_pMesh(nullptr), _pTrans(nullptr)
+			_pSharedMesh(nullptr), _pTrans(nullptr)
 		{
 		}
 
@@ -29,14 +29,14 @@ namespace EAE_Engine
       _sharedMaterials.clear();
 		}
 
-		void AOSMeshRender::SetMesh(const char* pMeshName)
+		void AOSMeshRender::SetSharedMesh(const char* pMeshName)
 		{
-			_pMesh = AOSMeshManager::GetInstance()->GetMesh(pMeshName);
+			_pSharedMesh = AOSMeshManager::GetInstance()->GetMesh(pMeshName);
 		}
 
-		AOSMesh* AOSMeshRender::GetMesh()
+		AOSMesh* AOSMeshRender::GetSharedMesh()
 		{
-			return _pMesh;
+			return _pSharedMesh;
 		}
 
 		void AOSMeshRender::AddMaterial(std::string materialkey)
@@ -113,7 +113,7 @@ namespace EAE_Engine
 		AOSMeshRender* AOSMeshRenderManager::AddMeshRender(const char* pAOSMesh, Common::ITransform* pTransform)
 		{
 			AOSMeshRender* pRO = new AOSMeshRender();
-			pRO->SetMesh(pAOSMesh);
+			pRO->SetSharedMesh(pAOSMesh);
 			pRO->SetTrans(pTransform);
 			_meshRenders.push_back(pRO);
 			return pRO;
@@ -123,7 +123,7 @@ namespace EAE_Engine
 			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
 			for (std::vector<AOSMeshRender*>::iterator it = _meshRenders.begin(); it != _meshRenders.end(); ++it)
 			{
-				AOSMesh* pAOSMesh = (*it)->GetMesh();
+				AOSMesh* pAOSMesh = (*it)->GetSharedMesh();
 				if (pAOSMesh == nullptr) 
 					continue;
 				for (uint32_t submeshindex = 0; submeshindex < pAOSMesh->GetSubMeshCount(); ++submeshindex)
