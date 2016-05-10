@@ -51,7 +51,9 @@ namespace EAE_Engine
       if (_sharedMaterials.size() == 0)
         return nullptr;
       else if (index >= _sharedMaterials.size())
-        return _sharedMaterials[0];
+        return nullptr;
+      if (_localMaterials[index])
+        return _localMaterials[index];
       return _sharedMaterials[index];
     }
 
@@ -59,8 +61,8 @@ namespace EAE_Engine
     {
       if (_localMaterials.size() == 0 || index >= _sharedMaterials.size())
         return nullptr;
-      else if (index < _localMaterials.size())
-        return _localMaterials[index];
+      else if (index >= _localMaterials.size())
+        return nullptr;
       // Copy the material and save it to the local material list.
       CopySharedMaterialToLocal(index);
       return _localMaterials[index];

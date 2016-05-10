@@ -349,7 +349,7 @@ namespace
     pFlagObj->GetTransform()->SetLocalScale(EAE_Engine::Math::Vector3(0.2f, 0.2f, 0.2f));
     EAE_Engine::Graphics::AOSMeshRender* pFlagRender = EAE_Engine::Graphics::AOSMeshRenderManager::GetInstance().AddMeshRender(pathFlag, pFlagObj->GetTransform());
     pFlagRender->AddMaterial("lambert");
-    EAE_Engine::Graphics::MaterialDesc* pMaterial = pFlagRender->GetSharedMaterial();
+    EAE_Engine::Graphics::MaterialDesc* pMaterial = pFlagRender->GetMaterial();
     pMaterial->ChangeUniformVariable("g_RGBColor", &color);
   }
 
