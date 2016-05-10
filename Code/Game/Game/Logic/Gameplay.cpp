@@ -313,9 +313,14 @@ namespace
 		pRenderGround->AddMaterial("cement");
 		pRenderGround->AddMaterial("walls");
 
-    EAE_Engine::Math::Vector3 flagpos0(0.0f, -25.0f, 0.0f);
+    EAE_Engine::Math::Vector3 flagpos0(130.0f, -25.0f, -100.0f);
     EAE_Engine::Math::Vector4 red(1.0f, 0.0f, 0.0f, 1.0f);
     CreateFlag(flagpos0, "0", red);
+
+    EAE_Engine::Math::Vector3 flagpos1(-130.0f, -25.0f, 100.0f);
+    EAE_Engine::Math::Vector4 blue(0.0f, 0.0f, 1.0f, 1.0f);
+    CreateFlag(flagpos1, "1", blue);
+
 		CreatePlayer();
 		CreateCamera();
 		CreateSprite();
