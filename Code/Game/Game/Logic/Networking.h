@@ -24,7 +24,7 @@ public:
   void Init( bool isServer, std::string ipaddress);
   void Update(EAE_Engine::Common::ITransform* pLocalPlayer);
   void DisConnect();
-
+  inline bool IsServer() const { return _isServer; }
 
 private:
   RakNet::RakPeerInterface* _peer;

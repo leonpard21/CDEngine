@@ -1,6 +1,6 @@
 ﻿#include "Gameplay.h"
 
-//#define USE_NETWORKMODE
+#define USE_NETWORKMODE
 #ifdef USE_NETWORKMODE
 #include <shellapi.h>
 #include "Networking.h"
@@ -44,7 +44,7 @@ namespace
 	bool ResetLevel();
 
   void CreateFlag(EAE_Engine::Math::Vector3 flagPos, const char* pName, EAE_Engine::Math::Vector4 color);
-	void CreatePlayer();
+	void CreatePlayer(EAE_Engine::Math::Vector3 playerPos);
 	void CreateCamera();
 	void CreateSprite();
 	void CreateDebugMenu();
@@ -312,16 +312,23 @@ namespace
 		pRenderGround->AddMaterial("metal");
 		pRenderGround->AddMaterial("cement");
 		pRenderGround->AddMaterial("walls");
-
-    EAE_Engine::Math::Vector3 flagpos0(130.0f, -25.0f, -100.0f);
-    EAE_Engine::Math::Vector4 red(1.0f, 0.0f, 0.0f, 1.0f);
-    CreateFlag(flagpos0, "0", red);
-
-    EAE_Engine::Math::Vector3 flagpos1(-130.0f, -25.0f, 100.0f);
-    EAE_Engine::Math::Vector4 blue(0.0f, 0.0f, 1.0f, 1.0f);
-    CreateFlag(flagpos1, "1", blue);
-
-		CreatePlayer();
+    
+    {
+      EAE_Engine::Math::Vector3 flagpos0(130.0f, -25.0f, -100.0f);
+      EAE_Engine::Math::Vector4 red(1.0f, 0.0f, 0.0f, 1.0f);
+      CreateFlag(flagpos0, "0", red);
+      EAE_Engine::Math::Vector3 flagpos1(-130.0f, -25.0f, 100.0f);
+      EAE_Engine::Math::Vector4 blue(0.0f, 0.0f, 1.0f, 1.0f);
+      CreateFlag(flagpos1, "1", blue);
+      EAE_Engine::Math::Vector3 playerinitPos = flagpos0 + EAE_Engine::Math::Vector3(0.0f, 0.0f, 0.0f);
+#ifdef USE_NETWORKMODE
+      if (!NetworkPeer::GetInstance()->IsServer())
+      {
+        playerinitPos = flagpos1 + EAE_Engine::Math::Vector3(0.0f, 0.0f, 0.0f);
+      }
+#endif
+      CreatePlayer(playerinitPos);
+    }
 		CreateCamera();
 		CreateSprite();
 		CreateDebugMenu();
@@ -358,11 +365,10 @@ namespace
     pMaterial->ChangeUniformVariable("g_RGBColor", &color);
   }
 
-	void CreatePlayer() 
+	void CreatePlayer(EAE_Engine::Math::Vector3 playerinitPos)
 	{
 		// Player
 		{
-			EAE_Engine::Math::Vector3 playerinitPos(0.0f, 0.0f, 0.0f);
       g_pPlayerObj = EAE_Engine::Core::World::GetInstance().AddGameObj("player", playerinitPos);
 		//	EAE_Engine::Math::Vector3 axis(0.0f, 1.0f, 0.0f);
 		//	float radian = EAE_Engine::Math::ConvertDegreesToRadians(20.0f);
