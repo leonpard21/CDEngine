@@ -3,11 +3,9 @@
   <ItemGroup>
     <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="AOSMeshData.cpp" />
-    <ClCompile Include="MeshFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="AOSMeshData.h" />
-    <ClInclude Include="MeshFilter.h" />
   </ItemGroup>
 </Project>

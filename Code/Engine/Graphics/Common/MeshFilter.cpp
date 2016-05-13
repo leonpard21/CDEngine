@@ -22,56 +22,28 @@ namespace EAE_Engine
         SAFE_DELETE(_pLocalAOSMesh);
       }
     }
-    /*
-    void MeshFilter::SetSharedMesh(Mesh::AOSMeshData* pNewAOSMeshData)
+
+    AOSMesh* MeshFilter::GetLocalRenderMesh()
     {
-      _pSharedAOSMeshData = CreateAOSMesh(_pAOSMeshData);
-      if (_pLocalAOSMesh)
+      if (_pLocalAOSMesh == nullptr)
       {
-        _pLocalAOSMesh->Release();
-        SAFE_DELETE(_pLocalAOSMesh);
-        _pLocalAOSMesh = CreateAOSMesh(_pAOSMeshData);
+        Mesh::AOSMeshData* pSharedAOSMeshData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData(_aosMeshDataKey.c_str());
+        if (!pSharedAOSMeshData)
+          _pLocalAOSMesh = nullptr;
+        else
+          _pLocalAOSMesh = CreateAOSMesh(pSharedAOSMeshData);
       }
+      return _pLocalAOSMesh;
     }
 
-    void MeshFilter::SetMesh(Mesh::AOSMeshData* pNewAOSMeshData)
+    AOSMesh* MeshFilter::GetSharedRenderMesh()
     {
-      // clear the old local mesh, if instantiated
       if (_pLocalAOSMesh)
-      {
-        _pLocalAOSMesh->Release();
-        SAFE_DELETE(_pLocalAOSMesh);
-      }
-      _pAOSMeshData = pNewAOSMeshData;
-      if (pNewAOSMeshData == nullptr) 
-      {
-        return;
-      }
-      _pLocalAOSMesh = CreateAOSMesh(_pAOSMeshData);
-    }
-    */
-
-    AOSMesh* MeshFilter::GetSharedMesh() 
-    {
+        return _pLocalAOSMesh;
       Mesh::AOSMeshData* pSharedAOSMeshData = Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData(_aosMeshDataKey.c_str());
       if (!pSharedAOSMeshData)
         return nullptr;
       return AOSMeshManager::GetInstance()->GetMesh(_aosMeshDataKey.c_str());
-    }
-
-    AOSMesh* MeshFilter::GetMesh() 
-    {
-      if (_pLocalAOSMesh == nullptr)
-      {
-        Mesh::AOSMeshData aosMeshData;
-        Mesh::sVertex sVertex;
-        aosMeshData._vertices.push_back(sVertex);
-        aosMeshData._indices.push_back(0);
-        Mesh::sSubMesh subMesh(0, 1);
-        aosMeshData._subMeshes.push_back(subMesh);
-        _pLocalAOSMesh = CreateAOSMesh(&aosMeshData);
-      }
-      return _pLocalAOSMesh;
     }
 
   }

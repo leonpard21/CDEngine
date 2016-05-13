@@ -20,11 +20,8 @@ namespace EAE_Engine
     public:
       MeshFilter(const char* pKey);
       ~MeshFilter();
-      //void SetSharedMesh(Mesh::AOSMeshData* pNewAOSMeshData);
-      //void SetMesh(Mesh::AOSMeshData* pNewAOSMeshData);
-      AOSMesh* GetSharedMesh();
-      // like Unity3D, we will return a duplicated mesh
-      AOSMesh* GetMesh();
+      AOSMesh* GetLocalRenderMesh();
+      AOSMesh* GetSharedRenderMesh();
     private: 
 
     private: 
