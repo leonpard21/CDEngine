@@ -3,6 +3,7 @@
 #include <vector>
 #include "Engine/Math/Vector.h"
 #include "Engine/Common/Interfaces.h"
+#include "MeshFilter.h"
 
 namespace EAE_Engine
 {
@@ -19,6 +20,9 @@ namespace EAE_Engine
       AOSMesh* GetSharedMesh();
       void SetSharedMesh(AOSMesh* pAOSMesh) { _pSharedMesh = pAOSMesh; }
       void SetSharedMesh(const char* pMeshName);
+
+      void SetMeshFilter(MeshFilter* pMeshFilter) { _pMeshFilter = pMeshFilter; }
+      MeshFilter* GetMeshFilter() { return _pMeshFilter; }
       void AddMaterial(std::string materialkey);
       // In untiy3d, if the material is used by any other renderers, 
       // this will clone the shared material and start using it from now on.
@@ -35,6 +39,7 @@ namespace EAE_Engine
       bool CopySharedMaterialToLocal(uint32_t index);
 			friend class AOSMeshRenderManager;
 		private:
+      MeshFilter* _pMeshFilter;
 			AOSMesh* _pSharedMesh;
 			std::vector<MaterialDesc*> _sharedMaterials;
       std::vector<MaterialDesc*> _localMaterials;

@@ -2,6 +2,7 @@
 #include "Mesh/AOSMeshData.h"
 #include "BinaryFileLoader.h"
 #include "MeshManager.h"
+#include "Windows/WindowsFunctions.h"
 
 namespace EAE_Engine
 {
@@ -11,7 +12,7 @@ namespace EAE_Engine
     MeshFilter::MeshFilter(const char* pKey) : 
       _pLocalAOSMesh(nullptr)
     {
-      _aosMeshDataKey = std::string(pKey);
+      _aosMeshDataKey = GetFileNameWithoutExtension(pKey);
     }
 
     MeshFilter::~MeshFilter() 
@@ -45,6 +46,39 @@ namespace EAE_Engine
         return nullptr;
       return AOSMeshManager::GetInstance()->GetMesh(_aosMeshDataKey.c_str());
     }
+
+    /////////////////////////////////////////////////////////////////////////
+
+    MeshFilterManager::~MeshFilterManager()
+    {
+      for (std::vector<MeshFilter*>::iterator iter = _meshFilters.begin(); iter != _meshFilters.end(); )
+      {
+        MeshFilter* pData = *(iter++);
+        SAFE_DELETE(pData);
+      }
+      _meshFilters.clear();
+    }
+
+    void MeshFilterManager::AddMeshFilter(MeshFilter* pMeshFilter)
+    {
+      if (!Contains(pMeshFilter))
+      {
+        _meshFilters.push_back(pMeshFilter);
+      }
+    }
+
+    bool MeshFilterManager::Contains(MeshFilter* pMeshFilter)
+    {
+      for (auto iter : _meshFilters)
+      {
+        if (iter == pMeshFilter)
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
 
   }
 }

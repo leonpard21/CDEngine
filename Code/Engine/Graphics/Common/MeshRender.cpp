@@ -13,12 +13,13 @@ namespace EAE_Engine
 	namespace Graphics
 	{
 		AOSMeshRender::AOSMeshRender() :
-			_pSharedMesh(nullptr), _pTrans(nullptr)
+			_pSharedMesh(nullptr), _pMeshFilter(nullptr), _pTrans(nullptr)
 		{
 		}
 
 		AOSMeshRender::~AOSMeshRender() 
 		{
+      _pMeshFilter = nullptr;
 			for (std::vector<MaterialDesc*>::iterator it = _localMaterials.begin(); it != _localMaterials.end(); )
 			{
         MaterialDesc* pLocalMaterial = *it++;
@@ -114,12 +115,16 @@ namespace EAE_Engine
 
 		AOSMeshRender* AOSMeshRenderManager::AddMeshRender(const char* pAOSMesh, Common::ITransform* pTransform)
 		{
-			AOSMeshRender* pRO = new AOSMeshRender();
-			pRO->SetSharedMesh(pAOSMesh);
-			pRO->SetTrans(pTransform);
-			_meshRenders.push_back(pRO);
-			return pRO;
+			AOSMeshRender* pMeshRender = new AOSMeshRender();
+      pMeshRender->SetSharedMesh(pAOSMesh);
+      MeshFilter* pMeshFilter = new MeshFilter(pAOSMesh);
+      MeshFilterManager::GetInstance()->AddMeshFilter(pMeshFilter);
+      pMeshRender->SetMeshFilter(pMeshFilter);
+        pMeshRender->SetTrans(pTransform);
+			_meshRenders.push_back(pMeshRender);
+			return pMeshRender;
 		}
+
 		void AOSMeshRenderManager::UpdateRenderDataList()
 		{
 			std::vector<RenderData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderData3DList();
