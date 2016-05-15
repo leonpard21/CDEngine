@@ -93,12 +93,12 @@ namespace
 		const int result = mcpp_lib_main(static_cast<int>(argumentCount), arguments);
 		if (result == 0)
 		{
-			o_shaderSource_preProcessed = mcpp_get_mem_buffer(static_cast<OUTDEST>(eae6320::mcpp::OUTDEST::Out));
+			o_shaderSource_preProcessed = mcpp_get_mem_buffer(static_cast<OUTDEST>(EAE_ENGINE_::mcpp::OUTDEST::Out));
 		}
 		else
 		{
 			wereThereErrors = true;
-			std::cerr << mcpp_get_mem_buffer(static_cast<OUTDEST>(eae6320::mcpp::OUTDEST::Err));
+			std::cerr << mcpp_get_mem_buffer(static_cast<OUTDEST>(EAE_ENGINE_::mcpp::OUTDEST::Err));
 			goto OnExit;
 		}
 

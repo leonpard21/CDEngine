@@ -200,6 +200,7 @@
   <ItemGroup>
     <ClInclude Include="Logic\ColliderCallback.h" />
     <ClInclude Include="Logic\Controllers.h" />
+    <ClInclude Include="Logic\FlagController.h" />
     <ClInclude Include="Logic\Gameplay.h" />
     <ClInclude Include="Logic\LazyCamera.h" />
     <ClInclude Include="Logic\Networking.h" />

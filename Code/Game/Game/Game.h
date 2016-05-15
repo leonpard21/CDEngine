@@ -2,8 +2,8 @@
 	This file contains all of the function declarations for this example program
 */
 
-#ifndef EAE6320_WINDOWSPROGRAM_H
-#define EAE6320_WINDOWSPROGRAM_H
+#ifndef EAE_ENGINE__WINDOWSPROGRAM_H
+#define EAE_ENGINE__WINDOWSPROGRAM_H
 
 // Header Files
 //=============

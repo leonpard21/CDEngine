@@ -825,6 +825,9 @@
     <ClInclude Include="Logic\Networking.h">
       <Filter>Logic</Filter>
     </ClInclude>
+    <ClInclude Include="Logic\FlagController.h">
+      <Filter>Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\big.ico">

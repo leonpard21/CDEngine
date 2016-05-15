@@ -9,6 +9,7 @@
 #include "Controllers.h"
 #include "ColliderCallback.h"
 #include "LazyCamera.h"
+#include "FlagController.h"
 #include "Engine/DebugShape/DebugShape.h"
 #include "Engine/CollisionDetection/ColliderBase.h"
 #include "Engine/General/BasicShapes.h"
@@ -43,7 +44,7 @@ namespace
 	bool InitLevel();
 	bool ResetLevel();
 
-  void CreateFlag(EAE_Engine::Math::Vector3 flagPos, const char* pName, EAE_Engine::Math::Vector4 color);
+  EAE_Engine::Common::ITransform* CreateFlag(EAE_Engine::Math::Vector3 flagPos, const char* pName, EAE_Engine::Math::Vector4 color);
 	void CreatePlayer(EAE_Engine::Math::Vector3 playerPos, EAE_Engine::Math::TVector4<uint8_t> player_color);
 	void CreateCamera();
 	void CreateSprite();
@@ -253,7 +254,6 @@ void GameplayExit()
 #endif
 }
 
-
 void CreateOtherPlayer(const char* pname, EAE_Engine::Math::Vector3 pos, EAE_Engine::Math::Quaternion rotation)
 {
   EAE_Engine::Math::Vector3 playerinitPos = pos;
@@ -313,11 +313,7 @@ namespace
     
     {
       EAE_Engine::Math::Vector3 flagpos0(130.0f, -25.0f, -100.0f);
-      EAE_Engine::Math::Vector4 red(1.0f, 0.0f, 0.0f, 1.0f);
-      CreateFlag(flagpos0, "0", red);
       EAE_Engine::Math::Vector3 flagpos1(-130.0f, -25.0f, 100.0f);
-      EAE_Engine::Math::Vector4 blue(0.0f, 0.0f, 1.0f, 1.0f);
-      CreateFlag(flagpos1, "1", blue);
       EAE_Engine::Math::Vector3 playerinitPos = flagpos0 + EAE_Engine::Math::Vector3(0.0f, 0.0f, 0.0f);
 #ifdef USE_NETWORKMODE
       if (!NetworkPeer::GetInstance()->IsServer())
@@ -327,6 +323,24 @@ namespace
 #endif
       EAE_Engine::Math::TVector4<uint8_t> green(0, 255, 0, 255);
       CreatePlayer(playerinitPos, green);
+      // Generate flags
+      EAE_Engine::Math::Vector4 red(1.0f, 0.0f, 0.0f, 1.0f);
+      EAE_Engine::Common::ITransform* pFlagServer = CreateFlag(flagpos0, "0", red);
+      EAE_Engine::Math::Vector4 blue(0.0f, 0.0f, 1.0f, 1.0f);
+      EAE_Engine::Common::ITransform* pFlagClient = CreateFlag(flagpos1, "1", blue);
+
+      if (!NetworkPeer::GetInstance()->IsServer())
+      {
+        FlagController* pFlagController = new FlagController(pFlagServer->GetTransform());
+        EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlagController);
+        pFlagController->SetTarget(g_pPlayerObj->GetTransform());
+      }
+      else
+      {
+        FlagController* pFlagController = new FlagController(pFlagClient->GetTransform());
+        EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlagController);
+        pFlagController->SetTarget(g_pPlayerObj->GetTransform());
+      }
     }
 		CreateCamera();
 		CreateSprite();
@@ -354,14 +368,15 @@ namespace
 	}
 
 
-  void CreateFlag(EAE_Engine::Math::Vector3 flagPos, const char* pName, EAE_Engine::Math::Vector4 color)
+  EAE_Engine::Common::ITransform* CreateFlag(EAE_Engine::Math::Vector3 flagPos, const char* pName, EAE_Engine::Math::Vector4 color)
   {
     EAE_Engine::Common::IGameObj* pFlagObj = EAE_Engine::Core::World::GetInstance().AddGameObj(pName, flagPos);
-    pFlagObj->GetTransform()->SetLocalScale(EAE_Engine::Math::Vector3(0.2f, 0.2f, 0.2f));
+    pFlagObj->GetTransform()->SetLocalScale(EAE_Engine::Math::Vector3(0.4f, 0.4f, 0.4f));
     EAE_Engine::Graphics::AOSMeshRender* pFlagRender = EAE_Engine::Graphics::AOSMeshRenderManager::GetInstance().AddMeshRender(pathFlag, pFlagObj->GetTransform());
     pFlagRender->AddMaterial("lambert");
     EAE_Engine::Graphics::MaterialDesc* pMaterial = pFlagRender->GetMaterial();
     pMaterial->ChangeUniformVariable("g_RGBColor", &color);
+    return pFlagObj->GetTransform();
   }
 
 	void CreatePlayer(EAE_Engine::Math::Vector3 playerinitPos, EAE_Engine::Math::TVector4<uint8_t> player_color)

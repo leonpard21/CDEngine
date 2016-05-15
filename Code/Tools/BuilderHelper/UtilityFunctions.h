@@ -2,8 +2,8 @@
 	This file contains useful utility functions for other build processes
 */
 
-#ifndef EAE6320_TOOLS_UTILITYFUNCTIONS_H
-#define EAE6320_TOOLS_UTILITYFUNCTIONS_H
+#ifndef EAE_ENGINE__TOOLS_UTILITYFUNCTIONS_H
+#define EAE_ENGINE__TOOLS_UTILITYFUNCTIONS_H
 
 #ifndef NULL
 	#define NULL 0
@@ -22,4 +22,4 @@ namespace EAE_Engine
 	}
 }
 
-#endif	// EAE6320_TOOLS_UTILITYFUNCTIONS_H
+#endif	// EAE_ENGINE__TOOLS_UTILITYFUNCTIONS_H

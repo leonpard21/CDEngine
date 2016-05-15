@@ -6,8 +6,8 @@
 	if you ever change to a new version.
 */
 
-#ifndef EAE6320_LUAINCLUDES_H
-#define EAE6320_LUAINCLUDES_H
+#ifndef EAE_ENGINE__LUAINCLUDES_H
+#define EAE_ENGINE__LUAINCLUDES_H
 
 // Ideally I would want this #include statement to automatically use the version number from an evironment variable
 // so that it would automatically update if the solution ever moved to a new version.
@@ -19,4 +19,4 @@
 
 #include "5.2.3/src/lua.hpp"
 
-#endif	// EAE6320_LUAINCLUDES_H
+#endif	// EAE_ENGINE__LUAINCLUDES_H

@@ -2,8 +2,8 @@
 	This class builds shaders
 */
 
-#ifndef EAE6320_CSHADERBUILDER_H
-#define EAE6320_CSHADERBUILDER_H
+#ifndef EAE_ENGINE__CSHADERBUILDER_H
+#define EAE_ENGINE__CSHADERBUILDER_H
 
 // Header Files
 //=============
@@ -32,4 +32,4 @@ namespace EAE_Engine
 	}
 }
 
-#endif	// EAE6320_CSHADERBUILDER_H
+#endif	// EAE_ENGINE__CSHADERBUILDER_H

@@ -2,8 +2,8 @@
 	This class builds textures
 */
 
-#ifndef EAE6320_CTEXTUREBUILDER_H
-#define EAE6320_CTEXTUREBUILDER_H
+#ifndef EAE_ENGINE__CTEXTUREBUILDER_H
+#define EAE_ENGINE__CTEXTUREBUILDER_H
 
 // Header Files
 //=============
@@ -32,4 +32,4 @@ namespace EAE_Engine
 	}
 }
 
-#endif	// EAE6320_CTEXTUREBUILDER_H
+#endif	// EAE_ENGINE__CTEXTUREBUILDER_H

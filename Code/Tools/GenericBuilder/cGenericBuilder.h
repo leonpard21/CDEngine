@@ -33,4 +33,4 @@ namespace EAE_Engine
 	}
 }
 
-#endif	// EAE6320_CGENERICBUILDER_H
+#endif	// EAE_ENGINE__CGENERICBUILDER_H

@@ -2,8 +2,8 @@
 	This file manages time-related functionality
 */
 
-#ifndef EAE6320_TIME_H
-#define EAE6320_TIME_H
+#ifndef EAE_ENGINE__TIME_H
+#define EAE_ENGINE__TIME_H
 
 // Header Files
 //=============
@@ -35,4 +35,4 @@ namespace EAE_Engine
 	}
 }
 
-#endif	// EAE6320_TIME_H
+#endif	// EAE_ENGINE__TIME_H
