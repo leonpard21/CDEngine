@@ -31,7 +31,8 @@ namespace EAE_Engine
 				SAFE_DELETE(pAOSMesh);
 				return false;
 			}
-			AOSMeshManager::GetInstance()->AddAOSMesh(i_binaryMeshFile, pAOSMesh);
+      std::string key = GetFileNameWithoutExtension(i_binaryMeshFile);
+			AOSMeshManager::GetInstance()->AddAOSMesh(key.c_str(), pAOSMesh);
 			return true;
 		}
 

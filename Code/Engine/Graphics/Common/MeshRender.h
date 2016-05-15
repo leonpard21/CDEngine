@@ -17,10 +17,6 @@ namespace EAE_Engine
 		public:
 			AOSMeshRender();
 			~AOSMeshRender();
-      AOSMesh* GetSharedMesh();
-      void SetSharedMesh(AOSMesh* pAOSMesh) { _pSharedMesh = pAOSMesh; }
-      void SetSharedMesh(const char* pMeshName);
-
       void SetMeshFilter(MeshFilter* pMeshFilter) { _pMeshFilter = pMeshFilter; }
       MeshFilter* GetMeshFilter() { return _pMeshFilter; }
       void AddMaterial(std::string materialkey);
@@ -40,7 +36,6 @@ namespace EAE_Engine
 			friend class AOSMeshRenderManager;
 		private:
       MeshFilter* _pMeshFilter;
-			AOSMesh* _pSharedMesh;
 			std::vector<MaterialDesc*> _sharedMaterials;
       std::vector<MaterialDesc*> _localMaterials;
 			Common::ITransform* _pTrans;

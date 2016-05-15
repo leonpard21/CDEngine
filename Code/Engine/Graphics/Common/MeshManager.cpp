@@ -14,7 +14,7 @@ namespace EAE_Engine
 		void AOSMeshManager::AddAOSMesh(const char* pMeshKey, AOSMesh* pAOSMesh)
 		{
 			if(pAOSMesh)
-				_meshMap.insert(std::pair<const char*, AOSMesh*>(pMeshKey, pAOSMesh));
+				_meshMap.insert(std::pair<const char*, AOSMesh*>(_strdup(pMeshKey), pAOSMesh));
 		}
 
 		void AOSMeshManager::CleanList()
@@ -23,6 +23,8 @@ namespace EAE_Engine
 			//clean all of the submeshes.
 			for (std::unordered_map<const char*, AOSMesh*>::iterator iter = _meshMap.begin(); iter != _meshMap.end();)
 			{
+        char* pKey = const_cast<char*>(iter->first);
+        SAFE_DELETE(pKey);
 				AOSMesh* pAOSMesh = iter++->second;
 				pAOSMesh->Release();
 				SAFE_DELETE(pAOSMesh);
@@ -38,10 +40,15 @@ namespace EAE_Engine
 
 		AOSMesh* AOSMeshManager::GetMesh(const char* pKeyName)
 		{
-			auto iter = _meshMap.find(pKeyName);
-			if (iter == _meshMap.end())
-				return nullptr;
-			return iter->second;
+      for (std::unordered_map<const char*, AOSMesh*>::iterator iter = _meshMap.begin(); iter != _meshMap.end(); iter++)
+      {
+        const char* pKey = iter->first;
+        if (strcmp(pKey, pKeyName) == 0)
+        {
+          return iter->second;
+        }
+      }
+			return nullptr;
 		}
 
 	}

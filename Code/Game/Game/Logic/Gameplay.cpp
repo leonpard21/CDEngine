@@ -44,7 +44,7 @@ namespace
 	bool ResetLevel();
 
   void CreateFlag(EAE_Engine::Math::Vector3 flagPos, const char* pName, EAE_Engine::Math::Vector4 color);
-	void CreatePlayer(EAE_Engine::Math::Vector3 playerPos);
+	void CreatePlayer(EAE_Engine::Math::Vector3 playerPos, EAE_Engine::Math::Vector4 color);
 	void CreateCamera();
 	void CreateSprite();
 	void CreateDebugMenu();
@@ -327,7 +327,8 @@ namespace
         playerinitPos = flagpos1 + EAE_Engine::Math::Vector3(0.0f, 0.0f, 0.0f);
       }
 #endif
-      CreatePlayer(playerinitPos);
+      EAE_Engine::Math::Vector4 green(0.0f, 1.0f, 0.0f, 1.0f);
+      CreatePlayer(playerinitPos, green);
     }
 		CreateCamera();
 		CreateSprite();
@@ -365,7 +366,7 @@ namespace
     pMaterial->ChangeUniformVariable("g_RGBColor", &color);
   }
 
-	void CreatePlayer(EAE_Engine::Math::Vector3 playerinitPos)
+	void CreatePlayer(EAE_Engine::Math::Vector3 playerinitPos, EAE_Engine::Math::Vector4 color)
 	{
 		// Player
 		{
@@ -399,7 +400,7 @@ namespace
 					vertices[index].a = cylinder._colors[index]._w;
 				}
         //EAE_Engine::Graphics::AOSMesh* pNewAOSMesh = EAE_Engine::Graphics::CreateAOSMesh();
-				pPlayerRender->GetSharedMesh()->ChangeWholeBuffers(&vertices[0], (uint32_t)vertices.size(),
+				pPlayerRender->GetMeshFilter()->GetLocalRenderMesh()->ChangeWholeBuffers(&vertices[0], (uint32_t)vertices.size(),
 					&cylinder._indices[0], (uint32_t)cylinder._indices.size(), &subMesh, 1);
 			}
 			pPlayerRender->AddMaterial("phongShading");

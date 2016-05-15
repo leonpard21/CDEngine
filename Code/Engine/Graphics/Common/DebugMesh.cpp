@@ -97,7 +97,10 @@ namespace EAE_Engine
                 vertices.a = (uint8_t)255;
               }
               _pSegmentsMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, &vertices, 1, nullptr, 0, nullptr, 0);
-              _pSegmentsMeshRender->SetSharedMesh(_pSegmentsMesh);
+              MeshFilter* pMeshFilter = new MeshFilter();
+              MeshFilterManager::GetInstance()->AddMeshFilter(pMeshFilter);
+              _pSegmentsMeshRender->SetMeshFilter(pMeshFilter);
+              _pSegmentsMeshRender->GetMeshFilter()->SetLocalRenderMesh(_pSegmentsMesh);
             }
             // Circle
             {
@@ -117,7 +120,10 @@ namespace EAE_Engine
               }
               _pCircleMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, pVertices, vertexCount, nullptr, 0, nullptr, 0);
               SAFE_DELETE_ARRAY(pVertices);
-              _pCirclesMeshRender->SetSharedMesh(_pCircleMesh);
+              MeshFilter* pMeshFilter = new MeshFilter();
+              MeshFilterManager::GetInstance()->AddMeshFilter(pMeshFilter);
+              _pCirclesMeshRender->SetMeshFilter(pMeshFilter);
+              _pCirclesMeshRender->GetMeshFilter()->SetLocalRenderMesh(_pCircleMesh);
             }
 
 #if defined( EAEENGINE_PLATFORM_D3D9 )
@@ -156,7 +162,10 @@ namespace EAE_Engine
                 _pBoxesMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, pVertices, vertexCount, pIndices, indexCount, &subMesh, 1);
                 SAFE_DELETE_ARRAY(pVertices);
                 SAFE_DELETE_ARRAY(pIndices);
-                _pBoxesMeshRender->SetSharedMesh(_pBoxesMesh);
+                MeshFilter* pMeshFilter = new MeshFilter();
+                MeshFilterManager::GetInstance()->AddMeshFilter(pMeshFilter);
+                _pBoxesMeshRender->SetMeshFilter(pMeshFilter);
+                _pBoxesMeshRender->GetMeshFilter()->SetLocalRenderMesh(_pBoxesMesh);
             }
             {
 
@@ -191,7 +200,10 @@ namespace EAE_Engine
                 _pShperesMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(elements, pVertices, vertexCount, pIndices, indexCount, &subMesh, 1);
                 SAFE_DELETE_ARRAY(pVertices);
                 SAFE_DELETE_ARRAY(pIndices);		
-                _pShperesMeshRender->SetSharedMesh(_pShperesMesh);
+                MeshFilter* pMeshFilter = new MeshFilter();
+                MeshFilterManager::GetInstance()->AddMeshFilter(pMeshFilter);
+                _pShperesMeshRender->SetMeshFilter(pMeshFilter);
+                _pShperesMeshRender->GetMeshFilter()->SetLocalRenderMesh(_pShperesMesh);
             }
             
             {
@@ -211,7 +223,10 @@ namespace EAE_Engine
                     vertices.a = (uint8_t)255;
                 }
                 _pTempMesh = EAE_Engine::Graphics::CreateAOSMeshInternal(tempMeshelements, &vertices, 1, nullptr, 0, nullptr, 0);
-                _pTempMeshRender->SetSharedMesh(_pTempMesh);
+                MeshFilter* pMeshFilter = new MeshFilter();
+                MeshFilterManager::GetInstance()->AddMeshFilter(pMeshFilter);
+                _pTempMeshRender->SetMeshFilter(pMeshFilter);
+                _pTempMeshRender->GetMeshFilter()->SetLocalRenderMesh(_pTempMesh);
             }
         }
 
@@ -223,6 +238,7 @@ namespace EAE_Engine
             SAFE_DELETE(_pBoxesMeshRender);
             SAFE_DELETE(_pShperesMeshRender);
             SAFE_DELETE(_pTempMeshRender);
+            /*
             // becareful that we cannot use SAFE_RELEASE, 
             // because this marco will set _pSegmentsMesh to NULL.
             // However we need to delete this mesh memory by ourself.
@@ -241,6 +257,7 @@ namespace EAE_Engine
             if (_pTempMesh)
                 _pTempMesh->Release();
             SAFE_DELETE(_pTempMesh);
+            */
         }
 
         void DebugMeshes::Update()
@@ -358,7 +375,6 @@ namespace EAE_Engine
             if (_debugVertices.size() < 3)
                 return;
             _pTempMesh->ChangeWholeBuffers(&_debugVertices[0], (uint32_t)_debugVertices.size(), nullptr, 0, nullptr, 0);
-            _pTempMeshRender->SetSharedMesh(_pTempMesh);
             std::vector<RenderRawData3D>& renderDataList = RenderObjManager::GetInstance().GetRenderRawData3DList();
             Math::Vector3 white(1.0f, 1.0f, 1.0f);
             Math::ColMatrix44 tranformsMatrix = Math::ColMatrix44::Identity;

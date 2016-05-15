@@ -69,7 +69,7 @@ namespace EAE_Engine
 			// updated the parameters for the material
 			ChangeEffectVariables();
 			//If we need to change mesh, change mesh
-			AOSMesh* pAOSMesh = _pMeshRender->GetSharedMesh();
+			AOSMesh* pAOSMesh = _pMeshRender->GetMeshFilter()->GetSharedRenderMesh();
 			if (s_pCurrentAOSMesh != pAOSMesh)
 			{
 				s_pCurrentAOSMesh = pAOSMesh;
@@ -121,7 +121,7 @@ namespace EAE_Engine
 			// updated the parameters for the material
 			ChangeEffectVariables();
 			//If we need to change mesh, change mesh
-			AOSMesh* pAOSMesh = _pMeshRender->GetSharedMesh();
+			AOSMesh* pAOSMesh = _pMeshRender->GetMeshFilter()->GetSharedRenderMesh();
 			SetCurrentRenderMesh(pAOSMesh);
 			// Before rendering, we need to make sure that the effect and material exists.
 			if (!pMaterial || !pMaterial->_pEffect)
