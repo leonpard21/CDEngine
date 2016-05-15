@@ -50,7 +50,7 @@ namespace EAE_Engine
 		class AOSMeshRenderManager 
 		{
 		public:
-			AOSMeshRender* AddMeshRender(const char* pAOSMesh, Common::ITransform* pTransform);
+			AOSMeshRender* AddMeshRender(const char* pAOSMesPath, Common::ITransform* pTransform);
 			std::vector<AOSMeshRender*>& GetMeshRenderList() { return _meshRenders; }
 			void UpdateRenderDataList();
 

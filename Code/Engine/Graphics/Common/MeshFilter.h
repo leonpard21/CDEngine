@@ -21,12 +21,15 @@ namespace EAE_Engine
     class MeshFilter 
     {
     public:
-      MeshFilter(const char* pKey);
+      MeshFilter();
       ~MeshFilter();
+      void SetLocalRenderMesh(AOSMesh* pAOSMesh);
       AOSMesh* GetLocalRenderMesh();
+      void SetSharedRenderMesh(const char* pMeshPath);
       AOSMesh* GetSharedRenderMesh();
     private: 
-
+      void CleanLocalAOSMesh();
+      
     private: 
       std::string _aosMeshDataKey;
       AOSMesh* _pLocalAOSMesh;

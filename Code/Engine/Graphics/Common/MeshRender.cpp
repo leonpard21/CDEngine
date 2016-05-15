@@ -113,14 +113,15 @@ namespace EAE_Engine
 
 		//////////////////////////////RenderObjManager///////////////////////////
 
-		AOSMeshRender* AOSMeshRenderManager::AddMeshRender(const char* pAOSMesh, Common::ITransform* pTransform)
+		AOSMeshRender* AOSMeshRenderManager::AddMeshRender(const char* pAOSMesPath, Common::ITransform* pTransform)
 		{
 			AOSMeshRender* pMeshRender = new AOSMeshRender();
-      pMeshRender->SetSharedMesh(pAOSMesh);
-      MeshFilter* pMeshFilter = new MeshFilter(pAOSMesh);
+      pMeshRender->SetSharedMesh(pAOSMesPath);
+      MeshFilter* pMeshFilter = new MeshFilter();
+      pMeshFilter->SetSharedRenderMesh(pAOSMesPath);
       MeshFilterManager::GetInstance()->AddMeshFilter(pMeshFilter);
       pMeshRender->SetMeshFilter(pMeshFilter);
-        pMeshRender->SetTrans(pTransform);
+      pMeshRender->SetTrans(pTransform);
 			_meshRenders.push_back(pMeshRender);
 			return pMeshRender;
 		}

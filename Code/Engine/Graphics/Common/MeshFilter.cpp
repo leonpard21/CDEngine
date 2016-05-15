@@ -9,19 +9,21 @@ namespace EAE_Engine
   namespace Graphics
   {
 
-    MeshFilter::MeshFilter(const char* pKey) : 
+    MeshFilter::MeshFilter() : 
       _pLocalAOSMesh(nullptr)
     {
-      _aosMeshDataKey = GetFileNameWithoutExtension(pKey);
+      
     }
 
     MeshFilter::~MeshFilter() 
     {
-      if (_pLocalAOSMesh)
-      {
-        _pLocalAOSMesh->Release();
-        SAFE_DELETE(_pLocalAOSMesh);
-      }
+      CleanLocalAOSMesh();
+    }
+
+    void MeshFilter::SetLocalRenderMesh(AOSMesh* pAOSMesh)
+    {
+      CleanLocalAOSMesh();
+      _pLocalAOSMesh = pAOSMesh;
     }
 
     AOSMesh* MeshFilter::GetLocalRenderMesh()
@@ -37,6 +39,12 @@ namespace EAE_Engine
       return _pLocalAOSMesh;
     }
 
+    void MeshFilter::SetSharedRenderMesh(const char* pMeshPath)
+    {
+      _aosMeshDataKey = GetFileNameWithoutExtension(pMeshPath);
+      CleanLocalAOSMesh();
+    }
+
     AOSMesh* MeshFilter::GetSharedRenderMesh()
     {
       if (_pLocalAOSMesh)
@@ -45,6 +53,15 @@ namespace EAE_Engine
       if (!pSharedAOSMeshData)
         return nullptr;
       return AOSMeshManager::GetInstance()->GetMesh(_aosMeshDataKey.c_str());
+    }
+
+    void MeshFilter::CleanLocalAOSMesh()
+    {
+      if (_pLocalAOSMesh)
+      {
+        _pLocalAOSMesh->Release();
+        SAFE_DELETE(_pLocalAOSMesh);
+      }
     }
 
     /////////////////////////////////////////////////////////////////////////
