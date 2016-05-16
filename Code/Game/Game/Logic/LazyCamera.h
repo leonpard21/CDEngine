@@ -96,8 +96,13 @@ class FlagScore : public EAE_Engine::Controller::Controller
 {
 public:
   FlagScore(EAE_Engine::Common::ITransform* pTransform, EAE_Engine::Math::Vector3 initFlagPoint) :
-    EAE_Engine::Controller::Controller(pTransform), _scorePoint(initFlagPoint), _score(0)
+    EAE_Engine::Controller::Controller(pTransform), _scorePoint(initFlagPoint), _score(0), _otherScore(0)
   {
+  }
+
+  virtual typeid_t GetTypeID() const
+  {
+    return getTypeID<FlagScore>();
   }
 
   void Update()
@@ -123,7 +128,7 @@ public:
   }
 
   int _score;
-
+  int _otherScore;
 private:
   EAE_Engine::Math::Vector3 _scorePoint;
 };

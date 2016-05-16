@@ -30,9 +30,6 @@ public:
       _pTransform->SetParent(_pTarget->GetTransform());
       _pTransform->SetLocalPos(EAE_Engine::Math::Vector3::Zero);
     }
-    
-
-
   }
 
   void Reset() 

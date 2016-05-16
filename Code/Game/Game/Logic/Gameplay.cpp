@@ -72,6 +72,7 @@ EAE_Engine::Graphics::Button* pControlBtn = nullptr;
 EAE_Engine::Graphics::Slider* pSlider = nullptr;
 EAE_Engine::Graphics::Toggle* pToggle = nullptr;
 EAE_Engine::Graphics::Toggle* pDrawSegmentToggle = nullptr;
+EAE_Engine::Graphics::Text* pScoreText = nullptr;
 
 bool g_drawDebugMenu = true;
 
@@ -175,6 +176,14 @@ void GameplayUpdate()
       pFlyCamController->SetActive(false);
     }
 	}
+
+  {
+    EAE_Engine::Common::ICompo* pCompo = g_pPlayerObj->GetTransform()->GetComponent(getTypeID<FlagScore>());
+    FlagScore* pFlagScoreController = (FlagScore*)pCompo;
+    pScoreText->_value = "self: " + std::to_string(pFlagScoreController->_score) + 
+      " other: " + std::to_string(pFlagScoreController->_otherScore);
+  }
+
   // Enable/Disable DebugMenu
   static bool s_EnableMenuOrNot = false;
   if (EAE_Engine::UserInput::Input::GetInstance()->GetKeyState(VK_TAB) == EAE_Engine::UserInput::KeyState::OnPressed)
@@ -434,6 +443,7 @@ namespace
       g_pPlayerController = new RelativeScreenInput(g_pPlayerObj->GetTransform());
       EAE_Engine::Controller::ControllerManager::GetInstance().AddController(g_pPlayerController);
       FlagScore* pFlagScoreController = new FlagScore(g_pPlayerObj->GetTransform(), g_pPlayerObj->GetTransform()->GetPos());
+      g_pPlayerObj->AddComponent({ pFlagScoreController, pFlagScoreController->GetTypeID() });
       EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlagScoreController);
 		}
 	}
@@ -448,16 +458,6 @@ namespace
 		pCamera = EAE_Engine::Engine::CreateCamera("mainCamera", camera_pos, camera_rotation,
 			_windowWidth, _windowHeight);
 		pCameraObj = pCamera->GetTransform()->GetGameObj();
-		//pCamera->GetTransform()->SetParent(pPlayerObj->GetTransform());
-		//Camera Controller
-    /*
-    {
-      pCamController = new CameraController(pCamera);
-		pCamController->ResetCamera(pPlayerObj->GetTransform());
-		pCamController->SetActive(false);
-		EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pCamController);
-    }
-    */
     {
       pCamController = new LazyCamera(pCamera);
       pFlyCamController = new FlyCameraController(pCamera);
@@ -482,6 +482,12 @@ namespace
 			pFrameText->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
 			pFrameText->_rectTransform.SetRect({ 32.0f, -32.0f, 64.0f, 64.0f });
 		}
+    EAE_Engine::Common::IGameObj* pScoreTextObj = EAE_Engine::Core::World::GetInstance().AddGameObj("ScoreTextObj", textPos);
+    {
+      pScoreText = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddText("Self: 0", pScoreTextObj->GetTransform());
+      pScoreText->_rectTransform.SetAnchor({ 0.5f, 0.5f, 1.0f, 1.0f });
+      pScoreText->_rectTransform.SetRect({ 0.0f, -32.0f, 128.0f, 64.0f });
+    }
 		EAE_Engine::Common::IGameObj* pBtnObj = EAE_Engine::Core::World::GetInstance().AddGameObj("btnObj", textPos);
 		{
 			pControlBtn = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddButton(btnCallBack, pBtnObj->GetTransform());

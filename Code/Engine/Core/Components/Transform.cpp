@@ -42,6 +42,8 @@ namespace EAE_Engine
     // Parent
     void Transform::SetParent(ITransform* parent)
     {
+      if (_pParent == parent)
+        return;
       if (parent == this) {
         _pParent = nullptr;
         return;
