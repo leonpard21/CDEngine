@@ -365,6 +365,7 @@
   <ItemGroup>
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="Logic\Gameplay.cpp" />
+    <ClCompile Include="Logic\LazyCamera.cpp" />
     <ClCompile Include="Logic\Networking.cpp" />
     <ClCompile Include="RakNet\Source\Base64Encoder.cpp" />
     <ClCompile Include="RakNet\Source\BitStream.cpp" />

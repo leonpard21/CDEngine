@@ -63,9 +63,13 @@ EAE_Engine::Common::IGameObj* pCameraObj = nullptr;
 EAE_Engine::Common::ICamera* pCamera = nullptr;
 EAE_Engine::Controller::Controller* pCamController = nullptr;
 EAE_Engine::Controller::Controller* pFlyCamController = nullptr;
+EAE_Engine::Common::IGameObj* g_pOtherObj = nullptr;
 
 EAE_Engine::Common::ITransform* pFlag0 = nullptr;
 EAE_Engine::Common::ITransform* pFlag1 = nullptr;
+FlagScore* g_playerScore0 = nullptr;
+FlagScore* g_playerScore1 = nullptr;
+
 
 EAE_Engine::Graphics::ImageRender* pNumberSpriteRender = nullptr;
 
@@ -182,8 +186,8 @@ void GameplayUpdate()
   {
     EAE_Engine::Common::ICompo* pCompo = g_pPlayerObj->GetTransform()->GetComponent(getTypeID<FlagScore>());
     FlagScore* pFlagScoreController = (FlagScore*)pCompo;
-    pScoreText->_value = "self: " + std::to_string(pFlagScoreController->_score) + 
-      " other: " + std::to_string(pFlagScoreController->_otherScore);
+    pScoreText->_value = "self: " + std::to_string(FlagScore::s_score) +
+      " other: " + std::to_string(FlagScore::s_otherScore);
   }
 
   // Enable/Disable DebugMenu
@@ -269,12 +273,12 @@ void GameplayExit()
 void CreateOtherPlayer(const char* pname, EAE_Engine::Math::Vector3 pos, EAE_Engine::Math::Quaternion rotation)
 {
   EAE_Engine::Math::Vector3 playerinitPos = pos;
-  EAE_Engine::Common::IGameObj* pOtherObj = EAE_Engine::Core::World::GetInstance().AddGameObj(pname, playerinitPos);
+  g_pOtherObj = EAE_Engine::Core::World::GetInstance().AddGameObj(pname, playerinitPos);
   EAE_Engine::Math::Quaternion player_rotation = rotation;
-  pOtherObj->GetTransform()->SetRotation(player_rotation);
+  g_pOtherObj->GetTransform()->SetRotation(player_rotation);
   EAE_Engine::Math::Vector3 playerRenderPos(0.0f, 2.0f, 0.0f);
   EAE_Engine::Common::IGameObj* pOthersRenderObj = EAE_Engine::Core::World::GetInstance().AddGameObj("otherRender", playerRenderPos);
-  pOthersRenderObj->GetTransform()->SetParent(pOtherObj->GetTransform());
+  pOthersRenderObj->GetTransform()->SetParent(g_pOtherObj->GetTransform());
   EAE_Engine::Graphics::AOSMeshRender* pOtherRender = EAE_Engine::Graphics::AOSMeshRenderManager::GetInstance().AddMeshRender(pathPlayer, pOthersRenderObj->GetTransform());
   {
     EAE_Engine::Graphics::CylinderSOAMesh cylinder(1.0f, 1.0f, 4.0f, 20, 1);
@@ -300,19 +304,24 @@ void CreateOtherPlayer(const char* pname, EAE_Engine::Math::Vector3 pos, EAE_Eng
       &cylinder._indices[0], (uint32_t)cylinder._indices.size(), &subMesh, 1);
   }
   pOtherRender->AddMaterial("phongShading");
-  
+  // set FlagScore for the other player
+  g_playerScore1 = new FlagScore(g_pOtherObj->GetTransform(), g_pOtherObj->GetTransform()->GetPos());
+  g_pOtherObj->AddComponent({ g_playerScore1, g_playerScore1->GetTypeID() });
+  EAE_Engine::Controller::ControllerManager::GetInstance().AddController(g_playerScore1);
   // for the server, if we created another player, we will add the flag controller for it.
   if (NetworkPeer::GetInstance()->IsServer())
   {
     // the flag0 are looking for the player 1(the other player)
     FlagController* pFlagController = new FlagController(pFlag0->GetTransform());
     EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlagController);
-    pFlagController->SetTarget(pOtherObj->GetTransform());
+    pFlagController->SetTarget(g_pOtherObj->GetTransform());
     pFlag0->GetGameObj()->AddComponent({ pFlagController, pFlagController->GetTypeID() });
-
-    FlagScore* pScore = (FlagScore*)pOtherObj->GetComponent(getTypeID<FlagScore>());
+    FlagScore* pScore = (FlagScore*)g_pOtherObj->GetComponent(getTypeID<FlagScore>());
     if (pScore)
+    {
       pScore->Init("flag0");
+      g_playerScore0->SetTarget(g_playerScore1);
+    }
   }
 }
 
@@ -458,9 +467,9 @@ namespace
 		//	EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pPlayerController);
       g_pPlayerController = new RelativeScreenInput(g_pPlayerObj->GetTransform());
       EAE_Engine::Controller::ControllerManager::GetInstance().AddController(g_pPlayerController);
-      FlagScore* pFlagScoreController = new FlagScore(g_pPlayerObj->GetTransform(), g_pPlayerObj->GetTransform()->GetPos());
-      g_pPlayerObj->AddComponent({ pFlagScoreController, pFlagScoreController->GetTypeID() });
-      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlagScoreController);
+      g_playerScore0 = new FlagScore(g_pPlayerObj->GetTransform(), g_pPlayerObj->GetTransform()->GetPos());
+      g_pPlayerObj->AddComponent({ g_playerScore0, g_playerScore0->GetTypeID() });
+      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(g_playerScore0);
 		}
 	}
 

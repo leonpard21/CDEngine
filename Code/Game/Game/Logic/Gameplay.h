@@ -3,7 +3,7 @@
 #include "Engine/Windows/WindowsFunctions.h"
 #include "Engine/Math/Quaternion.h"
 #include "Engine/Math/Vector.h"
-
+#include "Engine/Common/Interfaces.h"
 
 extern bool GameplayInit(float, float);
 

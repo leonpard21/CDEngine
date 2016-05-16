@@ -339,6 +339,9 @@
     <ClCompile Include="Logic\Networking.cpp">
       <Filter>Logic</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\LazyCamera.cpp">
+      <Filter>Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />

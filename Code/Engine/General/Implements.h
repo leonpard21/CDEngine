@@ -148,6 +148,27 @@ namespace EAE_Engine
 			return length + 1;// add the length of '\0'
 		}
 
+    inline int Strcmp(const char *str1, const char *str2) {
+      int result = 0;
+      while (*str1 != '\0' && *str2 != '\0') {
+        const char* pleft = str1++;
+        const char* pright = str2++;
+        if (*pleft == *pright)
+          continue;
+        if (*pleft < *pright)
+          result = -1;
+        else
+          result = 1;
+        break;
+      }
+      if (*str1 == '\0' && *str2 != '\0')
+        return -1;
+      else if (*str1 != '\0' && *str2 == '\0')
+        return 1;
+      return result;
+    }
+
+
 		/*
 	//	extern AutoPtr<char> SplitString(char* pStringChar, char symbol, size_t startPoint = 0);
 		inline AutoPtr<char> SplitString(char* pStringChar, char symbol, unsigned int startIndex = 0)

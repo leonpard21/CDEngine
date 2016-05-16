@@ -14,6 +14,12 @@ public:
     _initPos = pTransform->GetPos();
   }
 
+  virtual typeid_t GetTypeID() const
+  {
+    return getTypeID<FlagController>();
+  }
+
+
   void SetTarget(EAE_Engine::Common::ITransform* pTarget) 
   {
     _pTarget = pTarget;
