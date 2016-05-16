@@ -271,6 +271,7 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
         pClientPlayer->GetTransform()->SetPos(pTransofrm->_pos);
         pClientPlayer->GetTransform()->SetRotation(pTransofrm->_rotation);
       }
+      // for each client, get the position of the flag. 
       if (!_isServer && pTransofrm->_networkGUID != _peer->GetMyGUID())
       {
         EAE_Engine::Core::World::GetInstance().GetGameObj("flag0")->GetTransform()->SetPos(pTransofrm->_flag0Pos);
@@ -336,7 +337,10 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
         localTransform._pos = pLocalPlayer->GetPos();
         localTransform._rotation = pLocalPlayer->GetRotation();
         localTransform._networkGUID = _peer->GetMyGUID();
-
+        // Set the flag Position information
+        localTransform._flag0Pos = EAE_Engine::Core::World::GetInstance().GetGameObj("flag0")->GetTransform()->GetPos();
+        localTransform._flag1Pos = EAE_Engine::Core::World::GetInstance().GetGameObj("flag1")->GetTransform()->GetPos();
+        // Send 
         _peer->Send((char*)&localTransform, sizeof(PlayerTransform), LOW_PRIORITY, UNRELIABLE, 0, _peer->GetSystemAddressFromGuid(outter), false);
       }
       // 2. send the information of each player to all of the players
