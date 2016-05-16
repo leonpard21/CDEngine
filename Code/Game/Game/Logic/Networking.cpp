@@ -11,6 +11,7 @@
 #include "Engine/Core/Entirety/World.h"
 #include "Engine/Engine/Engine.h"
 #include "Gameplay.h"
+#include "FlagController.h"
 
 #pragma pack(push, 1)
 struct PlayerTransform
@@ -33,7 +34,9 @@ struct PlayerTransform
       EAE_Engine::Math::Quaternion _rotation;
     };
   };
-  EAE_Engine::Math::Vector3 _flagPos;
+  int _score;
+  EAE_Engine::Math::Vector3 _flag0Pos;
+  EAE_Engine::Math::Vector3 _flag1Pos;
   RakNet::RakNetGUID _networkGUID; // NetworkID of the player, used as a common method to refer to the mine on different computers
 };
 
@@ -204,6 +207,12 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
         EAE_Engine::Common::IGameObj* pClientPlayer = EAE_Engine::Core::World::GetInstance().GetGameObj(id.ToString());
         if (pClientPlayer)
         {
+          if (_isServer)
+          {
+            FlagController* pController = (FlagController*)EAE_Engine::Core::World::GetInstance().GetGameObj("flag0")->GetComponent(getTypeID<FlagController>());
+            if (pController)
+              pController->SetTarget(nullptr);
+          }
           //EAE_Engine::Core::World::GetInstance().Remove(pClientPlayer->GetTransform());
           EAE_Engine::Engine::AddToRemoveList(pClientPlayer->GetTransform());
         }
@@ -230,6 +239,12 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
         if (pClientPlayer)
         {
           //EAE_Engine::Core::World::GetInstance().Remove(pClientPlayer->GetTransform());
+          if (_isServer)
+          {
+            FlagController* pController = (FlagController*)EAE_Engine::Core::World::GetInstance().GetGameObj("flag0")->GetComponent(getTypeID<FlagController>());
+            if (pController)
+              pController->SetTarget(nullptr);
+          }
           EAE_Engine::Engine::AddToRemoveList(pClientPlayer->GetTransform());
         }
         // notice all other clients to remove the lost connect one
@@ -255,6 +270,11 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       {
         pClientPlayer->GetTransform()->SetPos(pTransofrm->_pos);
         pClientPlayer->GetTransform()->SetRotation(pTransofrm->_rotation);
+      }
+      if (!_isServer && pTransofrm->_networkGUID != _peer->GetMyGUID())
+      {
+        EAE_Engine::Core::World::GetInstance().GetGameObj("flag0")->GetTransform()->SetPos(pTransofrm->_flag0Pos);
+        EAE_Engine::Core::World::GetInstance().GetGameObj("flag1")->GetTransform()->SetPos(pTransofrm->_flag1Pos);
       }
     }
     break;
@@ -283,7 +303,15 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
       RemovePlayer* pRemovePlayer = (RemovePlayer*)packet->data;
       EAE_Engine::Common::IGameObj* pClientPlayer = EAE_Engine::Core::World::GetInstance().GetGameObj(pRemovePlayer->_networkGUID.ToString());
       if (pClientPlayer)
+      {
+        if (_isServer)
+        {
+          FlagController* pController = (FlagController*)EAE_Engine::Core::World::GetInstance().GetGameObj("flag0")->GetComponent(getTypeID<FlagController>());
+          if (pController)
+            pController->SetTarget(nullptr);
+        }
         EAE_Engine::Engine::AddToRemoveList(pClientPlayer->GetTransform());
+      }
     }
     break;
     default:
@@ -308,7 +336,7 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
         localTransform._pos = pLocalPlayer->GetPos();
         localTransform._rotation = pLocalPlayer->GetRotation();
         localTransform._networkGUID = _peer->GetMyGUID();
-        localTransform._flagPos = EAE_Engine::Core::World::GetInstance().GetGameObj("flag1")->GetTransform()->GetPos();
+
         _peer->Send((char*)&localTransform, sizeof(PlayerTransform), LOW_PRIORITY, UNRELIABLE, 0, _peer->GetSystemAddressFromGuid(outter), false);
       }
       // 2. send the information of each player to all of the players

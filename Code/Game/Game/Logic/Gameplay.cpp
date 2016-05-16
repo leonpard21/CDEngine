@@ -64,6 +64,8 @@ EAE_Engine::Common::ICamera* pCamera = nullptr;
 EAE_Engine::Controller::Controller* pCamController = nullptr;
 EAE_Engine::Controller::Controller* pFlyCamController = nullptr;
 
+EAE_Engine::Common::ITransform* pFlag0 = nullptr;
+EAE_Engine::Common::ITransform* pFlag1 = nullptr;
 
 EAE_Engine::Graphics::ImageRender* pNumberSpriteRender = nullptr;
 
@@ -251,6 +253,7 @@ void GameplayUpdate()
 		EAE_Engine::Mesh::AOSMeshData* pData = EAE_Engine::Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData("collisionData");
 		EAE_Engine::Debug::DebugShapes::GetInstance().AddMesh(pData->GetVertexPoses(triangleIndices), red);
 	}
+
 #ifdef USE_NETWORKMODE
   NetworkPeer::GetInstance()->Update(g_pPlayerObj->GetTransform());
 #endif
@@ -297,6 +300,20 @@ void CreateOtherPlayer(const char* pname, EAE_Engine::Math::Vector3 pos, EAE_Eng
       &cylinder._indices[0], (uint32_t)cylinder._indices.size(), &subMesh, 1);
   }
   pOtherRender->AddMaterial("phongShading");
+  
+  // for the server, if we created another player, we will add the flag controller for it.
+  if (NetworkPeer::GetInstance()->IsServer())
+  {
+    // the flag0 are looking for the player 1(the other player)
+    FlagController* pFlagController = new FlagController(pFlag0->GetTransform());
+    EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlagController);
+    pFlagController->SetTarget(pOtherObj->GetTransform());
+    pFlag0->GetGameObj()->AddComponent({ pFlagController, pFlagController->GetTypeID() });
+
+    FlagScore* pScore = (FlagScore*)pOtherObj->GetComponent(getTypeID<FlagScore>());
+    if (pScore)
+      pScore->Init("flag0");
+  }
 }
 
 
@@ -334,23 +351,22 @@ namespace
       CreatePlayer(playerinitPos, green);
       // Generate flags
       EAE_Engine::Math::Vector4 red(1.0f, 0.0f, 0.0f, 1.0f);
-      EAE_Engine::Common::ITransform* pFlagServer = CreateFlag(flagpos0, "flag0", red);
+      pFlag0 = CreateFlag(flagpos0, "flag0", red);
       EAE_Engine::Math::Vector4 blue(0.0f, 0.0f, 1.0f, 1.0f);
-      EAE_Engine::Common::ITransform* pFlagClient = CreateFlag(flagpos1, "flag1", blue);
+      pFlag1 = CreateFlag(flagpos1, "flag1", blue);
 
-      if (!NetworkPeer::GetInstance()->IsServer())
+      // all of the important logic are located on the server
+      if (NetworkPeer::GetInstance()->IsServer())
       {
-        FlagController* pFlagController = new FlagController(pFlagServer->GetTransform());
+        // the flag1 are looking for the server local player
+        FlagController* pFlagController = new FlagController(pFlag1->GetTransform());
         EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlagController);
         pFlagController->SetTarget(g_pPlayerObj->GetTransform());
-        pFlagServer->GetGameObj()->AddComponent({ pFlagController, pFlagController->GetTypeID() });
-      }
-      else
-      {
-        FlagController* pFlagController = new FlagController(pFlagClient->GetTransform());
-        EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlagController);
-        pFlagController->SetTarget(g_pPlayerObj->GetTransform());
-        pFlagClient->GetGameObj()->AddComponent({ pFlagController, pFlagController->GetTypeID() });
+        pFlag1->GetGameObj()->AddComponent({ pFlagController, pFlagController->GetTypeID() });
+
+        FlagScore* pScore = (FlagScore*)g_pPlayerObj->GetComponent(getTypeID<FlagScore>());
+        if (pScore)
+          pScore->Init("flag1");
       }
     }
 		CreateCamera();

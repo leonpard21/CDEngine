@@ -16,6 +16,7 @@
 #include <cassert>
 
 #include "FlagController.h"
+#include "Networking.h"
 
 class RelativeScreenInput : public EAE_Engine::Controller::Controller
 {
@@ -98,11 +99,19 @@ public:
   FlagScore(EAE_Engine::Common::ITransform* pTransform, EAE_Engine::Math::Vector3 initFlagPoint) :
     EAE_Engine::Controller::Controller(pTransform), _scorePoint(initFlagPoint), _score(0), _otherScore(0)
   {
+    _pTargetFlag = nullptr;
   }
 
   virtual typeid_t GetTypeID() const
   {
     return getTypeID<FlagScore>();
+  }
+
+  void Init(const char* targetFlag) 
+  {
+    EAE_Engine::Common::IGameObj* pFlag = pFlag = EAE_Engine::Core::World::GetInstance().GetGameObj(targetFlag);
+    if (pFlag)
+      _pTargetFlag = pFlag->GetTransform();
   }
 
   void Update()
@@ -131,6 +140,7 @@ public:
   int _otherScore;
 private:
   EAE_Engine::Math::Vector3 _scorePoint;
+  EAE_Engine::Common::ITransform* _pTargetFlag;
 };
 
 
