@@ -15,6 +15,8 @@
 #include "Engine/DebugShape/DebugShape.h"
 #include <cassert>
 
+#include "FlagController.h"
+
 class RelativeScreenInput : public EAE_Engine::Controller::Controller
 {
 public:
@@ -87,9 +89,45 @@ private:
     offset *= unitsToMove;
     return offset;
   }
-
-
 };
+
+
+class FlagScore : public EAE_Engine::Controller::Controller
+{
+public:
+  FlagScore(EAE_Engine::Common::ITransform* pTransform, EAE_Engine::Math::Vector3 initFlagPoint) :
+    EAE_Engine::Controller::Controller(pTransform), _scorePoint(initFlagPoint), _score(0)
+  {
+  }
+
+  void Update()
+  {
+    // EAE_Engine::Common::IGameObj* pChild = EAE_Engine::Core::World::GetInstance().GetGameObj();
+    for (uint32_t i = 0; i < _pTransform->GetChildCount(); ++i)
+    {
+      EAE_Engine::Common::ITransform* pChild = _pTransform->GetChild(i);
+      const char* pName = pChild->GetGameObj()->GetName();
+      if (strcmp(pName, "playerRenderObj") == 0)
+        continue;
+      EAE_Engine::Common::ICompo* pCompo = pChild->GetComponent(getTypeID<EAE_Engine::Controller::Controller>());
+      FlagController* pController = (FlagController*)pCompo;
+      if (!pController)
+        continue;
+      EAE_Engine::Math::Vector3 relativePos = _scorePoint - _pTransform->GetPos();
+      if (relativePos.SqMagnitude() < 4.0f)
+      {
+        pController->Reset();
+        ++_score;
+      }
+    }   
+  }
+
+  int _score;
+
+private:
+  EAE_Engine::Math::Vector3 _scorePoint;
+};
+
 
 class LazyCamera : public EAE_Engine::Controller::Controller
 {

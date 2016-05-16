@@ -123,7 +123,6 @@ public:
 		// set position
 //		EAE_Engine::Math::Vector3 offset = GetInput();
 //		_pTransform->Move(offset);
-
 		float elpasedTime = EAE_Engine::Time::GetSecondsElapsedThisFrame();
 		_cdRemain -= elpasedTime;
 		if (_cdRemain > 0.0001f)
@@ -133,7 +132,6 @@ public:
 			_resetLevelController = true;
 			_cdRemain = 0.5f;
 		}
-
 	}
 
 	void FixedUpdate()

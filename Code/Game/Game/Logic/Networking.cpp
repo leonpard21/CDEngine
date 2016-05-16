@@ -33,6 +33,7 @@ struct PlayerTransform
       EAE_Engine::Math::Quaternion _rotation;
     };
   };
+  EAE_Engine::Math::Vector3 _flagPos;
   RakNet::RakNetGUID _networkGUID; // NetworkID of the player, used as a common method to refer to the mine on different computers
 };
 
@@ -307,6 +308,7 @@ void NetworkPeer::Update(EAE_Engine::Common::ITransform* pLocalPlayer)
         localTransform._pos = pLocalPlayer->GetPos();
         localTransform._rotation = pLocalPlayer->GetRotation();
         localTransform._networkGUID = _peer->GetMyGUID();
+        localTransform._flagPos = EAE_Engine::Core::World::GetInstance().GetGameObj("flag1")->GetTransform()->GetPos();
         _peer->Send((char*)&localTransform, sizeof(PlayerTransform), LOW_PRIORITY, UNRELIABLE, 0, _peer->GetSystemAddressFromGuid(outter), false);
       }
       // 2. send the information of each player to all of the players

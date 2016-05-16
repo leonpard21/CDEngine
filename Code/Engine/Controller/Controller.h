@@ -1,17 +1,19 @@
 #ifndef EAE_ENGINE_CONTROLLER_H
 #define EAE_ENGINE_CONTROLLER_H
 #include "Engine/Common/Interfaces.h"
+#include "Engine/General/EngineObj.h"
 #include <vector>
 
 namespace EAE_Engine
 {
 	namespace Controller
 	{
-		class Controller : public Common::IController 
+		class Controller : public Reflection<Controller>, public Common::IController
 		{
 		public:
 			Controller(Common::ITransform* pTrans);
 			virtual ~Controller() { _pTransform = nullptr; }
+      virtual Common::ICompo* GetComponent(typeid_t type) { return _pTransform->GetComponent(type); }
 			virtual void Update();
 			virtual void FixedUpdate() {}
 			virtual Common::ITransform* GetTransform() { return _pTransform; }

@@ -325,21 +325,23 @@ namespace
       CreatePlayer(playerinitPos, green);
       // Generate flags
       EAE_Engine::Math::Vector4 red(1.0f, 0.0f, 0.0f, 1.0f);
-      EAE_Engine::Common::ITransform* pFlagServer = CreateFlag(flagpos0, "0", red);
+      EAE_Engine::Common::ITransform* pFlagServer = CreateFlag(flagpos0, "flag0", red);
       EAE_Engine::Math::Vector4 blue(0.0f, 0.0f, 1.0f, 1.0f);
-      EAE_Engine::Common::ITransform* pFlagClient = CreateFlag(flagpos1, "1", blue);
+      EAE_Engine::Common::ITransform* pFlagClient = CreateFlag(flagpos1, "flag1", blue);
 
       if (!NetworkPeer::GetInstance()->IsServer())
       {
         FlagController* pFlagController = new FlagController(pFlagServer->GetTransform());
         EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlagController);
         pFlagController->SetTarget(g_pPlayerObj->GetTransform());
+        pFlagServer->GetGameObj()->AddComponent({ pFlagController, pFlagController->GetTypeID() });
       }
       else
       {
         FlagController* pFlagController = new FlagController(pFlagClient->GetTransform());
         EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlagController);
         pFlagController->SetTarget(g_pPlayerObj->GetTransform());
+        pFlagClient->GetGameObj()->AddComponent({ pFlagController, pFlagController->GetTypeID() });
       }
     }
 		CreateCamera();
@@ -431,6 +433,8 @@ namespace
 		//	EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pPlayerController);
       g_pPlayerController = new RelativeScreenInput(g_pPlayerObj->GetTransform());
       EAE_Engine::Controller::ControllerManager::GetInstance().AddController(g_pPlayerController);
+      FlagScore* pFlagScoreController = new FlagScore(g_pPlayerObj->GetTransform(), g_pPlayerObj->GetTransform()->GetPos());
+      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlagScoreController);
 		}
 	}
 

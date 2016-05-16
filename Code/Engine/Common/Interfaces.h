@@ -168,7 +168,7 @@ namespace EAE_Engine
       virtual Math::Vector3 ConvertViewportToWorld(Math::Vector3& i_portPos) = 0;
     };
 
-    class IController// : public ICompo
+    class IController : public ICompo
     {
     public:
       virtual ~IController() {}
