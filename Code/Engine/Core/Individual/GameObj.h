@@ -22,6 +22,8 @@ namespace EAE_Engine
 			void AddComponent(Common::Compo compo);
 			template<typename T>
 			void AddComponent(T* pCompo);
+      template<typename T>
+      T* GetComponent();
 			Common::ITransform* GetTransform(); 
 			void SetTransform(Common::ITransform* pTrans) { _pTransform = pTrans; }
 			const char* GetName() { return _pName; }
@@ -41,6 +43,18 @@ namespace EAE_Engine
 			Common::Compo compo = { pCompo, getTypeID<T>()};
 			_components.push_back(compo);
 		}
+
+    template<typename T>
+    T* GameObj::GetComponent()
+    {
+      for (std::vector<Common::Compo>::iterator it = _components.begin(); it != _components.end(); ++it)
+      {
+        Common::Compo compo = *it;
+        if (compo._typeId == getTypeID<T>())
+          return (T*)compo._pCompo;
+      }
+      return nullptr;
+    }
 	}
 }
 RTTI_DECLARE_META_TYPE(EAE_Engine::Core::GameObj)
