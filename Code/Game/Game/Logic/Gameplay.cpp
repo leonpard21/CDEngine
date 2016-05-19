@@ -250,9 +250,9 @@ void GameplayUpdate()
     std::vector<uint32_t> triangleIndices;
     for (uint32_t index = 0; index < triangles.size(); ++index)
     {
-        triangleIndices.push_back(triangles[index]._index0);
-        triangleIndices.push_back(triangles[index]._index1);
-        triangleIndices.push_back(triangles[index]._index2);
+      triangleIndices.push_back(triangles[index]._index0);
+      triangleIndices.push_back(triangles[index]._index1);
+      triangleIndices.push_back(triangles[index]._index2);
     }
     EAE_Engine::Mesh::AOSMeshData* pData = EAE_Engine::Mesh::AOSMeshDataManager::GetInstance()->GetAOSMeshData("collisionData");
     EAE_Engine::Debug::DebugShapes::GetInstance().AddMesh(pData->GetVertexPoses(triangleIndices), red);
@@ -363,7 +363,7 @@ namespace
       pFlag0 = CreateFlag(flagpos0, "flag0", red);
       EAE_Engine::Math::Vector4 blue(0.0f, 0.0f, 1.0f, 1.0f);
       pFlag1 = CreateFlag(flagpos1, "flag1", blue);
-
+#ifdef USE_NETWORKMODE
       // all of the important logic are located on the server
       if (NetworkPeer::GetInstance()->IsServer())
       {
@@ -377,6 +377,7 @@ namespace
         if (pScore)
           pScore->Init("flag1");
       }
+#endif
     }
     CreateCamera();
     CreateSprite();
@@ -429,27 +430,27 @@ namespace
         pPlayerRenderObj->GetTransform()->SetParent(g_pPlayerObj->GetTransform());
         EAE_Engine::Graphics::AOSMeshRender* pPlayerRender = EAE_Engine::Graphics::AOSMeshRenderManager::GetInstance().AddMeshRender(pathPlayer, pPlayerRenderObj->GetTransform());
         {
-            EAE_Engine::Graphics::CylinderSOAMesh cylinder(1.0f, 1.0f, 4.0f, 20, 1);
-            EAE_Engine::Mesh::sSubMesh subMesh(0, (uint32_t)cylinder._indices.size() - 1);
-            std::vector<EAE_Engine::Mesh::sVertex> vertices;
-            vertices.resize(cylinder._vertices.size());
-            for (uint32_t index = 0; index < (uint32_t)cylinder._vertices.size(); ++index)
-            {
-                vertices[index].x = cylinder._vertices[index]._x;
-                vertices[index].y = cylinder._vertices[index]._y;
-                vertices[index].z = cylinder._vertices[index]._z;
-                vertices[index].nx = cylinder._normals[index]._x;
-                vertices[index].ny = cylinder._normals[index]._y;
-                vertices[index].nz = cylinder._normals[index]._z;
-                vertices[index].u = cylinder._uvs[index]._x;
-                vertices[index].v = cylinder._uvs[index]._y;
-                vertices[index].r = player_color._x;// cylinder._colors[index]._x;
-                vertices[index].g = player_color._y;// cylinder._colors[index]._y;
-                vertices[index].b = player_color._z;// cylinder._colors[index]._z;
-                vertices[index].a = player_color._w;// cylinder._colors[index]._w;
-            }
-            pPlayerRender->GetMeshFilter()->GetLocalRenderMesh()->ChangeWholeBuffers(&vertices[0], (uint32_t)vertices.size(),
-                &cylinder._indices[0], (uint32_t)cylinder._indices.size(), &subMesh, 1);
+          EAE_Engine::Graphics::CylinderSOAMesh cylinder(1.0f, 1.0f, 4.0f, 20, 1);
+          EAE_Engine::Mesh::sSubMesh subMesh(0, (uint32_t)cylinder._indices.size() - 1);
+          std::vector<EAE_Engine::Mesh::sVertex> vertices;
+          vertices.resize(cylinder._vertices.size());
+          for (uint32_t index = 0; index < (uint32_t)cylinder._vertices.size(); ++index)
+          {
+            vertices[index].x = cylinder._vertices[index]._x;
+            vertices[index].y = cylinder._vertices[index]._y;
+            vertices[index].z = cylinder._vertices[index]._z;
+            vertices[index].nx = cylinder._normals[index]._x;
+            vertices[index].ny = cylinder._normals[index]._y;
+            vertices[index].nz = cylinder._normals[index]._z;
+            vertices[index].u = cylinder._uvs[index]._x;
+            vertices[index].v = cylinder._uvs[index]._y;
+            vertices[index].r = player_color._x;// cylinder._colors[index]._x;
+            vertices[index].g = player_color._y;// cylinder._colors[index]._y;
+            vertices[index].b = player_color._z;// cylinder._colors[index]._z;
+            vertices[index].a = player_color._w;// cylinder._colors[index]._w;
+          }
+          pPlayerRender->GetMeshFilter()->GetLocalRenderMesh()->ChangeWholeBuffers(&vertices[0], (uint32_t)vertices.size(),
+              &cylinder._indices[0], (uint32_t)cylinder._indices.size(), &subMesh, 1);
         }
         pPlayerRender->AddMaterial("phongShading");
 
@@ -475,22 +476,22 @@ namespace
 
     void CreateCamera() 
     {
-        EAE_Engine::Math::Vector3 camera_pos = EAE_Engine::Math::Vector3(0.0f, 0.0f, 0.0f);
-        EAE_Engine::Math::Vector3 axis(1.0f, 0.0f, 0.0f);
-        float radian = EAE_Engine::Math::ConvertDegreesToRadians(0.0f);
-        EAE_Engine::Math::Quaternion camera_rotation(radian, axis);
-        //EAE_Engine::Math::Quaternion camera_rotation = EAE_Engine::Math::Quaternion::Identity;
-        pCamera = EAE_Engine::Engine::CreateCamera("mainCamera", camera_pos, camera_rotation,
-            _windowWidth, _windowHeight);
-        pCameraObj = pCamera->GetTransform()->GetGameObj();
-    {
-      pCamController = new LazyCamera(pCamera);
-      pFlyCamController = new FlyCameraController(pCamera);
-      ((LazyCamera*)pCamController)->ResetCamera(g_pPlayerObj->GetTransform());
-      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pCamController);
-      EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlyCamController);
-      pFlyCamController->SetActive(false);
-    }
+      EAE_Engine::Math::Vector3 camera_pos = EAE_Engine::Math::Vector3(0.0f, 0.0f, 0.0f);
+      EAE_Engine::Math::Vector3 axis(1.0f, 0.0f, 0.0f);
+      float radian = EAE_Engine::Math::ConvertDegreesToRadians(0.0f);
+      EAE_Engine::Math::Quaternion camera_rotation(radian, axis);
+      //EAE_Engine::Math::Quaternion camera_rotation = EAE_Engine::Math::Quaternion::Identity;
+      pCamera = EAE_Engine::Engine::CreateCamera("mainCamera", camera_pos, camera_rotation,
+          _windowWidth, _windowHeight);
+      pCameraObj = pCamera->GetTransform()->GetGameObj();
+      {
+        pCamController = new LazyCamera(pCamera);
+        pFlyCamController = new FlyCameraController(pCamera);
+        ((LazyCamera*)pCamController)->ResetCamera(g_pPlayerObj->GetTransform());
+        EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pCamController);
+        EAE_Engine::Controller::ControllerManager::GetInstance().AddController(pFlyCamController);
+        pFlyCamController->SetActive(false);
+      }
     }
 
     void CreateSprite() 
@@ -503,9 +504,9 @@ namespace
       EAE_Engine::Math::Vector3 textPos = EAE_Engine::Math::Vector3::Zero;
       EAE_Engine::Common::IGameObj* pTextObj = EAE_Engine::Core::World::GetInstance().AddGameObj("textObj", textPos);
       {
-          pFrameText = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddText("test", pTextObj->GetTransform());
-          pFrameText->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
-          pFrameText->_rectTransform.SetRect({ 32.0f, -32.0f, 64.0f, 64.0f });
+        pFrameText = EAE_Engine::Graphics::UIElementManager::GetInstance()->AddText("test", pTextObj->GetTransform());
+        pFrameText->_rectTransform.SetAnchor({ 0.0f, 0.0f, 1.0f, 1.0f });
+        pFrameText->_rectTransform.SetRect({ 32.0f, -32.0f, 64.0f, 64.0f });
       }
       EAE_Engine::Common::IGameObj* pScoreTextObj = EAE_Engine::Core::World::GetInstance().AddGameObj("ScoreTextObj", textPos);
       {
